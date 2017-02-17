@@ -1,4 +1,7 @@
 .classpath
 .project
+.idea
 target
 src/test/node_modules
+**/*.iml
+**/*~
