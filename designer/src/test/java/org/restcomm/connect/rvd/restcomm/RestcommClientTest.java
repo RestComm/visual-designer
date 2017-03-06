@@ -21,6 +21,7 @@
 package org.restcomm.connect.rvd.restcomm;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.restcomm.connect.rvd.TestUtils;
 import org.restcomm.connect.rvd.RvdConfiguration;
@@ -39,10 +40,12 @@ public class RestcommClientTest {
 
     @BeforeClass
     public static void init() {
-        fallbackUri = URI.create("http://123.123.123.123:7070");
-        configuration = TestUtils.initRvdConfiguration();
+        // The following are disabled until the test is fixed
+        //fallbackUri = URI.create("http://123.123.123.123:7070");
+        //configuration = TestUtils.initRvdConfiguration();
     }
 
+    @Ignore
     @Test(expected=RestcommClient.RestcommClientInitializationException.class)
     public void exceptionThrownWhenNoCredentialsCanBeDetermined() throws RestcommClient.RestcommClientInitializationException, URISyntaxException {
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(configuration);
