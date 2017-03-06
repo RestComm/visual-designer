@@ -1,0 +1,2 @@
+jenkins: ${project.version}
+git: ${buildNumber}

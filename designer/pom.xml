@@ -7,7 +7,7 @@
 		<artifactId>restcomm-connect</artifactId>
 		<!--
 			Parent artifact is used mostly for inheriting global plugin configuration like compile, signing etc.
-			Update version only when needed (new options in plugins).
+			Update 'version' only when needed (new options in plugins).
 		-->
 		<version>8.1.0.1162</version>
 	</parent>
@@ -23,8 +23,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<shrinkwrap.version>2.0.1</shrinkwrap.version>
 
-		<!-- Overrides versions for most .jars inherrited by parent artifact
-		-->
+		<!-- version overrides for most inherrited .jars -->
 		<log4j.version>1.2.16</log4j.version>
 		<javamail.version>1.4</javamail.version>
 		<servletapi.version>2.5</servletapi.version>
@@ -171,7 +170,72 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12</version>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<id>id.package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>Git build number: ${buildNumber}</echo>
+								<echo>Maven build version: ${project.version}</echo>
+							</tasks>
+						</configuration>
+					</execution>
+					<execution>
+						<phase>process-resources</phase>
+						<configuration>
+							<tasks>
+								<copy file="${project.build.outputDirectory}/rvd.version"
+									  toFile="target/restcomm-rvd/WEB-INF/rvd.version" overwrite="true" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/rvd.version</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/rvd.version</exclude>
+				</excludes>
+			</resource>
+		</resources>
 	</build>
 	<repositories>
 		<repository>
