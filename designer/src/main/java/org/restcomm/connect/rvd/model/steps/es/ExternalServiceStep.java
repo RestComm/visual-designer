@@ -417,7 +417,7 @@ public class ExternalServiceStep extends Step {
             if (e instanceof SocketTimeoutException && !RvdUtils.isEmpty(this.onTimeout)) {
                 next = this.onTimeout;
             } else
-                throw new ESRequestException("Issue in processing ExternalService step " + getName() + (e.getMessage() != null ? (" - " + e.getMessage()) : ""), e);
+                throw new ESRequestException("Problem while processing ExternalService step " + getName() + (e.getMessage() != null ? (" - " + e.getMessage()) : ""), e);
         }
         return next;
     }
