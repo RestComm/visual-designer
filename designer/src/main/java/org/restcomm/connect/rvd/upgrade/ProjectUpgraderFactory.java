@@ -5,6 +5,9 @@ import org.restcomm.connect.rvd.upgrade.exceptions.NoUpgraderException;
 public class ProjectUpgraderFactory {
 
     public static ProjectUpgrader create(String version) throws NoUpgraderException {
+        if  ("1.8".equals(version)) {
+            return new ProjectUpgrader18to19();
+        } else
         if  ("1.7".equals(version)) {
             return new ProjectUpgrader17to18();
         } else
