@@ -7,15 +7,23 @@ import org.restcomm.connect.rvd.utils.RvdUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Orestis Tsakiridis - otsakir@gmail.com
+ */
 public class ClientDialNoun extends DialNoun {
     private String destination;
     private String beforeConnectModule;
+    private String statusCallback;
 
     public String getDestination() {
         return destination;
     }
     public String getBeforeConnectModule() {
         return beforeConnectModule;
+    }
+
+    public String getStatusCallback() {
+        return statusCallback;
     }
 
     public void setDestination(String destination) {

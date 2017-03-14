@@ -7,11 +7,17 @@ import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 
+/**
+ * @author Orestis Tsakiridis - otsakir@gmail.com
+ */
 public class NumberDialNoun extends DialNoun {
-    //number: {dialType: 'number', destination:'', sendDigits:'', beforeConnectUrl:'', beforeConnectModule:''},
+
     private String destination;
     private String beforeConnectModule;
     private String sendDigits;
+    private String statusCallback;
+
+
     public String getDestination() {
         return destination;
     }
@@ -21,6 +27,11 @@ public class NumberDialNoun extends DialNoun {
     public String getBeforeConnectModule() {
         return beforeConnectModule;
     }
+
+    public String getStatusCallback() {
+        return statusCallback;
+    }
+
     public void setBeforeConnectModule(String beforeConnectModule) {
         this.beforeConnectModule = beforeConnectModule;
     }
@@ -30,6 +41,8 @@ public class NumberDialNoun extends DialNoun {
     public void setSendDigits(String sendDigits) {
         this.sendDigits = sendDigits;
     }
+
+
     @Override
     public RcmlNoun render(Interpreter interpreter) throws InterpreterException {
         RcmlNumberNoun rcmlNoun = new RcmlNumberNoun();

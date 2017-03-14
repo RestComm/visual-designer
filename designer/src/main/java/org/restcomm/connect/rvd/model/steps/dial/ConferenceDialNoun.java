@@ -18,6 +18,7 @@ public class ConferenceDialNoun extends DialNoun {
     private String waitModule;
     private Integer maxParticipants;
     private String nextModule;
+    private String statusCallback;
 
     public String getWaitMethod() {
         return waitMethod;
@@ -79,6 +80,15 @@ public class ConferenceDialNoun extends DialNoun {
     public void setMaxParticipants(Integer maxParticipants) {
         this.maxParticipants = maxParticipants;
     }
+
+    public String getStatusCallback() {
+        return statusCallback;
+    }
+
+    public void setStatusCallback(String statusCallback) {
+        this.statusCallback = statusCallback;
+    }
+
     @Override
     public RcmlNoun render(Interpreter interpreter) throws InterpreterException {
         RcmlConferenceNoun rcmlNoun = new RcmlConferenceNoun();
