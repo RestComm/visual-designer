@@ -396,7 +396,7 @@ li.verb {
 }
 
 /* --- Dial step customizations */
-.conference-noun .noun-advanced {
+.conference-noun .noun-advanced, .client-noun .noun-advanced, .number-noun .noun-advanced, .sipuri-noun .noun-advanced {
 	margin-top: 5px;
 	margin-left: 10px;
 }
