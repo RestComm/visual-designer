@@ -21,6 +21,8 @@ public class NumberNounConverter implements Converter {
             writer.addAttribute("sendDigits", step.getSendDigits());
         if (step.getUrl() != null)
             writer.addAttribute("url", step.getUrl());
+        if (step.statusCallback != null)
+            writer.addAttribute("statusCallback", step.statusCallback);
         writer.setValue(step.getDestination());
     }
 

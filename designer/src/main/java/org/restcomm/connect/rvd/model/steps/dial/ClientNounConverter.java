@@ -18,6 +18,8 @@ public class ClientNounConverter implements Converter {
         RcmlClientNoun step = (RcmlClientNoun) value;
         if (step.getUrl() != null)
             writer.addAttribute("url", step.getUrl());
+        if (step.statusCallback != null)
+            writer.addAttribute("statusCallback", step.statusCallback);
         writer.setValue(step.getDestination());
     }
 

@@ -21,11 +21,6 @@ public class ClientDialNoun extends DialNoun {
     public String getBeforeConnectModule() {
         return beforeConnectModule;
     }
-
-    public String getStatusCallback() {
-        return statusCallback;
-    }
-
     public void setDestination(String destination) {
         this.destination = destination;
     }
@@ -41,6 +36,9 @@ public class ClientDialNoun extends DialNoun {
         }
 
         rcmlNoun.setDestination( interpreter.populateVariables(getDestination()) );
+        if  (! RvdUtils.isEmpty(statusCallback))
+            rcmlNoun.statusCallback = statusCallback;
+
         return rcmlNoun;
     }
 }

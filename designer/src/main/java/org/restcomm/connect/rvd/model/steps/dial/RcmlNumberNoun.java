@@ -5,6 +5,8 @@ public class RcmlNumberNoun extends RcmlNoun {
     String sendDigits;
     String url;
     String destination;
+    String statusCallback;
+
     public String getSendDigits() {
         return sendDigits;
     }
@@ -23,4 +25,5 @@ public class RcmlNumberNoun extends RcmlNoun {
     public void setDestination(String destination) {
         this.destination = destination;
     }
+
 }

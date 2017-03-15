@@ -16,6 +16,9 @@ public class SipuriNounConverter implements Converter {
     @Override
     public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
         RcmlSipuriNoun step = (RcmlSipuriNoun) value;
+        if (step.statusCallback != null)
+            writer.addAttribute("statusCallback", step.statusCallback);
+
         writer.setValue(step.getDestination());
     }
 

@@ -10,6 +10,8 @@ public class RcmlConferenceNoun extends RcmlNoun {
     String waitMethod;
     Integer maxParticipants;
     String destination;
+    String statusCallback;
+
     public String getDestination() {
         return destination;
     }
@@ -37,6 +39,11 @@ public class RcmlConferenceNoun extends RcmlNoun {
     public Boolean getEndConferenceOnExit() {
         return endConferenceOnExit;
     }
+
+    public String getStatusCallback() {
+        return statusCallback;
+    }
+
     public void setEndConferenceOnExit(Boolean endConferenceOnExit) {
         this.endConferenceOnExit = endConferenceOnExit;
     }

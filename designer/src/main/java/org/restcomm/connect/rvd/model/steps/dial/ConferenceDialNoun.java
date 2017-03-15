@@ -81,14 +81,6 @@ public class ConferenceDialNoun extends DialNoun {
         this.maxParticipants = maxParticipants;
     }
 
-    public String getStatusCallback() {
-        return statusCallback;
-    }
-
-    public void setStatusCallback(String statusCallback) {
-        this.statusCallback = statusCallback;
-    }
-
     @Override
     public RcmlNoun render(Interpreter interpreter) throws InterpreterException {
         RcmlConferenceNoun rcmlNoun = new RcmlConferenceNoun();
@@ -111,6 +103,8 @@ public class ConferenceDialNoun extends DialNoun {
         rcmlNoun.setMaxParticipants(getMaxParticipants());
         rcmlNoun.setWaitMethod(getWaitMethod());
         rcmlNoun.setDestination( interpreter.populateVariables(getDestination() ));
+        if (!RvdUtils.isEmpty(statusCallback))
+            rcmlNoun.statusCallback = statusCallback;
 
         return rcmlNoun;
     }

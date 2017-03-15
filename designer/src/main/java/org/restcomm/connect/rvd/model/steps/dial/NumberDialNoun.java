@@ -27,11 +27,6 @@ public class NumberDialNoun extends DialNoun {
     public String getBeforeConnectModule() {
         return beforeConnectModule;
     }
-
-    public String getStatusCallback() {
-        return statusCallback;
-    }
-
     public void setBeforeConnectModule(String beforeConnectModule) {
         this.beforeConnectModule = beforeConnectModule;
     }
@@ -55,6 +50,8 @@ public class NumberDialNoun extends DialNoun {
 
         rcmlNoun.setSendDigits( getSendDigits() );
         rcmlNoun.setDestination( interpreter.populateVariables( getDestination() ));
+        if (!RvdUtils.isEmpty(statusCallback))
+            rcmlNoun.statusCallback = statusCallback;
 
         return rcmlNoun;
     }

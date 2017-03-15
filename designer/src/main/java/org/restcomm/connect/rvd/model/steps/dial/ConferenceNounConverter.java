@@ -31,6 +31,8 @@ public class ConferenceNounConverter implements Converter {
             writer.addAttribute("waitUrl", step.getWaitUrl());
         if (step.getWaitMethod() != null)
             writer.addAttribute("waitMethod", step.getWaitMethod());
+        if (step.getStatusCallback() != null)
+            writer.addAttribute("statusCallback", step.getStatusCallback());
 
         writer.setValue(step.getDestination());
     }
