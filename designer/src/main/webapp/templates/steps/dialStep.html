@@ -12,10 +12,7 @@
 			</div>
 		</div>
 
-
-
 		<div class='row'>
-			{{step}}
 			<div class='col-md-12'>
 				<div basic-sortable list-model='step.dialNouns' class='dial-nouns' item-added='addDialNoun'>
 
@@ -46,8 +43,8 @@
 								<span class="input-group-addon fa fa-times rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
 							</div>
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
-								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="TODO">Status callback</span>
-								<input ng-model='dialnoun.statusCallback' type='text' class='form-control' placeholder="http://..." tooltip="TODO">
+								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
+								<input ng-model='dialnoun.statusCallback' type='text' class='form-control' placeholder="http://..." title="{{'statusCallbackInfo' | translate}}">
 							</div>
 						</div>
 
@@ -57,7 +54,7 @@
 								<input ng-model='dialnoun.destination' lookup-target type='text' class='form-control' placeholder="{{'dialStepClientDestinationInputPlaceholder' | translate}}" tooltip="{{'dialStepClientDestinationInputTooltip' | translate}}">
 								<variable-lookup variable="dialnoun.destination" view="input-group"></variable-lookup>
 
-								<span ng-show='dialnoun.iface.advancedShown' class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'dialStepClientBeforeConnectTooltip' | translate}}'">{{'dialStepClientBeforeConnectLabel' | translate}}</span>
+								<span ng-show='dialnoun.iface.advancedShown' class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'dialStepNumberBeforeConnectTooltip' | translate}}">{{'dialStepNumberBeforeConnectLabel' | translate}}</span>
 								<select ng-show='dialnoun.iface.advancedShown' auto-clear sync-modules name='beforeConnectModule' ng-model='dialnoun.beforeConnectModule' ng-options='target.name as target.label for target in getAllTargets()' class="form-control">
 									<option value=""></option>
 								</select>
@@ -68,8 +65,8 @@
 								<span class="input-group-addon fa fa-times rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
 							</div>
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
-								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="TODO">Status callback</span>
-								<input ng-model='dialnoun.statusCallback' type='text' class='form-control' placeholder="http://..." tooltip="TODO">
+								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
+								<input ng-model='dialnoun.statusCallback' type='text' class='form-control' placeholder="http://..." title="{{'statusCallbackInfo' | translate}}">
 							</div>
 
 						</div>
@@ -136,8 +133,8 @@
 							</div>
 
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
-								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="TODO">Status callback</span>
-								<input ng-model='dialnoun.statusCallback' type='text' class='form-control' placeholder="http://..." tooltip="TODO">
+								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
+								<input ng-model='dialnoun.statusCallback' type='text' class='form-control' placeholder="http://..." title="{{'statusCallbackInfo' | translate}}">
 							</div>
 
 						</div>
@@ -152,8 +149,8 @@
 							</div>
 
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
-								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="TODO">Status callback</span>
-								<input ng-model='dialnoun.statusCallback' type='text' class='form-control' placeholder="http://..." tooltip="TODO">
+								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
+								<input ng-model='dialnoun.statusCallback' type='text' class='form-control' placeholder="http://..." title="{{'statusCallbackInfo' | translate}}">
 							</div>
 
 						</div>

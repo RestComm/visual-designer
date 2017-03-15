@@ -544,5 +544,8 @@
 	"textCapture": "Capture",
 
 	"esTimeoutTooltip":"Divert application flow to the specified module in case the service takes too long to respond (optional)",
-	"esTimeoutLabel":"On Timeout"
+	"esTimeoutLabel":"On Timeout",
+
+	"statusCallback": "Status callback",
+	"statusCallbackInfo": "Callback url that will receive an HTTP request when the status of the call changes"
 }
