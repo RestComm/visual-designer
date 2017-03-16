@@ -50,9 +50,7 @@ angular.module('Rvd').directive('modulePicker', [function () {
 			}
 		}
 	};
-}]);
-
-angular.module('Rvd').directive('rvdVariable', ['variableRegistry', function (variableRegistry) {
+}]).directive('rvdVariable', ['variableRegistry', function (variableRegistry) {
 	return {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
@@ -68,9 +66,7 @@ angular.module('Rvd').directive('rvdVariable', ['variableRegistry', function (va
 			variableRegistry.addVariable(varInfo);
 		}
 	}
-}]);
-
-angular.module('Rvd').directive('lookupContext', [function () {
+}]).directive('lookupContext', [function () {
 	return {
 		restrict: 'A',
 		scope: true,
@@ -82,9 +78,7 @@ angular.module('Rvd').directive('lookupContext', [function () {
 		},
 		controller: function ($scope) {}
 	}
-}]);
-
-angular.module('Rvd').directive('lookupTarget', [function () {
+}]).directive('lookupTarget', [function () {
 	return {
 		restrict: 'A',
 		//scope:true,
@@ -108,10 +102,7 @@ angular.module('Rvd').directive('lookupTarget', [function () {
 			});
 		} 
 	}
-}]);
-
-
-angular.module('Rvd').directive('variableLookup', ['variableRegistry', function (variableRegistry) {
+}]).directive('variableLookup', ['variableRegistry', function (variableRegistry) {
 	return {
 		restrict: 'E',
 		scope: true,
@@ -126,7 +117,20 @@ angular.module('Rvd').directive('variableLookup', ['variableRegistry', function 
 			}
 		} 
 	}
-}]);
+}])
+// A new vesion of modulePicker directive that will work both for modules and raw URLs
+.directive('moduleUrlPicker', [function (nodeRegistry) {
+   	return {
+   		restrict: 'E',
+   		templateUrl: 'templates/directive/moduleUrlPicker.html',
+   		scope: {},
+   		link: function (scope) {
+   		    console.log("in moduleUrlPicker");
+
+   		}
+   	};
+   }])
+;
 
 
 //use it this way: <input type="text" ng-focus="isFocused" ng-focus-lost="loseFocus()">
