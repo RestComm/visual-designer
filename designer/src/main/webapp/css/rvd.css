@@ -175,6 +175,29 @@ vardef .assign-arrow {
     left: 8px;
 }
 
+/* module-url-picker */
+
+.module-url-picker {
+    position: relative;
+}
+.module-url-picker .picker-type {
+    position: absolute;
+    top: 7px;
+    right: 10px;
+}
+.module-url-picker .module-list {
+    position: absolute;
+    top: 7px;
+    left: 10px;
+}
+/*
+.module-url-picker input {
+    background-color: white !important;
+}
+*/
+
+
+
 /* type-chooser */
 .type-chooser .chosen-label {
     color: #999;

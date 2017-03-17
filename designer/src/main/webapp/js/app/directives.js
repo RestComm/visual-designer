@@ -126,6 +126,17 @@ angular.module('Rvd').directive('modulePicker', [function () {
    		scope: {},
    		link: function (scope) {
    		    console.log("in moduleUrlPicker");
+   		    scope.type = "module";
+
+   		    scope.moduleList = ['module1','module2','module3'];
+
+   		    scope.setType = function (type) {
+   		        scope.type = type;
+   		    }
+
+   		    scope.setModule = function(module) {
+   		        scope.moduleName = module
+   		    }
 
    		}
    	};

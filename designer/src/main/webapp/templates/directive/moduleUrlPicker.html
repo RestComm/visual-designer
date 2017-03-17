@@ -1,37 +1,22 @@
-<!-- Split button -->
-<div class="btn-group">
-    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" >Action</button>
-    <ul class="dropdown-menu">
-        <li><a href="#">Action</a></li>
-        <li><a href="#">Another action</a></li>
-        <li><a href="#">Something else here</a></li>
-        <li role="separator" class="divider"></li>
-        <li><a href="#">Separated link</a></li>
-    </ul>
-    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="caret"></span>
-        <span class="sr-only">Toggle Dropdown</span>
-    </button>
-    <ul class="dropdown-menu">
-        <li><a href="#">Action</a></li>
-        <li><a href="#">Another action</a></li>
-        <li><a href="#">Something else here</a></li>
-        <li role="separator" class="divider"></li>
-        <li><a href="#">Separated link</a></li>
-    </ul>
+<div class="module-url-picker">
+    <input readonly style='background-color: white;' ng-show="type=='module'" required type="text" class="form-control">
+    <input ng-show="type=='url'" ng-model="callbackUrl" required type="text" class="form-control" placeholder="http://">
+    <div ng-show="type=='module'" class="dropdown module-list">
+        <span ng-show='!moduleName' class="btn-link dropdown-toggle text-muted">-- no module --</span>
+        <span ng-show="moduleName" class="btn-link dropdown-toggle">{{moduleName}}</span>
+        <ul class="dropdown-menu" >
+            <li><a ng-click='setModule()'><span class="text-muted">-- no module --</span></a></li>
+            <li ng-repeat="module in moduleList"><a  ng-click="setModule(module)" class="rvd-clickable-text">{{module}}</a></li>
+        </ul>
+    </div>
+
+    <div class="dropdown picker-type">
+        <small ng-show="type=='module'" class="btn-link dropdown-toggle var-scope" title="continue to an application module">module</small>
+        <small ng-show="type=='url'" class="btn-link dropdown-toggle var-scope" title="continue to a URL">URL</small>
+        <!--<small class="text-muted">{{varScope ? varScope : ""}}</small>-->
+        <ul class="dropdown-menu">
+            <li><a ng-click="setType('module')" class="rvd-clickable-text">Module</a></li>
+            <li><a ng-click="setType('url')" class="rvd-clickable-text">URL</a></li>
+        </ul>
+    </div>
 </div>
-<!--<div class="dropdown">
-    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        Dropdown
-        <span class="caret"></span>
-        <a>asdf</a>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li><a href="#">Action</a></li>
-        <li><a href="#">Another action</a></li>
-        <li><a href="#">Something else here</a></li>
-        <li role="separator" class="divider"></li>
-        <li><a href="#">Separated link</a></li>
-    </ul>
-</div>
--->
