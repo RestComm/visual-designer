@@ -43,6 +43,7 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 	}
 	$scope.removeNode = function(nodeName) {
 		nodeRegistry.removeNode(nodeName);
+		$scope.$broadcast('module-removed', {name: nodeName});
 	};
 	$scope.hideNode = function(nodeName) {
 		editedNodes.removeEditedNode(nodeName);

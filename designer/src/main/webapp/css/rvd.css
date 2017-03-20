@@ -190,6 +190,27 @@ vardef .assign-arrow {
     top: 7px;
     left: 10px;
 }
+.input-group.input-group-sm .module-url-picker .picker-type, .input-group.input-group-sm .module-url-picker .module-list {
+    top:5px;
+}
+.input-group.input-group-sm .module-url-picker .module-list .dropdown-toggle {
+    font-size: 12px;
+}
+.module-url-picker .picker-type .dropdown-toggle.switcher-inactive {
+    color: #999;
+}
+.input-group module-url-picker:not(:first-child) input.form-control {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.input-group module-url-picker:last-child input.form-control {
+    border-top-right-radius: 3px !important;
+    border-bottom-right-radius: 3px !important;
+}
+.input-group.input-group-sm .module-url-picker input.form-control {
+    height: 30px;
+    font-size: 12px;
+}
 /*
 .module-url-picker input {
     background-color: white !important;

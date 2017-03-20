@@ -44,9 +44,9 @@
 							</div>
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
 								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
-								<input ng-model='dialnoun.statusCallback' type='text' class='form-control' placeholder="http://..." title="{{'statusCallbackInfo' | translate}}">
+								<module-url-picker url="dialnoun.statusCallback" module="dialnoun.statusCallbackModule"></module-url-picker>
 							</div>
-							<module-url-picker></module-url-picker>
+
 						</div>
 
 						<div ng-if="dialnoun.dialType=='client'" class="form-group client-noun">

@@ -50,7 +50,68 @@ angular.module('Rvd').directive('modulePicker', [function () {
 			}
 		}
 	};
-}]).directive('rvdVariable', ['variableRegistry', function (variableRegistry) {
+}])
+// A new vesion of modulePicker directive that will work both for modules and raw URLs
+.directive('moduleUrlPicker', function (nodeRegistry) {
+   	return {
+   		restrict: 'E',
+   		templateUrl: 'templates/directive/moduleUrlPicker.html',
+   		scope: {
+            callbackUrl: '=url',
+            callbackModule: '=module'
+   		},
+   		link: function (scope, element, attrs) {
+   		    console.log("in moduleUrlPicker");
+   		    scope.type = "module";
+   		    scope.modules = nodeRegistry.getNodes();
+   		    if (attrs.module) {
+                setType('module');
+                scope.fillModule = true;
+            }
+   		    if (attrs.url) {
+   		        setType('url');
+   		        scope.fillUrl = true;
+   		    }
+            if (!scope.fillUrl && !scope.fillModule)
+   		        throw "'url' or 'module' attributes should be defined";
+   		    // if url & module are not both provided (enabled) disable switching
+   		    if (!scope.fillUrl || !scope.fillModule)
+   		        scope.fixedType = true;
+
+   		    function setType(type) {
+   		        scope.type = type;
+   		    }
+
+   		    scope.setModule = function(module) {
+   		        if (!module) {
+   		            scope.callbackModule = undefined;
+   		        }
+   		        else {
+   		            scope.callbackModule = module.name;
+   		        }
+   		    }
+
+   		    scope.$on('module-removed',function (event,args) {
+   		        if (args.name == scope.callbackModule) {
+   		            scope.callbackModule = undefined;
+   		        }
+   		    });
+   		    // clear redundant values before persisting
+   		    scope.$on('update-dtos',function(event, args) {
+   		        if (scope.type == 'url')
+   		            scope.callbackModule = undefined;
+   		        if (scope.type == 'module')
+   		            scope.callbackUrl = undefined;
+   		    });
+
+            // public interface
+   		    scope.setType = setType;
+   		    scope.getNode = nodeRegistry.getNode;
+
+   		}
+   	};
+ })
+.directive('rvdVariable', ['variableRegistry', function (variableRegistry) {
 	return {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
@@ -118,29 +179,6 @@ angular.module('Rvd').directive('modulePicker', [function () {
 		} 
 	}
 }])
-// A new vesion of modulePicker directive that will work both for modules and raw URLs
-.directive('moduleUrlPicker', [function (nodeRegistry) {
-   	return {
-   		restrict: 'E',
-   		templateUrl: 'templates/directive/moduleUrlPicker.html',
-   		scope: {},
-   		link: function (scope) {
-   		    console.log("in moduleUrlPicker");
-   		    scope.type = "module";
-
-   		    scope.moduleList = ['module1','module2','module3'];
-
-   		    scope.setType = function (type) {
-   		        scope.type = type;
-   		    }
-
-   		    scope.setModule = function(module) {
-   		        scope.moduleName = module
-   		    }
-
-   		}
-   	};
-   }])
 ;
 
 
