@@ -61,15 +61,14 @@ angular.module('Rvd').directive('modulePicker', [function () {
             callbackModule: '=module'
    		},
    		link: function (scope, element, attrs) {
-   		    console.log("in moduleUrlPicker");
    		    scope.type = "module";
    		    scope.modules = nodeRegistry.getNodes();
    		    if (attrs.module) {
-                setType('module');
+                scope.type = 'module';
                 scope.fillModule = true;
             }
    		    if (attrs.url) {
-   		        setType('url');
+   		        scope.type = 'url';
    		        scope.fillUrl = true;
    		    }
             if (!scope.fillUrl && !scope.fillModule)
@@ -80,6 +79,10 @@ angular.module('Rvd').directive('modulePicker', [function () {
 
    		    function setType(type) {
    		        scope.type = type;
+   		        if (scope.type == 'url')
+   		            delete scope.callbackModule;
+   		        if (scope.type == 'module')
+   		            delete scope.callbackUrl;
    		    }
 
    		    scope.setModule = function(module) {
@@ -97,12 +100,12 @@ angular.module('Rvd').directive('modulePicker', [function () {
    		        }
    		    });
    		    // clear redundant values before persisting
-   		    scope.$on('update-dtos',function(event, args) {
-   		        if (scope.type == 'url')
-   		            scope.callbackModule = undefined;
-   		        if (scope.type == 'module')
-   		            scope.callbackUrl = undefined;
-   		    });
+//   		    scope.$on('update-dtos',function(event, args) {
+//   		        if (scope.type == 'url')
+//   		            delete scope.callbackModule;
+//   		        if (scope.type == 'module')
+//   		            scope.callbackUrl = "";
+//   		    });
 
             // public interface
    		    scope.setType = setType;

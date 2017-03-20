@@ -16,6 +16,7 @@ public class NumberDialNoun extends DialNoun {
     private String beforeConnectModule;
     private String sendDigits;
     private String statusCallback;
+    private String statusCallbackModule;
 
 
     public String getDestination() {
@@ -52,6 +53,12 @@ public class NumberDialNoun extends DialNoun {
         rcmlNoun.setDestination( interpreter.populateVariables( getDestination() ));
         if (!RvdUtils.isEmpty(statusCallback))
             rcmlNoun.statusCallback = statusCallback;
+        else
+        if (!RvdUtils.isEmpty(statusCallbackModule)) {
+            Map<String, String> pairs = new HashMap<String, String>();
+            pairs.put("target", statusCallbackModule);
+            rcmlNoun.statusCallback = interpreter.buildAction(pairs);
+        }
 
         return rcmlNoun;
     }

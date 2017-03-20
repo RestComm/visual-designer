@@ -36,7 +36,8 @@
 				"destination":{"type":"string"},
 				"sendDigits": { "type": "string", "minLength":1 },
 				"beforeConnectModule":{ "type": "string", "minLength":1 },
-				"statusCallback": {"type": "string"}
+				"statusCallback": {"type": "string"},
+				"statusCallbackModule": {"type":"string","minLength": 1}
 			},
 			"required":["dialType","destination"]
 		},
@@ -46,7 +47,8 @@
 				"dialType": {"enum":["client"]},
 				"destination":{"type":"string"},
 				"beforeConnectModule":{ "type": "string", "minLength":1 },
-				"statusCallback": {"type": "string"}
+				"statusCallback": {"type": "string"},
+				"statusCallbackModule": {"type":"string","minLength": 1}
 			},
 			"required": ["dialType","destination"]
 		},	
@@ -64,7 +66,8 @@
 				"waitModule": {"type": "string", "minLength":1},
 				"waitMethod": {"enum":["GET","POST"]},
 				"maxParticipants": {"type":"integer"},
-				"statusCallback": {"type": "string"}
+				"statusCallback": {"type": "string"},
+				"statusCallbackModule": {"type":"string","minLength": 1}
 			},
 			"required": ["dialType","destination"]
 		},	
@@ -73,7 +76,8 @@
 			"properties": {
 				"dialType": {"enum":["sipuri"]},
 				"destination":{"type":"string"},
-				"statusCallback": {"type": "string"}
+				"statusCallback": {"type": "string"},
+				"statusCallbackModule": {"type":"string","minLength": 1}
 			},
 			"required": ["dialType","destination"]
 		}	

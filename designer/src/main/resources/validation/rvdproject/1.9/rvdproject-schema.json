@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-	"title": "RVD project 1.8",
-	"description": "Added timeout to ES step",
+	"title": "RVD project 1.9",
+	"description": "Added statusCallback, statusCallbackModule to Dial nouns",
 	"rvdproject": {
 		"type": "object",
 		"properties": {

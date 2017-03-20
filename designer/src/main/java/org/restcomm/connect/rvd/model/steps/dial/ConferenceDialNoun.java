@@ -19,6 +19,7 @@ public class ConferenceDialNoun extends DialNoun {
     private Integer maxParticipants;
     private String nextModule;
     private String statusCallback;
+    private String statusCallbackModule;
 
     public String getWaitMethod() {
         return waitMethod;
@@ -105,6 +106,12 @@ public class ConferenceDialNoun extends DialNoun {
         rcmlNoun.setDestination( interpreter.populateVariables(getDestination() ));
         if (!RvdUtils.isEmpty(statusCallback))
             rcmlNoun.statusCallback = statusCallback;
+        else
+        if (!RvdUtils.isEmpty(statusCallbackModule)) {
+            Map<String, String> pairs = new HashMap<String, String>();
+            pairs.put("target", statusCallbackModule);
+            rcmlNoun.statusCallback = interpreter.buildAction(pairs);
+        }
 
         return rcmlNoun;
     }
