@@ -517,6 +517,10 @@
 	"esTimeoutLabel":"On Timeout",
 
 	"statusCallback": "Status callback",
-	"statusCallbackInfo": "Callback url that will receive an HTTP request when the status of the call changes"
+	"statusCallbackInfo": "Callback url that will receive an HTTP request when the status of the call changes",
+	"pickAModule": "use an application module",
+	"typeAUrl": "use a raw url",
+	"noModuleSelected": "no module selected",
+	"module": "Module"
 
 }
