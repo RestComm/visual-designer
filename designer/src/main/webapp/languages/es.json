@@ -496,12 +496,9 @@
 	"webTriggerModalWebTriggerUrlHelp7": "los valores han sido definidos. También, parámetros adicionales pueden ser anexados al URL. Estarán disponibles como",
 	"webTriggerModalWebTriggerUrlHelp8": "módulo de enfoque",
 	"webTriggerModalWebTriggerUrlHelp9": "variables RVD cuando la aplicación se inicie",
-	"webTriggerModalAccessTokenLabel": "Token de acceso",
 	"webTriggerModalAccessTokenHelp1": "Proteja su URL de activación web con un token de acceso. Si ya esta establecido, asegúrese de ingresar el mismo",
 	"webTriggerModalAccessTokenHelp2": "token",
 	"webTriggerModalAccessTokenHelp3": "parámetros cuando se efectua la llamada HTTP. Dejarlo en blanco para permitir libre acceso.",
-	"webTriggerModalAccessTokenInput": "Token de acceso",
-	"webTriggerMissingAccessTokenWarn": "El token de acceso esta vacío! Su activador solo podrá ser accesado utilizando una autenticación HTTP basic.",
 	"webTriggerModalFallbackParamLabel": "Parámetros del Fallback",
 	"webTriggerModalFallbackParamHelp1": "Puede optar por proporcionar un fallback",
 	"webTriggerModalFallbackParamTitle1": "Origen de la llamada saliente",
@@ -551,5 +548,10 @@
 	"pickAModule": "use an application module",
 	"typeAUrl": "use a raw url",
 	"noModuleSelected": "no module selected",
-	"module": "Module"
+	"module": "Module",
+
+	"authentication": "Authentication",
+	"Application access token": "Application access token",
+	"alternativeAuthenticationHint": "Alternative authentication for this Web Trigger. Use it as an additional parameter in your HTTP request."
+
 }

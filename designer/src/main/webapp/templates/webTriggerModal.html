@@ -20,20 +20,34 @@
 				</div>			
 			</div>
 			<div class="rvd-spacer20"></div>
-			
+
 			<div class="form-group">
-				<h5><strong>{{'webTriggerModalAccessTokenLabel' | translate}}</strong></h5>
+				<h5><strong>{{'authentication'|translate}}</strong></h5>
+
 				<div class="help-block">
-					{{'webTriggerModalAccessTokenHelp1' | translate}} <code>{{'webTriggerModalAccessTokenHelp2' | translate}}</code> {{'webTriggerModalAccessTokenHelp3' | translate}}
+					Include your restcomm account credentials in your request to authenticate. You can find them in the Dashboard home page.
 				</div>
-				<div class="input-group">
-					<span class="input-group-addon">{{'webTriggerModalAccessTokenInput' | translate}}</span>
-					<input ng-model="ccInfo.accessToken" auto-clear type="text" class="form-control">
+				<div class="help-block">
+					<input name="toggle" ng-model="showAdvancedAuth" type="checkbox">
+					<span ng-init="showAdvancedAuth=!!ccInfo.accessToken" ng-click="showAdvancedAuth=!showAdvancedAuth"><small>Advanced</small></span>
 				</div>
-				<div ng-hide="ccInfo.accessToken">
-					<span class="validation-warning">{{'webTriggerMissingAccessTokenWarn' | translate}}</span>
+				<div ng-show="showAdvancedAuth" class="help-block advanced-form">
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon">{{'Application access token' | translate}}</span>
+						<input ng-model="ccInfo.accessToken" auto-clear type="text" class="form-control mask-invalid" placeholder="alternative authentication disabled">
+					</div>
+					<div class="help-block">
+						<small>{{"alternativeAuthenticationHint" | translate}}</small>
+					</div>
+					<div ng-show="!!ccInfo.accessToken && ! rvdSettings.apiServerUsername">
+						<span class="validation-warning">Warning! Restcomm API credentials are missing.</span>
+						<div style="font-size: 85%">
+							<a target="_blank" href="http://docs.telestax.com/restcomm-web-trigger-use-cases/#configure-rvd-environment">Learn more...</a>
+						</div>
+					</div>
 				</div>
 			</div>
+
 			<div class="rvd-spacer20"></div>	
 			
 			<div class="form-group">
@@ -63,12 +77,6 @@
 	</div>
 	<div class="modal-footer">
 		<div>
-			<div ng-show="! rvdSettings.apiServerUsername" class="footer-warning">
-				<span class="validation-warning">Warning! Restcomm API credentials are missing.</span>
-				<div style="font-size: 85%">
-					<a target="_blank" href="http://docs.telestax.com/restcomm-web-trigger-use-cases/#configure-rvd-environment">Learn more...</a>
-				</div>
-			</div>
 			<button class="btn btn-primary" ng-click="save(applicationSid,ccInfo)">{{'webTriggerModalSaveButton' | translate}}</button>
 			<button class="btn btn-default" ng-click="cancel()">{{'webTriggerModalCancelButton' | translate}}</button>
 		</div>

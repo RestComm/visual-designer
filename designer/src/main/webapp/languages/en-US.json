@@ -495,12 +495,9 @@
 	"webTriggerModalWebTriggerUrlHelp7": "values have been defined. Also, additional parameters can be appended to the url. They will be available as",
 	"webTriggerModalWebTriggerUrlHelp8": "module scoped",
 	"webTriggerModalWebTriggerUrlHelp9": "RVD variables when the application starts",
-	"webTriggerModalAccessTokenLabel": "Access token",
 	"webTriggerModalAccessTokenHelp1": "Protect your Web Trigger URL with an access token. If set, make sure you provide the same",
 	"webTriggerModalAccessTokenHelp2": "token",
 	"webTriggerModalAccessTokenHelp3": "parameter when making the HTTP call. Leave it blank to allow free access.",
-	"webTriggerModalAccessTokenInput": "Access token",
-	"webTriggerMissingAccessTokenWarn": "Access token is empty! Your trigger may only be accessed using HTTP basic authentication.",
 	"webTriggerModalFallbackParamLabel": "Fallback parameters",
 	"webTriggerModalFallbackParamHelp1": "You can optionally provide fallback",
 	"webTriggerModalFallbackParamTitle1": "Origin of the outgoing call",
@@ -550,5 +547,9 @@
 	"pickAModule": "use an application module",
 	"typeAUrl": "use a raw url",
 	"noModuleSelected": "no module selected",
-	"module": "Module"
+	"module": "Module",
+
+	"authentication": "Authentication",
+	"Application access token": "Application access token",
+	"alternativeAuthenticationHint": "Alternative authentication for this Web Trigger. Use it as an additional parameter in your HTTP request."
 }

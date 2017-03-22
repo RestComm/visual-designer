@@ -466,12 +466,9 @@
 	"webTriggerModalWebTriggerUrlHelp7": "foram definidos. Além disto, parâmetros adicionais podem ser concatenados à URL. Eles ficarão disponíveis como",
 	"webTriggerModalWebTriggerUrlHelp8": "variáveis de escopo",
 	"webTriggerModalWebTriggerUrlHelp9": "do RVD quando a aplicação incializar",
-	"webTriggerModalAccessTokenLabel": "Token de acesso",
 	"webTriggerModalAccessTokenHelp1": "Proteja a URL de seu Gatilho Trigger com um token de acesso. Se definido, certifique-se de informar o mesmo parametro",
 	"webTriggerModalAccessTokenHelp2": "token",
 	"webTriggerModalAccessTokenHelp3": "quando fizer a chamada HTTP. Deixe em branco para permitir livre acesso.",
-	"webTriggerModalAccessTokenInput": "Token de acesso",
-	"webTriggerMissingAccessTokenWarn": "TRANSLATE: Access token is empty! Your trigger may only be accessed using HTTP basic authentication.",
 	"webTriggerModalFallbackParamLabel": "Parâmetros de retorno",
 	"webTriggerModalFallbackParamHelp1": "Você pode opcionalmente fornecer retorno",
 	"webTriggerModalFallbackParamTitle1": "Origem da chamada de saída",
@@ -521,6 +518,9 @@
 	"pickAModule": "use an application module",
 	"typeAUrl": "use a raw url",
 	"noModuleSelected": "no module selected",
-	"module": "Module"
+	"module": "Module",
 
+	"authentication": "Authentication",
+	"Application access token": "Application access token",
+	"alternativeAuthenticationHint": "Alternative authentication for this Web Trigger. Use it as an additional parameter in your HTTP request."
 }
