@@ -25,11 +25,12 @@
 				<h5><strong>{{'authentication'|translate}}</strong></h5>
 
 				<div class="help-block">
-					Include your restcomm account credentials in your request to authenticate. You can find them in the Dashboard home page.
+					{{'authenticationHelp'|translate}}
 				</div>
 				<div class="help-block">
-					<input name="toggle" ng-model="showAdvancedAuth" type="checkbox">
-					<span ng-init="showAdvancedAuth=!!ccInfo.accessToken" ng-click="showAdvancedAuth=!showAdvancedAuth"><small>Advanced</small></span>
+					<span class='rvd-clickable' ng-init="showAdvancedAuth=!!ccInfo.accessToken" ng-click="showAdvancedAuth=!showAdvancedAuth">
+						<i class="fa fa-gear"> </i> {{'Application-specific token'|translate}}
+					</span>
 				</div>
 				<div ng-show="showAdvancedAuth" class="help-block advanced-form">
 					<div class="input-group input-group-sm">
@@ -40,9 +41,9 @@
 						<small>{{"alternativeAuthenticationHint" | translate}}</small>
 					</div>
 					<div ng-show="!!ccInfo.accessToken && ! rvdSettings.apiServerUsername">
-						<span class="validation-warning">Warning! Restcomm API credentials are missing.</span>
+						<span class="validation-warning">{{'missingRestcommApiCredentialsWarning'|translate}}</span>
 						<div style="font-size: 85%">
-							<a target="_blank" href="http://docs.telestax.com/restcomm-web-trigger-use-cases/#configure-rvd-environment">Learn more...</a>
+							<a target="_blank" href="http://docs.telestax.com/restcomm-web-trigger-use-cases/#configure-rvd-environment">{{'Learn more'|translate}}...</a>
 						</div>
 					</div>
 				</div>

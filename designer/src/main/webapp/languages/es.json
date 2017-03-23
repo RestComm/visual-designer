@@ -552,6 +552,9 @@
 
 	"authentication": "Authentication",
 	"Application access token": "Application access token",
-	"alternativeAuthenticationHint": "Alternative authentication for this Web Trigger. Use it as an additional parameter in your HTTP request."
-
+	"alternativeAuthenticationHint": "Alternative authentication for this Web Trigger. Use it as an additional parameter in your HTTP request.",
+	"authenticationHelp": "Use your restcomm account credentials in your request to authenticate. Alternatively, specify an application-specific access token below.",
+	"Application-specific token": "Application-specific token",
+	"missingRestcommApiCredentialsWarning": "Warning! Restcomm API credentials are missing.",
+	"Learn more": "Learn more"
 }
