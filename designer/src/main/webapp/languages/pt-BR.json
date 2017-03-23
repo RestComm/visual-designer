@@ -456,27 +456,9 @@
 	"webTriggerModalHeaderLabel": "Gatilho Web",
 	"webTriggerModalDescriptorLabel": "O Gatilho Web permite iniciar seu aplicativo usando uma chamada HTTP simples",
 	"webTriggerModalCheckbox": "Ativar o Gatilho Web",
-	"webTriggerModalWebTriggerUrlLabel": "URL do Gatilho Web",
-	"webTriggerModalWebTriggerUrlHelp1": "Note que os parâmetros",
-	"webTriggerModalWebTriggerUrlHelp2": "de",
-	"webTriggerModalWebTriggerUrlHelp3": "e",
-	"webTriggerModalWebTriggerUrlHelp4": "para",
-	"webTriggerModalWebTriggerUrlHelp5": "podem ser omitidos se os valores",
-	"webTriggerModalWebTriggerUrlHelp6": "fallback",
-	"webTriggerModalWebTriggerUrlHelp7": "foram definidos. Além disto, parâmetros adicionais podem ser concatenados à URL. Eles ficarão disponíveis como",
-	"webTriggerModalWebTriggerUrlHelp8": "variáveis de escopo",
-	"webTriggerModalWebTriggerUrlHelp9": "do RVD quando a aplicação incializar",
 	"webTriggerModalAccessTokenHelp1": "Proteja a URL de seu Gatilho Trigger com um token de acesso. Se definido, certifique-se de informar o mesmo parametro",
 	"webTriggerModalAccessTokenHelp2": "token",
 	"webTriggerModalAccessTokenHelp3": "quando fizer a chamada HTTP. Deixe em branco para permitir livre acesso.",
-	"webTriggerModalFallbackParamLabel": "Parâmetros de retorno",
-	"webTriggerModalFallbackParamHelp1": "Você pode opcionalmente fornecer retorno",
-	"webTriggerModalFallbackParamTitle1": "Origem da chamada de saída",
-	"webTriggerModalFallbackParamHelp2": "De",
-	"webTriggerModalFallbackParamHelp3": "e",
-	"webTriggerModalFallbackParamTitle2": "Destino a ser discado quando a aplicação inicializar",
-	"webTriggerModalFallbackParamHelp4": "Para",
-	"webTriggerModalFallbackParamHelp5": "no caso de eles não serem fornecidos na chamada HTTP",
 	"webTriggerModalToInput": "Para",
 	"webTriggerModalFromInput": "De",
 	"webTriggerModalFallbackParamHelp6": "Note que os valores",
@@ -526,5 +508,9 @@
 	"authenticationHelp": "Use your restcomm account credentials in your request to authenticate. Alternatively, specify an application-specific access token below.",
 	"Application-specific token": "Application-specific token",
 	"missingRestcommApiCredentialsWarning": "Warning! Restcomm API credentials are missing.",
-	"Learn more": "Learn more"
+	"Learn more": "Learn more",
+
+	"overrideFromTo": "Override call source and destination",
+	"overrideFromTo-help": "You may provide overrides for the source and destination addresses of the call. Setting these values will result in ignoring any from/to URL parameters added by the caller."
+
 }
