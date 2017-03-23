@@ -287,16 +287,18 @@ public class RvdController extends SecuredRestService {
             logger.debug("WebTrigger: rcmlUrl: " + rcmlUrl);
         }
 
-        // to
+        // to: Use value from url. If specified in WebTrigger form, override it.
         String to = toParam;
-        if (RvdUtils.isEmpty(to))
-            to = info.lanes.get(0).startPoint.to;
+        String toOverride = info.lanes.get(0).startPoint.to;
+        if (!RvdUtils.isEmpty(toOverride))
+            to = toOverride;
 
-        // from - use url, web trigger conf or default value.
+        // from: Use value i the url. If specified in WebTrigger form override it. If none is defined use part of application name.
         String from = fromParam;
-        if (RvdUtils.isEmpty(from))
-            from = info.lanes.get(0).startPoint.from;
-        // fallback to the project name (sid). Only the first 10 characters are used.
+        String fromOverride = info.lanes.get(0).startPoint.from;
+        if (!RvdUtils.isEmpty(fromOverride))
+            from = fromOverride;
+        // If none is defined use part of application name.
         if (RvdUtils.isEmpty(from)) {
             if (!RvdUtils.isEmpty(projectName))
                 from = projectName.substring(0, projectName.length() < 10 ? projectName.length() : 10);
