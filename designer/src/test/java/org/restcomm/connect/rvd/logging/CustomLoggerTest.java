@@ -92,9 +92,9 @@ public class CustomLoggerTest {
         }
         String content = FileUtils.readFileToString(new File(basepath + ".log"));
         Assert.assertTrue(content.contains("9999 - A really"));
-        Assert.assertTrue(content.contains("6377 - A really"));
+        Assert.assertTrue(content.contains("6337 - A really"));
         content = FileUtils.readFileToString(new File(basepath + "-1.log"));
-        Assert.assertTrue(content.contains("6376 - A really"));
+        Assert.assertTrue(content.contains("6336 - A really"));
         Assert.assertTrue(content.contains("] 0 - A really"));
 
     }
