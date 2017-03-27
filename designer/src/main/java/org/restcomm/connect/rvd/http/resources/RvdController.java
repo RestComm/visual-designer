@@ -359,7 +359,8 @@ public class RvdController extends SecuredRestService {
             logger.warn(e);
             return buildWebTriggerHtmlResponse("Web Trigger", "Create call", "failure", "Authentication error", 401);
         } catch (CallControlException e) {
-            logger.error("", e);
+            // rcomm log
+            logger.warn(e);
             int httpStatus = 500;
             if (e.getStatusCode() != null)
                 httpStatus = e.getStatusCode();
