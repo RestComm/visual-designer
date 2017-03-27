@@ -222,8 +222,9 @@ public class RvdController extends SecuredRestService {
                 // load user profile
                 ProfileDao profileDao = new FsProfileDao(workspaceStorage);
                 UserProfile profile = profileDao.loadUserProfile(owner);
-                if (profile == null)
-                    throw new UnauthorizedCallControlAccess("No user profile found for user '" + owner + "'. Web trigger cannot be used for project belonging to this user.");
+                // if there is no profile at all or if the credentials are missing from it throw an error
+                if (profile == null || (RvdUtils.isEmpty(profile.getUsername()) || RvdUtils.isEmpty(profile.getToken())) )
+                    throw new UnauthorizedCallControlAccess("Profile missing creds or no profile at all for user '" + owner + "'. Web trigger cannot be used for project belonging to this user.");
                 effectiveAuthHeader = RvdUtils.isEmpty(profile.getUsername()) ? null : ("Basic "  + RvdUtils.buildHttpAuthorizationToken(profile.getUsername(), profile.getToken()));
                 RestcommAccountInfo accountInfo = accountProvider.getActiveAccount(profile.getUsername(), effectiveAuthHeader).get();
                 if (accountInfo == null)
