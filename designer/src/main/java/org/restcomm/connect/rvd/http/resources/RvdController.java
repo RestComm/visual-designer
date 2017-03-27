@@ -274,10 +274,19 @@ public class RvdController extends SecuredRestService {
             MultivaluedMap<String, String> requestParams = ui.getQueryParameters();
             for (String paramName : requestParams.keySet()) {
                 if ("token".equals(paramName) || "from".equals(paramName) || "to".equals(paramName))
-                    continue; // skip parameters that are used by WebTrigger it self
-                // also, skip builtin parameters that will be supplied by restcomm when it reaches for the controller
-                if (!rvdSettings.getRestcommParameterNames().contains(paramName))
-                    uriBuilder.addParameter(Interpreter.nameModuleRequestParam(paramName), requestParams.getFirst(paramName));
+                    continue; // skip parameters that are used by WebTrigger itself i.e. to/from/token
+                // ignore builtin parameters that will be supplied by restcomm when it reaches for the controller
+                if (!rvdSettings.getRestcommParameterNames().contains(paramName)) {
+                    // the rest are consider user-supplied params and need to be propagated to the url
+                    if (RvdUtils.isEmpty(info.userParamScope) || "mod".equals(info.userParamScope))
+                        // create module scoped param if userParamScope is 'mod' or empty
+                        uriBuilder.addParameter(Interpreter.nameModuleRequestParam(paramName), requestParams.getFirst(paramName));
+                    else
+                    if ("app".equals(info.userParamScope))
+                        uriBuilder.addParameter(Interpreter.nameStickyRequestParam(paramName), requestParams.getFirst(paramName));
+                    else
+                        throw new UnsupportedOperationException("WebTrigger userParamScope not supported: " + info.userParamScope);
+                }
             }
             rcmlUrl = uriBuilder.build().toString();
         } catch (URISyntaxException e) {
