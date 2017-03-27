@@ -42,12 +42,10 @@
 								<span  class="input-group-addon fa fa-cog rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
 								<span class="input-group-addon fa fa-times rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
 							</div>
-							<!-- disable until statusCallback is enabled from restcomm side
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
 								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
 								<module-url-picker url="dialnoun.statusCallback" module="dialnoun.statusCallbackModule"></module-url-picker>
 							</div>
-							-->
 						</div>
 
 						<div ng-if="dialnoun.dialType=='client'" class="form-group client-noun">
@@ -66,12 +64,11 @@
 								<span  class="input-group-addon fa fa-cog rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
 								<span class="input-group-addon fa fa-times rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
 							</div>
-							<!-- disable until statusCallback is enabled from restcomm side
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
 								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
 								<module-url-picker url="dialnoun.statusCallback" module="dialnoun.statusCallbackModule"></module-url-picker>
 							</div>
-							-->
+
 						</div>
 
 						<div ng-if="dialnoun.dialType=='conference'" conference-dial-noun class='form-group conference-noun'>
@@ -134,12 +131,11 @@
 									</ul>
 								</div>
 							</div>
-							<!-- disable until statusCallback is enabled from restcomm side
+
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
 								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
 								<module-url-picker url="dialnoun.statusCallback" module="dialnoun.statusCallbackModule"></module-url-picker>
 							</div>
-							-->
 
 						</div>
 
@@ -148,17 +144,14 @@
 								<span class="input-group-addon rvd-handle">{{'dialStepSipUriInputLabel' | translate}}</span>
 								<input ng-model='dialnoun.destination' lookup-target type='text' class='form-control' placeholder="{{'dialStepSipUriInputPlaceholder' | translate}}" tooltip="{{'dialStepSipUriInputTooltip' | translate}}">
 								<variable-lookup variable="dialnoun.destination" view="input-group"></variable-lookup>
-								<!-- disable until statusCallback is enabled from restcomm side
 								<span  class="input-group-addon fa fa-cog rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
-								-->
 								<span class="input-group-addon fa fa-times rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
 							</div>
-							<!-- disable until statusCallback is enabled from restcomm side
+
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
 								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
 								<module-url-picker url="dialnoun.statusCallback" module="dialnoun.statusCallbackModule"></module-url-picker>
 							</div>
-							-->
 
 						</div>
 					</div>
