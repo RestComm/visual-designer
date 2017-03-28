@@ -541,6 +541,9 @@
 	"Learn more": "Learn more",
 
 	"overrideFromTo": "Override call source and destination",
-	"overrideFromTo-help": "You may provide overrides for the source and destination addresses of the call. Setting these values will result in ignoring any from/to URL parameters added by the caller."
+	"overrideFromTo-help": "You may provide overrides for the source and destination addresses of the call. Setting these values will result in ignoring any from/to URL parameters added by the caller.",
 
+	"Advanced configuration":"Advanced configuration",
+	"User parameter scope": "User parameter scope",
+	"Application": "Application"
 }

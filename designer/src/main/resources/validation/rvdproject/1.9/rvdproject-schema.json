@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
 	"title": "RVD project 1.9",
-	"description": "Added statusCallback, statusCallbackModule to Dial nouns",
+	"description": "Added statusCallback, statusCallbackModule to Dial nouns, WebTrigger userParamScope",
 	"rvdproject": {
 		"type": "object",
 		"properties": {
