@@ -11,34 +11,48 @@
 		<div ng-if="ccInfo!=null">
 			
 			<div class="form-group">
-				<h5><strong>{{'webTriggerModalWebTriggerUrlLabel' | translate}}</strong></h5>
+				<h5><strong>URL</strong></h5>
 				<div>
 					<i ng-bind-html="getWebTriggerUrl()"></i>
 				</div>
-				<div class="help-block">
-					<small>{{'webTriggerModalWebTriggerUrlHelp1' | translate}} <code>{{'webTriggerModalWebTriggerUrlHelp2' | translate}}</code> {{'webTriggerModalWebTriggerUrlHelp3' | translate}} <code>{{'webTriggerModalWebTriggerUrlHelp4' | translate}}</code> {{'webTriggerModalWebTriggerUrlHelp5' | translate}} <i>{{'webTriggerModalWebTriggerUrlHelp6' | translate}}</i> {{'webTriggerModalWebTriggerUrlHelp7' | translate}} <em>{{'webTriggerModalWebTriggerUrlHelp8' | translate}}</em> {{'webTriggerModalWebTriggerUrlHelp9' | translate}}</small>
-				</div>			
 			</div>
 			<div class="rvd-spacer20"></div>
-			
+
 			<div class="form-group">
-				<h5><strong>{{'webTriggerModalAccessTokenLabel' | translate}}</strong></h5>
+				<h5><strong>{{'authentication'|translate}}</strong></h5>
+
 				<div class="help-block">
-					{{'webTriggerModalAccessTokenHelp1' | translate}} <code>{{'webTriggerModalAccessTokenHelp2' | translate}}</code> {{'webTriggerModalAccessTokenHelp3' | translate}}
+					{{'authenticationHelp'|translate}}
 				</div>
-				<div class="input-group">
-					<span class="input-group-addon">{{'webTriggerModalAccessTokenInput' | translate}}</span>
-					<input ng-model="ccInfo.accessToken" auto-clear type="text" class="form-control">
+				<div class="help-block">
+					<span class='rvd-clickable' ng-init="showAdvancedAuth=!!ccInfo.accessToken" ng-click="showAdvancedAuth=!showAdvancedAuth">
+						<i class="fa fa-gear"> </i> {{'Application-specific token'|translate}}
+					</span>
 				</div>
-				<div ng-hide="ccInfo.accessToken">
-					<span class="validation-warning">{{'webTriggerMissingAccessTokenWarn' | translate}}</span>
+				<div ng-show="showAdvancedAuth" class="help-block advanced-form">
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon">{{'Application access token' | translate}}</span>
+						<input ng-model="ccInfo.accessToken" auto-clear type="text" class="form-control mask-invalid" placeholder="alternative authentication disabled">
+					</div>
+					<div class="help-block">
+						<small>{{"alternativeAuthenticationHint" | translate}}</small>
+					</div>
+					<div ng-show="!!ccInfo.accessToken && ! rvdSettings.apiServerUsername">
+						<span class="validation-warning">{{'missingRestcommApiCredentialsWarning'|translate}}</span>
+						<div style="font-size: 85%">
+							<a target="_blank" href="http://documentation.telestax.com/connect/rvd/Restcomm RVD - Using Web Trigger.html#configure-restcomm-api-credentials">{{'Learn more'|translate}}...</a>
+						</div>
+					</div>
 				</div>
 			</div>
+
 			<div class="rvd-spacer20"></div>	
 			
 			<div class="form-group">
-				<h5><strong>{{'webTriggerModalFallbackParamLabel' | translate}}</strong></h5>
-				<div class="help-block">{{'webTriggerModalFallbackParamHelp1' | translate}} <code class="help-tooltip" title="{{'webTriggerModalFallbackParamTitle1' | translate}}">{{'webTriggerModalFallbackParamHelp2' | translate}}</code> {{'webTriggerModalFallbackParamHelp3' | translate}} <code class="help-tooltip" title="{{'webTriggerModalFallbackParamTitle' | translate}}">{{'webTriggerModalFallbackParamHelp4' | translate}}</code> {{'webTriggerModalFallbackParamHelp5' | translate}}</div>
+				<h5><strong>{{'overrideFromTo' | translate}}</strong></h5>
+				<div class="help-block">
+					{{'overrideFromTo-help' | translate}}
+				</div>
 				<div class="row">
 					<div class="input-group col-md-6">
 						<span class="input-group-addon">{{'webTriggerModalToInput' | translate}}</span>
@@ -56,19 +70,26 @@
 					</small>
 				</div>
 			</div>
-			
-			
+
+			<div class="form-group">
+				<a ng-init="showAdvanced=!!ccInfo.userParamScope" ng-click="showAdvanced=!showAdvanced" class="btn-link">{{'Advanced configuration'|translate}}</a>
+				<i class="fa fa-gear link-coloured" style="margin-left:5px;"></i>
+			</div>
+			<div ng-show="showAdvanced" class="advanced-area">
+				<div class="input-group input-group-sm">
+					<span class="input-group-addon">{{'User parameter scope'|translate}}</span>
+					<select auto-clear ng-model="ccInfo.userParamScope" class="form-control mask-invalid">
+						<option value></option>
+						<option value="mod">{{'module'|translate}}</option>
+						<option value="app">{{'Application'|translate}}</option>
+					</select>
+				</div>
+			</div>
 			
 		</div>
 	</div>
 	<div class="modal-footer">
 		<div>
-			<div ng-show="! rvdSettings.apiServerUsername" class="footer-warning">
-				<span class="validation-warning">Warning! Restcomm API credentials are missing.</span>
-				<div style="font-size: 85%">
-					<a target="_blank" href="http://docs.telestax.com/restcomm-web-trigger-use-cases/#configure-rvd-environment">Learn more...</a>
-				</div>
-			</div>
 			<button class="btn btn-primary" ng-click="save(applicationSid,ccInfo)">{{'webTriggerModalSaveButton' | translate}}</button>
 			<button class="btn btn-default" ng-click="cancel()">{{'webTriggerModalCancelButton' | translate}}</button>
 		</div>

@@ -23,7 +23,7 @@
 					<li>
 						<button ng-click="showGraph = !showGraph" class="btn navbar-link navbar-btn"><i class="fa fa-code-fork"> &nbsp;</i>Diagram <i ng-show="showGraph" class="fa fa-check"></i></button>
 					</li>
-					<li><a ng-click="showWebTrigger(applicationSid);" class="rvd-clickable-text">{{'designerWebTriggerLink' | translate}}</a></li>
+					<li ng-show="project.projectKind=='voice'"><a ng-click="showWebTrigger(applicationSid);" class="rvd-clickable-text">{{'designerWebTriggerLink' | translate}}</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{'designerExportLink' | translate}} <b class="caret"></b></a>
 						<ul class="dropdown-menu">

@@ -222,8 +222,9 @@ public class RvdController extends SecuredRestService {
                 // load user profile
                 ProfileDao profileDao = new FsProfileDao(workspaceStorage);
                 UserProfile profile = profileDao.loadUserProfile(owner);
-                if (profile == null)
-                    throw new UnauthorizedCallControlAccess("No user profile found for user '" + owner + "'. Web trigger cannot be used for project belonging to this user.");
+                // if there is no profile at all or if the credentials are missing from it throw an error
+                if (profile == null || (RvdUtils.isEmpty(profile.getUsername()) || RvdUtils.isEmpty(profile.getToken())) )
+                    throw new UnauthorizedCallControlAccess("Profile missing creds or no profile at all for user '" + owner + "'. Web trigger cannot be used for project belonging to this user.");
                 effectiveAuthHeader = RvdUtils.isEmpty(profile.getUsername()) ? null : ("Basic "  + RvdUtils.buildHttpAuthorizationToken(profile.getUsername(), profile.getToken()));
                 RestcommAccountInfo accountInfo = accountProvider.getActiveAccount(profile.getUsername(), effectiveAuthHeader).get();
                 if (accountInfo == null)
@@ -273,10 +274,19 @@ public class RvdController extends SecuredRestService {
             MultivaluedMap<String, String> requestParams = ui.getQueryParameters();
             for (String paramName : requestParams.keySet()) {
                 if ("token".equals(paramName) || "from".equals(paramName) || "to".equals(paramName))
-                    continue; // skip parameters that are used by WebTrigger it self
-                // also, skip builtin parameters that will be supplied by restcomm when it reaches for the controller
-                if (!rvdSettings.getRestcommParameterNames().contains(paramName))
-                    uriBuilder.addParameter(Interpreter.nameModuleRequestParam(paramName), requestParams.getFirst(paramName));
+                    continue; // skip parameters that are used by WebTrigger itself i.e. to/from/token
+                // ignore builtin parameters that will be supplied by restcomm when it reaches for the controller
+                if (!rvdSettings.getRestcommParameterNames().contains(paramName)) {
+                    // the rest are consider user-supplied params and need to be propagated to the url
+                    if (RvdUtils.isEmpty(info.userParamScope) || "mod".equals(info.userParamScope))
+                        // create module scoped param if userParamScope is 'mod' or empty
+                        uriBuilder.addParameter(Interpreter.nameModuleRequestParam(paramName), requestParams.getFirst(paramName));
+                    else
+                    if ("app".equals(info.userParamScope))
+                        uriBuilder.addParameter(Interpreter.nameStickyRequestParam(paramName), requestParams.getFirst(paramName));
+                    else
+                        throw new UnsupportedOperationException("WebTrigger userParamScope not supported: " + info.userParamScope);
+                }
             }
             rcmlUrl = uriBuilder.build().toString();
         } catch (URISyntaxException e) {
@@ -287,16 +297,18 @@ public class RvdController extends SecuredRestService {
             logger.debug("WebTrigger: rcmlUrl: " + rcmlUrl);
         }
 
-        // to
+        // to: Use value from url. If specified in WebTrigger form, override it.
         String to = toParam;
-        if (RvdUtils.isEmpty(to))
-            to = info.lanes.get(0).startPoint.to;
+        String toOverride = info.lanes.get(0).startPoint.to;
+        if (!RvdUtils.isEmpty(toOverride))
+            to = toOverride;
 
-        // from - use url, web trigger conf or default value.
+        // from: Use value i the url. If specified in WebTrigger form override it. If none is defined use part of application name.
         String from = fromParam;
-        if (RvdUtils.isEmpty(from))
-            from = info.lanes.get(0).startPoint.from;
-        // fallback to the project name (sid). Only the first 10 characters are used.
+        String fromOverride = info.lanes.get(0).startPoint.from;
+        if (!RvdUtils.isEmpty(fromOverride))
+            from = fromOverride;
+        // If none is defined use part of application name.
         if (RvdUtils.isEmpty(from)) {
             if (!RvdUtils.isEmpty(projectName))
                 from = projectName.substring(0, projectName.length() < 10 ? projectName.length() : 10);
@@ -356,7 +368,8 @@ public class RvdController extends SecuredRestService {
             logger.warn(e);
             return buildWebTriggerHtmlResponse("Web Trigger", "Create call", "failure", "Authentication error", 401);
         } catch (CallControlException e) {
-            logger.error("", e);
+            // rcomm log
+            logger.warn(e);
             int httpStatus = 500;
             if (e.getStatusCode() != null)
                 httpStatus = e.getStatusCode();

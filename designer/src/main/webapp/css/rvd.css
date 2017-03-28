@@ -97,6 +97,11 @@ label {
 	text-decoration: underline;
 }
 
+.link-coloured {
+    color: #428bca;
+}
+
+/* step styling */
 
 .say-language-dropdown {
 	max-width: 250px;
@@ -793,12 +798,20 @@ textarea.medium {
 }
 
 /* ----------------- Web Trigger modal -------------------- */
-.web-trigger .footer-warning {
-	float: left;
-	width: 66%;
-	text-align: left;
+
+/* disable red border for 'masked-invalid' inputs. It's handy for some cases */
+.mask-invalid.ng-invalid.form-control:focus {
+    border-color: #66afe9;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(102,175,233,0.6);
 }
 
+.web-trigger .modal-body {
+    padding-bottom: 1px;
+}
+
+.web-trigger .advanced-area {
+    margin-left: 10px;
+}
 
 /* ------------------ directives -------------------- */
 /*.variable-lookup button {
