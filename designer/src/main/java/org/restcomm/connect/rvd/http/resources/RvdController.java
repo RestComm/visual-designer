@@ -2,10 +2,12 @@ package org.restcomm.connect.rvd.http.resources;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +46,7 @@ import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.interpreter.exceptions.BadExternalServiceResponse;
 import org.restcomm.connect.rvd.interpreter.exceptions.ESProcessFailed;
 import org.restcomm.connect.rvd.interpreter.exceptions.RemoteServiceError;
+import org.restcomm.connect.rvd.logging.system.StaticLoggers;
 import org.restcomm.connect.rvd.model.CallControlInfo;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.ProjectSettings;
@@ -145,6 +148,9 @@ public class RvdController extends SecuredRestService {
         if(logger.isInfoEnabled()) {
             logger.info("Received Restcomm GET request");
         }
+        StaticLoggers.controllerLogger.severe("Hello World!");
+        StaticLoggers.controllerLogger.log(Level.INFO, "exception", new IOException("asdf"));
+        StaticLoggers.designerLogger.severe("Designer: Hello World!");
         Enumeration<String> headerNames = (Enumeration<String>) httpRequest.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
