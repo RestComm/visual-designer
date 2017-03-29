@@ -2,7 +2,6 @@ package org.restcomm.connect.rvd.http.resources;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -46,7 +45,7 @@ import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.interpreter.exceptions.BadExternalServiceResponse;
 import org.restcomm.connect.rvd.interpreter.exceptions.ESProcessFailed;
 import org.restcomm.connect.rvd.interpreter.exceptions.RemoteServiceError;
-import org.restcomm.connect.rvd.logging.system.StaticLoggers;
+import org.restcomm.connect.rvd.logging.system.SystemLoggers;
 import org.restcomm.connect.rvd.model.CallControlInfo;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.ProjectSettings;
@@ -70,6 +69,7 @@ import org.restcomm.connect.rvd.utils.RvdUtils;
 @Path("apps")
 public class RvdController extends SecuredRestService {
     static final Logger logger = Logger.getLogger(RvdController.class.getName());
+    String loggerPrefix = ""; // prefix information including app Id and call Id to be prefixed to log messages.
     Pattern appIdPattern = Pattern.compile("^apps\\/([a-zA-Z0-9]+)(\\/|$)");
 
     private RvdConfiguration rvdSettings;
@@ -93,6 +93,7 @@ public class RvdController extends SecuredRestService {
         } catch (ProjectDoesNotExist projectDoesNotExist) {
             throw new ResponseWrapperException( Response.status(Status.NOT_FOUND).build() );
         }
+        loggerPrefix = "["+applicationId.substring(0, 16)+"] "; // TODO put call ID information here
         rvdSettings = rvdContext.getSettings();
         marshaler = rvdContext.getMarshaler();
         workspaceStorage = rvdContext.getWorkspaceStorage();
@@ -145,18 +146,15 @@ public class RvdController extends SecuredRestService {
     @Produces(MediaType.APPLICATION_XML)
     public Response controllerGet( @Context HttpServletRequest httpRequest,
             @Context UriInfo ui) {
-        if(logger.isInfoEnabled()) {
-            logger.info("Received Restcomm GET request");
-        }
-        StaticLoggers.controllerLogger.severe("Hello World!");
-        StaticLoggers.controllerLogger.log(Level.INFO, "exception", new IOException("asdf"));
-        StaticLoggers.designerLogger.severe("Designer: Hello World!");
+        if(logger.isInfoEnabled())
+            logger.info(loggerPrefix + " Received Restcomm GET request");
+        if (SystemLoggers.controller.isLoggable(Level.INFO))
+            SystemLoggers.controller.log(Level.INFO, loggerPrefix + " incoming GET request " + (SystemLoggers.controller.isLoggable(Level.FINE) ? (ui.getRequestUri().toString()) : "" ));
+
         Enumeration<String> headerNames = (Enumeration<String>) httpRequest.getHeaderNames();
+        // TODO remove this loop (?)
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
-        }
-        if(logger.isInfoEnabled()) {
-            logger.debug(httpRequest.getMethod() + " - " + httpRequest.getRequestURI() + " - " + httpRequest.getQueryString());
         }
         MultivaluedMap<String, String> requestParams = ui.getQueryParameters();
 
@@ -167,15 +165,12 @@ public class RvdController extends SecuredRestService {
     @Path("{appname}/controller")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_XML)
-    public Response controllerPost(@Context HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams) {
+    public Response controllerPost(@Context HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, @Context UriInfo ui) {
+        if(logger.isInfoEnabled())
+            logger.info(loggerPrefix + " Received Restcomm POST request");
+        if (SystemLoggers.controller.isLoggable(Level.INFO))
+            SystemLoggers.controller.log(Level.INFO, loggerPrefix + " incoming POST request " + (SystemLoggers.controller.isLoggable(Level.FINE) ? (ui.getRequestUri().toString() + " form: " + requestParams.toString()):"" ));
 
-        if(logger.isInfoEnabled()) {
-            logger.info("Received Restcomm POST request");
-        }
-        if(logger.isDebugEnabled()) {
-            logger.debug(httpRequest.getMethod() + " - " + httpRequest.getRequestURI() + " - " + httpRequest.getQueryString());
-            logger.debug("POST Params: " + requestParams.toString());
-        }
         return runInterpreter(applicationId, httpRequest, requestParams);
     }
 
@@ -203,9 +198,11 @@ public class RvdController extends SecuredRestService {
 
     private RestcommCallArray executeAction(String projectName, HttpServletRequest request, String toParam,
                                             String fromParam, String accessToken, UriInfo ui, AccountProvider accountProvider) throws StorageException, CallControlException {
-        if(logger.isInfoEnabled()) {
-            logger.info( "WebTrigger: Application '" + projectName + "' initiated. User request URL: " + ui.getRequestUri().toString());
-        }
+        loggerPrefix = loggerPrefix + "[WT] ";
+        if (logger.isInfoEnabled())
+            logger.info(loggerPrefix +  " Incoming trigger request ");
+        if (SystemLoggers.controller.isLoggable(Level.INFO))
+            SystemLoggers.controller.log(Level.INFO, loggerPrefix + ui.getRequestUri().toString());
         if (rvdContext.getProjectSettings().getLogging())
             rvdContext.getProjectLogger().log("WebTrigger incoming request: " + ui.getRequestUri().toString(),false).tag("app", projectName).tag("WebTrigger").done();
 
@@ -258,9 +255,8 @@ public class RvdController extends SecuredRestService {
         } catch (RestcommClient.RestcommClientInitializationException e) {
             throw new CallControlException("WebTrigger",e);
         }
-        if(logger.isDebugEnabled()) {
-            logger.debug("WebTrigger: reaching restcomm at '" + restcommBaseUri + "'");
-        }
+        if (SystemLoggers.controller.isLoggable(Level.FINE))
+            SystemLoggers.controller.log(Level.FINE, loggerPrefix + "reaching restcomm at '" + restcommBaseUri + "'" );
 
         String rcmlUrl = info.lanes.get(0).startPoint.rcmlUrl;
         // use the existing application for RCML if none has been given
@@ -299,9 +295,8 @@ public class RvdController extends SecuredRestService {
             throw new CallControlException("Error copying user supplied parameters to rcml url", e);
         }
 
-        if(logger.isDebugEnabled()) {
-            logger.debug("WebTrigger: rcmlUrl: " + rcmlUrl);
-        }
+        if (SystemLoggers.controller.isLoggable(Level.FINE))
+            SystemLoggers.controller.log(Level.FINE, loggerPrefix + "rcmlUrl: " + rcmlUrl);
 
         // to: Use value from url. If specified in WebTrigger form, override it.
         String to = toParam;
@@ -340,9 +335,8 @@ public class RvdController extends SecuredRestService {
                     .addParam("From", from).addParam("To", to).addParam("Url", rcmlUrl)
                     .done(marshaler.getGson(), RestcommCallArray.class);
 
-            if(logger.isInfoEnabled()) {
-                logger.info("WebTrigger: joined " + to + " with " + rcmlUrl);
-            }
+            if (SystemLoggers.controller.isLoggable(Level.FINE))
+                SystemLoggers.controller.log(Level.FINE, loggerPrefix + "joined '" + to + "' with " + rcmlUrl);
             return response;
         } catch (AccessApiException e) {
             throw new CallControlException(e.getMessage(), e).setStatusCode(e.getStatusCode());

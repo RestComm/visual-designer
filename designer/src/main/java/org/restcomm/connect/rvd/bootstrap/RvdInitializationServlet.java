@@ -12,7 +12,7 @@ import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.identity.AccountProvider;
-import org.restcomm.connect.rvd.logging.system.StaticLoggers;
+import org.restcomm.connect.rvd.logging.system.SystemLoggers;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -30,7 +30,7 @@ public class RvdInitializationServlet extends HttpServlet {
         ServletContext servletContext = config.getServletContext();
         // first initialize RVD system logging
         logger.info("Starting RVD system logging...");
-        StaticLoggers.init(servletContext.getRealPath("/../../log/rvd/"));
+        SystemLoggers.init(servletContext.getRealPath("/../../log/rvd/"));
 
         if(logger.isInfoEnabled()) {
             logger.info("Initializing RVD. Project version: " + RvdConfiguration.getRvdProjectVersion());
@@ -63,7 +63,7 @@ public class RvdInitializationServlet extends HttpServlet {
     public void destroy() {
         super.destroy();
         // need to close logger handlers that linger on
-        StaticLoggers.destroy();
+        SystemLoggers.destroy();
     }
 
     public RvdInitializationServlet() {
