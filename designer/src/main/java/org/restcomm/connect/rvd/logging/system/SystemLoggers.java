@@ -16,6 +16,8 @@ public class SystemLoggers {
 
     public static final Logger designer = Logger.getLogger("RVD.designer");
     public static final Logger controller = Logger.getLogger("RVD.controller");
+    public static final Logger designerAndParents = Logger.getLogger("org.restcomm.connect.rvd.DESIGNER");
+    public static final Logger global = Logger.getLogger("visual-designer");
 
     public static void init(String path) {
         // create new handler
@@ -36,6 +38,11 @@ public class SystemLoggers {
         designer.addHandler(handler);
         designer.setUseParentHandlers(false); // set this to true in order to propagate messages to core Restcomm log
         designer.setLevel(RvdConfiguration.SYSTEM_LOG_LEVEL);
+        // global handler
+        clearLoggerHandlers(global);
+        global.addHandler(handler);
+        global.setUseParentHandlers(true); // set this to true in order to propagate messages to core Restcomm log
+        global.setLevel(RvdConfiguration.SYSTEM_LOG_LEVEL);
     }
 
     private static void clearLoggerHandlers(Logger logger) {
@@ -53,6 +60,7 @@ public class SystemLoggers {
     public static void destroy() {
         closeLoggerHandlers(controller);
         closeLoggerHandlers(designer);
+        closeLoggerHandlers(global);
     }
 
 

@@ -11,17 +11,25 @@ import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
+/**
+ * Holds information that follows the specific request
+ *
+ * @author otsakir@gmail.com - Orestis Tsakiridis
+ *
+ */
 public class ProjectAwareRvdContext extends RvdContext {
 
     private String projectName;
     private ProjectLogger projectLogger;
     private ProjectSettings projectSettings;
+    private String loggingPrefix;
 
-    public ProjectAwareRvdContext(String projectName, ResidentProjectInfo residentInfo, HttpServletRequest request, ServletContext servletContext, RvdConfiguration configuration) throws ProjectDoesNotExist {
+    public ProjectAwareRvdContext(String projectName, ResidentProjectInfo residentInfo, HttpServletRequest request, ServletContext servletContext, RvdConfiguration configuration, String loggingPrefix) throws ProjectDoesNotExist {
         super(request, servletContext, configuration);
         if (projectName == null)
             throw new IllegalArgumentException();
         setProjectName(projectName);
+        this.loggingPrefix = loggingPrefix;
         // setup application logging
         this.projectLogger = new ProjectLogger(projectName, getSettings(), getMarshaler(), residentInfo.logRotationSemaphore);
         // initialize project settings
@@ -53,6 +61,10 @@ public class ProjectAwareRvdContext extends RvdContext {
         if (!FsProjectStorage.projectExists(projectName, workspaceStorage)) {
             throw new ProjectDoesNotExist("Project '" + projectName + "' does not exist.");
         }
+    }
+
+    public String getLoggingPrefix() {
+        return loggingPrefix;
     }
 
     public String getProjectName() {
