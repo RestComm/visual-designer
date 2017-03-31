@@ -34,6 +34,7 @@ import org.restcomm.connect.rvd.exceptions.NotificationProcessingError;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
+import org.restcomm.connect.rvd.logging.system.LogStatementContext;
 import org.restcomm.connect.rvd.model.project.RvdProject;
 import org.restcomm.connect.rvd.restcomm.RestcommApplicationResponse;
 import org.restcomm.connect.rvd.restcomm.RestcommApplicationsResponse;
@@ -60,6 +61,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class NotificationsRestService extends SecuredRestService {
     static final Logger logger = Logger.getLogger(NotificationsRestService.class.getName());
 
+    private LogStatementContext loggingContext = new LogStatementContext("[designer]");
+
     public enum NotificationType {
         applicationRemoved,
         accountClosed
@@ -73,7 +76,7 @@ public class NotificationsRestService extends SecuredRestService {
     @PostConstruct
     public void init() {
         super.init();  // setup userIdentityContext
-        RvdContext rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration());
+        RvdContext rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), loggingContext);
         WorkspaceStorage storage = new WorkspaceStorage(applicationContext.getConfiguration().getWorkspaceBasePath(), rvdContext.getMarshaler());
         projectService = new ProjectService(rvdContext, storage);
     }

@@ -43,6 +43,7 @@ import org.restcomm.connect.rvd.exceptions.ras.RestcommAppAlreadyExists;
 import org.restcomm.connect.rvd.exceptions.ras.UnsupportedRasApplicationVersion;
 import org.restcomm.connect.rvd.http.RvdResponse;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
+import org.restcomm.connect.rvd.logging.system.LogStatementContext;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.RappItem;
 import org.restcomm.connect.rvd.model.client.ProjectItem;
@@ -73,11 +74,12 @@ public class RasRestService extends SecuredRestService {
     private RvdContext rvdContext;
     private WorkspaceStorage workspaceStorage;
     private ModelMarshaler marshaler;
+    private LogStatementContext loggingContext = new LogStatementContext("[designer]");
 
     @PostConstruct
     public void init() {
         super.init();
-        rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration());
+        rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), loggingContext);
         settings = rvdContext.getSettings();
         marshaler = rvdContext.getMarshaler();
         workspaceStorage = new WorkspaceStorage(settings.getWorkspaceBasePath(), marshaler);
