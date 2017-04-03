@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.restcomm.connect.rvd.concurrency.ResidentProjectInfo;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.logging.ProjectLogger;
-import org.restcomm.connect.rvd.logging.system.LogStatementContext;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
@@ -24,7 +24,7 @@ public class ProjectAwareRvdContext extends RvdContext {
     private ProjectLogger projectLogger;
     private ProjectSettings projectSettings;
 
-    public ProjectAwareRvdContext(String projectName, ResidentProjectInfo residentInfo, HttpServletRequest request, ServletContext servletContext, RvdConfiguration configuration, LogStatementContext loggingPrefix) throws ProjectDoesNotExist {
+    public ProjectAwareRvdContext(String projectName, ResidentProjectInfo residentInfo, HttpServletRequest request, ServletContext servletContext, RvdConfiguration configuration, LoggingContext loggingPrefix) throws ProjectDoesNotExist {
         super(request, servletContext, configuration, loggingPrefix);
         if (projectName == null)
             throw new IllegalArgumentException();
@@ -60,10 +60,6 @@ public class ProjectAwareRvdContext extends RvdContext {
         if (!FsProjectStorage.projectExists(projectName, workspaceStorage)) {
             throw new ProjectDoesNotExist("Project '" + projectName + "' does not exist.");
         }
-    }
-
-    public String getLoggingPrefix() {
-        return loggingPrefix.getPrefix();
     }
 
     public String getProjectName() {

@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +27,6 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.ProjectApplicationsApi;
 import org.restcomm.connect.rvd.ProjectService;
@@ -43,7 +43,7 @@ import org.restcomm.connect.rvd.exceptions.ras.RestcommAppAlreadyExists;
 import org.restcomm.connect.rvd.exceptions.ras.UnsupportedRasApplicationVersion;
 import org.restcomm.connect.rvd.http.RvdResponse;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
-import org.restcomm.connect.rvd.logging.system.LogStatementContext;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.RappItem;
 import org.restcomm.connect.rvd.model.client.ProjectItem;
@@ -66,7 +66,7 @@ import com.google.gson.JsonObject;
 
 @Path("ras")
 public class RasRestService extends SecuredRestService {
-    static final Logger logger = Logger.getLogger(RasRestService.class.getName());
+    //static final Logger logger = Logger.getLogger(RasRestService.class.getName());
 
     private RvdConfiguration settings;
     private RasService rasService;
@@ -74,12 +74,12 @@ public class RasRestService extends SecuredRestService {
     private RvdContext rvdContext;
     private WorkspaceStorage workspaceStorage;
     private ModelMarshaler marshaler;
-    private LogStatementContext loggingContext = new LogStatementContext("[designer]");
+    private LoggingContext logging = new LoggingContext("[designer]");
 
     @PostConstruct
     public void init() {
         super.init();
-        rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), loggingContext);
+        rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), logging);
         settings = rvdContext.getSettings();
         marshaler = rvdContext.getMarshaler();
         workspaceStorage = new WorkspaceStorage(settings.getWorkspaceBasePath(), marshaler);
@@ -106,9 +106,8 @@ public class RasRestService extends SecuredRestService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAppConfig(@QueryParam("applicationSid") String applicationSid) throws StorageException, ProjectDoesNotExist {
         secure();
-        if(logger.isDebugEnabled()) {
-            logger.debug("retrieving app package for project " + applicationSid);
-        }
+        if (logging.system.isLoggable(Level.FINEST))
+            logging.system.log(Level.FINEST, logging.getPrefix() + "retrieving ras app package");
         if (!FsPackagingStorage.hasPackaging(applicationSid, workspaceStorage))
             return buildErrorResponse(Status.NOT_FOUND, RvdResponse.Status.OK, null);
 
@@ -129,9 +128,8 @@ public class RasRestService extends SecuredRestService {
     @Path("/packaging/app/save")
     public Response saveApp(@Context HttpServletRequest request, @QueryParam("applicationSid") String applicationSid) {
         secure();
-        if(logger.isInfoEnabled()) {
-            logger.info("saving restcomm app '" + applicationSid + "'");
-        }
+        if (logging.system.isLoggable(Level.FINER))
+            logging.system.log(Level.FINER, logging.getPrefix() + "saving ras app package");
         try {
             String rappData;
             rappData = IOUtils.toString(request.getInputStream(), Charset.forName("UTF-8"));
@@ -147,15 +145,16 @@ public class RasRestService extends SecuredRestService {
 
         } catch (IOException e) {
             RvdException returnedError = new RvdException("Error saving rapp",e);
-            logger.error(returnedError,returnedError);
+            logging.system.log(Level.SEVERE, "error saving ras app package", e);
             return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, returnedError);
         } catch (RvdValidationException e) {
             return buildInvalidResponse(Status.OK, RvdResponse.Status.INVALID, e.getReport());
         } catch (StorageException e) {
-            logger.error(e,e);
+            logging.system.log(Level.SEVERE, "error saving ras app package", e);
             return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
         } catch (ProjectDoesNotExist e) {
-            logger.warn(e,e);
+            if (logging.system.isLoggable(Level.WARNING))
+                logging.system.log(Level.WARNING, logging.getPrefix() + "error saving ras app package",e);
             return buildErrorResponse(Status.NOT_FOUND, RvdResponse.Status.ERROR,e);
         }
     }
@@ -165,9 +164,9 @@ public class RasRestService extends SecuredRestService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response preparePackage(@QueryParam("applicationSid") String applicationSid) {
         secure();
-        if(logger.isDebugEnabled()) {
-            logger.debug("preparig app zip for project " + applicationSid);
-        }
+        logging.appendApplicationSid(applicationSid);
+        if (logging.system.isLoggable(Level.INFO))
+            logging.system.log(Level.INFO, logging.getPrefix() + "creating ras zip file" );
         try {
             if (FsPackagingStorage.hasPackaging(applicationSid, workspaceStorage)) {
                 RvdProject project = projectService.load(applicationSid);
@@ -178,7 +177,7 @@ public class RasRestService extends SecuredRestService {
                 return buildErrorResponse(Status.OK, RvdResponse.Status.ERROR, new PackagingDoesNotExist());
             }
         } catch (RvdException e) {
-            logger.error(e,e);
+            logging.system.log(Level.SEVERE, "error while creating ras zip file", e);
             return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
         }
     }

@@ -28,7 +28,6 @@ import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.UndefinedTarget;
 import org.restcomm.connect.rvd.interpreter.exceptions.BadExternalServiceResponse;
 import org.restcomm.connect.rvd.interpreter.exceptions.InvalidAccessOperationAction;
-import org.restcomm.connect.rvd.logging.system.SystemLoggers;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.StepJsonDeserializer;
 import org.restcomm.connect.rvd.model.client.Step;
@@ -272,8 +271,8 @@ public class Interpreter {
             targetParam = projectOptions.getDefaultTarget();
             if (targetParam == null)
                 throw new UndefinedTarget();
-            if (SystemLoggers.controller.isLoggable(Level.FINER))
-                SystemLoggers.controller.log(Level.FINER, rvdContext.getLoggingPrefix() + "override default target to " + targetParam);
+            if (rvdContext.logging.system.isLoggable(Level.FINER))
+                rvdContext.logging.system.log(Level.FINER, rvdContext.logging.getPrefix() + "override default target to " + targetParam);
         }
 
         processBootstrapParameters();
@@ -305,8 +304,8 @@ public class Interpreter {
 
 
     public String interpret(String targetParam, RcmlResponse rcmlModel, Step prependStep, Target originTarget ) throws InterpreterException, StorageException {
-        if (SystemLoggers.controller.isLoggable(Level.FINER))
-            SystemLoggers.controller.log(Level.FINER, rvdContext.getLoggingPrefix() + "starting interpeter for " + targetParam);
+        if (rvdContext.logging.system.isLoggable(Level.FINER))
+            rvdContext.logging.system.log(Level.FINER, rvdContext.logging.getPrefix() + "starting interpeter for " + targetParam);
         if ( rvdContext.getProjectSettings().getLogging() )
             projectLogger.log("Running target: " + targetParam).tag("app",appName).done();
 
@@ -336,8 +335,8 @@ public class Interpreter {
             // Prepend step if required. Usually used for error messages
             if ( prependStep != null ) {
                 RcmlStep rcmlStep = prependStep.render(this);
-                if(SystemLoggers.controller.isLoggable(Level.FINE))
-                    SystemLoggers.controller.log(Level.FINE,"Prepending say step: " + rcmlStep );
+                if(rvdContext.logging.system.isLoggable(Level.FINE))
+                    rvdContext.logging.system.log(Level.FINE,"Prepending say step: " + rcmlStep );
                 rcmlModel.steps.add( rcmlStep );
             }
 
@@ -494,8 +493,8 @@ public class Interpreter {
                 try {
                     encodedValue = URLEncoder.encode( value, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
-                    if (SystemLoggers.controller.isLoggable(Level.WARNING))
-                        SystemLoggers.controller.log(Level.WARNING,rvdContext.getLoggingPrefix() + "error encoding RVD variable " + key + ": " + value, e);
+                    if (rvdContext.logging.system.isLoggable(Level.WARNING))
+                        rvdContext.logging.system.log(Level.WARNING,rvdContext.logging.getPrefix() + "error encoding RVD variable " + key + ": " + value, e);
                 }
 
             query += key + "=" + encodedValue;
@@ -515,8 +514,8 @@ public class Interpreter {
                     try {
                         encodedValue = URLEncoder.encode( value, "UTF-8");
                     } catch (UnsupportedEncodingException e) {
-                        if (SystemLoggers.controller.isLoggable(Level.WARNING))
-                            SystemLoggers.controller.log(Level.WARNING, rvdContext.getLoggingPrefix() + "error encoding RVD variable " + variableName + ": " + value, e);
+                        if (rvdContext.logging.system.isLoggable(Level.WARNING))
+                            rvdContext.logging.system.log(Level.WARNING, rvdContext.logging.getPrefix() + "error encoding RVD variable " + variableName + ": " + value, e);
                     }
 
                 query += variableName + "=" + encodedValue;
@@ -596,8 +595,8 @@ public class Interpreter {
         URIBuilder fileUriBuilder = new URIBuilder(fileResource);
 
         if ( ! fileUriBuilder.isAbsolute() ) {
-            if (SystemLoggers.controller.isLoggable(Level.WARNING))
-                SystemLoggers.controller.log(Level.WARNING, rvdContext.getLoggingPrefix() + "cannot convert file URL to http URL - " + fileResource);
+            if (rvdContext.logging.system.isLoggable(Level.WARNING))
+                rvdContext.logging.system.log(Level.WARNING, rvdContext.logging.getPrefix() + "cannot convert file URL to http URL - " + fileResource);
             return "";
         }
 
@@ -774,11 +773,11 @@ public class Interpreter {
                 if ( valueElement.isJsonPrimitive() && valueElement.getAsJsonPrimitive().isString() ) {
                     value = valueElement.getAsJsonPrimitive().getAsString();
                     getVariables().put(name, value);
-                    if (SystemLoggers.controller.isLoggable(Level.FINER))
-                        SystemLoggers.controller.log(Level.FINER,rvdContext.getLoggingPrefix() + "loaded bootstrap parameter: " + name + " - " + value);
+                    if (rvdContext.logging.system.isLoggable(Level.FINER))
+                        rvdContext.logging.system.log(Level.FINER,rvdContext.logging.getPrefix() + "loaded bootstrap parameter: " + name + " - " + value);
                 } else
-                    if (SystemLoggers.controller.isLoggable(Level.WARNING))
-                        SystemLoggers.controller.log(Level.WARNING,rvdContext.getLoggingPrefix() + "warning. Not-string bootstrap value found for parameter: " + name);
+                    if (rvdContext.logging.system.isLoggable(Level.WARNING))
+                        rvdContext.logging.system.log(Level.WARNING,rvdContext.logging.getPrefix() + "warning. Not-string bootstrap value found for parameter: " + name);
             }
         }
     }

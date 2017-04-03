@@ -4,9 +4,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.restcomm.connect.rvd.logging.ProjectLogger;
-import org.restcomm.connect.rvd.logging.system.LogStatementContext;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
+
+import java.util.logging.Logger;
 
 public class RvdContext {
 
@@ -14,16 +16,16 @@ public class RvdContext {
     private RvdConfiguration settings;
     private ServletContext servletContext;
     protected WorkspaceStorage workspaceStorage;
-    protected LogStatementContext loggingPrefix;
+    public LoggingContext logging;
 
-    public RvdContext(HttpServletRequest request, ServletContext servletContext, RvdConfiguration config, LogStatementContext loggingPrefix) {
+    public RvdContext(HttpServletRequest request, ServletContext servletContext, RvdConfiguration config, LoggingContext logging) {
         if (request == null || servletContext == null)
             throw new IllegalArgumentException();
         this.settings = config;
         this.marshaler = new ModelMarshaler();
         this.workspaceStorage = new WorkspaceStorage(settings.getWorkspaceBasePath(), marshaler);
         this.servletContext = servletContext;
-        this.loggingPrefix = loggingPrefix;
+        this.logging = logging;
     }
 
     public ProjectLogger getProjectLogger() {

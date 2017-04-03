@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class SystemLoggers {
+public class SysstemLoggers {
 
     public static Logger designer; // = Logger.getLogger("RVD.designer");
     public static final Logger controller = Logger.getLogger("RVD.controller");

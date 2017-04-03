@@ -2,10 +2,12 @@ package org.restcomm.connect.rvd.model.steps.fax;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.RvdConfiguration;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
@@ -14,8 +16,6 @@ import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 public class FaxStep extends Step {
-
-    static final Logger logger = Logger.getLogger(BuildService.class.getName());
 
     String to;
     String from;
@@ -82,9 +82,10 @@ public class FaxStep extends Step {
 
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        if(logger.isInfoEnabled()) {
-            logger.info("handling fax action");
-        }
+        LoggingContext logging = interpreter.getRvdContext().logging;
+        if (logging.system.isLoggable(Level.INFO))
+            logging.system.log(Level.INFO, logging.getPrefix() + "handling fax action");
+
         if ( RvdUtils.isEmpty(getNext()) )
             throw new InterpreterException( "'next' module is not defined for step " + getName() );
 

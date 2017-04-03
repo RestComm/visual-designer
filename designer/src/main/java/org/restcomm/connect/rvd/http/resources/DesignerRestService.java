@@ -14,21 +14,19 @@ import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.RvdContext;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
-import org.restcomm.connect.rvd.logging.system.LogStatementContext;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 @Path("designer")
 public class DesignerRestService extends SecuredRestService {
-    static final Logger logger = Logger.getLogger(DesignerRestService.class.getName());
-
     RvdContext rvdContext;
 
     @PostConstruct
     public void init() {
         super.init();
-        rvdContext = new RvdContext(request, servletContext, applicationContext.getConfiguration(), new LogStatementContext("[designer]"));
+        rvdContext = new RvdContext(request, servletContext, applicationContext.getConfiguration(), new LoggingContext("[designer]"));
     }
 
     public DesignerRestService() {

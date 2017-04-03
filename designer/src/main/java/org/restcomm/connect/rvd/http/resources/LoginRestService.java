@@ -26,8 +26,6 @@ import com.google.gson.Gson;
 
 @Path("auth")
 public class LoginRestService extends SecuredRestService {
-    //static final Logger logger = Logger.getLogger(LoginRestService.class.getName());
-
     @PostConstruct
     public void init() {
         super.init();

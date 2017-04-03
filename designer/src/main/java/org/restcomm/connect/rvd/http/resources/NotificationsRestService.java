@@ -34,7 +34,7 @@ import org.restcomm.connect.rvd.exceptions.NotificationProcessingError;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
-import org.restcomm.connect.rvd.logging.system.LogStatementContext;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.project.RvdProject;
 import org.restcomm.connect.rvd.restcomm.RestcommApplicationResponse;
 import org.restcomm.connect.rvd.restcomm.RestcommApplicationsResponse;
@@ -51,6 +51,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -59,9 +60,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
  */
 @Path("notifications")
 public class NotificationsRestService extends SecuredRestService {
-    static final Logger logger = Logger.getLogger(NotificationsRestService.class.getName());
 
-    private LogStatementContext loggingContext = new LogStatementContext("[designer]");
+    private LoggingContext logging = new LoggingContext("[designer]");
 
     public enum NotificationType {
         applicationRemoved,
@@ -76,7 +76,7 @@ public class NotificationsRestService extends SecuredRestService {
     @PostConstruct
     public void init() {
         super.init();  // setup userIdentityContext
-        RvdContext rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), loggingContext);
+        RvdContext rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), logging);
         WorkspaceStorage storage = new WorkspaceStorage(applicationContext.getConfiguration().getWorkspaceBasePath(), rvdContext.getMarshaler());
         projectService = new ProjectService(rvdContext, storage);
     }
@@ -97,7 +97,8 @@ public class NotificationsRestService extends SecuredRestService {
     @Consumes(APPLICATION_JSON)
     public Response postNotifications(@Context HttpServletRequest req) {
         secure();
-        logger.info("received notifications");
+        if (logging.system.isLoggable(Level.INFO))
+            logging.system.log(Level.INFO, logging.getPrefix() + "received notifications");
         // Note that most know errors respond with 200 OK in case a notification is syntactically correct and. An exception
         // is logged though.
         try {
@@ -106,7 +107,7 @@ public class NotificationsRestService extends SecuredRestService {
             try {
                 notifications = parse.parse(new InputStreamReader(req.getInputStream(), Charset.forName("UTF-8"))).getAsJsonArray();
             } catch (IOException e) {
-                logger.error(e);
+                logging.global.log(Level.SEVERE,"could not parse notification from restcomm",e);
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
@@ -119,7 +120,7 @@ public class NotificationsRestService extends SecuredRestService {
                         processAccountRemovalNotification(accountSid);
                     } catch (NotificationProcessingError e) {
                         // ignore most errors. Technically, the notification was properly received.
-                        logger.error(e);
+                        logging.global.log(Level.SEVERE, logging.getPrefix() + "error processing restcomm notification",e);
                         if (e.getType() == NotificationProcessingError.Type.AccountIsMissing) {
                             //return Response.status(Response.Status.OK).build(); // the removed account was not found when trying to authorize against restcomm
                             continue;
@@ -142,11 +143,12 @@ public class NotificationsRestService extends SecuredRestService {
 
             // TODO refine error handling here
         } catch (ProjectDoesNotExist e) {
-            logger.error(e);
+            if (logging.global.isLoggable(Level.WARNING))
+                logging.global.log(Level.WARNING,logging.getPrefix() + "ProjectDoesNotExist exception: " + e.getMessage());
             return Response.status(Response.Status.OK).build();
         }
         catch (RvdException e) {
-            logger.error(e);
+            logging.global.log(Level.SEVERE, "exception", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return Response.ok().build();
@@ -181,7 +183,8 @@ public class NotificationsRestService extends SecuredRestService {
                 try {
                     projectService.deleteProject(app.getSid());
                 } catch (ProjectDoesNotExist e) {
-                    logger.warn("Project " + app.getSid() + " wasn't removed because it wasn't found.");
+                    if (logging.global.isLoggable(Level.WARNING))
+                        logging.global.log(Level.WARNING, "{0} project {1} wasn't removed because it wasn't found", new Object[] {logging.getPrefix(), app.getSid()} );
                 }
             }
         }

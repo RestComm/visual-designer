@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,6 +34,7 @@ import org.restcomm.connect.rvd.interpreter.exceptions.BadExternalServiceRespons
 import org.restcomm.connect.rvd.interpreter.exceptions.ErrorParsingExternalServiceUrl;
 import org.restcomm.connect.rvd.interpreter.exceptions.ESProcessFailed;
 import org.restcomm.connect.rvd.interpreter.exceptions.RemoteServiceError;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.model.client.UrlParam;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
@@ -46,8 +48,6 @@ import com.google.gson.JsonSyntaxException;
 public class ExternalServiceStep extends Step {
     public static final String CONTENT_TYPE_WWWFORM = "application/x-www-form-urlencoded";
     public static final String CONTENT_TYPE_JSON = "application/json";
-
-    static final Logger logger = Logger.getLogger(ExternalServiceStep.class.getName());
 
     private String url; // supports RVD variable expansion when executing the HTTP request
     private String method;
@@ -177,6 +177,8 @@ public class ExternalServiceStep extends Step {
 
     @Override
     public String process(Interpreter interpreter, HttpServletRequest httpRequest ) throws InterpreterException {
+        // cache this for easier access
+        LoggingContext logging = interpreter.getRvdContext().logging;
 
         //ExternalServiceStep esStep = (ExternalServiceStep) step;
         String next = null;
@@ -190,9 +192,6 @@ public class ExternalServiceStep extends Step {
 
                 // if this is a relative url fill in missing fields from the request
                 if (uri_builder.getHost() == null ) {
-                    if(logger.isDebugEnabled()) {
-                        logger.debug("External Service: Relative url is used. Will override from http request to RVD controller");
-                    }
                     uri_builder.setScheme(httpRequest.getScheme());
                     uri_builder.setHost(httpRequest.getServerName());
                     uri_builder.setPort(httpRequest.getServerPort());
@@ -218,12 +217,8 @@ public class ExternalServiceStep extends Step {
             int statusCode;
             JsonElement response_element = null;
 
-            if(logger.isInfoEnabled()) {
-                logger.info("Requesting from url: " + url);
-            }
-            if(logger.isDebugEnabled()) {
-                logger.debug("Requesting from url: " + url);
-            }
+            if (logging.system.isLoggable(Level.FINE))
+                logging.system.log(Level.FINE, logging.getPrefix() + "requesting from url: " + url);
             if ( interpreter.getRvdContext().getProjectSettings().getLogging() )
                 interpreter.getProjectLogger().log("Requesting from url: " + url).tag("app",interpreter.getAppName()).tag("ES").tag("REQUEST").done();
 
@@ -260,7 +255,8 @@ public class ExternalServiceStep extends Step {
                     request.setEntity(stringBody);
                 } else {
                     // unknown content type found. Use this content type and hope for the best
-                    logger.warn( "Unknown content type found when POSTing to " + url +" : " + getContentType() );
+                    if (logging.system.isLoggable(Level.WARNING))
+                        logging.system.log(Level.WARNING,"{0} unknown content type found when POSTing to {1}: {2}", new Object[] {logging.getPrefix(), url, getContentType()});
                     request.addHeader("Content-Type", getContentType());
                     StringEntity stringBody = new StringEntity(body,"UTF-8");
                     request.setEntity(stringBody);
@@ -292,9 +288,8 @@ public class ExternalServiceStep extends Step {
 
                 // In  case of error in the service no need to proceed. Just continue the "onException" module if set
                 if (statusCode >= 400 && statusCode < 600) {
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Remote service failed with: " + response.getStatusLine());
-                    }
+                    if (logging.system.isLoggable(Level.INFO))
+                        logging.system.log(Level.INFO, logging.getPrefix() + "remove service failed with: " + response.getStatusLine());
                     if (!RvdUtils.isEmpty(getExceptionNext()))
                         return getExceptionNext();
                     else
@@ -314,13 +309,14 @@ public class ExternalServiceStep extends Step {
                             interpreter.getProjectLogger().log(entity_string).tag("app", interpreter.getAppName()).tag("ES").tag("RESPONSE").done();
                         response_element = parser.parse(entity_string);
                     }
-                } else if (logger.isDebugEnabled()) {
-                    logger.debug("ES: No parsing will be done to the response");
+                } else {
+                    if (logging.system.isLoggable(Level.FINER))
+                        logging.system.log(Level.FINER, logging.getPrefix() + "no parsing will be done to the response");
                 }
             } catch (JsonSyntaxException e) {
                 throw new BadExternalServiceResponse("External Service request received a malformed JSON response" );
 
-            }finally {
+            } finally {
                 if (response != null) {
                     response.close();
                     HttpClientUtils.closeQuietly(client);
@@ -353,9 +349,8 @@ public class ExternalServiceStep extends Step {
                 if ("fixed".equals(getNextType()) && RvdUtils.isEmpty(next)) {
                     throw new InterpreterException("No valid module could be found for ES routing"); // use a general exception for now.
                 }
-                if (logger.isInfoEnabled()) {
-                    logger.info("Routing enabled. Chosen target: " + next);
-                }
+                if (logging.system.isLoggable(Level.FINE))
+                    logging.system.log(Level.FINE, logging.getPrefix() + "routing enabled. Chosen target: " + next);
             }
 
             // *** Perform the assignments ***
@@ -363,10 +358,8 @@ public class ExternalServiceStep extends Step {
             try {
                 if ( getDoRouting() && ("responseBased".equals(getNextType()) || "mapped".equals(getNextType())) ) {
                     for ( Assignment assignment : getAssignments() ) {
-                        if(logger.isDebugEnabled()) {
-                            logger.debug("working on variable " + assignment.getDestVariable() );
-                            logger.debug( "moduleNameScope: " + assignment.getModuleNameScope());
-                        }
+                        if (logging.system.isLoggable(Level.FINEST))
+                            logging.system.log(Level.FINEST, "{0} working on variable {1}:{2}", new Object[] {logging.getPrefix(), assignment.getModuleNameScope(), assignment.getDestVariable() } );
                         if ( assignment.getModuleNameScope() == null || assignment.getModuleNameScope().equals(next) ) {
                             String value = null;
                             try {
@@ -381,15 +374,12 @@ public class ExternalServiceStep extends Step {
                                 interpreter.putModuleVariable(assignment.getDestVariable(), value);
 
                             //interpreter.putVariable(assignment.getDestVariable(), value );
-                        } else if(logger.isDebugEnabled()) {
-                            logger.debug("skipped assignment to " + assignment.getDestVariable() );
-                        }
+                        } // else skip assignment
                     }
                 }  else {
                     for ( Assignment assignment : getAssignments() ) {
-                        if(logger.isDebugEnabled()) {
-                            logger.debug("working on variable " + assignment.getDestVariable() );
-                        }
+                        if (logging.system.isLoggable(Level.FINEST))
+                            logging.system.log(Level.FINEST, "{0} working on variable {1}", new Object[] {logging.getPrefix(), assignment.getDestVariable() } );
                         String value = null;
                         try {
                             value = interpreter.evaluateExtractorExpression(assignment.getValueExtractor(), response_element);
@@ -405,9 +395,8 @@ public class ExternalServiceStep extends Step {
                         //interpreter.putVariable(assignment.getDestVariable(), value );
                     }
                 }
-                if(logger.isDebugEnabled()) {
-                    logger.debug("variables after processing ExternalService step: " + interpreter.getVariables().toString() );
-                }
+                if (logging.system.isLoggable(Level.FINER))
+                    logging.system.log(Level.FINER, "{0} variables after processing ExternalService step: {1}", new Object[] {logging.getPrefix(), interpreter.getVariables().toString()});
             } catch (JsonSyntaxException e) {
                 throw new BadExternalServiceResponse("External Service request received a malformed JSON response" );
             }
