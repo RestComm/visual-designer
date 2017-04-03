@@ -28,7 +28,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.ProjectAwareRvdContext;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.AccessApiException;
@@ -68,7 +67,7 @@ import org.restcomm.connect.rvd.utils.RvdUtils;
 
 @Path("apps")
 public class RvdController extends SecuredRestService {
-    static final Logger logger = Logger.getLogger(RvdController.class.getName());
+    //static final Logger logger = Logger.getLogger(RvdController.class.getName());
     LoggingContext logging; // contectual information regardin logging including app Id and call Id to be prefixed to log messages.
     Pattern appIdPattern = Pattern.compile("^apps\\/([a-zA-Z0-9]+)(\\/|$)");
 
@@ -133,7 +132,7 @@ public class RvdController extends SecuredRestService {
                 rvdContext.getProjectLogger().log(e.getMessage()).tag("app", appname).tag("EXCEPTION").done();
             rcmlResponse = Interpreter.rcmlOnException();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logging.system.log(Level.SEVERE, logging.getPrefix(), e);
             if (rvdContext.getProjectSettings().getLogging())
                 rvdContext.getProjectLogger().log(e.getMessage()).tag("app", appname).tag("EXCEPTION").done();
             rcmlResponse = Interpreter.rcmlOnException();
@@ -176,16 +175,14 @@ public class RvdController extends SecuredRestService {
     @Path("{appname}/resources/{filename}")
     public Response getWav(@PathParam("filename") String filename) {
         InputStream wavStream;
-
         try {
             wavStream = FsProjectStorage.getWav(applicationId, filename, workspaceStorage);
             return Response.ok(wavStream, "audio/x-wav")
                     .header("Content-Disposition", "attachment; filename = " + filename).build();
         } catch (WavItemDoesNotExist e) {
-            return Response.status(Status.NOT_FOUND).build(); // ordinary error page is returned since this will be consumed
-                                                              // either from restcomm or directly from user
+            return Response.status(Status.NOT_FOUND).build(); // ordinary error page is returned since this will be consumed             // either from restcomm or directly from user
         } catch (StorageException e) {
-            // return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
+            logging.system.log(Level.SEVERE, e.getMessage(), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build(); // ordinary error page is returned since this will
                                                                           // be consumed either from restcomm or directly
                                                                           // from user
@@ -367,22 +364,18 @@ public class RvdController extends SecuredRestService {
             //logger.warn(e);
             return buildWebTriggerHtmlResponse("Web Trigger", "Create call", "failure", "Authentication error", 401);
         } catch (CallControlException e) {
-            // rcomm log
             // TODO check that the e.getMessage() contains adequate information
             if (logging.global.isLoggable(Level.WARNING))
                 logging.global.log(Level.WARNING, logging.getPrefix() + e.getMessage());
-            //logger.warn(e);
             int httpStatus = 500;
             if (e.getStatusCode() != null)
                 httpStatus = e.getStatusCode();
             return buildWebTriggerHtmlResponse("Web Trigger", "Create call", "failure", "", httpStatus);
         } catch (StorageEntityNotFound e) {
             logging.global.log(Level.SEVERE, logging.getPrefix(), e);
-            //logger.error("", e);
             return Response.status(Status.NOT_FOUND).build(); // for case when the cc file does not exist
         } catch (StorageException e) {
             logging.global.log(Level.SEVERE, logging.getPrefix(), e);
-            //logger.error("", e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(selectedMediaType).build();
         }
     }
@@ -424,6 +417,7 @@ public class RvdController extends SecuredRestService {
     @Path("{appname}/log")
     public Response appLog() {
         secure();
+        logging.appendAccountSid(getUserIdentityContext().getAccountSid());
         try {
             // make sure logging is enabled before allowing access to sensitive log information
             ProjectSettings projectSettings = FsProjectStorage.loadProjectSettings(applicationId, workspaceStorage);
@@ -454,6 +448,7 @@ public class RvdController extends SecuredRestService {
     @Path("{appname}/log")
     public Response resetAppLog() {
         secure();
+        logging.appendAccountSid(getUserIdentityContext().getAccountSid());
         try {
             // make sure logging is enabled before allowing access to sensitive log information
             ProjectSettings projectSettings = FsProjectStorage.loadProjectSettings(applicationId, workspaceStorage);
@@ -463,7 +458,7 @@ public class RvdController extends SecuredRestService {
             rvdContext.getProjectLogger().reset();
             return Response.ok().build();
         } catch (StorageException e) {
-            // !!! return hangup!!!
+            logging.global.log(Level.SEVERE, logging.getPrefix(), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }

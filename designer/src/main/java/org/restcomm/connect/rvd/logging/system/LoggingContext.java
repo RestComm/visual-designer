@@ -10,8 +10,8 @@ import java.util.logging.Logger;
  */
 public class LoggingContext {
     private String prefix;
-    public Logger system;
-    public Logger global;
+    public Logger system = RvdLoggers.system;
+    public Logger global = RvdLoggers.global;
 
 
     public LoggingContext(String prefix) {
@@ -31,6 +31,11 @@ public class LoggingContext {
     }
 
     public void appendApplicationSid(String sid) {
+        if (sid != null)
+            this.prefix += "["+sid.substring(0, 16)+"] ";
+    }
+
+    public void appendAccountSid(String sid) {
         if (sid != null)
             this.prefix += "["+sid.substring(0, 16)+"] ";
     }

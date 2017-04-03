@@ -24,7 +24,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.ApplicationContext;
 import org.restcomm.connect.rvd.ProjectService;
 import org.restcomm.connect.rvd.RvdContext;
@@ -76,6 +75,7 @@ public class NotificationsRestService extends SecuredRestService {
     @PostConstruct
     public void init() {
         super.init();  // setup userIdentityContext
+        logging.appendAccountSid(getUserIdentityContext().getAccountSid());
         RvdContext rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), logging);
         WorkspaceStorage storage = new WorkspaceStorage(applicationContext.getConfiguration().getWorkspaceBasePath(), rvdContext.getMarshaler());
         projectService = new ProjectService(rvdContext, storage);

@@ -22,6 +22,7 @@ package org.restcomm.connect.rvd.http.resources;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -35,9 +36,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.UserProfile;
 import org.restcomm.connect.rvd.model.client.SettingsModel;
@@ -56,15 +57,17 @@ import com.google.gson.JsonSyntaxException;
 // TODO rename this to 'profile' as well as method names
 @Path("settings")
 public class SettingsRestService extends SecuredRestService {
-    static final Logger logger = Logger.getLogger(RasRestService.class.getName());
 
     RvdConfiguration settings;
     ModelMarshaler marshaler;
     WorkspaceStorage workspaceStorage;
+    LoggingContext logging;
 
     @PostConstruct
     public void init() {
         super.init();
+        logging = new LoggingContext("[designer]");
+        logging.appendAccountSid(getUserIdentityContext().getAccountSid());
         settings = applicationContext.getConfiguration();
         marshaler = new ModelMarshaler();
         workspaceStorage = new WorkspaceStorage(settings.getWorkspaceBasePath(), marshaler);
@@ -95,11 +98,8 @@ public class SettingsRestService extends SecuredRestService {
             profile.setToken(settingsForm.getApiServerPass());
             profileDao.saveUserProfile(loggedUsername, profile);
             return Response.ok().build();
-        } catch (IOException e) {
-            logger.error(e,e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-        } catch (JsonSyntaxException e) {
-            logger.error(e,e);
+        } catch (IOException | JsonSyntaxException e) {
+            logging.system.log(Level.SEVERE, e.getMessage(), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }

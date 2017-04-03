@@ -72,6 +72,13 @@ public class UserIdentityContext {
         return null;
     }
 
+    public String getAccountSid() {
+        if (accountInfo != null)
+            return accountInfo.getSid();
+        return null;
+    }
+
+
     /**
      * Return a (possibly empty) set of roles of the effective account (accountInfo) or null if no such account in place.
      *

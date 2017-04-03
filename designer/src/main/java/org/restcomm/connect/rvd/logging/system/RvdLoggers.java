@@ -12,14 +12,12 @@ import java.util.logging.Logger;
  *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class SysstemLoggers {
+public class RvdLoggers {
 
-    public static Logger designer; // = Logger.getLogger("RVD.designer");
-    public static final Logger controller = Logger.getLogger("RVD.controller");
+    public static final Logger system = Logger.getLogger("RVD.controller");
     public static final Logger global = Logger.getLogger("visual-designer");
 
     public static void init(String path) {
-        designer = controller; // use the same for now
         // create new handler
         Handler handler;
         try {
@@ -29,15 +27,10 @@ public class SysstemLoggers {
         }
         handler.setFormatter(new LaconicFormatter());
         // controller handler
-        clearLoggerHandlers(controller);
-        controller.addHandler(handler);
-        controller.setUseParentHandlers(false); // set this to true in order to propagate messages to core Restcomm log
-        controller.setLevel(RvdConfiguration.SYSTEM_LOG_LEVEL);
-        // designer handler
-//        clearLoggerHandlers(designer);
-//        designer.addHandler(handler);
-//        designer.setUseParentHandlers(false); // set this to true in order to propagate messages to core Restcomm log
-//        designer.setLevel(RvdConfiguration.SYSTEM_LOG_LEVEL);
+        clearLoggerHandlers(system);
+        system.addHandler(handler);
+        system.setUseParentHandlers(false); // set this to true in order to propagate messages to core Restcomm log
+        system.setLevel(RvdConfiguration.SYSTEM_LOG_LEVEL);
         // global handler
         clearLoggerHandlers(global);
         global.addHandler(handler);
@@ -58,8 +51,7 @@ public class SysstemLoggers {
     }
 
     public static void destroy() {
-        closeLoggerHandlers(controller);
-        //closeLoggerHandlers(designer);
+        closeLoggerHandlers(system);
         closeLoggerHandlers(global);
     }
 

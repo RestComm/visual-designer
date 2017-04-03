@@ -8,7 +8,6 @@ import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 
-import java.util.logging.Logger;
 
 public class RvdContext {
 
