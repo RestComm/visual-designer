@@ -1,20 +1,41 @@
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2011-2014, Telestax Inc and individual contributors
+ * by the @authors tag.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package org.restcomm.connect.rvd.model.steps.gather;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.interpreter.Target;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
+/**
+ * @author otsakir@gmail.com - Orestis Tsakiridis
+ */
 public class GatherStep extends Step {
-
-    static final Logger logger = Logger.getLogger(GatherStep.class.getName());
 
     private String action;
     private String method;
@@ -68,9 +89,9 @@ public class GatherStep extends Step {
     }
 
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        if(logger.isInfoEnabled()) {
-            logger.info("handling gather action");
-        }
+        LoggingContext logging = interpreter.getRvdContext().logging;
+        if (logging.system.isLoggable(Level.INFO))
+            logging.system.log(Level.INFO, logging.getPrefix() + "handling gather action");
 
         String digitsString = interpreter.getRequestParams().getFirst("Digits");
         if ( digitsString != null )
@@ -83,15 +104,13 @@ public class GatherStep extends Step {
             for (Mapping mapping : menu.mappings) {
                 String digits = digitsString;
                 //Integer digits = Integer.parseInt( digitsString );
-                if(logger.isDebugEnabled()) {
-                    logger.debug("checking digits: " + mapping.digits + " - " + digits);
-                }
+                if (logging.system.isLoggable(Level.FINER))
+                    logging.system.log(Level.FINER, "{0} checking digits: {1} - {2}", new Object[] {logging.getPrefix(), mapping.digits, digits} );
 
                 if (mapping.digits != null && mapping.digits.equals(digits)) {
                     // seems we found out menu selection
-                    if(logger.isDebugEnabled()) {
-                        logger.debug("seems we found out menu selection");
-                    }
+                    if (logging.system.isLoggable(Level.FINER))
+                        logging.system.log(Level.FINER, logging.getPrefix() + "seems we found our menu selection: " + digits);
                     interpreter.interpret(mapping.next,null, null, originTarget);
                     handled = true;
                 }
@@ -104,7 +123,8 @@ public class GatherStep extends Step {
             String variableName = collectdigits.collectVariable;
             String variableValue = interpreter.getRequestParams().getFirst("Digits");
             if ( variableValue == null ) {
-                logger.warn("'Digits' parameter was null. Is this a valid restcomm request?");
+                if (logging.system.isLoggable(Level.WARNING))
+                    logging.system.log(Level.WARNING, logging.getPrefix() + "'Digits' parameter was null. Is this a valid restcomm request?");
                 variableValue = "";
             }
 
@@ -122,41 +142,33 @@ public class GatherStep extends Step {
                     String expandedRegexPattern = interpreter.populateVariables(validation.regexPattern);
                     effectivePattern = expandedRegexPattern;
                 }
-                else
-                    logger.warn("Invalid validation information in gather. Validation object exists while oth patterns are null");
-
+                else {
+                    if (logging.system.isLoggable(Level.WARNING))
+                        logging.system.log(Level.WARNING, logging.getPrefix() + "Invalid validation information in gather. Validation object exists while other patterns are null");
+                }
                 if (effectivePattern != null ) {
                     doValidation = true;
-                    if(logger.isDebugEnabled()) {
-                        logger.debug("Validating '" + variableValue + "' against " + effectivePattern);
-                    }
+                    if (logging.system.isLoggable(Level.FINER))
+                        logging.system.log(Level.FINER, "{0} validating '{1}' against '{}'", new Object[] {logging.getPrefix(),variableValue, effectivePattern} );
                     if ( !variableValue.matches(effectivePattern) )
                         valid = false;
                 }
             }
 
             if ( doValidation && !valid ) {
-                if(logger.isDebugEnabled()) {
-                    logger.debug("Invalid input for gather/collectdigits. Will say the validation message and rerun the gather");
-                }
+                if (logging.system.isLoggable(Level.FINER))
+                    logging.system.log(Level.FINER, "{0} Invalid input for gather/collectdigits. Will say the validation message and rerun the gather", logging.getPrefix());
             } else {
                 // is this an application-scoped variable ?
                 if ( "application".equals(collectdigits.scope) ) {
-                    if(logger.isDebugEnabled()) {
-                        logger.debug("'" + variableName + "' is application scoped");
-                    }
                     interpreter.putStickyVariable(variableName, variableValue);
                 } else
                 if ( "module".equals(collectdigits.scope) ) {
-                    if(logger.isDebugEnabled()) {
-                        logger.debug("'" + variableName + "' is module scoped");
-                    }
                     interpreter.putModuleVariable(variableName, variableValue);
                 }
 
                 // in any case initialize the module-scoped variable
                 interpreter.getVariables().put(variableName, variableValue);
-
                 interpreter.interpret(collectdigits.next,null,null, originTarget);
             }
         }

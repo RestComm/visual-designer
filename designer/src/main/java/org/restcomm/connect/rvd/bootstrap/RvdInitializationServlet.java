@@ -21,7 +21,7 @@ import org.restcomm.connect.rvd.upgrade.UpgradeService;
 
 public class RvdInitializationServlet extends HttpServlet {
 
-    static final Logger logger = Logger.getLogger(RvdInitializationServlet.class.getName());
+    static final Logger logger = Logger.getLogger("visual-designer");
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -29,12 +29,8 @@ public class RvdInitializationServlet extends HttpServlet {
         // Create application context and store in ServletContext
         ServletContext servletContext = config.getServletContext();
         // first initialize RVD system logging
-        logger.info("Starting RVD system logging...");
         RvdLoggers.init(servletContext.getRealPath("/../../log/rvd/"));
-
-        if(logger.isInfoEnabled()) {
-            logger.info("Initializing RVD. Project version: " + RvdConfiguration.getRvdProjectVersion());
-        }
+        logger.info("Initializing RVD. Project version: " + RvdConfiguration.getRvdProjectVersion());
 
         RvdConfiguration rvdConfiguration = new RvdConfiguration(servletContext);
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(rvdConfiguration);

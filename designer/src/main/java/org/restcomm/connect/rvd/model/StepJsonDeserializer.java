@@ -1,9 +1,28 @@
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2011-2014, Telestax Inc and individual contributors
+ * by the @authors tag.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package org.restcomm.connect.rvd.model;
 
 import java.lang.reflect.Type;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
-import org.restcomm.connect.rvd.BuildService;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.model.steps.control.ControlStep;
 import org.restcomm.connect.rvd.model.steps.dial.DialNoun;
@@ -34,8 +53,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+/**
+ * @author otsakir@gmail.com - Orestis Tsakiridis
+ */
 public class StepJsonDeserializer implements JsonDeserializer<Step> {
-    static final Logger logger = Logger.getLogger(BuildService.class.getName());
+    static final Logger logger = RvdLoggers.system;
 
     @Override
     public Step deserialize(JsonElement rootElement, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
@@ -87,7 +109,7 @@ public class StepJsonDeserializer implements JsonDeserializer<Step> {
             step = gson.fromJson(step_object, UssdLanguageStep.class);
         else {
             step = null;
-            logger.error("Error deserializing step. Unknown step found!"); // TODO remove me and return a nice value!!!
+            logger.severe("Cannot deserialize step. Unknown step found."); // TODO remove me and return a nice value!!!
         }
 
         return step;

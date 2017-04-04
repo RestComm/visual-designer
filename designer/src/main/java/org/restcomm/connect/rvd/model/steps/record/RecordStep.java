@@ -1,12 +1,31 @@
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2011-2014, Telestax Inc and individual contributors
+ * by the @authors tag.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package org.restcomm.connect.rvd.model.steps.record;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
-import org.apache.log4j.Logger;
-import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.RvdConfiguration;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
@@ -14,8 +33,10 @@ import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
+/**
+ * @author otsakir@gmail.com - Orestis Tsakiridis
+ */
 public class RecordStep extends Step {
-    static final Logger logger = Logger.getLogger(BuildService.class.getName());
     String next;
     String method;
     Integer timeout;
@@ -96,9 +117,10 @@ public class RecordStep extends Step {
 
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        if(logger.isInfoEnabled()) {
-            logger.info("handling record action");
-        }
+        LoggingContext logging = interpreter.getRvdContext().logging;
+        if (logging.system.isLoggable(Level.INFO))
+            logging.system.log(Level.INFO, logging.getPrefix() + "handling record action");
+
         if ( RvdUtils.isEmpty(getNext()) )
             throw new InterpreterException( "'next' module is not defined for step " + getName() );
 
@@ -113,7 +135,8 @@ public class RecordStep extends Step {
                 String recordingUrl = interpreter.convertRecordingFileResourceHttp(restcommRecordingUrl, interpreter.getHttpRequest());
                 interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "RecordingUrl", recordingUrl);
             } catch (URISyntaxException e) {
-                logger.warn("Cannot convert file URL to http URL - " + restcommRecordingUrl, e);
+                if (logging.system.isLoggable(Level.WARNING))
+                    logging.system.log(Level.WARNING, "{0} cannot convert file URL to http URL - {1}", new Object[] {logging.getPrefix(), restcommRecordingUrl});
             }
         }
 

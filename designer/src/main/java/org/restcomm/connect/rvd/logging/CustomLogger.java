@@ -21,14 +21,16 @@
 package org.restcomm.connect.rvd.logging;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.concurrency.LogRotationSemaphore;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A logger service for an RVD project. It is supposed to help the designer of an application for easy testing debugging without the need
@@ -37,7 +39,7 @@ import java.util.Date;
  *
  */
 public class CustomLogger {
-    static final Logger logger = Logger.getLogger(CustomLogger.class.getName());
+    static final Logger logger = RvdLoggers.system;
 
     protected static final int MAX_TAGS = 5;
 
@@ -82,7 +84,7 @@ public class CustomLogger {
                 tags[tagCount] = "[" + name + " " + value +"]";
             tagCount ++;
         } else {
-            logger.warn("ProjectLogger: Cannot add any more tags to the log entry" );
+            logger.warning("cannot add any more tags to the log entry" );
         }
         return this;
     }
@@ -109,7 +111,7 @@ public class CustomLogger {
         try {
             FileUtils.writeStringToFile(mainLogFile, buffer.toString(), Charset.forName("UTF-8"), true);
         } catch (IOException e) {
-            logger.warn("Error writing to application log to " + logFilenameBase, e);
+            logger.log(Level.WARNING, "error writing to application log to " + logFilenameBase, e);
         }
 
         // check for log retation
@@ -131,7 +133,7 @@ public class CustomLogger {
         try {
             FileUtils.writeStringToFile(mainLogFile, "");
         } catch (IOException e) {
-            logger.warn("Error clearing application log to " + logFilenameBase, e);
+            logger.log(Level.WARNING,"error clearing application log to " + logFilenameBase, e);
         }
     }
 

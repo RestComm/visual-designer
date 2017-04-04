@@ -1,3 +1,22 @@
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2011-2014, Telestax Inc and individual contributors
+ * by the @authors tag.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package org.restcomm.connect.rvd.utils;
 
 import java.io.File;
@@ -7,15 +26,20 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
 
+/**
+ * @author otsakir@gmail.com - Orestis Tsakiridis
+ */
 public class Zipper {
-    static final Logger logger = Logger.getLogger(Zipper.class.getName());
+    static Logger logger = RvdLoggers.system;
 
     ZipOutputStream zipOut;
     File zipFile;
@@ -134,7 +158,8 @@ public class Zipper {
         try {
             zipOut.finish();
         } catch (IOException e) {
-            logger.warn("Error closing Zipper " + zipFile + ". There is nothing more that can be done.", e);
+            if (logger.isLoggable(Level.WARNING))
+                logger.log(Level.WARNING, "Error closing Zipper " + zipFile + ". There is nothing more that can be done.", e);
         }
     }
 }

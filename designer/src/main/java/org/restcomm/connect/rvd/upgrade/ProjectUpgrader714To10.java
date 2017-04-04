@@ -1,14 +1,15 @@
 package org.restcomm.connect.rvd.upgrade;
 
-import org.apache.log4j.Logger;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
+
+import java.util.logging.Logger;
 
 public class ProjectUpgrader714To10 implements ProjectUpgrader {
-    static final Logger logger = Logger.getLogger(ProjectUpgrader714To10.class.getName());
+    static Logger logger = RvdLoggers.system;
 
     public ProjectUpgrader714To10() {
         // TODO Auto-generated constructor stub

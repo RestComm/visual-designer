@@ -1,16 +1,34 @@
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2011-2014, Telestax Inc and individual contributors
+ * by the @authors tag.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package org.restcomm.connect.rvd.model.steps.play;
 
 import java.net.URISyntaxException;
+import java.util.logging.Level;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
-import org.restcomm.connect.rvd.BuildService;
 
 public class PlayStep extends Step {
-    static final Logger logger = Logger.getLogger(BuildService.class.getName());
     private Integer loop;
     private String playType;
     private Local local;
@@ -26,6 +44,7 @@ public class PlayStep extends Step {
 
     @Override
     public RcmlStep render(Interpreter interpreter) {
+        LoggingContext logging = interpreter.getRvdContext().logging;
         RcmlPlayStep playStep = new RcmlPlayStep();
         String url = "";
         if ("local".equals(playType)) {
@@ -35,7 +54,8 @@ public class PlayStep extends Step {
                 uribuilder.setPath(rawurl);
                 url = uribuilder.build().toString();
             } catch (URISyntaxException e) {
-                logger.warn("Error parsing url for play verb: " + rawurl, e);
+                if (logging.system.isLoggable(Level.WARNING))
+                    logging.system.log(Level.WARNING, logging.getPrefix() + "error parsing url for play verb: " + rawurl, e);
                 url = rawurl; // best effort
             }
         }
@@ -43,9 +63,9 @@ public class PlayStep extends Step {
             url = interpreter.populateVariables(remote.wavUrl);
         }
 
-        if(logger.isDebugEnabled()) {
-            logger.debug("play url: " + url);
-        }
+        if (logging.system.isLoggable(Level.FINER))
+            logging.system.log(Level.FINER, "{0} play url: {1}", new Object[] {logging.getPrefix(),url});
+
         playStep.setWavurl(url);
         playStep.setLoop(loop);
 

@@ -8,7 +8,7 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 /**
- * A static place to host loggers that are not accessed by package name
+ * A static place to host loggers that are accessed programmatically (not necessarily by class name)
  *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */

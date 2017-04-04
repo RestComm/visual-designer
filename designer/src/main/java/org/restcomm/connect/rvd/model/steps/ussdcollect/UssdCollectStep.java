@@ -1,21 +1,42 @@
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2011-2014, Telestax Inc and individual contributors
+ * by the @authors tag.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package org.restcomm.connect.rvd.model.steps.ussdcollect;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.interpreter.Target;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.model.steps.ussdsay.UssdSayStep;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
+/**
+ * @author otsakir@gmail.com - Orestis Tsakiridis
+ */
 public class UssdCollectStep extends Step {
-
-    static final Logger logger = Logger.getLogger(UssdCollectStep.class.getName());
 
     public static class Mapping {
         String digits;
@@ -59,9 +80,10 @@ public class UssdCollectStep extends Step {
 
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        if(logger.isDebugEnabled()) {
-            logger.info("UssdCollect handler");
-        }
+        LoggingContext logging = interpreter.getRvdContext().logging;
+        if (logging.system.isLoggable(Level.INFO))
+            logging.system.log(Level.INFO, logging.getPrefix() + "handling UssdCollect action");
+
         if ("menu".equals(gatherType)) {
 
             boolean handled = false;
@@ -69,15 +91,13 @@ public class UssdCollectStep extends Step {
                 // use a string for USSD collect. Alpha is supported too
                 String digits = interpreter.getRequestParams().getFirst("Digits");
 
-                if(logger.isDebugEnabled()) {
-                    logger.debug("checking digits: " + mapping.digits + " - " + digits);
-                }
+                if (logging.system.isLoggable(Level.FINER))
+                    logging.system.log(Level.FINER, "{0} checking digits {1} - {2}", new Object[] {logging.getPrefix(), mapping.digits, digits });
 
                 if (mapping.digits != null && mapping.digits.equals(digits)) {
                     // seems we found out menu selection
-                    if(logger.isDebugEnabled()) {
-                        logger.debug("seems we found our menu selection");
-                    }
+                    if (logging.system.isLoggable(Level.FINER))
+                        logging.system.log(Level.FINER, "{0} seems we found our menu selection", new Object[] {logging.getPrefix(), digits} );
                     interpreter.interpret(mapping.next,null,null, originTarget);
                     handled = true;
                 }
@@ -90,15 +110,13 @@ public class UssdCollectStep extends Step {
             String variableName = collectdigits.collectVariable;
             String variableValue = interpreter.getRequestParams().getFirst("Digits");
             if ( variableValue == null ) {
-                logger.warn("'Digits' parameter was null. Is this a valid restcomm request?");
+                if (logging.system.isLoggable(Level.WARNING))
+                    logging.system.log(Level.WARNING, "{0} 'Digits' parameter was null. Is this a valid restcomm request?", logging.getPrefix());
                 variableValue = "";
             }
 
             // is this an application-scoped variable ?
             if ( "application".equals(collectdigits.scope) ) {
-                if(logger.isDebugEnabled()) {
-                    logger.debug("'" + variableName + "' is application scoped");
-                }
                 // if it is, create a sticky_* variable named after it
                 interpreter.getVariables().put(RvdConfiguration.STICKY_PREFIX + variableName, variableValue);
             }

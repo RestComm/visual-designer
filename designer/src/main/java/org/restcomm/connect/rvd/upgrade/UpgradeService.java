@@ -1,3 +1,22 @@
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2011-2014, Telestax Inc and individual contributors
+ * by the @authors tag.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package org.restcomm.connect.rvd.upgrade;
 
 import java.util.Arrays;
@@ -19,8 +38,11 @@ import org.restcomm.connect.rvd.upgrade.exceptions.UpgradeException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+/**
+ * @author otsakir@gmail.com - Orestis Tsakiridis
+ */
 public class UpgradeService {
-    static final Logger logger = Logger.getLogger(UpgradeService.class.getName());
+    static Logger logger = Logger.getLogger("visual-designer");
 
     public enum UpgradabilityStatus {
         UPGRADABLE, NOT_NEEDED, NOT_SUPPORTED
@@ -164,7 +186,7 @@ public class UpgradeService {
         }
 
         if(logger.isInfoEnabled()) {
-            logger.info("Upgrading '" + projectName + "' from version " + startVersion);
+            logger.info("upgrading '" + projectName + "' from version " + startVersion);
         }
 
         String version = startVersion;
@@ -241,7 +263,7 @@ public class UpgradeService {
             }
         if ( projectNames.size() > 0 && failedCount == 0)
             if(logger.isInfoEnabled()) {
-                logger.info("--- All RVD projects are up to date (or don't need upgrade)");
+                logger.info("All RVD projects are up to date (or don't need upgrade)");
             }
         //if ( upgradedCount  0 && projectNames.size() > 0 )
           //  logger.info("All RVD projects are up-to-date" );

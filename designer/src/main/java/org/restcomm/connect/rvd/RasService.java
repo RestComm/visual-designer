@@ -1,3 +1,22 @@
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2011-2014, Telestax Inc and individual contributors
+ * by the @authors tag.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package org.restcomm.connect.rvd;
 
 import java.io.File;
@@ -5,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.packaging.PackagingException;
 import org.restcomm.connect.rvd.exceptions.project.UnsupportedProjectVersion;
@@ -37,12 +55,10 @@ import java.util.List;
 import java.util.UUID;
 /**
  * Functionality for importing and setting up an app from the app store
- * @author "Tsakiridis Orestis"
  *
+ * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class RasService {
-
-    static final Logger logger = Logger.getLogger(RasService.class.getName());
 
     ModelMarshaler marshaler;
     WorkspaceStorage workspaceStorage;
@@ -64,9 +80,6 @@ public class RasService {
 
 
     public InputStream createZipPackage(RvdProject project) throws RvdException {
-        if(logger.isDebugEnabled()) {
-            logger.debug("Creating zip package for project " + project.getName());
-        }
         String projectName = project.getName();
 
         // extract info and config parts of a Rapp
@@ -110,9 +123,6 @@ public class RasService {
 
             FsPackagingStorage.storeRappBinary(tempFile, projectName, workspaceStorage);
             // TODO - if FsProjectStorage  is not used, the temporaty file should still be removed (in this case it is not moved) !!!
-            if(logger.isDebugEnabled()) {
-                logger.debug("Zip package created for project " + projectName);
-            }
 
             return FsPackagingStorage.getRappBinary(projectName, workspaceStorage);
         } catch (IOException e) {
@@ -133,9 +143,6 @@ public class RasService {
     public String importAppToWorkspace(String applicationSid, InputStream packageZipStream, String loggedUser,
             ProjectService projectService) throws RvdException {
         File tempDir = RvdUtils.createTempDir();
-        if(logger.isDebugEnabled()) {
-            logger.debug("Unzipping ras package to temporary directory " + tempDir.getPath());
-        }
         Unzipper unzipper = new Unzipper(tempDir);
         unzipper.unzip(packageZipStream);
 

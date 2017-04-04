@@ -33,16 +33,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.ProjectService;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.RvdContext;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.Node;
 import org.restcomm.connect.rvd.model.client.ProjectState;
 import org.restcomm.connect.rvd.model.client.StateHeader;
@@ -68,10 +70,10 @@ import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.RappItem;
 
 /**
- * @author Orestis Tsakiridis
+ * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class FsProjectStorage {
-    static final Logger logger = Logger.getLogger(FsProjectStorage.class.getName());
+    static Logger logger = RvdLoggers.system;
 
     public static List<String> listProjectNames(WorkspaceStorage workspaceStorage) throws BadWorkspaceDirectoryStructure {
         List<String> items = new ArrayList<String>();
@@ -397,9 +399,8 @@ public class FsProjectStorage {
 
     public static void storeWav(String projectName, String wavname, InputStream wavStream, WorkspaceStorage storage) throws StorageException {
         String wavPathname = getProjectWavsPath(projectName, storage) + File.separator + wavname;
-        if(logger.isDebugEnabled()) {
-            logger.debug( "Writing wav file to " + wavPathname);
-        }
+        if(logger.isLoggable(Level.FINE))
+            logger.log(Level.FINE, "writing wav file to {0}", wavPathname);
         try {
             FileUtils.copyInputStreamToFile(wavStream, new File(wavPathname) );
         } catch (IOException e) {
@@ -468,9 +469,8 @@ public class FsProjectStorage {
         String filepath = getProjectWavsPath(projectName, storage) + File.separator + wavname;
         File wavfile = new File(filepath);
         if ( wavfile.delete() ) {
-            if(logger.isDebugEnabled()) {
-                logger.info( "Deleted " + wavname + " from " + projectName + " app" );
-            }
+            if(logger.isLoggable(Level.FINE))
+                logger.log(Level.FINE, "deleted {0} from {1} app", new Object[] {wavname, projectName});
         }
         else {
             //logger.warn( "Cannot delete " + wavname + " from " + projectName + " app" );

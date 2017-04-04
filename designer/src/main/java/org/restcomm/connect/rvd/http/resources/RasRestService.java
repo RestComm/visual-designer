@@ -168,13 +168,13 @@ public class RasRestService extends SecuredRestService {
     public Response preparePackage(@QueryParam("applicationSid") String applicationSid) {
         secure();
         logging.appendApplicationSid(applicationSid);
-        if (logging.system.isLoggable(Level.INFO))
-            logging.system.log(Level.INFO, logging.getPrefix() + "creating ras zip file" );
         try {
             if (FsPackagingStorage.hasPackaging(applicationSid, workspaceStorage)) {
                 RvdProject project = projectService.load(applicationSid);
                 project.getState().getHeader().setOwner(null); //  no owner should in the exported project
                 rasService.createZipPackage(project);
+                if (logging.system.isLoggable(Level.INFO))
+                    logging.system.log(Level.INFO, logging.getPrefix() + "created zip file " + project.getName());
                 return buildErrorResponse(Status.OK, RvdResponse.Status.OK, null);
             } else {
                 return buildErrorResponse(Status.OK, RvdResponse.Status.ERROR, new PackagingDoesNotExist());

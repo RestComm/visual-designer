@@ -1,3 +1,22 @@
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2011-2014, Telestax Inc and individual contributors
+ * by the @authors tag.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package org.restcomm.connect.rvd.utils;
 
 import java.io.File;
@@ -9,11 +28,11 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 
+/**
+ * @author otsakir@gmail.com - Orestis Tsakiridis
+ */
 public class Unzipper {
-    static final Logger logger = Logger.getLogger(Unzipper.class.getName());
-
     File outputDirectory;
 
     public Unzipper(File outputDirectory) {
@@ -35,16 +54,10 @@ public class Unzipper {
 
               // create the destination directory if it does not exist (works for both file and dir entries)
               if (!destinationDir.exists()) {
-                  if(logger.isDebugEnabled()) {
-                      logger.debug("creating new directory from zip: " + pathname);
-                  }
                   destinationDir.mkdirs();
               }
 
               if (!zipEntry.isDirectory()) {
-                  if(logger.isDebugEnabled()) {
-                      logger.debug("creating new file from zip: " + pathname);
-                  }
                   FileOutputStream fileEntryStream = new FileOutputStream(new File(pathname));
                   IOUtils.copy(zipInputStream, fileEntryStream);
                   fileEntryStream.close();
