@@ -365,7 +365,7 @@ public class ExternalServiceStep extends Step {
                             try {
                                 value = interpreter.evaluateExtractorExpression(assignment.getValueExtractor(), response_element);
                             } catch ( BadExternalServiceResponse e ) {
-                                throw new ESProcessFailed("Could not parse variable "  + assignment.getDestVariable() + ". Variable not found in response" + " - " + (e.getMessage() != null ? " - " + e.getMessage() : ""));
+                                throw new ESProcessFailed("Could not parse variable '"  + assignment.getDestVariable() + "'. Variable not found in response" + " - " + (e.getMessage() != null ? " - " + e.getMessage() : ""));
                             }
 
                             if ( "application".equals(assignment.getScope()) )
@@ -384,7 +384,7 @@ public class ExternalServiceStep extends Step {
                         try {
                             value = interpreter.evaluateExtractorExpression(assignment.getValueExtractor(), response_element);
                         } catch ( BadExternalServiceResponse e ) {
-                            throw new ESProcessFailed("Could not parse variable "  + assignment.getDestVariable() + ". Variable not found in response" + (e.getMessage() != null ? " - " + e.getMessage() : ""));
+                            throw new ESProcessFailed("Could not parse variable '"  + assignment.getDestVariable() + "'. Variable not found in response" + (e.getMessage() != null ? " - " + e.getMessage() : ""));
                         }
 
                         if ( "application".equals(assignment.getScope()) )

@@ -201,8 +201,8 @@ public class ProjectRestService extends SecuredRestService {
         projectInfo.addProperty("name", name);
         projectInfo.addProperty("sid", applicationSid);
         projectInfo.addProperty("kind", kind);
-        if (RvdLoggers.local.isLoggable(Level.FINE))
-            RvdLoggers.local.log(Level.FINE, "{0}created {1} project {2} ({3})", new Object[] {logging.getPrefix(), kind, name, applicationSid} );
+        if (RvdLoggers.local.isLoggable(Level.INFO))
+            RvdLoggers.local.log(Level.INFO, "{0}created {1} project {2} ({3})", new Object[] {logging.getPrefix(), kind, name, applicationSid} );
         return Response.ok(gson.toJson(projectInfo), MediaType.APPLICATION_JSON).build();
     }
 
@@ -237,7 +237,7 @@ public class ProjectRestService extends SecuredRestService {
                         || existingProject.getHeader().getOwner() == null) {
                     projectService.updateProject(request, applicationSid, existingProject);
                     if (RvdLoggers.local.isLoggable(Level.FINE))
-                        RvdLoggers.local.log(Level.FINE, "{0} updated project {1}", new Object[]{logging.getPrefix(), applicationSid});
+                        RvdLoggers.local.log(Level.FINE, "{0}updated project {1}", new Object[]{logging.getPrefix(), applicationSid});
                     return buildOkResponse();
                 } else {
                     throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -278,12 +278,12 @@ public class ProjectRestService extends SecuredRestService {
             if (ccInfo != null) {
                 FsCallControlInfoStorage.storeInfo(ccInfo, applicationSid, workspaceStorage);
                 if (RvdLoggers.local.isLoggable(Level.FINE))
-                    RvdLoggers.local.log(Level.FINE, "updated web trigger settings (enabled)");
+                    RvdLoggers.local.log(Level.FINE, "{0}updated web trigger settings (enabled)", logging.getPrefix());
             }
             else {
                 FsCallControlInfoStorage.clearInfo(applicationSid, workspaceStorage);
                 if (RvdLoggers.local.isLoggable(Level.FINE))
-                    RvdLoggers.local.log(Level.FINE, "updated web trigger settings (disabled)");
+                    RvdLoggers.local.log(Level.FINE, "{0}updated web trigger settings (disabled)", logging.getPrefix());
             }
 
             return Response.ok().build();
@@ -373,12 +373,15 @@ public class ProjectRestService extends SecuredRestService {
     public Response deleteProject(@PathParam("applicationSid") String applicationSid, @QueryParam("ticket") String ticket)
             throws RvdException {
         secure();
+        logging.appendApplicationSid(applicationSid);
         if (!RvdUtils.isEmpty(applicationSid)) {
             try {
                 try {
                     ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(), applicationContext);
                     applicationsApi.removeApplication(applicationSid);
                     projectService.deleteProject(applicationSid);
+                    if (RvdLoggers.local.isLoggable(Level.INFO))
+                        RvdLoggers.local.log(Level.INFO, "{0}project removed", logging.getPrefix());
                     return Response.ok().build();
                 } catch (RvdException e) {
                     // inject account and application information into the exception. Will be required if logged.
@@ -403,6 +406,7 @@ public class ProjectRestService extends SecuredRestService {
             @QueryParam("projectName") String projectName)
             throws StorageException, ProjectDoesNotExist, UnsupportedEncodingException, EncoderException {
         secure();
+        logging.appendApplicationSid(applicationSid);
         if (RvdLoggers.local.isLoggable(Level.FINE))
             RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "downloading raw archive for project " + applicationSid);
         assertProjectAvailable(applicationSid);
@@ -464,8 +468,8 @@ public class ProjectRestService extends SecuredRestService {
 
                             // Update application
                             applicationsApi.updateApplication(applicationSid, effectiveProjectName, null, projectKind);
-                            if (RvdLoggers.local.isLoggable(Level.FINE))
-                                RvdLoggers.local.log(Level.FINE, "{0} imported project {1} from raw archive '{2}'", new Object[] {logging.getPrefix(), applicationSid, item.getName()});
+                            if (RvdLoggers.local.isLoggable(Level.INFO))
+                                RvdLoggers.local.log(Level.INFO, "{0}imported project {1} from raw archive ''{2}''", new Object[] {logging.getPrefix(), applicationSid, item.getName()});
                         } catch (Exception e) {
                             applicationsApi.rollbackCreateApplication(applicationSid);
                             throw e;

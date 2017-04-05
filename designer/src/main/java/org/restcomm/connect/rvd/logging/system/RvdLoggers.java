@@ -14,8 +14,9 @@ import java.util.logging.Logger;
  */
 public class RvdLoggers {
 
-    public static final Logger local = Logger.getLogger("RVD.controller");
-    public static final Logger global = Logger.getLogger("visual-designer");
+    public static final Logger local = Logger.getLogger("org.restcomm.connect.rvd.DETAIL"); // detailed messages that are reported only to RVD log
+    public static final Logger global = Logger.getLogger("org.restcomm.connect.rvd.PUBLIC"); // messages that are reported both to RVD and restcomm logs
+    public static final Logger restcomm = Logger.getLogger("org.restcomm.connect.rvd.SUMMARY"); // messages only for restcomm log
 
     public static void init(String path) {
         // create new handler

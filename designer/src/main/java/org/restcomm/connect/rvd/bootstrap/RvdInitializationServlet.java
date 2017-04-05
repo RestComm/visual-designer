@@ -5,7 +5,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.ApplicationContext;
 import org.restcomm.connect.rvd.ApplicationContextBuilder;
 import org.restcomm.connect.rvd.RvdConfiguration;
@@ -18,10 +17,13 @@ import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.upgrade.UpgradeService;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class RvdInitializationServlet extends HttpServlet {
 
-    static final Logger logger = Logger.getLogger("visual-designer");
+    static Logger logger = RvdLoggers.global; // Logger.getLogger("visual-designer");
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -31,8 +33,13 @@ public class RvdInitializationServlet extends HttpServlet {
         // first initialize RVD local logging
         RvdLoggers.init(servletContext.getRealPath("/../../log/rvd/"));
         logger.info("--- Initializing RVD. Project version: " + RvdConfiguration.getRvdProjectVersion() + " ---");
-
-        RvdConfiguration rvdConfiguration = new RvdConfiguration(servletContext);
+        RvdConfiguration rvdConfiguration;
+        try {
+            rvdConfiguration = new RvdConfiguration(servletContext);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error loading rvd configuration file rvd.xml. RVD operation will be broken.",e);
+            throw e;
+        }
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(rvdConfiguration);
         AccountProvider accountProvider = new AccountProvider(rvdConfiguration, httpClientBuilder);
         ApplicationContext appContext = new ApplicationContextBuilder()
@@ -51,7 +58,7 @@ public class RvdInitializationServlet extends HttpServlet {
         try {
             upgradeService.upgradeWorkspace();
         } catch (StorageException e) {
-            logger.error("Error upgrading workspace at " + rvdConfiguration.getWorkspaceBasePath(), e);
+            logger.log(Level.SEVERE,"Error upgrading workspace at " + rvdConfiguration.getWorkspaceBasePath(), e);
         }
     }
 

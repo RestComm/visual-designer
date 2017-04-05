@@ -21,11 +21,13 @@ package org.restcomm.connect.rvd.upgrade;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.InvalidProjectVersion;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.ProjectState;
 import org.restcomm.connect.rvd.model.client.StateHeader;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
@@ -42,7 +44,7 @@ import com.google.gson.JsonParser;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class UpgradeService {
-    static Logger logger = Logger.getLogger("visual-designer");
+    static Logger logger = RvdLoggers.local;
 
     public enum UpgradabilityStatus {
         UPGRADABLE, NOT_NEEDED, NOT_SUPPORTED
@@ -185,8 +187,8 @@ public class UpgradeService {
             return null;
         }
 
-        if(logger.isInfoEnabled()) {
-            logger.info("upgrading '" + projectName + "' from version " + startVersion);
+        if(RvdLoggers.local.isLoggable(Level.INFO)) {
+            RvdLoggers.local.log(Level.INFO, "upgrading '" + projectName + "' from version " + startVersion );
         }
 
         String version = startVersion;
@@ -231,39 +233,36 @@ public class UpgradeService {
             try {
                 if ( upgradeProject(projectName) != null ) {
                     upgradedCount ++;
-                    if(logger.isInfoEnabled()) {
-                        logger.info("project '" + projectName + "' upgraded to version " + RvdConfiguration.getRvdProjectVersion() );
+                    if(RvdLoggers.local.isLoggable(Level.INFO)) {
+                        RvdLoggers.local.log(Level.INFO, "project '" + projectName + "' upgraded to version " + RvdConfiguration.getRvdProjectVersion() );
                     }
                     try {
                         ProjectState projectState = FsProjectStorage.loadProject(projectName, workspaceStorage);
                         buildService.buildProject(projectName, projectState);
-                        if(logger.isInfoEnabled()) {
-                            logger.info("project '" + projectName + "' built");
+                        if(RvdLoggers.local.isLoggable(Level.INFO)) {
+                            RvdLoggers.local.log(Level.INFO, "project '" + projectName + "' built" );
                         }
                     } catch (StorageException e) {
-                        logger.warn("error building upgraded project '" + projectName + "'", e);
+                        RvdLoggers.local.log(Level.WARNING, "error building upgraded project '" + projectName + "'", e);
                     }
                 } else
                     uptodateCount ++;
-            } catch (StorageException e) {
+            } catch (StorageException | UpgradeException e) {
                 failedCount ++;
-                logger.error("error upgrading project '" + projectName + "' to version " + RvdConfiguration.getRvdProjectVersion(), e );
-            } catch (UpgradeException e) {
-                failedCount ++;
-                logger.error("error upgrading project '" + projectName + "' to version " + RvdConfiguration.getRvdProjectVersion(), e );
+                RvdLoggers.local.log(Level.SEVERE, "error upgrading project '" + projectName + "' to version " + RvdConfiguration.getRvdProjectVersion(), e );
             }
         }
         if ( failedCount > 0 )
-            if(logger.isInfoEnabled()) {
-                logger.info("" + failedCount + " RVD projects failed upgrade");
+            if(RvdLoggers.local.isLoggable(Level.INFO)) {
+                RvdLoggers.local.log(Level.INFO, "" + failedCount + " RVD projects failed upgrade" );
             }
         if ( upgradedCount > 0 )
-            if(logger.isInfoEnabled()) {
-                logger.info("" + upgradedCount + " RVD projects upgraded");
+            if(RvdLoggers.local.isLoggable(Level.INFO)) {
+                RvdLoggers.local.log(Level.INFO, "" + upgradedCount + " RVD projects upgraded");
             }
         if ( projectNames.size() > 0 && failedCount == 0)
-            if(logger.isInfoEnabled()) {
-                logger.info("all RVD projects are up to date (or don't need upgrade)");
+            if(RvdLoggers.local.isLoggable(Level.INFO)) {
+                RvdLoggers.local.log(Level.INFO, "all RVD projects are up to date (or don't need upgrade)");
             }
         //if ( upgradedCount  0 && projectNames.size() > 0 )
           //  logger.info("All RVD projects are up-to-date" );

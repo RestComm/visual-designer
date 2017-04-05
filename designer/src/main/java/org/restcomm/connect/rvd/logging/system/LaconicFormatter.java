@@ -12,7 +12,7 @@ import java.util.logging.LogRecord;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class LaconicFormatter extends Formatter {
-    SimpleDateFormat dateFormat = new SimpleDateFormat("MMdd HH:mm:ss.SSS X");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MMdd HH:mm:ss,SSS X");
 
     @Override
     public String format(LogRecord record) {

@@ -132,8 +132,7 @@ public class RasRestService extends SecuredRestService {
     public Response saveApp(@Context HttpServletRequest request, @QueryParam("applicationSid") String applicationSid) {
         secure();
         logging.appendApplicationSid(applicationSid);
-        if (RvdLoggers.local.isLoggable(Level.FINE))
-            RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "saving ras app package");
+
         try {
             String rappData;
             rappData = IOUtils.toString(request.getInputStream(), Charset.forName("UTF-8"));
@@ -145,20 +144,22 @@ public class RasRestService extends SecuredRestService {
             } else {
                 rasService.saveApp(rapp, applicationSid);
             }
+            if (RvdLoggers.local.isLoggable(Level.FINE))
+                RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "ras app info saved");
             return buildOkResponse();
 
         } catch (IOException e) {
             RvdException returnedError = new RvdException("Error saving rapp",e);
-            RvdLoggers.local.log(Level.SEVERE, "error saving ras app package", e);
+            RvdLoggers.local.log(Level.SEVERE, "error saving ras app info", e);
             return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, returnedError);
         } catch (RvdValidationException e) {
             return buildInvalidResponse(Status.OK, RvdResponse.Status.INVALID, e.getReport());
         } catch (StorageException e) {
-            RvdLoggers.local.log(Level.SEVERE, "error saving ras app package", e);
+            RvdLoggers.local.log(Level.SEVERE, "error saving ras app info", e);
             return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
         } catch (ProjectDoesNotExist e) {
             if (RvdLoggers.local.isLoggable(Level.WARNING))
-                RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + "error saving ras app package",e);
+                RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + "error saving ras app info",e);
             return buildErrorResponse(Status.NOT_FOUND, RvdResponse.Status.ERROR,e);
         }
     }
@@ -198,9 +199,6 @@ public class RasRestService extends SecuredRestService {
     public Response getBinaryStatus(@QueryParam("applicationSid") String applicationSid) {
         secure();
         logging.appendApplicationSid(applicationSid);
-        if (RvdLoggers.local.isLoggable(Level.FINEST))
-            RvdLoggers.local.log(Level.FINEST, logging.getPrefix() + "retrieving binary info");
-
         RappBinaryInfo binaryInfo = rasService.getBinaryInfo(applicationSid);
         return buildOkResponse(binaryInfo);
     }
@@ -333,7 +331,7 @@ public class RasRestService extends SecuredRestService {
                             // Build application
                             buildService.buildProject(applicationSid, projectState);
                             if (RvdLoggers.local.isLoggable(Level.INFO))
-                                RvdLoggers.local.log(Level.INFO, "{0} imported ras app {1} ({2})", new Object[] {logging.getPrefix(), applicationSid, effectiveProjectName});
+                                RvdLoggers.local.log(Level.INFO, "{0}imported ras app {1} ({2})", new Object[] {logging.getPrefix(), applicationSid, effectiveProjectName});
                         } catch (Exception e) {
                             applicationsApi.rollbackCreateApplication(applicationSid);
                             throw e;

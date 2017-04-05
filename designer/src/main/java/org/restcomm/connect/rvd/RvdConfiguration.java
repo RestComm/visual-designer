@@ -55,7 +55,7 @@ public class RvdConfiguration {
     public static final int PROJECT_LOG_ROTATION_SIZE = 300000;
     // local logging
     public static int SYSTEM_LOG_FILE_COUNT = 3; // total number of rotated files
-    public static int SYSTEM_LOG_FILE_SIZE = 1000000; // avarage maximum size of each rotated file
+    public static int SYSTEM_LOG_FILE_SIZE = 100000; // avarage maximum size of each rotated file
     public static Level SYSTEM_LOG_LEVEL = Level.FINE;
     // App Store
     public static final String DEFAULT_APPSTORE_DOMAIN = "apps.restcomm.com";

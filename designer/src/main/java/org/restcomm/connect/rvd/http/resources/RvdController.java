@@ -128,7 +128,7 @@ public class RvdController extends SecuredRestService {
 
         } catch (RemoteServiceError | ESProcessFailed | BadExternalServiceResponse |ESRequestException e){
             if (RvdLoggers.local.isLoggable(Level.WARNING))
-                RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + e.getMessage());
+                RvdLoggers.local.log(Level.WARNING, "{0}{1}{2}", new Object[] {logging.getPrefix(),"[app-error] ", e.getMessage()});
             if (rvdContext.getProjectSettings().getLogging())
                 rvdContext.getProjectLogger().log(e.getMessage()).tag("app", appname).tag("EXCEPTION").done();
             rcmlResponse = Interpreter.rcmlOnException();
@@ -149,7 +149,9 @@ public class RvdController extends SecuredRestService {
     public Response controllerGet( @Context HttpServletRequest httpRequest,
             @Context UriInfo ui) {
         if (RvdLoggers.global.isLoggable(Level.INFO))
-            RvdLoggers.global.log(Level.INFO, logging.getPrefix() + " incoming GET request " + (RvdLoggers.global.isLoggable(Level.FINE) ? (ui.getRequestUri().toString()) : "" ));
+            RvdLoggers.global.log(Level.INFO, logging.getPrefix() + "incoming GET request ");
+        if (RvdLoggers.local.isLoggable(Level.FINE))
+            RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "request details: " + ui.getRequestUri().toString());
 
         Enumeration<String> headerNames = (Enumeration<String>) httpRequest.getHeaderNames();
         // TODO remove this loop (?)
@@ -167,7 +169,9 @@ public class RvdController extends SecuredRestService {
     @Produces(MediaType.APPLICATION_XML)
     public Response controllerPost(@Context HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, @Context UriInfo ui) {
         if (RvdLoggers.global.isLoggable(Level.INFO))
-            RvdLoggers.global.log(Level.INFO, logging.getPrefix() + " incoming POST request " + (RvdLoggers.global.isLoggable(Level.FINE) ? (ui.getRequestUri().toString() + " form: " + requestParams.toString()):"" ));
+            RvdLoggers.global.log(Level.INFO, logging.getPrefix() + "incoming POST request ");
+        if (RvdLoggers.local.isLoggable(Level.FINE))
+            RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "POST request: " + ui.getRequestUri().toString() + " form: " + requestParams.toString());
 
         return runInterpreter(applicationId, httpRequest, requestParams);
     }
@@ -457,6 +461,8 @@ public class RvdController extends SecuredRestService {
                 return Response.status(Status.NOT_FOUND).build();
 
             rvdContext.getProjectLogger().reset();
+            if (RvdLoggers.local.isLoggable(Level.FINE))
+                RvdLoggers.local.log(Level.FINE, "{0}application log was reset", logging.getPrefix());
             return Response.ok().build();
         } catch (StorageException e) {
             RvdLoggers.global.log(Level.SEVERE, logging.getPrefix(), e);
