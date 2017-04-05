@@ -7,6 +7,7 @@ public class RvdException extends Exception {
 
     String accountSid;  // account of the user that caused the exception if available
     String applicationSid; // application related to the exception
+    String callSid; // callSid if available
 
     public RvdException() {
         super();
@@ -36,6 +37,14 @@ public class RvdException extends Exception {
 
     public String getApplicationSid() {
         return applicationSid;
+    }
+
+    public String getCallSid() {
+        return callSid;
+    }
+
+    public void setCallSid(String callSid) {
+        this.callSid = callSid;
     }
 
     public ExceptionResult getExceptionSummary() {

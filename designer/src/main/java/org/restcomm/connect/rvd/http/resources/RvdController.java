@@ -148,10 +148,11 @@ public class RvdController extends SecuredRestService {
     @Produces(MediaType.APPLICATION_XML)
     public Response controllerGet( @Context HttpServletRequest httpRequest,
             @Context UriInfo ui) {
+        logging.appendCallSid(ui.getQueryParameters().getFirst("CallSid"));
         if (RvdLoggers.global.isLoggable(Level.INFO))
-            RvdLoggers.global.log(Level.INFO, logging.getPrefix() + "incoming GET request ");
+            RvdLoggers.global.log(Level.INFO, "{0}incoming GET request ", logging.getPrefix());
         if (RvdLoggers.local.isLoggable(Level.FINE))
-            RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "request details: " + ui.getRequestUri().toString());
+            RvdLoggers.local.log(Level.FINE, "{0}request details: {1}", new Object[] {logging.getPrefix(), ui.getRequestUri().toString()});
 
         Enumeration<String> headerNames = (Enumeration<String>) httpRequest.getHeaderNames();
         // TODO remove this loop (?)
@@ -168,10 +169,11 @@ public class RvdController extends SecuredRestService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_XML)
     public Response controllerPost(@Context HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, @Context UriInfo ui) {
+        logging.appendCallSid(requestParams.getFirst("CallSid"));
         if (RvdLoggers.global.isLoggable(Level.INFO))
-            RvdLoggers.global.log(Level.INFO, logging.getPrefix() + "incoming POST request ");
+            RvdLoggers.global.log(Level.INFO, "{0}incoming POST request",logging.getPrefix());
         if (RvdLoggers.local.isLoggable(Level.FINE))
-            RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "POST request: " + ui.getRequestUri().toString() + " form: " + requestParams.toString());
+            RvdLoggers.local.log(Level.FINE, "{0}POST request: {1} form: {2}", new Object[] {logging.getPrefix(), ui.getRequestUri().toString(), requestParams.toString()});
 
         return runInterpreter(applicationId, httpRequest, requestParams);
     }

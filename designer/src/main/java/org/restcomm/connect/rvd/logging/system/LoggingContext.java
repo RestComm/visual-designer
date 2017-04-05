@@ -27,26 +27,39 @@ public class LoggingContext {
     }
 
     public void appendApplicationSid(String sid) {
-        appendPrefix(buildApplicationSid(sid));
+        appendSid(sid);
     }
 
     public void appendAccountSid(String sid) {
-        appendPrefix(buildAccountSid(sid));
+        appendSid(sid);
     }
 
-    public static String buildApplicationSid(String sid) {
+    public void appendCallSid(String sid) { appendSid(sid);}
+
+    public void appendSid(String sid) {
         if (sid != null)
-            return "["+sid.substring(0, 16)+"]";
+            prefix.append("[").append(sid).append("]");
+    }
+
+    static String buildApplicationSid(String sid) {
+        if (sid != null)
+            return "["+sid+"]";
         return "";
     }
 
-    public static String buildAccountSid(String sid) {
+    static String buildAccountSid(String sid) {
         if (sid != null)
-            return "["+sid.substring(0, 16)+"]";
+            return "["+sid+"]";
         return "";
     }
 
-    public static String buildPrefix(String accountSid, String applicationSid) {
-        return buildAccountSid(accountSid) + buildApplicationSid(applicationSid) + " ";
+    static String buildCallSid(String sid) {
+        if (sid != null)
+            return "["+sid+"]";
+        return "";
+    }
+
+    public static String buildPrefix(String accountSid, String applicationSid, String callSid) {
+        return buildAccountSid(accountSid) + buildApplicationSid(applicationSid) + buildCallSid(callSid) + " ";
     }
 }
