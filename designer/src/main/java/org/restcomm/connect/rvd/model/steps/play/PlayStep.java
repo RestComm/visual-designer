@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.apache.http.client.utils.URIBuilder;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 
@@ -54,8 +55,8 @@ public class PlayStep extends Step {
                 uribuilder.setPath(rawurl);
                 url = uribuilder.build().toString();
             } catch (URISyntaxException e) {
-                if (logging.system.isLoggable(Level.WARNING))
-                    logging.system.log(Level.WARNING, logging.getPrefix() + "error parsing url for play verb: " + rawurl, e);
+                if (RvdLoggers.local.isLoggable(Level.WARNING))
+                    RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + "error parsing url for play verb: " + rawurl, e);
                 url = rawurl; // best effort
             }
         }
@@ -63,8 +64,8 @@ public class PlayStep extends Step {
             url = interpreter.populateVariables(remote.wavUrl);
         }
 
-        if (logging.system.isLoggable(Level.FINER))
-            logging.system.log(Level.FINER, "{0} play url: {1}", new Object[] {logging.getPrefix(),url});
+        if (RvdLoggers.local.isLoggable(Level.FINER))
+            RvdLoggers.local.log(Level.FINER, "{0} play url: {1}", new Object[] {logging.getPrefix(),url});
 
         playStep.setWavurl(url);
         playStep.setLoop(loop);

@@ -263,7 +263,7 @@ public class UpgradeService {
             }
         if ( projectNames.size() > 0 && failedCount == 0)
             if(logger.isInfoEnabled()) {
-                logger.info("All RVD projects are up to date (or don't need upgrade)");
+                logger.info("all RVD projects are up to date (or don't need upgrade)");
             }
         //if ( upgradedCount  0 && projectNames.size() > 0 )
           //  logger.info("All RVD projects are up-to-date" );

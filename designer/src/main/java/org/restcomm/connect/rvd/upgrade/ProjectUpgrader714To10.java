@@ -9,7 +9,7 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import java.util.logging.Logger;
 
 public class ProjectUpgrader714To10 implements ProjectUpgrader {
-    static Logger logger = RvdLoggers.system;
+    static Logger logger = RvdLoggers.local;
 
     public ProjectUpgrader714To10() {
         // TODO Auto-generated constructor stub

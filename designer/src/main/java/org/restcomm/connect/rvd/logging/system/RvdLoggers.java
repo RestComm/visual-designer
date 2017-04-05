@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class RvdLoggers {
 
-    public static final Logger system = Logger.getLogger("RVD.controller");
+    public static final Logger local = Logger.getLogger("RVD.controller");
     public static final Logger global = Logger.getLogger("visual-designer");
 
     public static void init(String path) {
@@ -23,14 +23,14 @@ public class RvdLoggers {
         try {
             handler = new FileHandler(path + "/rvd.log", RvdConfiguration.SYSTEM_LOG_FILE_SIZE,RvdConfiguration.SYSTEM_LOG_FILE_COUNT, true);
         } catch (IOException e) {
-            throw new RuntimeException("Error initializing RVD system logging", e);
+            throw new RuntimeException("Error initializing RVD local logging", e);
         }
         handler.setFormatter(new LaconicFormatter());
         // controller handler
-        clearLoggerHandlers(system);
-        system.addHandler(handler);
-        system.setUseParentHandlers(false); // set this to true in order to propagate messages to core Restcomm log
-        system.setLevel(RvdConfiguration.SYSTEM_LOG_LEVEL);
+        clearLoggerHandlers(local);
+        local.addHandler(handler);
+        local.setUseParentHandlers(false); // set this to true in order to propagate messages to core Restcomm log
+        local.setLevel(RvdConfiguration.SYSTEM_LOG_LEVEL);
         // global handler
         clearLoggerHandlers(global);
         global.addHandler(handler);
@@ -51,7 +51,7 @@ public class RvdLoggers {
     }
 
     public static void destroy() {
-        closeLoggerHandlers(system);
+        closeLoggerHandlers(local);
         closeLoggerHandlers(global);
     }
 

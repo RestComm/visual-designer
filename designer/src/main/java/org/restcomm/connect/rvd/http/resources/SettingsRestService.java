@@ -39,6 +39,7 @@ import org.apache.commons.io.IOUtils;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.UserProfile;
 import org.restcomm.connect.rvd.model.client.SettingsModel;
@@ -99,7 +100,7 @@ public class SettingsRestService extends SecuredRestService {
             profileDao.saveUserProfile(loggedUsername, profile);
             return Response.ok().build();
         } catch (IOException | JsonSyntaxException e) {
-            logging.system.log(Level.SEVERE, e.getMessage(), e);
+            RvdLoggers.local.log(Level.SEVERE, e.getMessage(), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }

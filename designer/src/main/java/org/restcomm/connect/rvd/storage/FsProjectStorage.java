@@ -73,7 +73,7 @@ import org.restcomm.connect.rvd.model.RappItem;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class FsProjectStorage {
-    static Logger logger = RvdLoggers.system;
+    static Logger logger = RvdLoggers.local;
 
     public static List<String> listProjectNames(WorkspaceStorage workspaceStorage) throws BadWorkspaceDirectoryStructure {
         List<String> items = new ArrayList<String>();

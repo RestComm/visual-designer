@@ -29,6 +29,7 @@ import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.model.steps.ussdsay.UssdSayStep;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -81,8 +82,8 @@ public class UssdCollectStep extends Step {
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getRvdContext().logging;
-        if (logging.system.isLoggable(Level.INFO))
-            logging.system.log(Level.INFO, logging.getPrefix() + "handling UssdCollect action");
+        if (RvdLoggers.local.isLoggable(Level.INFO))
+            RvdLoggers.local.log(Level.INFO, logging.getPrefix() + "handling UssdCollect action");
 
         if ("menu".equals(gatherType)) {
 
@@ -91,13 +92,13 @@ public class UssdCollectStep extends Step {
                 // use a string for USSD collect. Alpha is supported too
                 String digits = interpreter.getRequestParams().getFirst("Digits");
 
-                if (logging.system.isLoggable(Level.FINER))
-                    logging.system.log(Level.FINER, "{0} checking digits {1} - {2}", new Object[] {logging.getPrefix(), mapping.digits, digits });
+                if (RvdLoggers.local.isLoggable(Level.FINER))
+                    RvdLoggers.local.log(Level.FINER, "{0} checking digits {1} - {2}", new Object[] {logging.getPrefix(), mapping.digits, digits });
 
                 if (mapping.digits != null && mapping.digits.equals(digits)) {
                     // seems we found out menu selection
-                    if (logging.system.isLoggable(Level.FINER))
-                        logging.system.log(Level.FINER, "{0} seems we found our menu selection", new Object[] {logging.getPrefix(), digits} );
+                    if (RvdLoggers.local.isLoggable(Level.FINER))
+                        RvdLoggers.local.log(Level.FINER, "{0} seems we found our menu selection", new Object[] {logging.getPrefix(), digits} );
                     interpreter.interpret(mapping.next,null,null, originTarget);
                     handled = true;
                 }
@@ -110,8 +111,8 @@ public class UssdCollectStep extends Step {
             String variableName = collectdigits.collectVariable;
             String variableValue = interpreter.getRequestParams().getFirst("Digits");
             if ( variableValue == null ) {
-                if (logging.system.isLoggable(Level.WARNING))
-                    logging.system.log(Level.WARNING, "{0} 'Digits' parameter was null. Is this a valid restcomm request?", logging.getPrefix());
+                if (RvdLoggers.local.isLoggable(Level.WARNING))
+                    RvdLoggers.local.log(Level.WARNING, "{0} 'Digits' parameter was null. Is this a valid restcomm request?", logging.getPrefix());
                 variableValue = "";
             }
 

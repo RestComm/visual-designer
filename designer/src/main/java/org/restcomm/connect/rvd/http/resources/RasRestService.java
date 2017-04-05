@@ -44,6 +44,7 @@ import org.restcomm.connect.rvd.exceptions.ras.UnsupportedRasApplicationVersion;
 import org.restcomm.connect.rvd.http.RvdResponse;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.RappItem;
 import org.restcomm.connect.rvd.model.client.ProjectItem;
@@ -108,8 +109,8 @@ public class RasRestService extends SecuredRestService {
     public Response getAppConfig(@QueryParam("applicationSid") String applicationSid) throws StorageException, ProjectDoesNotExist {
         secure();
         logging.appendApplicationSid(applicationSid);
-        if (logging.system.isLoggable(Level.FINEST))
-            logging.system.log(Level.FINEST, logging.getPrefix() + "retrieving ras app package");
+        if (RvdLoggers.local.isLoggable(Level.FINEST))
+            RvdLoggers.local.log(Level.FINEST, logging.getPrefix() + "retrieving ras app package");
         if (!FsPackagingStorage.hasPackaging(applicationSid, workspaceStorage))
             return buildErrorResponse(Status.NOT_FOUND, RvdResponse.Status.OK, null);
 
@@ -131,8 +132,8 @@ public class RasRestService extends SecuredRestService {
     public Response saveApp(@Context HttpServletRequest request, @QueryParam("applicationSid") String applicationSid) {
         secure();
         logging.appendApplicationSid(applicationSid);
-        if (logging.system.isLoggable(Level.FINER))
-            logging.system.log(Level.FINER, logging.getPrefix() + "saving ras app package");
+        if (RvdLoggers.local.isLoggable(Level.FINE))
+            RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "saving ras app package");
         try {
             String rappData;
             rappData = IOUtils.toString(request.getInputStream(), Charset.forName("UTF-8"));
@@ -148,16 +149,16 @@ public class RasRestService extends SecuredRestService {
 
         } catch (IOException e) {
             RvdException returnedError = new RvdException("Error saving rapp",e);
-            logging.system.log(Level.SEVERE, "error saving ras app package", e);
+            RvdLoggers.local.log(Level.SEVERE, "error saving ras app package", e);
             return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, returnedError);
         } catch (RvdValidationException e) {
             return buildInvalidResponse(Status.OK, RvdResponse.Status.INVALID, e.getReport());
         } catch (StorageException e) {
-            logging.system.log(Level.SEVERE, "error saving ras app package", e);
+            RvdLoggers.local.log(Level.SEVERE, "error saving ras app package", e);
             return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
         } catch (ProjectDoesNotExist e) {
-            if (logging.system.isLoggable(Level.WARNING))
-                logging.system.log(Level.WARNING, logging.getPrefix() + "error saving ras app package",e);
+            if (RvdLoggers.local.isLoggable(Level.WARNING))
+                RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + "error saving ras app package",e);
             return buildErrorResponse(Status.NOT_FOUND, RvdResponse.Status.ERROR,e);
         }
     }
@@ -173,14 +174,14 @@ public class RasRestService extends SecuredRestService {
                 RvdProject project = projectService.load(applicationSid);
                 project.getState().getHeader().setOwner(null); //  no owner should in the exported project
                 rasService.createZipPackage(project);
-                if (logging.system.isLoggable(Level.INFO))
-                    logging.system.log(Level.INFO, logging.getPrefix() + "created zip file " + project.getName());
+                if (RvdLoggers.local.isLoggable(Level.INFO))
+                    RvdLoggers.local.log(Level.INFO, logging.getPrefix() + "created ras zip file ");
                 return buildErrorResponse(Status.OK, RvdResponse.Status.OK, null);
             } else {
                 return buildErrorResponse(Status.OK, RvdResponse.Status.ERROR, new PackagingDoesNotExist());
             }
         } catch (RvdException e) {
-            logging.system.log(Level.SEVERE, "error while creating ras zip file", e);
+            RvdLoggers.local.log(Level.SEVERE, "error while creating ras zip file", e);
             return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
         }
     }
@@ -197,8 +198,8 @@ public class RasRestService extends SecuredRestService {
     public Response getBinaryStatus(@QueryParam("applicationSid") String applicationSid) {
         secure();
         logging.appendApplicationSid(applicationSid);
-        if (logging.system.isLoggable(Level.FINEST))
-            logging.system.log(Level.FINEST, logging.getPrefix() + "retrieving binary info");
+        if (RvdLoggers.local.isLoggable(Level.FINEST))
+            RvdLoggers.local.log(Level.FINEST, logging.getPrefix() + "retrieving binary info");
 
         RappBinaryInfo binaryInfo = rasService.getBinaryInfo(applicationSid);
         return buildOkResponse(binaryInfo);
@@ -213,15 +214,15 @@ public class RasRestService extends SecuredRestService {
             if (FsPackagingStorage.hasPackaging(applicationSid, workspaceStorage)) {
                 //Validator validator = new RappConfigValidator();
                 InputStream zipStream = FsPackagingStorage.getRappBinary(applicationSid, workspaceStorage);
-                if (logging.system.isLoggable(Level.FINEST))
-                    logging.system.log(Level.FINEST, "{0} downloading app zip {1}", new Object[] {logging.getPrefix(),projectName});
+                if (RvdLoggers.local.isLoggable(Level.FINEST))
+                    RvdLoggers.local.log(Level.FINEST, "{0} downloading app zip {1}", new Object[] {logging.getPrefix(),projectName});
                 return Response.ok(zipStream, "application/zip").header("Content-Disposition", "attachment; filename*=UTF-8''" + RvdUtils.myUrlEncode(projectName + ".ras.zip")).build();
             } else {
                 return null;
                 //return buildErrorResponse(Status.OK, RvdResponse.Status.ERROR, new PackagingDoesNotExist());
             }
         } catch (RvdException e) {
-            logging.system.log(Level.SEVERE, "exception downloading app zip", e);
+            RvdLoggers.local.log(Level.SEVERE, "exception downloading app zip", e);
             //return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
             return null;
         }
@@ -331,8 +332,8 @@ public class RasRestService extends SecuredRestService {
 
                             // Build application
                             buildService.buildProject(applicationSid, projectState);
-                            if (logging.system.isLoggable(Level.INFO))
-                                logging.system.log(Level.INFO, "{0} imported ras app {1} ({2})", new Object[] {logging.getPrefix(), applicationSid, effectiveProjectName});
+                            if (RvdLoggers.local.isLoggable(Level.INFO))
+                                RvdLoggers.local.log(Level.INFO, "{0} imported ras app {1} ({2})", new Object[] {logging.getPrefix(), applicationSid, effectiveProjectName});
                         } catch (Exception e) {
                             applicationsApi.rollbackCreateApplication(applicationSid);
                             throw e;
@@ -344,8 +345,8 @@ public class RasRestService extends SecuredRestService {
 
                     }
                     if (item.getName() == null) {
-                        if (logging.system.isLoggable(Level.WARNING))
-                            logging.system.log(Level.WARNING, logging.getPrefix() + "non-file part found in upload");
+                        if (RvdLoggers.local.isLoggable(Level.WARNING))
+                            RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + "non-file part found in upload");
                         fileinfo.addProperty("value", read(item.openStream()));
                     }
                     fileinfos.add(fileinfo);
@@ -359,19 +360,19 @@ public class RasRestService extends SecuredRestService {
                 return Response.ok(json_response,MediaType.APPLICATION_JSON).build();
             }
         } catch ( RestcommAppAlreadyExists e ) {
-            if (logging.system.isLoggable(Level.WARNING))
-                logging.system.log(Level.WARNING, logging.getPrefix() + e.getMessage());
+            if (RvdLoggers.local.isLoggable(Level.WARNING))
+                RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + e.getMessage());
             return buildErrorResponse(Status.CONFLICT, RvdResponse.Status.ERROR, e);
         } catch ( UnsupportedRasApplicationVersion | UnsupportedProjectVersion e ) {
-            if (logging.system.isLoggable(Level.WARNING))
-                logging.system.log(Level.WARNING, logging.getPrefix() + e.getMessage());
+            if (RvdLoggers.local.isLoggable(Level.WARNING))
+                RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + e.getMessage());
             return buildErrorResponse(Status.BAD_REQUEST, RvdResponse.Status.ERROR, e);
         } catch ( InvalidRestcommAppPackage e )  {
-            if (logging.system.isLoggable(Level.WARNING))
-                logging.system.log(Level.WARNING, logging.getPrefix() + e.getMessage());
+            if (RvdLoggers.local.isLoggable(Level.WARNING))
+                RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + e.getMessage());
             return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
         } catch ( Exception e /* TODO - use a more specific  type !!! */) {
-            logging.system.log(Level.SEVERE, logging.getPrefix(), e);
+            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
 
@@ -402,7 +403,7 @@ public class RasRestService extends SecuredRestService {
             } catch (StorageEntityNotFound e) {
                 return buildErrorResponse(Status.OK, RvdResponse.Status.NOT_FOUND, e);
             } catch (StorageException e) {
-                logging.system.log(Level.SEVERE, e.getMessage(),e);
+                RvdLoggers.local.log(Level.SEVERE, e.getMessage(),e);
                 return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
             }
         }
@@ -432,7 +433,7 @@ public class RasRestService extends SecuredRestService {
             Rapp rapp = FsProjectStorage.loadRappFromPackaging(applicationSid, workspaceStorage);
             return buildOkResponse(rapp.getConfig());
         } catch (StorageException e) {
-            logging.system.log(Level.SEVERE, e.getMessage(),e);
+            RvdLoggers.local.log(Level.SEVERE, e.getMessage(),e);
             return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
         }
     }
@@ -473,7 +474,7 @@ public class RasRestService extends SecuredRestService {
             String bootstrapInfo = FsProjectStorage.loadBootstrapInfo(applicationSid, workspaceStorage);
             return Response.ok(bootstrapInfo, MediaType.APPLICATION_JSON).build();
         } catch (StorageException e) {
-            logging.system.log(Level.SEVERE, e.getMessage(),e);
+            RvdLoggers.local.log(Level.SEVERE, e.getMessage(),e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }

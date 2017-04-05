@@ -34,6 +34,7 @@ import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.project.RvdProject;
 import org.restcomm.connect.rvd.restcomm.RestcommApplicationResponse;
 import org.restcomm.connect.rvd.restcomm.RestcommApplicationsResponse;
@@ -97,8 +98,8 @@ public class NotificationsRestService extends SecuredRestService {
     @Consumes(APPLICATION_JSON)
     public Response postNotifications(@Context HttpServletRequest req) {
         secure();
-        if (logging.system.isLoggable(Level.INFO))
-            logging.system.log(Level.INFO, logging.getPrefix() + "received notifications");
+        if (RvdLoggers.local.isLoggable(Level.INFO))
+            RvdLoggers.local.log(Level.INFO, logging.getPrefix() + "received notifications");
         // Note that most know errors respond with 200 OK in case a notification is syntactically correct and. An exception
         // is logged though.
         try {
@@ -107,7 +108,7 @@ public class NotificationsRestService extends SecuredRestService {
             try {
                 notifications = parse.parse(new InputStreamReader(req.getInputStream(), Charset.forName("UTF-8"))).getAsJsonArray();
             } catch (IOException e) {
-                logging.global.log(Level.SEVERE,"could not parse notification from restcomm",e);
+                RvdLoggers.global.log(Level.SEVERE,"could not parse notification from restcomm",e);
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
@@ -120,7 +121,7 @@ public class NotificationsRestService extends SecuredRestService {
                         processAccountRemovalNotification(accountSid);
                     } catch (NotificationProcessingError e) {
                         // ignore most errors. Technically, the notification was properly received.
-                        logging.global.log(Level.SEVERE, logging.getPrefix() + "error processing restcomm notification",e);
+                        RvdLoggers.global.log(Level.SEVERE, logging.getPrefix() + "error processing restcomm notification",e);
                         if (e.getType() == NotificationProcessingError.Type.AccountIsMissing) {
                             //return Response.status(Response.Status.OK).build(); // the removed account was not found when trying to authorize against restcomm
                             continue;
@@ -143,12 +144,12 @@ public class NotificationsRestService extends SecuredRestService {
 
             // TODO refine error handling here
         } catch (ProjectDoesNotExist e) {
-            if (logging.global.isLoggable(Level.WARNING))
-                logging.global.log(Level.WARNING,logging.getPrefix() + "ProjectDoesNotExist exception: " + e.getMessage());
+            if (RvdLoggers.global.isLoggable(Level.WARNING))
+                RvdLoggers.global.log(Level.WARNING,logging.getPrefix() + "ProjectDoesNotExist exception: " + e.getMessage());
             return Response.status(Response.Status.OK).build();
         }
         catch (RvdException e) {
-            logging.global.log(Level.SEVERE, "exception", e);
+            RvdLoggers.global.log(Level.SEVERE, "exception", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return Response.ok().build();
@@ -183,8 +184,8 @@ public class NotificationsRestService extends SecuredRestService {
                 try {
                     projectService.deleteProject(app.getSid());
                 } catch (ProjectDoesNotExist e) {
-                    if (logging.global.isLoggable(Level.WARNING))
-                        logging.global.log(Level.WARNING, "{0} project {1} wasn't removed because it wasn't found", new Object[] {logging.getPrefix(), app.getSid()} );
+                    if (RvdLoggers.global.isLoggable(Level.WARNING))
+                        RvdLoggers.global.log(Level.WARNING, "{0} project {1} wasn't removed because it wasn't found", new Object[] {logging.getPrefix(), app.getSid()} );
                 }
             }
         }

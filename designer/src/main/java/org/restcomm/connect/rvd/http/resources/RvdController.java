@@ -45,6 +45,7 @@ import org.restcomm.connect.rvd.interpreter.exceptions.BadExternalServiceRespons
 import org.restcomm.connect.rvd.interpreter.exceptions.ESProcessFailed;
 import org.restcomm.connect.rvd.interpreter.exceptions.RemoteServiceError;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.CallControlInfo;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.ProjectSettings;
@@ -126,19 +127,19 @@ public class RvdController extends SecuredRestService {
             }
 
         } catch (RemoteServiceError | ESProcessFailed | BadExternalServiceResponse |ESRequestException e){
-            if (logging.system.isLoggable(Level.WARNING))
-                logging.system.log(Level.WARNING, logging.getPrefix() + e.getMessage());
+            if (RvdLoggers.local.isLoggable(Level.WARNING))
+                RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + e.getMessage());
             if (rvdContext.getProjectSettings().getLogging())
                 rvdContext.getProjectLogger().log(e.getMessage()).tag("app", appname).tag("EXCEPTION").done();
             rcmlResponse = Interpreter.rcmlOnException();
         } catch (Exception e) {
-            logging.system.log(Level.SEVERE, logging.getPrefix(), e);
+            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(), e);
             if (rvdContext.getProjectSettings().getLogging())
                 rvdContext.getProjectLogger().log(e.getMessage()).tag("app", appname).tag("EXCEPTION").done();
             rcmlResponse = Interpreter.rcmlOnException();
         }
-        if (logging.system.isLoggable(Level.FINE))
-            logging.system.log(Level.FINE, logging.getPrefix() + "[RCML]" + rcmlResponse);
+        if (RvdLoggers.local.isLoggable(Level.FINE))
+            RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "[RCML]" + rcmlResponse);
         return Response.ok(rcmlResponse, MediaType.APPLICATION_XML).build();
     }
 
@@ -147,8 +148,8 @@ public class RvdController extends SecuredRestService {
     @Produces(MediaType.APPLICATION_XML)
     public Response controllerGet( @Context HttpServletRequest httpRequest,
             @Context UriInfo ui) {
-        if (logging.global.isLoggable(Level.INFO))
-            logging.global.log(Level.INFO, logging.getPrefix() + " incoming GET request " + (logging.global.isLoggable(Level.FINE) ? (ui.getRequestUri().toString()) : "" ));
+        if (RvdLoggers.global.isLoggable(Level.INFO))
+            RvdLoggers.global.log(Level.INFO, logging.getPrefix() + " incoming GET request " + (RvdLoggers.global.isLoggable(Level.FINE) ? (ui.getRequestUri().toString()) : "" ));
 
         Enumeration<String> headerNames = (Enumeration<String>) httpRequest.getHeaderNames();
         // TODO remove this loop (?)
@@ -165,8 +166,8 @@ public class RvdController extends SecuredRestService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_XML)
     public Response controllerPost(@Context HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, @Context UriInfo ui) {
-        if (logging.global.isLoggable(Level.INFO))
-            logging.global.log(Level.INFO, logging.getPrefix() + " incoming POST request " + (logging.global.isLoggable(Level.FINE) ? (ui.getRequestUri().toString() + " form: " + requestParams.toString()):"" ));
+        if (RvdLoggers.global.isLoggable(Level.INFO))
+            RvdLoggers.global.log(Level.INFO, logging.getPrefix() + " incoming POST request " + (RvdLoggers.global.isLoggable(Level.FINE) ? (ui.getRequestUri().toString() + " form: " + requestParams.toString()):"" ));
 
         return runInterpreter(applicationId, httpRequest, requestParams);
     }
@@ -182,7 +183,7 @@ public class RvdController extends SecuredRestService {
         } catch (WavItemDoesNotExist e) {
             return Response.status(Status.NOT_FOUND).build(); // ordinary error page is returned since this will be consumed             // either from restcomm or directly from user
         } catch (StorageException e) {
-            logging.system.log(Level.SEVERE, e.getMessage(), e);
+            RvdLoggers.local.log(Level.SEVERE, e.getMessage(), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build(); // ordinary error page is returned since this will
                                                                           // be consumed either from restcomm or directly
                                                                           // from user
@@ -194,8 +195,8 @@ public class RvdController extends SecuredRestService {
     private RestcommCallArray executeAction(String projectName, HttpServletRequest request, String toParam,
                                             String fromParam, String accessToken, UriInfo ui, AccountProvider accountProvider) throws StorageException, CallControlException {
         logging.appendPrefix("[WT] ");
-        if (logging.global.isLoggable(Level.INFO))
-            logging.global.log(Level.INFO, logging.getPrefix() + "incoming triggering request " + ui.getRequestUri().toString());
+        if (RvdLoggers.global.isLoggable(Level.INFO))
+            RvdLoggers.global.log(Level.INFO, logging.getPrefix() + "incoming triggering request " + ui.getRequestUri().toString());
         if (rvdContext.getProjectSettings().getLogging())
             rvdContext.getProjectLogger().log("WebTrigger incoming request: " + ui.getRequestUri().toString(),false).tag("app", projectName).tag("WebTrigger").done();
 
@@ -248,8 +249,8 @@ public class RvdController extends SecuredRestService {
         } catch (RestcommClient.RestcommClientInitializationException e) {
             throw new CallControlException("WebTrigger",e);
         }
-        if (logging.system.isLoggable(Level.FINE))
-            logging.system.log(Level.FINE, logging.getPrefix() + "reaching restcomm at '" + restcommBaseUri + "'" );
+        if (RvdLoggers.local.isLoggable(Level.FINE))
+            RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "reaching restcomm at '" + restcommBaseUri + "'" );
 
         String rcmlUrl = info.lanes.get(0).startPoint.rcmlUrl;
         // use the existing application for RCML if none has been given
@@ -288,8 +289,8 @@ public class RvdController extends SecuredRestService {
             throw new CallControlException("Error copying user supplied parameters to rcml url", e);
         }
 
-        if (logging.system.isLoggable(Level.FINE))
-            logging.system.log(Level.FINE, logging.getPrefix() + "rcmlUrl: " + rcmlUrl);
+        if (RvdLoggers.local.isLoggable(Level.FINE))
+            RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "rcmlUrl: " + rcmlUrl);
 
         // to: Use value from url. If specified in WebTrigger form, override it.
         String to = toParam;
@@ -328,8 +329,8 @@ public class RvdController extends SecuredRestService {
                     .addParam("From", from).addParam("To", to).addParam("Url", rcmlUrl)
                     .done(marshaler.getGson(), RestcommCallArray.class);
 
-            if (logging.system.isLoggable(Level.FINE))
-                logging.system.log(Level.FINE, logging.getPrefix() + "joined '" + to + "' with " + rcmlUrl);
+            if (RvdLoggers.local.isLoggable(Level.FINE))
+                RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "joined '" + to + "' with " + rcmlUrl);
             return response;
         } catch (AccessApiException e) {
             throw new CallControlException(e.getMessage(), e).setStatusCode(e.getStatusCode());
@@ -359,23 +360,23 @@ public class RvdController extends SecuredRestService {
                             + calls.get(0).getTo(), 200);
         } catch (UnauthorizedCallControlAccess e) {
             // TODO check that the e.getMessage() contains adequate information
-            if (logging.system.isLoggable(Level.INFO))
-                logging.system.log(Level.WARNING, logging.getPrefix() + e.getMessage());
+            if (RvdLoggers.local.isLoggable(Level.INFO))
+                RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + e.getMessage());
             //logger.warn(e);
             return buildWebTriggerHtmlResponse("Web Trigger", "Create call", "failure", "Authentication error", 401);
         } catch (CallControlException e) {
             // TODO check that the e.getMessage() contains adequate information
-            if (logging.global.isLoggable(Level.WARNING))
-                logging.global.log(Level.WARNING, logging.getPrefix() + e.getMessage());
+            if (RvdLoggers.global.isLoggable(Level.WARNING))
+                RvdLoggers.global.log(Level.WARNING, logging.getPrefix() + e.getMessage());
             int httpStatus = 500;
             if (e.getStatusCode() != null)
                 httpStatus = e.getStatusCode();
             return buildWebTriggerHtmlResponse("Web Trigger", "Create call", "failure", "", httpStatus);
         } catch (StorageEntityNotFound e) {
-            logging.global.log(Level.SEVERE, logging.getPrefix(), e);
+            RvdLoggers.global.log(Level.SEVERE, logging.getPrefix(), e);
             return Response.status(Status.NOT_FOUND).build(); // for case when the cc file does not exist
         } catch (StorageException e) {
-            logging.global.log(Level.SEVERE, logging.getPrefix(), e);
+            RvdLoggers.global.log(Level.SEVERE, logging.getPrefix(), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(selectedMediaType).build();
         }
     }
@@ -393,22 +394,22 @@ public class RvdController extends SecuredRestService {
             return buildWebTriggerJsonResponse(CallControlAction.createCall, CallControlStatus.success, 200, calls);
         } catch (UnauthorizedCallControlAccess e) {
             // TODO check that the e.getMessage() contains adequate information
-            if (logging.system.isLoggable(Level.INFO))
-                logging.system.log(Level.WARNING, logging.getPrefix() + e.getMessage());
+            if (RvdLoggers.local.isLoggable(Level.INFO))
+                RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + e.getMessage());
             return buildWebTriggerJsonResponse(CallControlAction.createCall, CallControlStatus.failure, 401, null);
         } catch (CallControlException e) {
             // TODO check that the e.getMessage() contains adequate information
-            if (logging.global.isLoggable(Level.WARNING))
-                logging.global.log(Level.WARNING, logging.getPrefix() + e.getMessage());
+            if (RvdLoggers.global.isLoggable(Level.WARNING))
+                RvdLoggers.global.log(Level.WARNING, logging.getPrefix() + e.getMessage());
             int httpStatus = 500;
             if (e.getStatusCode() != null)
                 httpStatus = e.getStatusCode();
             return buildWebTriggerJsonResponse(CallControlAction.createCall, CallControlStatus.failure, httpStatus, null);
         } catch (StorageEntityNotFound e) {
-            logging.global.log(Level.SEVERE, logging.getPrefix(), e);
+            RvdLoggers.global.log(Level.SEVERE, logging.getPrefix(), e);
             return Response.status(Status.NOT_FOUND).build(); // for case when the cc file does not exist
         } catch (StorageException e) {
-            logging.global.log(Level.SEVERE, logging.getPrefix(), e);
+            RvdLoggers.global.log(Level.SEVERE, logging.getPrefix(), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(selectedMediaType).build();
         }
     }
@@ -439,7 +440,7 @@ public class RvdController extends SecuredRestService {
         } catch (StorageEntityNotFound e) {
             return Response.status(Status.NOT_FOUND).build();
         } catch (StorageException e1) {
-            logging.global.log(Level.SEVERE, logging.getPrefix(), e1);
+            RvdLoggers.global.log(Level.SEVERE, logging.getPrefix(), e1);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -458,7 +459,7 @@ public class RvdController extends SecuredRestService {
             rvdContext.getProjectLogger().reset();
             return Response.ok().build();
         } catch (StorageException e) {
-            logging.global.log(Level.SEVERE, logging.getPrefix(), e);
+            RvdLoggers.global.log(Level.SEVERE, logging.getPrefix(), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }

@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  *
  */
 public class CustomLogger {
-    static final Logger logger = RvdLoggers.system;
+    static final Logger logger = RvdLoggers.local;
 
     protected static final int MAX_TAGS = 5;
 

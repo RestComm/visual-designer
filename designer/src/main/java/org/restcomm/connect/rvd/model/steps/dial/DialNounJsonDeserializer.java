@@ -13,7 +13,7 @@ import com.google.gson.JsonParseException;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 
 public class DialNounJsonDeserializer implements JsonDeserializer<DialNoun> {
-    static final Logger logger = RvdLoggers.system;
+    static final Logger logger = RvdLoggers.local;
 
     @Override
     public DialNoun deserialize(JsonElement element, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {

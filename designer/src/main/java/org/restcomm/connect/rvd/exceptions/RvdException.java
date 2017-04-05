@@ -5,19 +5,37 @@ import com.google.gson.JsonObject;
 
 public class RvdException extends Exception {
 
+    String accountSid;  // account of the user that caused the exception if available
+    String applicationSid; // application related to the exception
+
     public RvdException() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     public RvdException(String message, Throwable cause) {
         super(message, cause);
-        // TODO Auto-generated constructor stub
     }
 
     public RvdException(String message) {
         super(message);
-        // TODO Auto-generated constructor stub
+    }
+
+    public RvdException setAccountSid(String accountSid) {
+        this.accountSid = accountSid;
+        return this;
+    }
+
+    public RvdException setApplicationSid(String applicationSid) {
+        this.applicationSid = applicationSid;
+        return this;
+    }
+
+    public String getAccountSid() {
+        return accountSid;
+    }
+
+    public String getApplicationSid() {
+        return applicationSid;
     }
 
     public ExceptionResult getExceptionSummary() {

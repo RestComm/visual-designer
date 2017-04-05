@@ -39,7 +39,7 @@ import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class Zipper {
-    static Logger logger = RvdLoggers.system;
+    static Logger logger = RvdLoggers.local;
 
     ZipOutputStream zipOut;
     File zipFile;

@@ -28,9 +28,9 @@ public class RvdInitializationServlet extends HttpServlet {
         super.init(config) ;
         // Create application context and store in ServletContext
         ServletContext servletContext = config.getServletContext();
-        // first initialize RVD system logging
+        // first initialize RVD local logging
         RvdLoggers.init(servletContext.getRealPath("/../../log/rvd/"));
-        logger.info("Initializing RVD. Project version: " + RvdConfiguration.getRvdProjectVersion());
+        logger.info("--- Initializing RVD. Project version: " + RvdConfiguration.getRvdProjectVersion() + " ---");
 
         RvdConfiguration rvdConfiguration = new RvdConfiguration(servletContext);
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(rvdConfiguration);
@@ -57,6 +57,7 @@ public class RvdInitializationServlet extends HttpServlet {
 
     @Override
     public void destroy() {
+        logger.info(" --- shutting down RVD --- ");
         super.destroy();
         // need to close logger handlers that linger on
         RvdLoggers.destroy();

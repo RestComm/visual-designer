@@ -57,7 +57,7 @@ import com.google.gson.JsonParseException;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class StepJsonDeserializer implements JsonDeserializer<Step> {
-    static final Logger logger = RvdLoggers.system;
+    static final Logger logger = RvdLoggers.local;
 
     @Override
     public Step deserialize(JsonElement rootElement, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {

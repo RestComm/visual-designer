@@ -8,6 +8,7 @@ import java.util.logging.Level;
 
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
@@ -53,8 +54,8 @@ public class DialStep extends Step {
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getRvdContext().logging;
-        if (logging.system.isLoggable(Level.INFO))
-            logging.system.log(Level.INFO, logging.getPrefix() + "handling dial action");
+        if (RvdLoggers.local.isLoggable(Level.INFO))
+            RvdLoggers.local.log(Level.INFO, logging.getPrefix() + "handling dial action");
         if ( RvdUtils.isEmpty(nextModule) )
             throw new InterpreterException( "'next' module is not defined for step " + getName() );
 
@@ -69,8 +70,8 @@ public class DialStep extends Step {
                 String recordingUrl = interpreter.convertRecordingFileResourceHttp(restcommRecordingUrl, interpreter.getHttpRequest());
                 interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "RecordingUrl", recordingUrl);
             } catch (URISyntaxException e) {
-                if (logging.system.isLoggable(Level.WARNING))
-                    logging.system.log(Level.WARNING, logging.getPrefix() + "cannot convert file URL to http URL - " + restcommRecordingUrl, e);
+                if (RvdLoggers.local.isLoggable(Level.WARNING))
+                    RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + "cannot convert file URL to http URL - " + restcommRecordingUrl, e);
             }
         }
 

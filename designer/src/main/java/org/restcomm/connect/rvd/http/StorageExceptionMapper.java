@@ -14,8 +14,8 @@ public class StorageExceptionMapper implements ExceptionMapper<StorageException>
 
     @Override
     public Response toResponse(StorageException e) {
-        if (RvdLoggers.system.isLoggable(Level.SEVERE))
-            RvdLoggers.system.log(Level.SEVERE, e.getMessage(), e);
+        if (RvdLoggers.local.isLoggable(Level.SEVERE))
+            RvdLoggers.local.log(Level.SEVERE, e.getMessage(), e);
 
         RvdResponse rvdResponse = new RvdResponse(RvdResponse.Status.ERROR).setException(e);
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(rvdResponse.asJson()).build();

@@ -1,6 +1,5 @@
 package org.restcomm.connect.rvd.logging.system;
 
-import java.util.logging.Logger;
 
 /**
  * Encapsulates information that should be added to the logging statements like prefix/suffix etc.
@@ -9,34 +8,45 @@ import java.util.logging.Logger;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class LoggingContext {
-    private String prefix;
-    public Logger system = RvdLoggers.system;
-    public Logger global = RvdLoggers.global;
-
+    private StringBuffer prefix;
 
     public LoggingContext(String prefix) {
-        this.prefix = prefix;
+        this.prefix = new StringBuffer(prefix);
     }
 
     public LoggingContext() {
-        prefix = "";
+        this.prefix = new StringBuffer("");
     }
 
     public String getPrefix() {
-        return prefix;
+        return prefix.toString() + " ";
     }
 
     public void appendPrefix(String word) {
-        this.prefix += word;
+        prefix.append(word);
     }
 
     public void appendApplicationSid(String sid) {
-        if (sid != null)
-            this.prefix += "["+sid.substring(0, 16)+"] ";
+        appendPrefix(buildApplicationSid(sid));
     }
 
     public void appendAccountSid(String sid) {
+        appendPrefix(buildAccountSid(sid));
+    }
+
+    public static String buildApplicationSid(String sid) {
         if (sid != null)
-            this.prefix += "["+sid.substring(0, 16)+"] ";
+            return "["+sid.substring(0, 16)+"]";
+        return "";
+    }
+
+    public static String buildAccountSid(String sid) {
+        if (sid != null)
+            return "["+sid.substring(0, 16)+"]";
+        return "";
+    }
+
+    public static String buildPrefix(String accountSid, String applicationSid) {
+        return buildAccountSid(accountSid) + buildApplicationSid(applicationSid) + " ";
     }
 }
