@@ -43,24 +43,24 @@ public class LoggingContext {
 
     public void appendSid(String sid) {
         if (sid != null)
-            prefix.append("[").append(sid).append("]");
+            prefix.append("[").append(sid.substring(0,18)).append("]");
     }
 
     static String buildApplicationSid(String sid) {
         if (sid != null)
-            return "["+sid+"]";
+            return "["+sid.substring(0,18)+"]";
         return "";
     }
 
     static String buildAccountSid(String sid) {
         if (sid != null)
-            return "["+sid+"]";
+            return "["+sid.substring(0,18)+"]";
         return "";
     }
 
     static String buildCallSid(String sid) {
         if (sid != null)
-            return "["+sid+"]";
+            return "["+sid.substring(0,18)+"]";
         return "";
     }
 
