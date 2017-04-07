@@ -17,8 +17,8 @@ import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.upgrade.UpgradeService;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 
 public class RvdInitializationServlet extends HttpServlet {
@@ -37,7 +37,7 @@ public class RvdInitializationServlet extends HttpServlet {
         try {
             rvdConfiguration = new RvdConfiguration(servletContext);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error loading rvd configuration file rvd.xml. RVD operation will be broken.",e);
+            logger.log(Level.ERROR, "Error loading rvd configuration file rvd.xml. RVD operation will be broken.",e);
             throw e;
         }
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(rvdConfiguration);
@@ -58,7 +58,7 @@ public class RvdInitializationServlet extends HttpServlet {
         try {
             upgradeService.upgradeWorkspace();
         } catch (StorageException e) {
-            logger.log(Level.SEVERE,"Error upgrading workspace at " + rvdConfiguration.getWorkspaceBasePath(), e);
+            logger.log(Level.ERROR,"Error upgrading workspace at " + rvdConfiguration.getWorkspaceBasePath(), e);
         }
     }
 
@@ -66,8 +66,6 @@ public class RvdInitializationServlet extends HttpServlet {
     public void destroy() {
         logger.info(" --- shutting down RVD --- ");
         super.destroy();
-        // need to close logger handlers that linger on
-        RvdLoggers.destroy();
     }
 
     public RvdInitializationServlet() {

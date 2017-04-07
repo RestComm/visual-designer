@@ -21,10 +21,11 @@ package org.restcomm.connect.rvd.model.steps.sms;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
+import org.apache.log4j.Level;
 
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
@@ -114,8 +115,8 @@ public class SmsStep extends Step {
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getRvdContext().logging;
-        if (RvdLoggers.local.isLoggable(Level.INFO))
-            RvdLoggers.local.log(Level.INFO, logging.getPrefix() + "handling sms action");
+        if (RvdLoggers.local.isEnabledFor(Level.INFO))
+            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling sms action"));
 
         if ( RvdUtils.isEmpty(getNext()) )
             throw new InterpreterException( "'next' module is not defined for step " + getName() );

@@ -29,8 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 /**
  * A logger service for an RVD project. It is supposed to help the designer of an application for easy testing debugging without the need
@@ -84,7 +84,7 @@ public class CustomLogger {
                 tags[tagCount] = "[" + name + " " + value +"]";
             tagCount ++;
         } else {
-            logger.warning("cannot add any more tags to the log entry" );
+            logger.warn("cannot add any more tags to the log entry" );
         }
         return this;
     }
@@ -111,7 +111,7 @@ public class CustomLogger {
         try {
             FileUtils.writeStringToFile(mainLogFile, buffer.toString(), Charset.forName("UTF-8"), true);
         } catch (IOException e) {
-            logger.log(Level.WARNING, "error writing to application log to " + logFilenameBase, e);
+            logger.log(Level.WARN, "error writing to application log to " + logFilenameBase, e);
         }
 
         // check for log retation
@@ -133,7 +133,7 @@ public class CustomLogger {
         try {
             FileUtils.writeStringToFile(mainLogFile, "");
         } catch (IOException e) {
-            logger.log(Level.WARNING,"error clearing application log to " + logFilenameBase, e);
+            logger.log(Level.WARN,"error clearing application log to " + logFilenameBase, e);
         }
     }
 

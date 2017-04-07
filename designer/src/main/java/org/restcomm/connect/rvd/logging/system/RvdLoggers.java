@@ -1,11 +1,14 @@
 package org.restcomm.connect.rvd.logging.system;
 
-import org.restcomm.connect.rvd.RvdConfiguration;
+import org.apache.log4j.Appender;
+import org.apache.log4j.EnhancedPatternLayout;
+import org.apache.log4j.Layout;
+import org.apache.log4j.RollingFileAppender;
 
 import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
+
 
 /**
  * A static place to host loggers that are accessed programmatically (not necessarily by class name)
@@ -13,48 +16,42 @@ import java.util.logging.Logger;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class RvdLoggers {
+    static final String RVD_APPENDER = "rvd-appender";
 
     public static final Logger local = Logger.getLogger("org.restcomm.connect.rvd.DETAIL"); // detailed messages that are reported only to RVD log
     public static final Logger global = Logger.getLogger("org.restcomm.connect.rvd.PUBLIC"); // messages that are reported both to RVD and restcomm logs
-    public static final Logger restcomm = Logger.getLogger("org.restcomm.connect.rvd.SUMMARY"); // messages only for restcomm log
+    static Appender appender;
 
     public static void init(String path) {
-        // create new handler
-        Handler handler;
-        try {
-            handler = new FileHandler(path + "/rvd.log", RvdConfiguration.SYSTEM_LOG_FILE_SIZE,RvdConfiguration.SYSTEM_LOG_FILE_COUNT, true);
-        } catch (IOException e) {
-            throw new RuntimeException("Error initializing RVD local logging", e);
+        // either create the appender or use the existing one
+        appender = getRvdAppender(local, path);
+        prepareLogger(local,false);
+        prepareLogger(global,true);
+    }
+
+    public static Appender getRvdAppender(Logger logger, String path) {
+        Appender appender = logger.getAppender(RVD_APPENDER);
+        if (appender == null) {
+            try {
+                appender = new RollingFileAppender(createLayout(), path + "/rvd.log", true );
+                appender.setName(RVD_APPENDER);
+            } catch (IOException e) {
+                throw new RuntimeException("Error initializing RVD local logging", e);
+            }
         }
-        handler.setFormatter(new LaconicFormatter());
-        // controller handler
-        clearLoggerHandlers(local);
-        local.addHandler(handler);
-        local.setUseParentHandlers(false); // set this to true in order to propagate messages to core Restcomm log
-        local.setLevel(RvdConfiguration.SYSTEM_LOG_LEVEL);
-        // global handler
-        clearLoggerHandlers(global);
-        global.addHandler(handler);
-        global.setUseParentHandlers(true); // set this to true in order to propagate messages to core Restcomm log
-        global.setLevel(RvdConfiguration.SYSTEM_LOG_LEVEL);
+        return appender;
     }
 
-    private static void clearLoggerHandlers(Logger logger) {
-        for ( Handler anyhandler: logger.getHandlers()) {
-            logger.removeHandler(anyhandler);
+    public static Layout createLayout() {
+        return new EnhancedPatternLayout("%d{MMdd HH:mm:ss,SSS X} %p (%t) %m %n");
+    }
+
+    public static void prepareLogger(Logger logger, boolean additivity) {
+        if (logger != null) {
+            if (logger.getAppender(RVD_APPENDER) == null)
+                logger.addAppender(appender);
+            logger.setAdditivity(additivity);
         }
     }
-
-    private static void closeLoggerHandlers(Logger logger) {
-        for (Handler anyhandler: logger.getHandlers()) {
-            anyhandler.close();
-        }
-    }
-
-    public static void destroy() {
-        closeLoggerHandlers(local);
-        closeLoggerHandlers(global);
-    }
-
 
 }

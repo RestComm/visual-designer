@@ -21,12 +21,13 @@ package org.restcomm.connect.rvd.upgrade;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.InvalidProjectVersion;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.ProjectState;
 import org.restcomm.connect.rvd.model.client.StateHeader;
@@ -187,8 +188,8 @@ public class UpgradeService {
             return null;
         }
 
-        if(RvdLoggers.local.isLoggable(Level.INFO)) {
-            RvdLoggers.local.log(Level.INFO, "upgrading '" + projectName + "' from version " + startVersion );
+        if(RvdLoggers.local.isEnabledFor(Level.INFO)) {
+            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeProject","upgrading '" + projectName + "' from version " + startVersion ));
         }
 
         String version = startVersion;
@@ -233,36 +234,36 @@ public class UpgradeService {
             try {
                 if ( upgradeProject(projectName) != null ) {
                     upgradedCount ++;
-                    if(RvdLoggers.local.isLoggable(Level.INFO)) {
-                        RvdLoggers.local.log(Level.INFO, "project '" + projectName + "' upgraded to version " + RvdConfiguration.getRvdProjectVersion() );
+                    if(RvdLoggers.local.isEnabledFor(Level.INFO)) {
+                        RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace", "project '" + projectName + "' upgraded to version " + RvdConfiguration.getRvdProjectVersion() ));
                     }
                     try {
                         ProjectState projectState = FsProjectStorage.loadProject(projectName, workspaceStorage);
                         buildService.buildProject(projectName, projectState);
-                        if(RvdLoggers.local.isLoggable(Level.INFO)) {
-                            RvdLoggers.local.log(Level.INFO, "project '" + projectName + "' built" );
+                        if(RvdLoggers.local.isEnabledFor(Level.INFO)) {
+                            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace","project '" + projectName + "' built" ));
                         }
                     } catch (StorageException e) {
-                        RvdLoggers.local.log(Level.WARNING, "error building upgraded project '" + projectName + "'", e);
+                        RvdLoggers.local.log(Level.WARN, "error building upgraded project '" + projectName + "'", e);
                     }
                 } else
                     uptodateCount ++;
             } catch (StorageException | UpgradeException e) {
                 failedCount ++;
-                RvdLoggers.local.log(Level.SEVERE, "error upgrading project '" + projectName + "' to version " + RvdConfiguration.getRvdProjectVersion(), e );
+                RvdLoggers.local.log(Level.ERROR, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace","error upgrading project '" + projectName + "' to version " + RvdConfiguration.getRvdProjectVersion()), e );
             }
         }
         if ( failedCount > 0 )
-            if(RvdLoggers.local.isLoggable(Level.INFO)) {
-                RvdLoggers.local.log(Level.INFO, "" + failedCount + " RVD projects failed upgrade" );
+            if(RvdLoggers.local.isEnabledFor(Level.INFO)) {
+                RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace", "" + failedCount + " RVD projects failed upgrade" ));
             }
         if ( upgradedCount > 0 )
-            if(RvdLoggers.local.isLoggable(Level.INFO)) {
-                RvdLoggers.local.log(Level.INFO, "" + upgradedCount + " RVD projects upgraded");
+            if(RvdLoggers.local.isEnabledFor(Level.INFO)) {
+                RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace","" + upgradedCount + " RVD projects upgraded"));
             }
         if ( projectNames.size() > 0 && failedCount == 0)
-            if(RvdLoggers.local.isLoggable(Level.INFO)) {
-                RvdLoggers.local.log(Level.INFO, "all RVD projects are up to date (or don't need upgrade)");
+            if(RvdLoggers.local.isEnabledFor(Level.INFO)) {
+                RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace","all RVD projects are up to date (or don't need upgrade)"));
             }
         //if ( upgradedCount  0 && projectNames.size() > 0 )
           //  logger.info("All RVD projects are up-to-date" );

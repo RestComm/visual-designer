@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
+import org.apache.log4j.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +28,7 @@ import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.UndefinedTarget;
 import org.restcomm.connect.rvd.interpreter.exceptions.BadExternalServiceResponse;
 import org.restcomm.connect.rvd.interpreter.exceptions.InvalidAccessOperationAction;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.StepJsonDeserializer;
@@ -272,8 +273,8 @@ public class Interpreter {
             targetParam = projectOptions.getDefaultTarget();
             if (targetParam == null)
                 throw new UndefinedTarget();
-            if (RvdLoggers.local.isLoggable(Level.FINER))
-                RvdLoggers.local.log(Level.FINER, rvdContext.logging.getPrefix() + "override default target to " + targetParam);
+            if (RvdLoggers.local.isTraceEnabled())
+                RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"interpret", rvdContext.logging.getPrefix(), "override default target to " + targetParam));
         }
 
         processBootstrapParameters();
@@ -305,8 +306,8 @@ public class Interpreter {
 
 
     public String interpret(String targetParam, RcmlResponse rcmlModel, Step prependStep, Target originTarget ) throws InterpreterException, StorageException {
-        if (RvdLoggers.local.isLoggable(Level.FINER))
-            RvdLoggers.local.log(Level.FINER, rvdContext.logging.getPrefix() + "starting interpeter for " + targetParam);
+        if (RvdLoggers.local.isTraceEnabled())
+            RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"interpret", rvdContext.logging.getPrefix(), "starting interpeter for " + targetParam));
         if ( rvdContext.getProjectSettings().getLogging() )
             projectLogger.log("Running target: " + targetParam).tag("app",appName).done();
 
@@ -336,8 +337,8 @@ public class Interpreter {
             // Prepend step if required. Usually used for error messages
             if ( prependStep != null ) {
                 RcmlStep rcmlStep = prependStep.render(this);
-                if(RvdLoggers.local.isLoggable(Level.FINE))
-                    RvdLoggers.local.log(Level.FINE,"Prepending say step: " + rcmlStep );
+                if(RvdLoggers.local.isTraceEnabled())
+                    RvdLoggers.local.log(Level.TRACE,LoggingHelper.buildMessage(getClass(),"interpret", "Prepending say step: " + rcmlStep ));
                 rcmlModel.steps.add( rcmlStep );
             }
 
@@ -494,8 +495,8 @@ public class Interpreter {
                 try {
                     encodedValue = URLEncoder.encode( value, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
-                    if (RvdLoggers.local.isLoggable(Level.WARNING))
-                        RvdLoggers.local.log(Level.WARNING,rvdContext.logging.getPrefix() + "error encoding RVD variable " + key + ": " + value, e);
+
+                        RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"buildAction", rvdContext.logging.getPrefix(), "error encoding RVD variable " + key + ": " + value), e);
                 }
 
             query += key + "=" + encodedValue;
@@ -515,8 +516,8 @@ public class Interpreter {
                     try {
                         encodedValue = URLEncoder.encode( value, "UTF-8");
                     } catch (UnsupportedEncodingException e) {
-                        if (RvdLoggers.local.isLoggable(Level.WARNING))
-                            RvdLoggers.local.log(Level.WARNING, rvdContext.logging.getPrefix() + "error encoding RVD variable " + variableName + ": " + value, e);
+
+                            RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"buildAction", rvdContext.logging.getPrefix(),"error encoding RVD variable " + variableName + ": " + value), e);
                     }
 
                 query += variableName + "=" + encodedValue;
@@ -596,8 +597,7 @@ public class Interpreter {
         URIBuilder fileUriBuilder = new URIBuilder(fileResource);
 
         if ( ! fileUriBuilder.isAbsolute() ) {
-            if (RvdLoggers.local.isLoggable(Level.WARNING))
-                RvdLoggers.local.log(Level.WARNING, rvdContext.logging.getPrefix() + "cannot convert file URL to http URL - " + fileResource);
+                RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"convertRecordingFileResourceHttp", rvdContext.logging.getPrefix(),"cannot convert file URL to http URL - " + fileResource));
             return "";
         }
 
@@ -774,11 +774,10 @@ public class Interpreter {
                 if ( valueElement.isJsonPrimitive() && valueElement.getAsJsonPrimitive().isString() ) {
                     value = valueElement.getAsJsonPrimitive().getAsString();
                     getVariables().put(name, value);
-                    if (RvdLoggers.local.isLoggable(Level.FINER))
-                        RvdLoggers.local.log(Level.FINER,rvdContext.logging.getPrefix() + "loaded bootstrap parameter: " + name + " - " + value);
+                    if (RvdLoggers.local.isTraceEnabled())
+                        RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"processBootstrapParameters", rvdContext.logging.getPrefix(),"loaded bootstrap parameter: " + name + " - " + value));
                 } else
-                    if (RvdLoggers.local.isLoggable(Level.WARNING))
-                        RvdLoggers.local.log(Level.WARNING,rvdContext.logging.getPrefix() + "warning. Not-string bootstrap value found for parameter: " + name);
+                    RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"processBootstrapParameters", rvdContext.logging.getPrefix(), "warning. Not-string bootstrap value found for parameter: " + name));
             }
         }
     }

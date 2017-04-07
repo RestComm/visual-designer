@@ -22,13 +22,14 @@ package org.restcomm.connect.rvd.model.steps.ussdcollect;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
+import org.apache.log4j.Level;
 
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.model.steps.ussdsay.UssdSayStep;
@@ -82,8 +83,8 @@ public class UssdCollectStep extends Step {
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getRvdContext().logging;
-        if (RvdLoggers.local.isLoggable(Level.INFO))
-            RvdLoggers.local.log(Level.INFO, logging.getPrefix() + "handling UssdCollect action");
+        if (RvdLoggers.local.isEnabledFor(Level.INFO))
+            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling UssdCollect action"));
 
         if ("menu".equals(gatherType)) {
 
@@ -92,13 +93,13 @@ public class UssdCollectStep extends Step {
                 // use a string for USSD collect. Alpha is supported too
                 String digits = interpreter.getRequestParams().getFirst("Digits");
 
-                if (RvdLoggers.local.isLoggable(Level.FINER))
-                    RvdLoggers.local.log(Level.FINER, "{0} checking digits {1} - {2}", new Object[] {logging.getPrefix(), mapping.digits, digits });
+                if (RvdLoggers.local.isTraceEnabled())
+                    RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"handleAction","{0} checking digits {1} - {2}", new Object[] {logging.getPrefix(), mapping.digits, digits }));
 
                 if (mapping.digits != null && mapping.digits.equals(digits)) {
                     // seems we found out menu selection
-                    if (RvdLoggers.local.isLoggable(Level.FINER))
-                        RvdLoggers.local.log(Level.FINER, "{0} seems we found our menu selection", new Object[] {logging.getPrefix(), digits} );
+                    if (RvdLoggers.local.isTraceEnabled())
+                        RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"handleAction","{0} seems we found our menu selection", new Object[] {logging.getPrefix(), digits}));
                     interpreter.interpret(mapping.next,null,null, originTarget);
                     handled = true;
                 }
@@ -111,8 +112,7 @@ public class UssdCollectStep extends Step {
             String variableName = collectdigits.collectVariable;
             String variableValue = interpreter.getRequestParams().getFirst("Digits");
             if ( variableValue == null ) {
-                if (RvdLoggers.local.isLoggable(Level.WARNING))
-                    RvdLoggers.local.log(Level.WARNING, "{0} 'Digits' parameter was null. Is this a valid restcomm request?", logging.getPrefix());
+                RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"handleAction",logging.getPrefix(),"'Digits' parameter was null. Is this a valid restcomm request?"));
                 variableValue = "";
             }
 

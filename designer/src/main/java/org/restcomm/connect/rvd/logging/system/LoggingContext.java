@@ -1,6 +1,7 @@
 package org.restcomm.connect.rvd.logging.system;
 
 
+
 /**
  * Encapsulates information that should be added to the logging statements like prefix/suffix etc.
  * A single LoggingContext is created per request.
@@ -19,7 +20,11 @@ public class LoggingContext {
     }
 
     public String getPrefix() {
-        return prefix.toString() + " ";
+        return prefix.toString();
+    }
+
+    public StringBuffer getPrefixBuffer() {
+        return prefix;
     }
 
     public void appendPrefix(String word) {
@@ -62,4 +67,5 @@ public class LoggingContext {
     public static String buildPrefix(String accountSid, String applicationSid, String callSid) {
         return buildAccountSid(accountSid) + buildApplicationSid(applicationSid) + buildCallSid(callSid) + " ";
     }
+
 }

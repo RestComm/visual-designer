@@ -20,11 +20,12 @@
 package org.restcomm.connect.rvd.model.steps.play;
 
 import java.net.URISyntaxException;
-import java.util.logging.Level;
+import org.apache.log4j.Level;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
@@ -55,8 +56,8 @@ public class PlayStep extends Step {
                 uribuilder.setPath(rawurl);
                 url = uribuilder.build().toString();
             } catch (URISyntaxException e) {
-                if (RvdLoggers.local.isLoggable(Level.WARNING))
-                    RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + "error parsing url for play verb: " + rawurl, e);
+
+                    RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"render", logging.getPrefix(), "error parsing url for play verb: " + rawurl), e);
                 url = rawurl; // best effort
             }
         }
@@ -64,8 +65,8 @@ public class PlayStep extends Step {
             url = interpreter.populateVariables(remote.wavUrl);
         }
 
-        if (RvdLoggers.local.isLoggable(Level.FINER))
-            RvdLoggers.local.log(Level.FINER, "{0} play url: {1}", new Object[] {logging.getPrefix(),url});
+        if (RvdLoggers.local.isTraceEnabled())
+            RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"render","{0} play url: {1}", new Object[] {logging.getPrefix(),url}));
 
         playStep.setWavurl(url);
         playStep.setLoop(loop);

@@ -4,10 +4,11 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
+import org.apache.log4j.Level;
 
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
@@ -54,8 +55,8 @@ public class DialStep extends Step {
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getRvdContext().logging;
-        if (RvdLoggers.local.isLoggable(Level.INFO))
-            RvdLoggers.local.log(Level.INFO, logging.getPrefix() + "handling dial action");
+        if (RvdLoggers.local.isEnabledFor(Level.INFO))
+            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling dial action"));
         if ( RvdUtils.isEmpty(nextModule) )
             throw new InterpreterException( "'next' module is not defined for step " + getName() );
 
@@ -70,8 +71,7 @@ public class DialStep extends Step {
                 String recordingUrl = interpreter.convertRecordingFileResourceHttp(restcommRecordingUrl, interpreter.getHttpRequest());
                 interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "RecordingUrl", recordingUrl);
             } catch (URISyntaxException e) {
-                if (RvdLoggers.local.isLoggable(Level.WARNING))
-                    RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + "cannot convert file URL to http URL - " + restcommRecordingUrl, e);
+                RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "cannot convert file URL to http URL - " + restcommRecordingUrl), e);
             }
         }
 

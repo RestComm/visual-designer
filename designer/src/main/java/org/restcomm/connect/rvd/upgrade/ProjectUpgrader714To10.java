@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 public class ProjectUpgrader714To10 implements ProjectUpgrader {
     static Logger logger = RvdLoggers.local;

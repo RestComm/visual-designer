@@ -22,7 +22,7 @@ package org.restcomm.connect.rvd.http.resources;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.logging.Level;
+import org.apache.log4j.Level;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +39,7 @@ import org.apache.commons.io.IOUtils;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.UserProfile;
@@ -98,11 +99,11 @@ public class SettingsRestService extends SecuredRestService {
             profile.setUsername(settingsForm.getApiServerUsername());
             profile.setToken(settingsForm.getApiServerPass());
             profileDao.saveUserProfile(loggedUsername, profile);
-            if (RvdLoggers.local.isLoggable(Level.FINE))
-                RvdLoggers.local.log(Level.FINE, "{0}user profile updated", logging.getPrefix());
+            if (RvdLoggers.local.isDebugEnabled())
+                RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"setProfile",logging.getPrefix(),"user profile updated"));
             return Response.ok().build();
         } catch (IOException | JsonSyntaxException e) {
-            RvdLoggers.local.log(Level.SEVERE, e.getMessage(), e);
+            RvdLoggers.local.log(Level.ERROR, LoggingHelper.buildMessage(getClass(),"setProfile", logging.getPrefix(), e.getMessage()), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }

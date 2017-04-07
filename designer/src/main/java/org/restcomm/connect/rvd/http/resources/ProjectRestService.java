@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
+import org.apache.log4j.Level;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +49,7 @@ import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.jsonvalidation.exceptions.ValidationException;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.CallControlInfo;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
@@ -141,13 +142,13 @@ public class ProjectRestService extends SecuredRestService {
             items = projectService.getAvailableProjectsByOwner(getLoggedUsername());
             projectService.fillStartUrlsForProjects(items, request);
         } catch (BadWorkspaceDirectoryStructure e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         } catch (StorageException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         } catch (ProjectException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
 
@@ -162,8 +163,8 @@ public class ProjectRestService extends SecuredRestService {
         secure();
         ProjectApplicationsApi applicationsApi = null;
         String applicationSid = null;
-        if (RvdLoggers.local.isLoggable(Level.FINER))
-            RvdLoggers.local.log(Level.FINER, logging.getPrefix() + "Will create project labeled " + name );
+        if (RvdLoggers.local.isTraceEnabled())
+            RvdLoggers.local.log(Level.TRACE, logging.getPrefix() + " Will create project labeled " + name );
         try {
             applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext);
             applicationSid = applicationsApi.createApplication(name, kind);
@@ -172,28 +173,28 @@ public class ProjectRestService extends SecuredRestService {
             buildService.buildProject(applicationSid, projectState);
 
         } catch (ProjectAlreadyExists e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             try {
                 applicationsApi.rollbackCreateApplication(applicationSid);
             } catch (ApplicationsApiSyncException e1) {
-                RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+                RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
                 return Response.status(Status.INTERNAL_SERVER_ERROR).build();
             }
             return Response.status(Status.CONFLICT).build();
         } catch (StorageException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         } catch (InvalidServiceParameters e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e.getMessage() );
+            RvdLoggers.local.log(Level.ERROR, LoggingHelper.buildMessage(getClass(), "createProject", logging.getPrefix(), e.getMessage()) );
             return Response.status(Status.BAD_REQUEST).build();
         } catch (ApplicationAlreadyExists e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.CONFLICT).build();
         } catch (ApplicationsApiSyncException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         } catch (UnsupportedEncodingException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
         Gson gson = new Gson();
@@ -201,8 +202,8 @@ public class ProjectRestService extends SecuredRestService {
         projectInfo.addProperty("name", name);
         projectInfo.addProperty("sid", applicationSid);
         projectInfo.addProperty("kind", kind);
-        if (RvdLoggers.local.isLoggable(Level.INFO))
-            RvdLoggers.local.log(Level.INFO, "{0}created {1} project {2} ({3})", new Object[] {logging.getPrefix(), kind, name, applicationSid} );
+        if (RvdLoggers.local.isEnabledFor(Level.INFO))
+            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "createProject","{0}created {1} project {2} ({3})", new Object[] {logging.getPrefix(), kind, name, applicationSid} ) );
         return Response.ok(gson.toJson(projectInfo), MediaType.APPLICATION_JSON).build();
     }
 
@@ -236,8 +237,8 @@ public class ProjectRestService extends SecuredRestService {
                 if (getLoggedUsername().equals(existingProject.getHeader().getOwner())
                         || existingProject.getHeader().getOwner() == null) {
                     projectService.updateProject(request, applicationSid, existingProject);
-                    if (RvdLoggers.local.isLoggable(Level.FINE))
-                        RvdLoggers.local.log(Level.FINE, "{0}updated project {1}", new Object[]{logging.getPrefix(), applicationSid});
+                    if (RvdLoggers.local.isDebugEnabled())
+                        RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(), "updateProject",  logging.getPrefix(), "updated project"));
                     return buildOkResponse();
                 } else {
                     throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -249,17 +250,17 @@ public class ProjectRestService extends SecuredRestService {
                 // Gson gson = new Gson();
                 // return Response.ok(gson.toJson(e.getValidationResult()), MediaType.APPLICATION_JSON).build();
             } catch (IncompatibleProjectVersion e) {
-                RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+                RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.asJson()).type(MediaType.APPLICATION_JSON)
                         .build();
             } catch (RvdException e) {
-                RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+                RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
                 return buildErrorResponse(Status.OK, RvdResponse.Status.ERROR, e);
                 // return Response.status(Status.INTERNAL_SERVER_ERROR).build();
             }
         } else {
-            if (RvdLoggers.local.isLoggable(Level.WARNING))
-                RvdLoggers.local.log(Level.WARNING, "no id specified when updating project");
+
+                RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"updateProject",logging.getPrefix(),"no id specified when updating project"));
             return Response.status(Status.BAD_REQUEST).build();
         }
     }
@@ -277,21 +278,21 @@ public class ProjectRestService extends SecuredRestService {
             CallControlInfo ccInfo = marshaler.toModel(data, CallControlInfo.class);
             if (ccInfo != null) {
                 FsCallControlInfoStorage.storeInfo(ccInfo, applicationSid, workspaceStorage);
-                if (RvdLoggers.local.isLoggable(Level.FINE))
-                    RvdLoggers.local.log(Level.FINE, "{0}updated web trigger settings (enabled)", logging.getPrefix());
+                if (RvdLoggers.local.isDebugEnabled())
+                    RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage( getClass(), "storeCcInfo", logging.getPrefix(), "updated web trigger settings (enabled)"));
             }
             else {
                 FsCallControlInfoStorage.clearInfo(applicationSid, workspaceStorage);
-                if (RvdLoggers.local.isLoggable(Level.FINE))
-                    RvdLoggers.local.log(Level.FINE, "{0}updated web trigger settings (disabled)", logging.getPrefix());
+                if (RvdLoggers.local.isDebugEnabled())
+                    RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(), "storeCcInfo", logging.getPrefix(), "updated web trigger settings (disabled)"));
             }
 
             return Response.ok().build();
         } catch (IOException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         } catch (StorageException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -307,7 +308,7 @@ public class ProjectRestService extends SecuredRestService {
         } catch (StorageEntityNotFound e) {
             return Response.status(Status.NOT_FOUND).build();
         } catch (StorageException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -324,14 +325,14 @@ public class ProjectRestService extends SecuredRestService {
                 try {
                     applicationsApi.renameApplication(applicationSid, projectNewName);
                 } catch (ApplicationApiNotSynchedException e) {
-                    if (RvdLoggers.local.isLoggable(Level.WARNING))
-                        RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + e.getMessage());
+
+                        RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"renameProject", logging.getPrefix(), e.getMessage()));
                 }
                 return Response.ok().build();
             } catch (ApplicationAlreadyExists e) {
                 return Response.status(Status.CONFLICT).build();
             } catch (ApplicationsApiSyncException e) {
-                RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+                RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
                 return Response.status(Status.INTERNAL_SERVER_ERROR).build();
             }
         } else
@@ -348,19 +349,19 @@ public class ProjectRestService extends SecuredRestService {
             try {
                 UpgradeService upgradeService = new UpgradeService(workspaceStorage);
                 upgradeService.upgradeProject(applicationSid);
-                if (RvdLoggers.local.isLoggable(Level.INFO))
-                    RvdLoggers.local.log(Level.INFO, "{0} project {1} upgraded to version {2}", new Object[] {logging.getPrefix(), applicationSid, RvdConfiguration.getRvdProjectVersion() });
+                if (RvdLoggers.local.isEnabledFor(Level.INFO))
+                    RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "upgradeProject","{0} project {1} upgraded to version {2}", new Object[] {logging.getPrefix(), applicationSid, RvdConfiguration.getRvdProjectVersion() }));
                 // re-build project
                 BuildService buildService = new BuildService(workspaceStorage);
                 buildService.buildProject(applicationSid, activeProject);
-                if (RvdLoggers.local.isLoggable(Level.INFO))
-                    RvdLoggers.local.log(Level.INFO, logging.getPrefix() + "project " + applicationSid + " built");
+                if (RvdLoggers.local.isEnabledFor(Level.INFO))
+                    RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeProject",logging.getPrefix(), "project " + applicationSid + " built"));
                 return Response.ok().build();
             } catch (StorageException e) {
-                RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+                RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
                 return Response.status(Status.INTERNAL_SERVER_ERROR).build();
             } catch (UpgradeException e) {
-                RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+                RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.asJson()).type(MediaType.APPLICATION_JSON)
                         .build();
             }
@@ -380,8 +381,8 @@ public class ProjectRestService extends SecuredRestService {
                     ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(), applicationContext);
                     applicationsApi.removeApplication(applicationSid);
                     projectService.deleteProject(applicationSid);
-                    if (RvdLoggers.local.isLoggable(Level.INFO))
-                        RvdLoggers.local.log(Level.INFO, "{0}project removed", logging.getPrefix());
+                    if (RvdLoggers.local.isEnabledFor(Level.INFO))
+                        RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "deleteProject", logging.getPrefix(), "project removed"));
                     return Response.ok().build();
                 } catch (RvdException e) {
                     // inject account and application information into the exception. Will be required if logged.
@@ -390,10 +391,10 @@ public class ProjectRestService extends SecuredRestService {
                     throw e;
                 }
             }  catch (StorageException e) {
-                RvdLoggers.local.log(Level.SEVERE, logging.getPrefix() + "error deleting project " + applicationSid, e);
+                RvdLoggers.local.log(Level.ERROR, logging.getPrefix() + "error deleting project " + applicationSid, e);
                 return Response.status(Status.INTERNAL_SERVER_ERROR).build();
             } catch (ApplicationsApiSyncException e) {
-                RvdLoggers.local.log(Level.SEVERE, logging.getPrefix() + "error deleting project through the API " + applicationSid, e);
+                RvdLoggers.local.log(Level.ERROR, logging.getPrefix() + "error deleting project through the API " + applicationSid, e);
                 return Response.status(Status.INTERNAL_SERVER_ERROR).build();
             }
         } else
@@ -407,8 +408,8 @@ public class ProjectRestService extends SecuredRestService {
             throws StorageException, ProjectDoesNotExist, UnsupportedEncodingException, EncoderException {
         secure();
         logging.appendApplicationSid(applicationSid);
-        if (RvdLoggers.local.isLoggable(Level.FINE))
-            RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "downloading raw archive for project " + applicationSid);
+        if (RvdLoggers.local.isDebugEnabled())
+            RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"downloadArchive", logging.getPrefix() + "downloading raw archive for project " + applicationSid));
         assertProjectAvailable(applicationSid);
 
         InputStream archiveStream;
@@ -417,7 +418,7 @@ public class ProjectRestService extends SecuredRestService {
             String dispositionHeader = "attachment; filename*=UTF-8''" + RvdUtils.myUrlEncode(projectName + ".zip");
             return Response.ok(archiveStream, "application/zip").header("Content-Disposition", dispositionHeader).build();
         } catch (StorageException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return null;
         }
     }
@@ -426,8 +427,8 @@ public class ProjectRestService extends SecuredRestService {
     // @Path("{name}/archive")
     public Response importProjectArchive(@Context HttpServletRequest request, @QueryParam("ticket") String ticket) {
         secure();
-        if (RvdLoggers.local.isLoggable(Level.FINER))
-            RvdLoggers.local.log(Level.FINER, logging.getPrefix() + "importing project from raw archive");
+        if (RvdLoggers.local.isTraceEnabled())
+            RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"importProjectArchive", logging.getPrefix(), "importing project from raw archive"));
         ProjectApplicationsApi applicationsApi = null;
         String applicationSid = null;
 
@@ -468,8 +469,8 @@ public class ProjectRestService extends SecuredRestService {
 
                             // Update application
                             applicationsApi.updateApplication(applicationSid, effectiveProjectName, null, projectKind);
-                            if (RvdLoggers.local.isLoggable(Level.INFO))
-                                RvdLoggers.local.log(Level.INFO, "{0}imported project {1} from raw archive ''{2}''", new Object[] {logging.getPrefix(), applicationSid, item.getName()});
+                            if (RvdLoggers.local.isEnabledFor(Level.INFO))
+                                RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"importProjectArchive", "{0}imported project {1} from raw archive ''{2}''", new Object[] {logging.getPrefix(), applicationSid, item.getName()}));
                         } catch (Exception e) {
                             applicationsApi.rollbackCreateApplication(applicationSid);
                             throw e;
@@ -481,8 +482,7 @@ public class ProjectRestService extends SecuredRestService {
 
                     }
                     if (item.getName() == null) {
-                        if (RvdLoggers.local.isLoggable(Level.WARNING))
-                            RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + "non-file part found in upload");
+                        RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"importProjectArchive", logging.getPrefix(), "non-file part found in upload"));
                         fileinfo.addProperty("value", read(item.openStream()));
                     }
                     fileinfos.add(fileinfo);
@@ -492,21 +492,21 @@ public class ProjectRestService extends SecuredRestService {
                 return Response.status(Status.BAD_REQUEST).build();
             }
         } catch (StorageException | UnsupportedProjectVersion e) {
-            if (RvdLoggers.local.isLoggable(Level.WARNING))
-                RvdLoggers.local.log(Level.WARNING, logging.getPrefix(), e);
+
+                RvdLoggers.local.log(Level.WARN, logging.getPrefix(), e);
             return buildErrorResponse(Status.BAD_REQUEST, RvdResponse.Status.ERROR, e);
         } catch (ApplicationAlreadyExists e) {
-            if (RvdLoggers.local.isLoggable(Level.WARNING))
-                RvdLoggers.local.log(Level.WARNING, logging.getPrefix(), e);
+
+                RvdLoggers.local.log(Level.WARN, logging.getPrefix(), e);
             try {
                 applicationsApi.rollbackCreateApplication(applicationSid);
             } catch (ApplicationsApiSyncException e1) {
-                RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+                RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
                 return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
             }
             return buildErrorResponse(Status.CONFLICT, RvdResponse.Status.ERROR, e);
         } catch (Exception e /* TODO - use a more specific type !!! */) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -557,11 +557,11 @@ public class ProjectRestService extends SecuredRestService {
                         projectService.addWavToProject(applicationSid, item.getName(), item.openStream());
                         fileinfo.addProperty("name", item.getName());
                         // fileinfo.addProperty("size", size(item.openStream()));
-                        if (RvdLoggers.local.isLoggable(Level.FINE))
-                            RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "uploaded wav " + item.getName());
+                        if (RvdLoggers.local.isDebugEnabled())
+                            RvdLoggers.local.log(Level.DEBUG, logging.getPrefix() + " uploaded wav " + item.getName());
                     } else {
-                        if (RvdLoggers.local.isLoggable(Level.INFO))
-                            RvdLoggers.local.log(Level.INFO, logging.getPrefix() + "non-file part found in upload");
+                        if (RvdLoggers.local.isEnabledFor(Level.INFO))
+                            RvdLoggers.local.log(Level.INFO, logging.getPrefix() + " non-file part found in upload");
                         fileinfo.addProperty("value", read(item.openStream()));
                     }
                     fileinfos.add(fileinfo);
@@ -575,7 +575,7 @@ public class ProjectRestService extends SecuredRestService {
                 return Response.ok(json_response, MediaType.APPLICATION_JSON).build();
             }
         } catch (Exception e /* TODO - use a more specific type !!! */) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -590,8 +590,8 @@ public class ProjectRestService extends SecuredRestService {
             projectService.removeWavFromProject(applicationSid, wavname);
             return Response.ok().build();
         } catch (WavItemDoesNotExist e) {
-            if (RvdLoggers.local.isLoggable(Level.INFO))
-                RvdLoggers.local.log(Level.INFO, "{0} cannot remove {1} from {2}", new Object[] {logging.getPrefix(), wavname, applicationSid });
+            if (RvdLoggers.local.isEnabledFor(Level.INFO))
+                RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"removeWavFile", "{0} cannot remove {1} from {2}", new Object[] {logging.getPrefix(), wavname, applicationSid }));
             return Response.status(Status.NOT_FOUND).build();
         }
     }
@@ -609,10 +609,10 @@ public class ProjectRestService extends SecuredRestService {
             Gson gson = new Gson();
             return Response.ok(gson.toJson(items), MediaType.APPLICATION_JSON).build();
         } catch (BadWorkspaceDirectoryStructure e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         } catch (StorageException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix() + "error getting wav list for project " + applicationSid, e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix() + "error getting wav list for project " + applicationSid, e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -651,7 +651,7 @@ public class ProjectRestService extends SecuredRestService {
             buildService.buildProject(applicationSid, activeProject);
             return Response.ok().build();
         } catch (StorageException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -666,14 +666,14 @@ public class ProjectRestService extends SecuredRestService {
             data = IOUtils.toString(request.getInputStream(), Charset.forName("UTF-8"));
             ProjectSettings projectSettings = marshaler.toModel(data, ProjectSettings.class);
             FsProjectStorage.storeProjectSettings(projectSettings, applicationSid, workspaceStorage);
-            if (RvdLoggers.local.isLoggable(Level.FINE))
-                RvdLoggers.local.log(Level.FINE, logging.getPrefix() + "saved settings for project " + applicationSid);
+            if (RvdLoggers.local.isDebugEnabled())
+                RvdLoggers.local.log(Level.DEBUG, logging.getPrefix() + " saved settings for project " + applicationSid);
             return Response.ok().build();
         } catch (StorageException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         } catch (IOException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
 
@@ -689,7 +689,7 @@ public class ProjectRestService extends SecuredRestService {
         } catch (StorageEntityNotFound e) {
             return Response.status(Status.NOT_FOUND).build();
         } catch (StorageException e) {
-            RvdLoggers.local.log(Level.SEVERE, logging.getPrefix(),e );
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }

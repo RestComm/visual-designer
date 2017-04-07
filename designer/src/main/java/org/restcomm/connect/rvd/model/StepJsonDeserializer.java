@@ -20,7 +20,7 @@
 package org.restcomm.connect.rvd.model;
 
 import java.lang.reflect.Type;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.Step;
@@ -109,7 +109,7 @@ public class StepJsonDeserializer implements JsonDeserializer<Step> {
             step = gson.fromJson(step_object, UssdLanguageStep.class);
         else {
             step = null;
-            logger.severe("Cannot deserialize step. Unknown step found."); // TODO remove me and return a nice value!!!
+            logger.error("Cannot deserialize step. Unknown step found."); // TODO remove me and return a nice value!!!
         }
 
         return step;

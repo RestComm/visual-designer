@@ -26,8 +26,8 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -158,8 +158,7 @@ public class Zipper {
         try {
             zipOut.finish();
         } catch (IOException e) {
-            if (logger.isLoggable(Level.WARNING))
-                logger.log(Level.WARNING, "Error closing Zipper " + zipFile + ". There is nothing more that can be done.", e);
+            logger.log(Level.WARN, "Error closing Zipper " + zipFile + ". There is nothing more that can be done.", e);
         }
     }
 }

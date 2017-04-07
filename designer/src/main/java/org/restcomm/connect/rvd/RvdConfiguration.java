@@ -8,8 +8,8 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import org.restcomm.connect.rvd.commons.http.SslMode;
@@ -17,6 +17,7 @@ import org.restcomm.connect.rvd.configuration.RestcommConfig;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigNotFound;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigurationException;
 import org.restcomm.connect.rvd.http.utils.UriUtils;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.RvdConfig;
 import org.restcomm.connect.rvd.utils.RvdUtils;
@@ -56,7 +57,7 @@ public class RvdConfiguration {
     // local logging
     public static int SYSTEM_LOG_FILE_COUNT = 3; // total number of rotated files
     public static int SYSTEM_LOG_FILE_SIZE = 100000; // avarage maximum size of each rotated file
-    public static Level SYSTEM_LOG_LEVEL = Level.FINE;
+    public static Level SYSTEM_LOG_LEVEL = Level.DEBUG;
     // App Store
     public static final String DEFAULT_APPSTORE_DOMAIN = "apps.restcomm.com";
     // the names of the parameters supplied by restcomm request when starting an application
@@ -110,7 +111,7 @@ public class RvdConfiguration {
                 workspaceBasePath = contextRootPath + rvdConfig.getWorkspaceLocation(); // this is a relative path hooked under RVD context
         }
         this.workspaceBasePath = workspaceBasePath;
-        logger.info("workspace located under " + workspaceBasePath);
+        RvdLoggers.global.info("workspace located under " + workspaceBasePath);
         // try load configuration from restcomm.war/.../restcomm.xml file
         try {
             restcommConfig = loadRestcommXmlConfig(contextRootPath + "../restcomm.war/WEB-INF/conf/restcomm.xml");
@@ -120,7 +121,7 @@ public class RvdConfiguration {
                 restcommConfig = loadRestcommXmlConfig(contextRootPath + "WEB-INF/restcomm.xml");
             } catch (RestcommConfigNotFound restcommConfigNotFound) {
                 restcommConfig = null;
-                logger.log(Level.WARNING, "could not load restcomm configuration");
+                logger.log(Level.WARN, "could not load restcomm configuration");
             }
         }
     }
@@ -138,7 +139,7 @@ public class RvdConfiguration {
             rvdConfig = (RvdConfig) xstream.fromXML( input );
             return rvdConfig;
         } catch (FileNotFoundException e) {
-            logger.warning("RVD configuration file not found: " + pathToXml);
+            logger.warn(LoggingHelper.buildMessage(getClass(),"loadRvdXmlConfig",null,"RVD configuration file not found: " + pathToXml));
             return null;
         }
     }
@@ -156,7 +157,7 @@ public class RvdConfiguration {
         } catch (RestcommConfigNotFound e) {
             throw e;
         } catch (RestcommConfigurationException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.log(Level.ERROR, e.getMessage(), e);
             return null;
         }
     }
@@ -196,7 +197,7 @@ public class RvdConfiguration {
             try {
                 this.externalServiceTimeout = Integer.parseInt(rvdConfig.getExternalServiceTimeout());
             } catch (NumberFormatException e) {
-                logger.warning("Cannot parse RVD ES timeout configuration setting. Will use default: " + DEFAULT_ES_TIMEOUT + (e.getMessage() != null ? " - " + e.getMessage() : ""));
+                logger.warn(LoggingHelper.buildMessage(getClass(),"getExternalServiceTimeout",null,"Cannot parse RVD ES timeout configuration setting. Will use default: " + DEFAULT_ES_TIMEOUT + (e.getMessage() != null ? " - " + e.getMessage() : "")));
                 this.externalServiceTimeout = DEFAULT_ES_TIMEOUT;
             }
         } else {

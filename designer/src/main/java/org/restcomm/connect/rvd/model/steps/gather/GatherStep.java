@@ -22,13 +22,14 @@ package org.restcomm.connect.rvd.model.steps.gather;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
+import org.apache.log4j.Level;
 
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -91,8 +92,8 @@ public class GatherStep extends Step {
 
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getRvdContext().logging;
-        if (RvdLoggers.local.isLoggable(Level.INFO))
-            RvdLoggers.local.log(Level.INFO, logging.getPrefix() + "handling gather action");
+        if (RvdLoggers.local.isEnabledFor(Level.INFO))
+            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling gather action"));
 
         String digitsString = interpreter.getRequestParams().getFirst("Digits");
         if ( digitsString != null )
@@ -105,13 +106,13 @@ public class GatherStep extends Step {
             for (Mapping mapping : menu.mappings) {
                 String digits = digitsString;
                 //Integer digits = Integer.parseInt( digitsString );
-                if (RvdLoggers.local.isLoggable(Level.FINER))
-                    RvdLoggers.local.log(Level.FINER, "{0}checking digits: {1} - {2}", new Object[] {logging.getPrefix(), mapping.digits, digits} );
+                if (RvdLoggers.local.isTraceEnabled())
+                    RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(), "handleAction","{0}checking digits: {1} - {2}", new Object[] {logging.getPrefix(), mapping.digits, digits}));
 
                 if (mapping.digits != null && mapping.digits.equals(digits)) {
                     // seems we found out menu selection
-                    if (RvdLoggers.local.isLoggable(Level.FINER))
-                        RvdLoggers.local.log(Level.FINER, logging.getPrefix() + "seems we found our menu selection: " + digits);
+                    if (RvdLoggers.local.isTraceEnabled())
+                        RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), " seems we found our menu selection: " + digits));
                     interpreter.interpret(mapping.next,null, null, originTarget);
                     handled = true;
                 }
@@ -124,8 +125,8 @@ public class GatherStep extends Step {
             String variableName = collectdigits.collectVariable;
             String variableValue = interpreter.getRequestParams().getFirst("Digits");
             if ( variableValue == null ) {
-                if (RvdLoggers.local.isLoggable(Level.WARNING))
-                    RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + "'Digits' parameter was null. Is this a valid restcomm request?");
+
+                    RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "'Digits' parameter was null. Is this a valid restcomm request?"));
                 variableValue = "";
             }
 
@@ -144,21 +145,21 @@ public class GatherStep extends Step {
                     effectivePattern = expandedRegexPattern;
                 }
                 else {
-                    if (RvdLoggers.local.isLoggable(Level.WARNING))
-                        RvdLoggers.local.log(Level.WARNING, logging.getPrefix() + "Invalid validation information in gather. Validation object exists while other patterns are null");
+
+                        RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(),  " Invalid validation information in gather. Validation object exists while other patterns are null"));
                 }
                 if (effectivePattern != null ) {
                     doValidation = true;
-                    if (RvdLoggers.local.isLoggable(Level.FINER))
-                        RvdLoggers.local.log(Level.FINER, "{0} validating '{1}' against '{}'", new Object[] {logging.getPrefix(),variableValue, effectivePattern} );
+                    if (RvdLoggers.local.isTraceEnabled())
+                        RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(), "handleAction","{0} validating '{1}' against '{}'", new Object[] {logging.getPrefix(),variableValue, effectivePattern}));
                     if ( !variableValue.matches(effectivePattern) )
                         valid = false;
                 }
             }
 
             if ( doValidation && !valid ) {
-                if (RvdLoggers.local.isLoggable(Level.FINER))
-                    RvdLoggers.local.log(Level.FINER, "{0} Invalid input for gather/collectdigits. Will say the validation message and rerun the gather", logging.getPrefix());
+                if (RvdLoggers.local.isTraceEnabled())
+                    RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), "{0} Invalid input for gather/collectdigits. Will say the validation message and rerun the gather"));
             } else {
                 // is this an application-scoped variable ?
                 if ( "application".equals(collectdigits.scope) ) {

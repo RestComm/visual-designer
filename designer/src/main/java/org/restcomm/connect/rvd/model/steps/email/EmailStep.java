@@ -5,6 +5,7 @@ import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -12,7 +13,7 @@ import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
+import org.apache.log4j.Level;
 
 /**
  * Created by lefty on 6/24/15.
@@ -110,8 +111,8 @@ public class EmailStep extends Step {
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getRvdContext().logging;
-        if (RvdLoggers.local.isLoggable(Level.INFO))
-            RvdLoggers.local.log(Level.INFO, logging.getPrefix() + "handling email action");
+        if (RvdLoggers.local.isEnabledFor(Level.INFO))
+            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling email action"));
 
         if ( RvdUtils.isEmpty(getNext()) )
             throw new InterpreterException( "'next' module is not defined for step " + getName() );
