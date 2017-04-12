@@ -33,6 +33,10 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     $stateProvider.state('root.public.login',{
         url:"/login",
         views: {
+            'header@': {
+                templateUrl: 'templates/header.html',
+                controller: 'headerCtrl'
+            },
             'container@': {
                 templateUrl: 'templates/login.html',
                 controller: 'loginCtrl'
@@ -238,6 +242,9 @@ App.config(function(IdleProvider, KeepaliveProvider, TitleProvider) {
 .run(function(Idle){
     // start watching when the app runs. also starts the Keepalive service by default.
     Idle.watch();
+})
+.run(function($rootScope, $state) {
+    $rootScope.uiState = $state;
 });
 
 App.factory( 'dragService', [function () {

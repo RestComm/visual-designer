@@ -19,47 +19,23 @@
 	<link href="css/rvd.css" rel="stylesheet" media="screen">
 	<link href="css/joint.css" rel="stylesheet" media="screen">
 
-
 </head>
-
-
 
 <body>
 
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<span class="navbar-brand"><img class="rvd-telestax-image" src="images/telestax-logo-dark.png"/> <img src="images/restcomm-logo.png" class="rvd-phone-image" /> <a class="rvd-head" href="#/home">{{'indexHeadDescriptorLabel' | translate}}</a></span>
-		</div>
-		<nav class="collabse navbar-collapse" role="navigation">
-			<ul class="nav navbar-nav navbar-right" ui-view="authmenu"></ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown" ng-controller="translateController">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" title="{{'indexSwitchLanguageTitle' | translate}}"><i class="fa fa-language"></i></a>
-					<ul class="dropdown-menu">
-						<li><a class="rvd-clickable-text" ng-click="changeLanguage('en-US')"><i ng-show="getCurrentLanguage()=='en-US'" class="fa fa-check"></i> en-US</a></li>
-						<li><a class="rvd-clickable-text" ng-click="changeLanguage('pt-BR')"><i ng-show="getCurrentLanguage()=='pt-BR'" class="fa fa-check"></i> pt-BR</a></li>
-						<li><a class="rvd-clickable-text" ng-click="changeLanguage('es')"><i ng-show="getCurrentLanguage()=='es'" class="fa fa-check"></i> es</a></li>
-					</ul>
-				</li>
-			</ul>
-		</nav>
-	</div>
-</div>
+	<div class="rvd-header" ui-view="header"></div>
 
-
-
-<div class="notifications-wrapper" ng-show="notifications.data.length > 0">
-	<div ng-repeat="notification in notifications.data">
-		<div class="alert alert-{{notification.type}} rvd-notification rvd-clickable-text" style="padding: 9px; margin-bottom: 0;" ng-click="notifications.remove($index)">
-			<span ng-show="notification.type == 'success'"><i class="fa fa-check-circle"></i> </span>
-			<span ng-show="notification.type == 'info'"><i class="fa fa-info-circle"></i></span>
-			<span ng-show="notification.type == 'danger'"><i class="fa fa-exclamation-circle"></i></span>
-			<span ng-show="notification.type == 'warning'"><i class="fa fa-warning"></i></span>
-			<strong>{{notification.header}}</strong> {{notification.message}}
+	<div class="notifications-wrapper" ng-show="notifications.data.length > 0">
+		<div ng-repeat="notification in notifications.data">
+			<div class="alert alert-{{notification.type}} rvd-notification rvd-clickable-text" style="padding: 9px; margin-bottom: 0;" ng-click="notifications.remove($index)">
+				<span ng-show="notification.type == 'success'"><i class="fa fa-check-circle"></i> </span>
+				<span ng-show="notification.type == 'info'"><i class="fa fa-info-circle"></i></span>
+				<span ng-show="notification.type == 'danger'"><i class="fa fa-exclamation-circle"></i></span>
+				<span ng-show="notification.type == 'warning'"><i class="fa fa-warning"></i></span>
+				<strong>{{notification.header}}</strong> {{notification.message}}
+			</div>
 		</div>
 	</div>
-</div>
 
 <div class="container">
 	<div ng-if="rvdError" class="">

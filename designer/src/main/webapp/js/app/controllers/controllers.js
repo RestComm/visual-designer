@@ -82,6 +82,11 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
     });
 });
 
+angular.module('Rvd').controller('headerCtrl', function ($scope) {
+    console.log("IN headerCTrl");
+
+});
+
 var loginCtrl = angular.module('Rvd')
 .controller('loginCtrl', ['authentication', '$scope', '$http', 'notifications', '$location', function (authentication, $scope, $http, notifications, $location) {
 

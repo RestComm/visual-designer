@@ -1,3 +1,11 @@
+.rvd-header {
+    background-color: #eee
+}
+
+.header-menu {
+    float: right;
+}
+
 .dropdown-menu.scrollable-menu {
     height: auto;
     max-height: 200px;
