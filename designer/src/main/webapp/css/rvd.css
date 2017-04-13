@@ -12,6 +12,20 @@ img.logo {
     margin: 30px 0 30px 50px;
 }
 
+.start-new-project-title {
+    color: #44a5ab;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/*** home ***/
+img.project-icon {
+    min-width: 80px;
+    min-height: 80px;
+}
+
+
 .dropdown-menu.scrollable-menu {
     height: auto;
     max-height: 200px;
