@@ -1,6 +1,7 @@
 /*** header ***/
 .rvd-header {
-    background-color: #eee
+    background-color: #eee;
+    box-shadow: 1px 2px 1px rgba(219,219,219,1);
 }
 .header-menu {
     float: right;
@@ -19,10 +20,110 @@ img.logo {
     font-weight: 700;
 }
 
+/*** footer ***/
+.footer {
+    bottom: 0;
+    width: 100%;
+    height: 70px;
+    box-shadow: 1px -2px 1px rgba(219,219,219,1);
+    background: #eeeeee;
+    margin-top: 30px;
+}
+#telestax-footer {
+    margin-top: 20px;
+    margin-left: 90px;
+}
+.telestax-rights {
+    color: #a3a3a3;
+    width: 244px;
+    margin-right: auto;
+    margin-left: auto;
+    display: block;
+    margin-top: -7px;
+    font-family: lato;
+}
+#facebook {
+    margin-top: 20px;
+    margin-right: 20px;
+    float: right;
+}
+#twitter {
+    margin-top: 22px;
+    margin-right: 20px;
+    float: right;
+}
+#linkedin {
+    margin-top: 20px;
+    margin-right: 20px;
+    float: right;
+}
+#googleplus {
+    margin-top: 20px;
+    margin-right: 15px;
+    float: right;
+}
+#youtube {
+    margin-top: 20px;
+    margin-right: 90px;
+    float: right;
+}
+
 /*** home ***/
 img.project-icon {
     min-width: 80px;
     min-height: 80px;
+}
+
+/*** login ***/
+#login-form .slick-input {
+    margin-bottom: 30px;
+}
+.state-login .section-title {
+    margin-bottom: 35px;
+    margin-top: 60px;
+}
+
+/*** various ***/
+h3.section-title {
+    font-size: 30px;
+    font-weight: 300;
+    font-family: lato;
+    color: #6d6e70;
+}
+input.slick-input {
+    color: #6d6e70;
+    background: #fafafa;
+    border: none;
+    border-bottom: 2px solid #45a5ab;
+    padding-bottom: 0px;
+    border-radius: 0px;
+    box-shadow: none;
+    font-family: lato;
+    font-weight: 300;
+}
+button.rvd-button {
+    color: #7f7e7e;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: none;
+    box-shadow: 1px 2px 1px #a0a0a0;
+    font-family: lato;
+    font-weight: 500;
+}
+.rvd-button.btn-primary {
+    color: #fff;
+    background-color: #45a5ab;
+    border-color: #285e8e;
+}
+label.rvd-label {
+    font-family: lato;
+    color: #45a5ab;
+    font-weight: 300;
 }
 
 
@@ -682,11 +783,6 @@ textarea.medium {
 .collapse-button {
 	font-size: 21px;
 	font-weight: bold;
-}
-
-.container {
-	margin-top: 85px;
-	/*min-height: 500px;*/
 }
 
 .panel-rvdstep > .panel-heading {
