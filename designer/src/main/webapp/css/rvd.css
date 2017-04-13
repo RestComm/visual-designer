@@ -1,9 +1,15 @@
+/*** header ***/
 .rvd-header {
     background-color: #eee
 }
-
 .header-menu {
     float: right;
+}
+img.logo {
+    margin: 10px 10px 10px 10px;
+}
+.state-login img.logo {
+    margin: 30px 0 30px 50px;
 }
 
 .dropdown-menu.scrollable-menu {

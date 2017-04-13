@@ -22,6 +22,12 @@ var rvdMod = App;
 
 App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', function ($stateProvider,$urlRouterProvider,$translateProvider) {
     $stateProvider.state('root',{
+        views: {
+            'header': {
+                templateUrl: 'templates/header.html',
+                controller: 'headerCtrl'
+            }
+        },
         resolve:{
             init: function (initializer) {
                 //console.log('Initializing RVD');
@@ -33,10 +39,6 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     $stateProvider.state('root.public.login',{
         url:"/login",
         views: {
-            'header@': {
-                templateUrl: 'templates/header.html',
-                controller: 'headerCtrl'
-            },
             'container@': {
                 templateUrl: 'templates/login.html',
                 controller: 'loginCtrl'
@@ -51,8 +53,9 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     });
     $stateProvider.state('root.rvd',{
         views: {
-            'authmenu@': {
+            'authmenu': {
                 templateUrl: 'templates/index-authmenu.html',
+                //template: '<div>ROOT.RVD</div>',
                 controller: 'authMenuCtrl'
             },
             'container@': {
@@ -244,7 +247,13 @@ App.config(function(IdleProvider, KeepaliveProvider, TitleProvider) {
     Idle.watch();
 })
 .run(function($rootScope, $state) {
+    // set stateName variable in the header e.g. 'login' etc.
     $rootScope.uiState = $state;
+    $rootScope.$watch("uiState.current.name", function (newValue) {
+        console.log("uiState.current.name changed!");
+        var match = /[^.]*$/.exec(newValue);
+        $rootScope.stateName = match[0];
+    });
 });
 
 App.factory( 'dragService', [function () {
