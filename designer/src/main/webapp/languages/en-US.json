@@ -359,8 +359,6 @@
 	"projectLogReloadLabel": "Reload",
 	"projectLogResetLabel": "Reset",
 
-	"projectManagerChooseProjectLabel1": "Please choose a",
-	"projectManagerChooseProjectLabel2": "project from the list below or create a new one",
 	"projectManagerExistingProjectsLabel1": "Existing",
 	"projectManagerExistingProjectsLabel2": "projects",
 	"projectManagerNoProjectFoundLabel": "No projects found",
@@ -371,7 +369,7 @@
 	"projectManagerCreateButton": "Create",
 	"projectManagerDropProjectsLabel": "Drop RVD projects (.zip) here to import",
 	"projectManagerHtml5DropLabel": "HTML5 Drop File is not supported!",
-	"projectManagerChooseDifferentLabel1": "or",
+	"projectManagerChooseDifferentLabel1": "OR",
 	"projectManagerChooseDifferentLabel2": "Choose a different kind of project",
 	"voice":"voice",
 	"ussd":"ussd",
@@ -543,5 +541,7 @@
 
 	"Advanced configuration":"Advanced configuration",
 	"User parameter scope": "User parameter scope",
-	"Application": "Application"
+	"Application": "Application",
+
+	"Pick a name": "Pick a name for your project"
 }

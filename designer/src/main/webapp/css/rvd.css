@@ -1,3 +1,10 @@
+body {
+    font-family: lato;
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: lato;
+}
+
 /*** header ***/
 .rvd-header {
     background-color: #eee;
@@ -17,17 +24,24 @@ img.logo {
     color: #44a5ab;
     text-align: center;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 500;
+    margin-top: 50px;
+    margin-bottom: 10px;
 }
 
 /*** footer ***/
 .footer {
+    display: none;
+    position: fixed;
     bottom: 0;
     width: 100%;
     height: 70px;
     box-shadow: 1px -2px 1px rgba(219,219,219,1);
     background: #eeeeee;
     margin-top: 30px;
+}
+.state-login .footer {
+    display: block;
 }
 #telestax-footer {
     margin-top: 20px;
@@ -40,7 +54,7 @@ img.logo {
     margin-left: auto;
     display: block;
     margin-top: -7px;
-    font-family: lato;
+    /* font-family: lato; */
 }
 #facebook {
     margin-top: 20px;
@@ -68,13 +82,13 @@ img.logo {
     float: right;
 }
 
-/*** home ***/
+/*** home view ***/
 img.project-icon {
     min-width: 80px;
     min-height: 80px;
 }
 
-/*** login ***/
+/*** login view ***/
 #login-form .slick-input {
     margin-bottom: 30px;
 }
@@ -83,11 +97,69 @@ img.project-icon {
     margin-top: 60px;
 }
 
+/*** project-manager view ***/
+.project-manager .project-item i {
+	color: #333;
+}
+.packaging-menu {
+	margin-right: 15px;
+}
+.project-manager .project-list-area {
+    margin-top: 40px;
+}
+.project-list-area .item-area {
+    padding-left: 80px;
+    padding-right: 80px;
+}
+.project-list-area a.project-link {
+    color: #ff692f;
+}
+.project-manager .create-new-area {
+    margin-top:40px;
+}
+.project-manager #create-button {
+    width:250px;
+}
+.drop-area {
+	background: none repeat scroll 0% 0% rgb(248, 248, 248);
+	border: 5px dashed rgb(221, 221, 221);
+	text-align: center;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.drop-area-image {
+	min-height: 36px;
+	background-image:url('../images/plus-small.png');
+	opacity: 0.6;
+	background-repeat:no-repeat;
+	background-position:center;
+	border: 1px dashed rgb(221, 221, 221);
+}
+.drop-area.drop-area-nouns {
+	border: 1px dashed rgb(221, 221, 221);
+}
+.drop-area .drop-prompt {
+	padding: 7px;
+	opacity: 0.6;
+}
+.drop-area.dropping {
+	background-color:beige;
+	cursor:copy;
+}
+.drop-area-nouns {
+	position:absolute;
+	top:0;
+	width:96%;
+}
+.drop-area .drop-prompt {
+    margin: 33px 60px 33px 60px;
+}
+
 /*** various ***/
 h3.section-title {
     font-size: 30px;
     font-weight: 300;
-    font-family: lato;
+    /* font-family: lato; */
     color: #6d6e70;
 }
 input.slick-input {
@@ -98,7 +170,7 @@ input.slick-input {
     padding-bottom: 0px;
     border-radius: 0px;
     box-shadow: none;
-    font-family: lato;
+    /* font-family: lato; */
     font-weight: 300;
 }
 button.rvd-button {
@@ -112,7 +184,7 @@ button.rvd-button {
     border-radius: 6px;
     border: none;
     box-shadow: 1px 2px 1px #a0a0a0;
-    font-family: lato;
+    /* font-family: lato; */
     font-weight: 500;
 }
 .rvd-button.btn-primary {
@@ -121,7 +193,7 @@ button.rvd-button {
     border-color: #285e8e;
 }
 label.rvd-label {
-    font-family: lato;
+    /* font-family: lato; */
     color: #45a5ab;
     font-weight: 300;
 }
@@ -429,15 +501,15 @@ vardef .assign-arrow {
 	min-height: 500px;
 }
 
-.rvd-project-item {
+.project-item {
 	margin-bottom:4px;
 }
 
-.rvd-project-item .buttonarea i {
+.project-item .buttonarea i {
 	margin: 10px 5px 5px 0px;
 }
 
-.rvd-project-item .delete-confirmation {
+.project-item .delete-confirmation {
 	margin-top:5px;
 	margin-bottom:15px;
 }
@@ -482,41 +554,6 @@ li.verb {
 
 .wellinfo-rollup {
     text-align: right;
-}
-
-.drop-area {
-	background: none repeat scroll 0% 0% rgb(248, 248, 248);
-	border: 5px dashed rgb(221, 221, 221);
-	text-align: center;
-}
-
-.drop-area-image {
-	min-height: 36px;
-	background-image:url('../images/plus-small.png');
-	opacity: 0.6;
-	background-repeat:no-repeat;
-	background-position:center;
-	border: 1px dashed rgb(221, 221, 221);
-}
-
-.drop-area.drop-area-nouns {
-	border: 1px dashed rgb(221, 221, 221);
-}
-
-.drop-area .drop-prompt {
-	padding: 7px;
-	opacity: 0.6;
-}
-
-.drop-area.dropping {
-	background-color:beige;
-	cursor:copy;
-}
-
-.drop-area-nouns {
-	position:absolute;
-	top:0;
-	width:96%;
 }
 
 .dial-nouns {
@@ -862,14 +899,6 @@ textarea.medium {
 	top: 9px;
 }
 
-/* ----------------- #/project-manager/* view */
-.rvd-project-manager .rvd-project-item i {
-	color: #333;
-}
-.packaging-menu {
-	margin-right: 15px;
-}
-
 /* ----------------- #/login view -------------------------- */
 
 /* ----------------- #/designer/_/log view ----------------- */
@@ -908,14 +937,23 @@ textarea.medium {
 .rvd-spacer5 {
 	height: 5px;
 }
-
 .rvd-spacer10 {
-	margin-top: 10px;
+	height: 10px;
+}
+.rvd-spacer20 {
+	height: 20px;
+}
+.rvd-spacer30 {
+	height: 30px;
+}
+.rvd-spacer40 {
+	height: 40px;
+}
+.rvd-spacer50 {
+	height: 50px;
 }
 
-.rvd-spacer20 {
-	margin-top: 20px;
-}
+
 
 .rvd-grey {
 	color: #888;

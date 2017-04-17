@@ -332,8 +332,6 @@
 	"projectLogReloadLabel": "Recarregar",
 	"projectLogResetLabel": "Reinicializar",
 
-	"projectManagerChooseProjectLabel1": "Por favor, selecione um projeto do tipo",
-	"projectManagerChooseProjectLabel2": "da lista abaixo ou crie um novo",
 	"projectManagerExistingProjectsLabel1": "Projetos do tipo",
 	"projectManagerExistingProjectsLabel2": "existentes",
 	"projectManagerNoProjectFoundLabel": "Nenhum projeto encontrado",
@@ -344,7 +342,7 @@
 	"projectManagerCreateButton": "Criar",
 	"projectManagerDropProjectsLabel": "Largue projetos RVD aqui para importar (.zip)",
 	"projectManagerHtml5DropLabel": "Gerenciador de Arquivos em HTML5 nao suportado!",
-	"projectManagerChooseDifferentLabel1": "ou",
+	"projectManagerChooseDifferentLabel1": "OU",
 	"projectManagerChooseDifferentLabel2": "Selecione um tipo diferente de projeto",
 	"voice":"voz",
 	"ussd":"ussd",
@@ -514,5 +512,7 @@
 
 	"Advanced configuration":"Advanced configuration",
 	"User parameter scope": "User parameter scope",
-	"Application": "Application"
+	"Application": "Application",
+
+	"Pick a name": "Pick a name for your project"
 }
