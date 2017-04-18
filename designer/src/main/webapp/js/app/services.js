@@ -90,9 +90,11 @@ angular.module('Rvd').service('initializer',function (authentication, storage,  
     };
 });
 
-angular.module('Rvd').service('authentication', function ($http, $q, IdentityConfig, storage, $state, md5) {
-    var authInfo = null;
+angular.module('Rvd').service('authentication', function ($http, $q, IdentityConfig, storage, $state, md5, $rootScope) {
+    var authInfo = {};
 	var account = null; // if this is set it means that user logged in: authentication succeeded and account was retrieved
+
+    $rootScope.authInfo = authInfo;
 
 	function getAccount() {
 	    return account;
@@ -101,9 +103,11 @@ angular.module('Rvd').service('authentication', function ($http, $q, IdentityCon
 	function setAccount(acc) {
 	    account = acc;
 	    if (account) {
-	        authInfo = {username: account.email_address}
-	    } else
-	        authInfo = null;
+	        authInfo.username = account.email_address;
+	    } else {
+	        //clear authInfo properties
+	        delete authInfo.username;
+	    }
 	}
 
 	function getAuthInfo() {
@@ -139,7 +143,7 @@ angular.module('Rvd').service('authentication', function ($http, $q, IdentityCon
             $http({method:'GET', url:'services/auth/keepalive', headers: {Authorization: "Basic " + btoa(acc.email_address + ":" +acc.auth_token)}}).then(function (response) {
                 // ok, access to both restcomm and RVD is verified
                 setAccount(acc);
-                authInfo = {username:acc.email_address}; // TODO will probably add other fields here too that are not necessarily tied with the Restcomm account notion
+                authInfo.username = acc.email_address; // TODO will probably add other fields here too that are not necessarily tied with the Restcomm account notion
                 storage.setCredentials(username,password,acc.sid);
                 deferredLogin.resolve();
             }, function (response) {

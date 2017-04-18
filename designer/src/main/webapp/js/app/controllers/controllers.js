@@ -82,8 +82,50 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
     });
 });
 
-angular.module('Rvd').controller('headerCtrl', function ($scope) {
+angular.module('Rvd').controller('headerCtrl', function ($scope, $modal) {
     console.log("IN headerCTrl");
+
+    function settingsModalCtrl ($scope, $timeout, $modalInstance, settings, rvdSettings) {
+		$scope.settings = settings;
+		$scope.rvdSettings = rvdSettings;
+		$scope.defaultSettings = rvdSettings.getDefaultSettings();
+
+		$scope.ok = function () {
+			rvdSettings.saveSettings($scope.settings).then(function () {
+				$modalInstance.close($scope.settings);
+			}, function () {
+				notifications.put("Cannot save settings");
+			});
+		};
+
+		$scope.cancel = function () {
+			$modalInstance.dismiss('cancel');
+		};
+
+		// watch form validation status and copy to outside scope so that the OK
+		// button (which is outside the form's scope) status can be updated
+		$scope.watchForm = function (formValid) {
+			$scope.preventSubmit = !formValid;
+		}
+	};
+
+    $scope.showSettingsModal = function (settings) {
+    		var modalInstance = $modal.open({
+    		  templateUrl: 'templates/designerSettingsModal.html',
+    		  controller: settingsModalCtrl,
+    		  size: 'lg',
+    		  resolve: {
+    			settings: function (rvdSettings) {	return rvdSettings.refresh();}
+    		  }
+    		});
+
+    		modalInstance.result.then(function (rvdSettings) {
+    			//console.log(settings);
+    			// $scope.settings
+    		}, function () {
+    		  // $log.info('Modal dismissed at: ' + new Date());
+    		});
+    }
 
 });
 
@@ -130,7 +172,7 @@ angular.module('Rvd').controller('projectLogCtrl', ['$scope', '$stateParams', 'p
 }]);
 
 App.controller('authMenuCtrl', function ($scope, authentication, $location, $modal, $q, $http, $state) {
-	$scope.authInfo = authentication.getAuthInfo();
+	//$scope.authInfo = authentication.getAuthInfo();
 	//$scope.username = authentication.getTicket(); //"Testuser@test.com";
 
 	function logout() {
@@ -139,47 +181,6 @@ App.controller('authMenuCtrl', function ($scope, authentication, $location, $mod
 	}
 	$scope.logout = logout;
 
-	function settingsModalCtrl ($scope, $timeout, $modalInstance, settings, rvdSettings) {
-		$scope.settings = settings;
-		$scope.rvdSettings = rvdSettings;
-		$scope.defaultSettings = rvdSettings.getDefaultSettings();
-
-		$scope.ok = function () {
-			rvdSettings.saveSettings($scope.settings).then(function () {
-				$modalInstance.close($scope.settings);
-			}, function () {
-				notifications.put("Cannot save settings");
-			});
-		};
-
-		$scope.cancel = function () {
-			$modalInstance.dismiss('cancel');
-		};
-
-		// watch form validation status and copy to outside scope so that the OK
-		// button (which is outside the form's scope) status can be updated
-		$scope.watchForm = function (formValid) {
-			$scope.preventSubmit = !formValid;
-		}
-	};
-
-	$scope.showSettingsModal = function (settings) {
-		var modalInstance = $modal.open({
-		  templateUrl: 'templates/designerSettingsModal.html',
-		  controller: settingsModalCtrl,
-		  size: 'lg',
-		  resolve: {
-			settings: function (rvdSettings) {	return rvdSettings.refresh();}
-		  }
-		});
-
-		modalInstance.result.then(function (rvdSettings) {
-			//console.log(settings);
-			// $scope.settings
-		}, function () {
-		  // $log.info('Modal dismissed at: ' + new Date());
-		});
-	}
 });
 
 App.controller('containerCtrl', function ($scope, authentication) {
