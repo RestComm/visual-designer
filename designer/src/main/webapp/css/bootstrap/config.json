@@ -6,7 +6,7 @@
     "@gray": "lighten(@gray-base, 33.5%)",
     "@gray-light": "lighten(@gray-base, 46.7%)",
     "@gray-lighter": "lighten(@gray-base, 93.5%)",
-    "@brand-primary": "#f3a806",
+    "@brand-primary": "#ff692f",
     "@brand-success": "#5cb85c",
     "@brand-info": "#5bc0de",
     "@brand-warning": "#f0ad4e",
@@ -418,5 +418,5 @@
     "carousel.less"
   ],
   "js": [],
-  "customizerUrl": "http://getbootstrap.com/customize/?id=6cb0e674bacc633a79f67192b97fba3b"
+  "customizerUrl": "http://getbootstrap.com/customize/?id=521557f24cab19deda47ba915873f731"
 }
