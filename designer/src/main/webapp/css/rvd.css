@@ -117,10 +117,7 @@ img.project-icon {
 .project-manager #create-button {
     width:250px;
 }
-.drop-area {
-	background: none repeat scroll 0% 0% rgb(248, 248, 248);
-	border: 5px dashed rgb(221, 221, 221);
-	text-align: center;
+.project-manager .drop-area {
     margin-left: 20px;
     margin-right: 20px;
 }
@@ -148,8 +145,16 @@ img.project-icon {
 	top:0;
 	width:96%;
 }
-.drop-area .drop-prompt {
+.project-manager .drop-area .drop-prompt {
     margin: 33px 60px 33px 60px;
+}
+
+/* designer view */
+.rvd-designer .drop-area {
+    border-radius: 10px;
+}
+.rvd-designer .drop-area .drop-prompt {
+    margin: 20px 0;
 }
 
 /*** various ***/
@@ -169,6 +174,11 @@ input.slick-input {
     box-shadow: none;
     /* font-family: lato; */
     font-weight: 300;
+}
+.drop-area {
+	background: none repeat scroll 0% 0% rgb(248, 248, 248);
+	border: 5px dashed rgb(221, 221, 221);
+	text-align: center;
 }
 
 button.rvd-button {
