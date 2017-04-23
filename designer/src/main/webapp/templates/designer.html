@@ -15,10 +15,6 @@
 		<nav  class="rvd-menu navbar navbar-default" role="navigation">
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 
-				<div class="navbar-header">
-					<a class="navbar-brand" title="{{applicationSid}}">{{projectName}}</a>
-				</div>
-
 				<ul class="nav navbar-nav navbar-right">
 					<li>
 						<button ng-click="showGraph = !showGraph" class="btn navbar-link navbar-btn"><i class="fa fa-code-fork"> &nbsp;</i>Diagram <i ng-show="showGraph" class="fa fa-check"></i></button>
@@ -33,7 +29,6 @@
 					</li>
 					<li><a class='rvd-clickable-text' ng-click='onSavePressed()'><i ng-hide="saveSpinnerShown" class='fa fa-save'></i><i ng-show="saveSpinnerShown" class="fa fa-spinner fa-spin"></i> &nbsp; {{'designerSaveLink' | translate}}</a></li>
 					<li class='rvd-appurl' ng-show="startNodeSet(project)"><a target="_blank" href='{{getStartUrl()}}'>{{'designerAppUrlLink' | translate}}</a></li>
-					<li><a href="#/project-manager/{{project.projectKind ? project.projectKind : 'voice'}}" title="{{'designerCloseTitle' | translate}} {{projectName}}"><i class='fa fa-power-off'></i>&nbsp;</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" title="{{'designerProjectSettingsTitle' | translate}}"><i class="fa fa-cog"></i> <b class="caret"></b></a>
 						<ul class="dropdown-menu">
@@ -175,6 +170,12 @@
 									<li>
 										<button ng-click="addNodeClicked(project.projectKind)" class="btn btn-primary rvd-clickable-text" title="{{'designerNewModuleLinkTitle' | translate}}"><i class='fa fa-plus'></i></button></li>
 									</li>
+									<li class="dropdown startup-module">
+										<button href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" title="{{'designerStartupModuleLinkTitle' | translate}}">{{'designerStartupModuleLink' | translate}} <strong>{{nodeNamed(project.startNodeName).label}}</strong>	 <span class="caret"></span></button>
+										<ul class="dropdown-menu">
+											<li class="rvd-clickable-text" ng-repeat='node in getAllTargets() | orderBy:"label"'><a ng-click="setStartNode(node.name)">{{node.label}}</a></li>
+										</ul>
+									</li>
 									<!--
 									<li>
 										<a ng-click="showExceptionConfig()" class="rvd-clickable-text">Exceptions</a>
@@ -186,15 +187,11 @@
 								</div>
 							</div>
 
-							<div class="col-md-4">
-								<ul class="top-menu nav nav-pills pull-right">
-									<li class="dropdown">
-										<button href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" title="{{'designerStartupModuleLinkTitle' | translate}}">{{'designerStartupModuleLink' | translate}} <strong>{{nodeNamed(project.startNodeName).label}}</strong>	 <span class="caret"></span></button>
-										<ul class="dropdown-menu">
-											<li class="rvd-clickable-text" ng-repeat='node in getAllTargets() | orderBy:"label"'><a ng-click="setStartNode(node.name)">{{node.label}}</a></li>
-										</ul>
-									</li>
-								</ul>
+							<div class="col-md-4 text-right">
+								<div class="form-group">
+									<label class="project-name" title="{{applicationSid}}">{{projectName}}</label>
+									<a href="#/project-manager/{{project.projectKind ? project.projectKind : 'voice'}}"><button class="btn btn-primary" title="{{'designerCloseTitle' | translate}} {{projectName}}"><i class='fa fa-power-off'></i></button></a>
+								</div>
 							</div>
 
 							<!--
