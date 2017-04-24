@@ -209,13 +209,6 @@ img.project-icon {
 	font-size: 21px;
 	font-weight: bold;
 }
-.panel-rvdstep > .panel-heading {
-	background-color: #f0f0f0;
-}
-.panel-rvdstep {
-	/*border: none;*/
-	box-shadow: 1px 1px 1px 1px #ccc;
-}
 .editor .nav > li > a {
 	padding: 7px 15px;
 	margin-right:5px;
@@ -408,10 +401,14 @@ label.rvd-label {
     color: #428bca;
 }
 
-/* step styling */
+/*** step styling ***/
 
+/* dial step*/
 .dial-step .drop-area {
     padding:10px;
+}
+.dial-step .noun-toolbox {
+    margin-left: 10px;
 }
 
 
