@@ -410,6 +410,11 @@ label.rvd-label {
 
 /* step styling */
 
+.dial-step .drop-area {
+    padding:10px;
+}
+
+
 .say-language-dropdown {
 	max-width: 250px;
 }
@@ -595,6 +600,7 @@ vardef .assign-arrow {
 	margin-bottom: 5px;
 	padding: 8px;
 	text-align: left;
+	color: #727272;
 }
 
 
@@ -660,10 +666,6 @@ li.verb {
 
 .wellinfo-rollup {
     text-align: right;
-}
-
-.dial-nouns {
-	min-height:50px;
 }
 
 .nested-steps {

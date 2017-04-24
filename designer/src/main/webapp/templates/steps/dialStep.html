@@ -1,26 +1,28 @@
-<div class="step panel panel-rvdstep">
+<div class="step dial-step panel panel-rvdstep">
 	<div class="panel-heading">
 		<step-heading></step-heading>
 	</div>
 	<div class="panel-body" ng-hide='step.iface.isCollapsed'>
 		<div class='row'>
 			<div class='col-md-12 form-group'>
-				<div basic-draggable drop-target='.dial-nouns' class="dial-noun dial-noun-number label label-primary rvd-pickable"><i class='fa fa-phone'></i> &nbsp;{{'dialStepNumberLabel' | translate}}</div>
-				<div basic-draggable drop-target='.dial-nouns' class="dial-noun dial-noun-client label label-primary rvd-pickable"><i class='fa fa-user'></i> &nbsp;{{'dialStepClientLabel' | translate}}</div>
-				<div basic-draggable drop-target='.dial-nouns' class="dial-noun dial-noun-conference label label-primary rvd-pickable"><i class='fa fa-group'></i> &nbsp;{{'dialStepConcefenceLabel' | translate}}</div>
-				<div basic-draggable drop-target='.dial-nouns' class="dial-noun dial-noun-sipuri label label-primary rvd-pickable">{{'dialStepSipUriLabel' | translate}}</div>
+				<div basic-draggable drop-target='.dial-nouns' class="dial-noun dial-noun-number label label-default rvd-pickable"><i class='fa fa-phone'></i> &nbsp;{{'dialStepNumberLabel' | translate}}</div>
+				<div basic-draggable drop-target='.dial-nouns' class="dial-noun dial-noun-client label label-default rvd-pickable"><i class='fa fa-user'></i> &nbsp;{{'dialStepClientLabel' | translate}}</div>
+				<div basic-draggable drop-target='.dial-nouns' class="dial-noun dial-noun-conference label label-default rvd-pickable"><i class='fa fa-group'></i> &nbsp;{{'dialStepConcefenceLabel' | translate}}</div>
+				<div basic-draggable drop-target='.dial-nouns' class="dial-noun dial-noun-sipuri label label-default rvd-pickable">{{'dialStepSipUriLabel' | translate}}</div>
 			</div>
 		</div>
 
 		<div class='row'>
 			<div class='col-md-12'>
-				<div basic-sortable list-model='step.dialNouns' class='dial-nouns' item-added='addDialNoun'>
+				<div basic-sortable list-model='step.dialNouns' class='dial-nouns form-group' ng-class="{'drop-area':step.dialNouns.length==0}" item-added='addDialNoun'>
 
+					<!--
 					<div class="drop-area drop-area-nouns" ng-if="step.dialNouns.length == 0">
 						<div class="drop-prompt">
 							<em>{{'dialStepDropAreaLabel' | translate}}</em>
 						</div>
 					</div>
+					-->
 
 					<div ng-repeat='dialnoun in step.dialNouns'>
 						<div ng-if="dialnoun.dialType=='number'" class="number-noun form-group">
@@ -160,24 +162,26 @@
 		</div>
 
 		<div class='row'>
-			<div lookup-context class="col-md-12 input-group form-group">
-				<span class="input-group-addon help-tooltip"  tooltip-trigger='mouseenter' tooltip-popup-delay='1000' tooltip="{{'dialStepContinueTooltip' | translate}}">{{'dialStepContinueLabel' | translate}}</span>
-				<select auto-clear ng-model='step.nextModule' sync-modules name='nextModule' ng-options='target.name as target.label for target in getAllTargets()' class="form-control"  style="min-width:140px;">
-					<option value=""></option>
-				</select>
-				<!-- <div class="validation-error" ng-show="form.next.$invalid">Choose a target</div>  -->
+			<div class="col-md-12">
+				<div lookup-context class="input-group form-group">
+					<span class="input-group-addon help-tooltip"  tooltip-trigger='mouseenter' tooltip-popup-delay='1000' tooltip="{{'dialStepContinueTooltip' | translate}}">{{'dialStepContinueLabel' | translate}}</span>
+					<select auto-clear ng-model='step.nextModule' sync-modules name='nextModule' ng-options='target.name as target.label for target in getAllTargets()' class="form-control"  style="min-width:140px;">
+						<option value=""></option>
+					</select>
+					<!-- <div class="validation-error" ng-show="form.next.$invalid">Choose a target</div>  -->
 
-				<span  ng-show='step.iface.advancedShown' class="input-group-addon help-tooltip"  tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'dialStepContinueTimeoutTooltip' | translate}}">{{'dialStepContinueTimeoutLabel' | translate}}</span>
-				<input ng-show='step.iface.advancedShown' ng-model='step.timeout' auto-clear type='number' class='form-control small-input' placeholder="{{'dialStepContinueTimeoutInputPlaceholder' | translate}}">
+					<span  ng-show='step.iface.advancedShown' class="input-group-addon help-tooltip"  tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'dialStepContinueTimeoutTooltip' | translate}}">{{'dialStepContinueTimeoutLabel' | translate}}</span>
+					<input ng-show='step.iface.advancedShown' ng-model='step.timeout' auto-clear type='number' class='form-control small-input' placeholder="{{'dialStepContinueTimeoutInputPlaceholder' | translate}}">
 
-				<span ng-show='step.iface.advancedShown' class="input-group-addon help-tooltip"  tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'dialStepContinueTimeLimitTooltip' | translate}}">{{'dialStepContinueTimeLimitLabel' | translate}}</span>
-				<input ng-show='step.iface.advancedShown' ng-model='step.timeLimit' auto-clear type='number' class='form-control small-input' placeholder="{{'dialStepContinueTimeLimitInputPlaceholder' | translate}}">
+					<span ng-show='step.iface.advancedShown' class="input-group-addon help-tooltip"  tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'dialStepContinueTimeLimitTooltip' | translate}}">{{'dialStepContinueTimeLimitLabel' | translate}}</span>
+					<input ng-show='step.iface.advancedShown' ng-model='step.timeLimit' auto-clear type='number' class='form-control small-input' placeholder="{{'dialStepContinueTimeLimitInputPlaceholder' | translate}}">
 
-				<span ng-show='step.iface.advancedShown' class="input-group-addon help-tooltip"  tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'dialStepContinueCalledIdTooltip' | translate}}">{{'dialStepContinueCalledIdLabel' | translate}}</span>
-				<input ng-show='step.iface.advancedShown' ng-model='step.callerId' lookup-target auto-clear type='text' class='form-control'>
-				<variable-lookup ng-show='step.iface.advancedShown' variable="step.callerId" view="input-group"></variable-lookup>
+					<span ng-show='step.iface.advancedShown' class="input-group-addon help-tooltip"  tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'dialStepContinueCalledIdTooltip' | translate}}">{{'dialStepContinueCalledIdLabel' | translate}}</span>
+					<input ng-show='step.iface.advancedShown' ng-model='step.callerId' lookup-target auto-clear type='text' class='form-control'>
+					<variable-lookup ng-show='step.iface.advancedShown' variable="step.callerId" view="input-group"></variable-lookup>
 
-				<span  class="input-group-addon fa fa-cog rvd-clickable" ng-click="step.iface.advancedShown = !step.iface.advancedShown"></span>
+					<span  class="input-group-addon fa fa-cog rvd-clickable" ng-click="step.iface.advancedShown = !step.iface.advancedShown"></span>
+				</div>
 			</div>
 		</div>
 
