@@ -5,8 +5,8 @@
  */
 
 /*!
- * Generated using the Bootstrap Customizer (http://getbootstrap.com/customize/?id=521557f24cab19deda47ba915873f731)
- * Config saved to config.json and https://gist.github.com/521557f24cab19deda47ba915873f731
+ * Generated using the Bootstrap Customizer (http://getbootstrap.com/customize/?id=e39b235ddb89f174627c219b29862d31)
+ * Config saved to config.json and https://gist.github.com/e39b235ddb89f174627c219b29862d31
  */
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
@@ -3039,7 +3039,7 @@ select[multiple].input-lg {
 .btn:hover,
 .btn:focus,
 .btn.focus {
-  color: #333333;
+  color: #727272;
   text-decoration: none;
 }
 .btn:active,
@@ -3063,27 +3063,27 @@ fieldset[disabled] a.btn {
   pointer-events: none;
 }
 .btn-default {
-  color: #333333;
-  background-color: #ffffff;
-  border-color: #cccccc;
+  color: #727272;
+  background-color: #d1d1d1;
+  border-color: #bbbbbb;
 }
 .btn-default:focus,
 .btn-default.focus {
-  color: #333333;
-  background-color: #e6e6e6;
-  border-color: #8c8c8c;
+  color: #727272;
+  background-color: #b8b8b8;
+  border-color: #7b7b7b;
 }
 .btn-default:hover {
-  color: #333333;
-  background-color: #e6e6e6;
-  border-color: #adadad;
+  color: #727272;
+  background-color: #b8b8b8;
+  border-color: #9c9c9c;
 }
 .btn-default:active,
 .btn-default.active,
 .open > .dropdown-toggle.btn-default {
-  color: #333333;
-  background-color: #e6e6e6;
-  border-color: #adadad;
+  color: #727272;
+  background-color: #b8b8b8;
+  border-color: #9c9c9c;
 }
 .btn-default:active:hover,
 .btn-default.active:hover,
@@ -3094,9 +3094,9 @@ fieldset[disabled] a.btn {
 .btn-default:active.focus,
 .btn-default.active.focus,
 .open > .dropdown-toggle.btn-default.focus {
-  color: #333333;
-  background-color: #d4d4d4;
-  border-color: #8c8c8c;
+  color: #727272;
+  background-color: #a6a6a6;
+  border-color: #7b7b7b;
 }
 .btn-default:active,
 .btn-default.active,
@@ -3112,12 +3112,12 @@ fieldset[disabled] .btn-default:focus,
 .btn-default.disabled.focus,
 .btn-default[disabled].focus,
 fieldset[disabled] .btn-default.focus {
-  background-color: #ffffff;
-  border-color: #cccccc;
+  background-color: #d1d1d1;
+  border-color: #bbbbbb;
 }
 .btn-default .badge {
-  color: #ffffff;
-  background-color: #333333;
+  color: #d1d1d1;
+  background-color: #727272;
 }
 .btn-primary {
   color: #ffffff;
@@ -4854,7 +4854,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   font-size: 75%;
   font-weight: bold;
   line-height: 1;
-  color: #ffffff;
+  color: #727272;
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
@@ -4874,11 +4874,11 @@ a.label:focus {
   top: -1px;
 }
 .label-default {
-  background-color: #777777;
+  background-color: #d1d1d1;
 }
 .label-default[href]:hover,
 .label-default[href]:focus {
-  background-color: #5e5e5e;
+  background-color: #b8b8b8;
 }
 .label-primary {
   background-color: #ff692f;
