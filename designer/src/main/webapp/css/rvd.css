@@ -9,6 +9,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .rvd-header {
     background-color: #eee;
     box-shadow: 1px 2px 1px rgba(219,219,219,1);
+    position: relative;
 }
 .header-menu {
     float: right;
@@ -27,6 +28,15 @@ img.logo {
     font-weight: 500;
     margin-top: 50px;
     margin-bottom: 10px;
+}
+.mainmenu {
+    position:absolute;
+    width: 40%;
+    left: 30%;
+    bottom:0;
+}
+.mainmenu .navbar {
+    margin-bottom:0;
 }
 
 /*** footer ***/
@@ -279,10 +289,15 @@ button.rvd-button {
     border: none;
     font-weight: 500;
 }
-/*
-label {
-    font-weight: 500;
-}*/
+a.muted {
+    color: #727272;
+}
+a.muted:hover {
+    color: #ff692f;
+}
+a.muted.active {
+    color: #ff692f;
+}
 
 /*
 .rvd-button.btn-primary, .btn.btn-primary {

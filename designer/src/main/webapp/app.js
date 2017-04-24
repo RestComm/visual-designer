@@ -22,12 +22,6 @@ var rvdMod = App;
 
 App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', function ($stateProvider,$urlRouterProvider,$translateProvider) {
     $stateProvider.state('root',{
-        views: {
-            'header': {
-                templateUrl: 'templates/header.html',
-                controller: 'headerCtrl'
-            }
-        },
         resolve:{
             init: function (initializer) {
                 //console.log('Initializing RVD');
@@ -53,7 +47,7 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     });
     $stateProvider.state('root.rvd',{
         views: {
-            'authmenu': {
+            'authmenu@': {
                 templateUrl: 'templates/index-authmenu.html',
                 //template: '<div>ROOT.RVD</div>',
                 controller: 'authMenuCtrl'
@@ -80,8 +74,17 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     });
     $stateProvider.state('root.rvd.designer', {
         url: '/designer/:applicationSid=:projectName',
-        templateUrl : 'templates/designer.html',
-        controller : 'designerCtrl',
+        views: {
+            'container@': {
+                templateUrl : 'templates/designer.html',
+                controller : 'designerCtrl'
+
+            },
+            'mainmenu@': {
+                templateUrl: 'templates/designer-mainmenu.html',
+                controller: 'designerMainmenuCtrl'
+            }
+        },
         resolve: {
             project: function(designerService, $stateParams, $state,authorize) {
                 return designerService.openProject($stateParams.applicationSid);
@@ -90,7 +93,6 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
                 return designerService.getBundledWavs()
             }
         }
-
     });
     $stateProvider.state('root.rvd.projectLog', {
         url: '/designer/:applicationSid=:projectName/log',
@@ -250,7 +252,7 @@ App.config(function(IdleProvider, KeepaliveProvider, TitleProvider) {
     // set stateName variable in the header e.g. 'login' etc.
     $rootScope.uiState = $state;
     $rootScope.$watch("uiState.current.name", function (newValue) {
-        console.log("uiState.current.name changed!");
+        //console.log("uiState.current.name changed!");
         var match = /[^.]*$/.exec(newValue);
         $rootScope.stateName = match[0];
     });

@@ -82,6 +82,34 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
     });
 });
 
+angular.module('Rvd').controller('designerMainmenuCtrl', function ($scope, $stateParams, project,$rootScope,projectSettingsService) {
+	$scope.projectName = $stateParams.projectName;
+	$scope.applicationSid = $stateParams.applicationSid;
+    $scope.project = project;
+    $scope.showGraph = false;
+
+	$scope.getProjectSettings = function () {
+		return projectSettingsService.getProjectSettings(); // returns a $resource that will be filled up automatically
+	}
+	$scope.toggleShowGraph = function () {
+	    $scope.showGraph = !$scope.showGraph;
+	    $rootScope.$broadcast("show-graph",{status: $scope.showGraph});
+	}
+
+    $scope.signalSavePressed = function() {
+        $rootScope.$broadcast("save-project-clicked");
+    }
+    $scope.signalDownloadZip = function () {
+        $rootScope.$broadcast("download-project-clicked");
+    }
+    $scope.signalShowProjectSettings = function () {
+        $rootScope.$broadcast("show-project-settings-clicked");
+    }
+    $scope.signalShowWebTrigger = function  () {
+        $rootScope.$broadcast("show-web-trigger-clicked");
+    }
+});
+
 angular.module('Rvd').controller('headerCtrl', function ($scope, $modal) {
     console.log("IN headerCTrl");
 

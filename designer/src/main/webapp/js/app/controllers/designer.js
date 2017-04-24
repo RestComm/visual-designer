@@ -2,17 +2,15 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 
 	$scope.project = project;
 	$scope.visibleNodes = editedNodes.getEditedNodes();
+	$scope.showGraph = false;
 
-	$scope.download = function (applicationSid,projectName) {
+	function download(applicationSid,projectName) {
 	    var downloadUrl =  '/restcomm-rvd/services/projects/' + applicationSid + '/archive?projectName=' + projectName;
 	    fileRetriever.download(downloadUrl, projectName + ".zip").catch(function () {
 	        notifications.put({type:"danger", message:"Error downloading project archive"});
 	    });
 	}
 
-	$scope.getProjectSettings = function () {
-		return projectSettingsService.getProjectSettings(); // returns a $resource that will be filled up automatically
-	}
 	$scope.getActiveNodeName = function () {
 		var activeNode = editedNodes.getActiveNode();
 		return activeNode;
@@ -302,7 +300,7 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 
 
 
-	$scope.onSavePressed = function() {
+	function onSavePressed() {
 		var nodes = nodeRegistry.getNodes();
 		$scope.saveSpinnerShown = true;
 		$scope.clearStepWarnings();
@@ -352,9 +350,25 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 		// .then( function () { console.log('project saved and built')});
 	}
 
+    // handle messages sent from main menu
 	$scope.$on('project-wav-removed', function (event,data) {
 		$scope.refreshWavList();
 	});
+	$scope.$on('save-project-clicked', function (event,data) {
+	    onSavePressed();
+	})
+	$scope.$on('download-project-clicked', function () {
+        download($scope.applicationSid, $scope.projectName);
+	});
+	$scope.$on('show-project-settings-clicked', function () {
+        projectSettingsService.showModal($scope.applicationSid, $scope.projectName);
+	})
+    $scope.$on('show-web-trigger-clicked', function() {
+   		webTriggerService.showModal($scope.applicationSid);
+    });
+    $scope.$on('show-graph', function (event, data) {
+        $scope.showGraph = data.status;
+    })
 
 
 
@@ -469,16 +483,6 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 		});
 	}
 	*/
-	// Web Trigger
-	$scope.showWebTrigger = function (applicationSid) {
-		webTriggerService.showModal(applicationSid);
-	}
-
-
-	// Application logging
-	$scope.showProjectSettings = function (applicationSid, projectName) {
-		projectSettingsService.showModal(applicationSid, projectName);
-	}
 
 	// Run the following after all initialization are complete
 
