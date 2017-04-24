@@ -14,7 +14,7 @@
         <li><a class='rvd-clickable-text muted' ng-click='signalSavePressed()'><i ng-hide="saveSpinnerShown" class='fa fa-save'></i><i ng-show="saveSpinnerShown" class="fa fa-spinner fa-spin"></i> &nbsp; {{'designerSaveLink' | translate}}</a></li>
         <li class='rvd-appurl muted' ng-show="startNodeSet(project)"><a target="_blank" href='{{getStartUrl()}}'>{{'designerAppUrlLink' | translate}}</a></li>
         <li class="dropdown">
-            <a href="#" class="dropdown-toggle muted" data-toggle="dropdown" title="{{'designerProjectSettingsTitle' | translate}}"><i class="fa fa-cog"></i> <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle muted" data-toggle="dropdown" title="{{'designerProjectSettingsTitle' | translate}}"><i class="fa fa-wrench"></i> {{'designerProjectSettingsTitle' | translate}} <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li><a ng-click="signalShowProjectSettings()" class="rvd-clickable-text">{{'designerProjectSettingsLink' | translate}}</a></li>
                 <li ng-show="getProjectSettings().logging"><a href="#/designer/{{applicationSid}}={{projectName}}/log" target="_blank" class="rvd-clickable-text disabled">{{'designerApplicationLogLink' | translate}}</a></li>

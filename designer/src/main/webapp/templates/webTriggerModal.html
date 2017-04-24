@@ -16,7 +16,6 @@
 					<i ng-bind-html="getWebTriggerUrl()"></i>
 				</div>
 			</div>
-			<div class="rvd-spacer20"></div>
 
 			<div class="form-group">
 				<h5><strong>{{'authentication'|translate}}</strong></h5>
@@ -45,8 +44,7 @@
 					</div>
 				</div>
 			</div>
-
-			<div class="rvd-spacer20"></div>	
+			
 			
 			<div class="form-group">
 				<h5><strong>{{'overrideFromTo' | translate}}</strong></h5>
@@ -54,14 +52,19 @@
 					{{'overrideFromTo-help' | translate}}
 				</div>
 				<div class="row">
-					<div class="input-group col-md-6">
-						<span class="input-group-addon">{{'webTriggerModalToInput' | translate}}</span>
-						<input ng-model="ccInfo.lanes[0].startPoint.to" type="text" class="form-control">
+					<div class="col-md-6">
+						<div class="input-group">
+							<span class="input-group-addon">{{'webTriggerModalToInput' | translate}}</span>
+							<input ng-model="ccInfo.lanes[0].startPoint.to" type="text" class="form-control">
+						</div>
 					</div>
-					<div class="input-group col-md-6">
-						<span class="input-group-addon">{{'webTriggerModalFromInput' | translate}}</span>
-						<input ng-model="ccInfo.lanes[0].startPoint.from" type="text" class="form-control">
+					<div class="col-md-6">
+						<div class="input-group">
+							<span class="input-group-addon">{{'webTriggerModalFromInput' | translate}}</span>
+							<input ng-model="ccInfo.lanes[0].startPoint.from" type="text" class="form-control">
+						</div>
 					</div>
+
 				</div>
 				<div class="help-block ">
 					<small>
