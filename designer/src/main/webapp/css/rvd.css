@@ -30,13 +30,13 @@ img.logo {
     margin-bottom: 10px;
 }
 .mainmenu {
-    position:absolute;
-    width: 40%;
-    left: 30%;
-    bottom:0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 .mainmenu .navbar {
-    margin-bottom:0;
+    margin: 0 auto;
+    width: 560px;
 }
 
 /*** footer ***/
@@ -298,6 +298,9 @@ a.muted:hover {
 a.muted.active {
     color: #ff692f;
 }
+.nav>li>a.muted:hover {
+    background-color: #e5e5e5;
+}
 
 /*
 .rvd-button.btn-primary, .btn.btn-primary {
@@ -408,9 +411,6 @@ label.rvd-label {
 	opacity: 1.0;
 }
 
-.rvd-appurl:hover {
-	text-decoration: underline;
-}
 
 .link-coloured {
     color: #428bca;
@@ -917,7 +917,7 @@ textarea.medium {
     text-align: center;
     width: 100%;
     z-index: 2000;
-    top: 51px;
+    top: 0;
 }
 
 .navbar-brand .rvd-head {

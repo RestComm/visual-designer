@@ -82,7 +82,7 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
     });
 });
 
-angular.module('Rvd').controller('designerMainmenuCtrl', function ($scope, $stateParams, project,$rootScope,projectSettingsService) {
+angular.module('Rvd').controller('designerMainmenuCtrl', function ($scope, $stateParams, project,$rootScope, designerService, projectSettingsService) {
 	$scope.projectName = $stateParams.projectName;
 	$scope.applicationSid = $stateParams.applicationSid;
     $scope.project = project;
@@ -108,6 +108,13 @@ angular.module('Rvd').controller('designerMainmenuCtrl', function ($scope, $stat
     $scope.signalShowWebTrigger = function  () {
         $rootScope.$broadcast("show-web-trigger-clicked");
     }
+    $scope.startupNodeSet = function () {
+        return designerService.startupNodeSet(project);
+    }
+    $scope.getStartUrl = function () {
+        return designerService.getStartUrl($scope.applicationSid);
+    }
+
 });
 
 angular.module('Rvd').controller('headerCtrl', function ($scope, $modal) {

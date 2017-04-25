@@ -11,6 +11,9 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 	    });
 	}
 
+    $scope.startupNodeSet = function () {
+        return designerService.startupNodeSet(project);
+    }
 	$scope.getActiveNodeName = function () {
 		var activeNode = editedNodes.getActiveNode();
 		return activeNode;
@@ -21,11 +24,6 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 	$scope.setStartNode = function (name) {
 		console.log( 'set start node to ' + name );
 		$scope.project.startNodeName = name;
-	}
-	$scope.startNodeSet = function (project) {
-		if ( typeof(nodeRegistry.getNode(project.startNodeName)) !== 'undefined' )
-			return true;
-		return false;
 	}
 	$scope.getEditedNodeNames = function () {
 		return editedNodes.getEditedNodes();
@@ -113,13 +111,6 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 	}
 	$scope.nodeNamed = function (name) {
 		return nodeRegistry.getNode(name);
-	}
-	$scope.getStartUrl = function () {
-		r = new RegExp("^([^#]+/)[^/#]*#");
-		m = r.exec(document.baseURI);
-		if ( m != null )
-			return m[1] + "services/apps/" + $scope.applicationSid + "/controller";
-		return '';
 	}
 	$scope.addGatherMapping = function( gatherStep ) {
 		gatherStep.menu.mappings.push({digits:"", next:""});
@@ -832,11 +823,27 @@ angular.module('Rvd').service('designerService', ['stepRegistry', '$q', '$http',
 		return deferred.promise;
 	}
 
+	function startupNodeSet(project) {
+        if ( typeof(nodeRegistry.getNode(project.startNodeName)) !== 'undefined' )
+            return true;
+        return false;
+    }
+
+    function getStartUrl (applicationSid) {
+        r = new RegExp("^([^#]+/)[^/#]*#");
+        m = r.exec(document.baseURI);
+        if ( m != null )
+            return m[1] + "services/apps/" + applicationSid + "/controller";
+        return '';
+    }
+
 	service.openProject = openProject;
 	service.getWavList = getWavList;
 	service.saveProject = saveProject;
 	service.buildProject = buildProject;
 	service.getBundledWavs = getBundledWavs;
+	service.startupNodeSet = startupNodeSet;
+    service.getStartUrl = getStartUrl;
 
 	return service;
 
