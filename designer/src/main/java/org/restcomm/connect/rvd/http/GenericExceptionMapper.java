@@ -20,6 +20,10 @@
 
 package org.restcomm.connect.rvd.http;
 
+import org.apache.log4j.Level;
+import org.restcomm.connect.rvd.exceptions.ExceptionResult;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
@@ -32,6 +36,8 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception e) {
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        RvdLoggers.local.log(Level.ERROR, e.getMessage() != null ? e.getMessage(): "", e);
+        RvdResponse rvdResponse = new RvdResponse(RvdResponse.Status.ERROR).setExceptionInfo(new ExceptionResult(e));
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(rvdResponse.asJson()).build();
     }
 }

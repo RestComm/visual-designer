@@ -9,16 +9,6 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
 		}
     });
 
-    $rootScope.$on("resourceNotFound", function(p1, p2) {
-    	//console.log("resourceNotFound event caught");
-    	$rootScope.rvdError = {message: "The requested resource was not found. Sorry about that."};
-    });
-/*
-    $rootScope.$on('$routeChangeStart', function(){
-    	$rootScope.rvdError = undefined;
-	});
-	*/
-
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
 	    //console.log("switching states: " + fromState.name + " -> " + toState.name);
 	    $rootScope.rvdError = undefined;
@@ -43,6 +33,12 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
 	    } else
 	    if (error == "ProjectNotFound") {
 	        notifications.put({type:'danger', message:'Project not found.'});
+	    } else
+	    if (error == "IncompatibleProjectVersion") {
+	        notifications.put({type:'warning', message:'Incompatible project version'});
+	    } else
+	    if (error == "GenericServerError") {
+	         notifications.put({type:'danger', message:'Unknown error occured'});
 	    }
 	});
 

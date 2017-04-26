@@ -33,6 +33,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+
+import com.google.gson.JsonSyntaxException;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -269,7 +271,12 @@ public class FsProjectStorage {
     public static StateHeader loadStateHeader(String projectName, WorkspaceStorage storage) throws StorageException {
         String stateData = storage.loadEntityString("state", projectName);
         JsonParser parser = new JsonParser();
-        JsonElement header_element = parser.parse(stateData).getAsJsonObject().get("header");
+        JsonElement header_element = null;
+        try {
+            header_element = parser.parse(stateData).getAsJsonObject().get("header");
+        } catch (JsonSyntaxException e) {
+            throw new StorageException("Error loading header for project '" + projectName +"'",e);
+        }
         if ( header_element == null )
             throw new BadProjectHeader("No header found. This is probably an old project");
 

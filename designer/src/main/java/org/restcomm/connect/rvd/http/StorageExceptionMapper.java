@@ -4,6 +4,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 
+import org.restcomm.connect.rvd.exceptions.ExceptionResult;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -16,7 +17,7 @@ public class StorageExceptionMapper implements ExceptionMapper<StorageException>
     public Response toResponse(StorageException e) {
         RvdLoggers.local.log(Level.ERROR, e.getMessage(), e);
 
-        RvdResponse rvdResponse = new RvdResponse(RvdResponse.Status.ERROR).setException(e);
+        RvdResponse rvdResponse = new RvdResponse(RvdResponse.Status.ERROR).setExceptionInfo(new ExceptionResult(e));
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(rvdResponse.asJson()).build();
     }
 
