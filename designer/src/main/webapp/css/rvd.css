@@ -96,6 +96,10 @@ img.logo {
 img.project-icon {
     min-width: 80px;
     min-height: 80px;
+    width: 100px;
+}
+img.project-icon:hover {
+    opacity: 0.6;
 }
 
 /*** login view ***/
