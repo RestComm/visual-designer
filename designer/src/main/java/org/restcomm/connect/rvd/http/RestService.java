@@ -40,7 +40,7 @@ public class RestService {
     }
 
     protected Response buildErrorResponse(Response.Status httpStatus, RvdResponse.Status rvdStatus, RvdException exception) {
-        RvdResponse rvdResponse = new RvdResponse(rvdStatus).setException(exception);
+        RvdResponse rvdResponse = new RvdResponse(rvdStatus).setExceptionInfo(exception);
         return Response.status(httpStatus).entity(rvdResponse.asJson()).build();
     }
 
@@ -50,7 +50,7 @@ public class RestService {
     }
 
     //Response buildInvalidResponse(Response.Status httpStatus, RvdResponse.Status rvdStatus, RvdException exception ) {
-    //    RvdResponse rvdResponse = new RvdResponse(rvdStatus).setException(exception);
+    //    RvdResponse rvdResponse = new RvdResponse(rvdStatus).setExceptionInfo(exception);
     //    return Response.status(httpStatus).entity(rvdResponse.asJson()).build();
     //}
 

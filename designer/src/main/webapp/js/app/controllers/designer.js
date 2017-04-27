@@ -709,8 +709,7 @@ angular.module('Rvd').service('designerService', ['stepRegistry', '$q', '$http',
 		    if (status == 404) {
 		      deferred.reject("ProjectNotFound");
 		    } else {
-		      // TODO fix this generic handling
-			  deferred.reject("IncompatibleProjectVersion");
+			  deferred.reject("GenericServerError");
 			}
 			 //if ( data.serverError && (data.serverError.className == 'IncompatibleProjectVersion') )
 			//	 $location.path("/upgrade/" + name)

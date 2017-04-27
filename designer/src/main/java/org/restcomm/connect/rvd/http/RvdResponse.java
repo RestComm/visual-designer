@@ -41,11 +41,16 @@ public class RvdResponse {
         return this;
     }
 
-    public RvdResponse setException(RvdException e) {
+    public RvdResponse setExceptionInfo(RvdException e) {
         if (e != null) {
             exception = e.getExceptionSummary();
             //rvdStatus = Status.ERROR;
         }
+        return this;
+    }
+
+    public RvdResponse setExceptionInfo(ExceptionResult exceptionInfo) {
+        this.exception = exceptionInfo;
         return this;
     }
 

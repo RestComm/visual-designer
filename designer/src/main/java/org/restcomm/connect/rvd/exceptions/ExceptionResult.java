@@ -15,6 +15,11 @@ public class ExceptionResult {
     ValidationReport report;
     ValidationResult jsonSchemaReport; // used when the json schema validation library is used
 
+    public ExceptionResult(Exception e) {
+        this.className = e.getClass().getSimpleName();
+        this.message = null;
+    }
+
     public ExceptionResult(String className, String message) {
         this.className = className;
         this.message = message;
