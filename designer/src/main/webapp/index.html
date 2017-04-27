@@ -29,8 +29,10 @@
 	-->
 	<div class="rvd-header">
 		<div ng-controller="headerCtrl" class="navbar" role="navigation">
-			<img class="logo" src="images/restcomm-v-d-logo.png"/>
-			<nav class="header-menu collabse navbar-collapse" role="navigation">
+			<div class="logo-area">
+				<img class="logo" src="images/restcomm-v-d-logo.png"/>
+			</div>
+			<nav class="header-menu collapse navbar-collapse" role="navigation">
 				<ul class="nav navbar-nav navbar-right" ui-view="authmenu"></ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown" ng-controller="translateController">

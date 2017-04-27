@@ -14,6 +14,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .header-menu {
     float: right;
 }
+.logo-area {
+    float:left;
+}
 img.logo {
     margin: 10px 10px 10px 10px;
 }
@@ -37,6 +40,12 @@ img.logo {
 .mainmenu .navbar {
     margin: 0 auto;
     width: 580px;
+    float:right;
+}
+@media (min-width:1200px) {
+    .mainmenu .navbar {
+        float:none;
+    }
 }
 
 /*** footer ***/
@@ -105,6 +114,9 @@ img.project-icon:hover {
 /*** login view ***/
 #login-form .slick-input {
     margin-bottom: 30px;
+}
+#login-form .btn+.btn {
+    margin-left: 5px;
 }
 .state-login .section-title {
     margin-bottom: 35px;

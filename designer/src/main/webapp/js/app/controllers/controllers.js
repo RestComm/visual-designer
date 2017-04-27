@@ -118,7 +118,6 @@ angular.module('Rvd').controller('designerMainmenuCtrl', function ($scope, $stat
 });
 
 angular.module('Rvd').controller('headerCtrl', function ($scope, $modal) {
-    console.log("IN headerCTrl");
 
     function settingsModalCtrl ($scope, $timeout, $modalInstance, settings, rvdSettings) {
 		$scope.settings = settings;
