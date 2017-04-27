@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
+import com.google.gson.JsonSyntaxException;
 import org.apache.commons.io.FileUtils;
 import org.restcomm.connect.rvd.model.CallControlInfo;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
@@ -48,7 +49,7 @@ public class WorkspaceStorage {
             data = FileUtils.readFileToString(file, Charset.forName("UTF-8"));
             T instance = marshaler.toModel(data, entityClass);
             return instance;
-        } catch (IOException e) {
+        } catch (IOException | JsonSyntaxException e) {
             throw new StorageException("Error loading file " + file.getPath(), e);
         }
     }
