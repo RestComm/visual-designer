@@ -687,7 +687,7 @@ public class ProjectRestService extends SecuredRestService {
             ProjectSettings projectSettings = FsProjectStorage.loadProjectSettings(applicationSid, workspaceStorage);
             return Response.ok(marshaler.toData(projectSettings)).build();
         } catch (StorageEntityNotFound e) {
-            return Response.status(Status.NOT_FOUND).build();
+            return Response.ok().build();
         } catch (StorageException e) {
             RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();

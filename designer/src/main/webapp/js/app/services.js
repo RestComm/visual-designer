@@ -233,23 +233,26 @@ angular.module('Rvd').service('projectSettingsService', ['$http','$q','$modal', 
 		cachedProjectSettings = resource.get({applicationSid:applicationSid});
 	}
 
+/*
+    // this seems not be used anywhere:
 	service.retrieve = function (applicationSid) {
 		var deferred = $q.defer();
 		$http({method:'GET', url:'services/projects/'+applicationSid+'/settings'})
 		.success(function (data,status) {
-			cachedProjectSettings = data;
-			deferred.resolve(cachedProjectSettings);
+		    if (data === null) {
+		        cachedProjectSettings = {logging:false};
+                deferred.resolve(cachedProjectSettings);
+		    } else {
+                cachedProjectSettings = data;
+                deferred.resolve(cachedProjectSettings);
+			}
 		})
 		.error(function (data,status) {
-			if (status == 404) {
-				cachedProjectSettings = {logging:false};
-				deferred.resolve(cachedProjectSettings);
-			}
-			else
-				deferred.reject("ERROR_RETRIEVING_PROJECT_SETTINGS");
+		    deferred.reject("ERROR_RETRIEVING_PROJECT_SETTINGS");
 		});
 		return deferred.promise;
 	}
+	*/
 
 	service.save = function (applicationSid, projectSettings) {
 		var deferred = $q.defer();
