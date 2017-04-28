@@ -38,6 +38,8 @@ import org.restcomm.connect.rvd.exceptions.callcontrol.CallControlException;
 import org.restcomm.connect.rvd.exceptions.callcontrol.CallControlInvalidConfigurationException;
 import org.restcomm.connect.rvd.exceptions.callcontrol.UnauthorizedCallControlAccess;
 import org.restcomm.connect.rvd.exceptions.ResponseWrapperException;
+import org.restcomm.connect.rvd.exceptions.callcontrol.WebTriggerNotApplicable;
+import org.restcomm.connect.rvd.exceptions.callcontrol.WebTriggerNotAvailable;
 import org.restcomm.connect.rvd.identity.AccountProvider;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
@@ -206,10 +208,20 @@ public class RvdController extends SecuredRestService {
         if (rvdContext.getProjectSettings().getLogging())
             rvdContext.getProjectLogger().log("WebTrigger incoming request: " + ui.getRequestUri().toString(),false).tag("app", projectName).tag("WebTrigger").done();
 
-        // load CC/WebTrigger project info
-        CallControlInfo info = FsCallControlInfoStorage.loadInfo(projectName, workspaceStorage);
-        // find the owner of the project
+        // load project header
         StateHeader projectHeader = FsProjectStorage.loadStateHeader(projectName,workspaceStorage);
+
+        // load CC/WebTrigger project info
+        CallControlInfo info;
+        try {
+            info = FsCallControlInfoStorage.loadInfo(projectName, workspaceStorage);
+        } catch (StorageEntityNotFound e) {
+            if ( ! "voice".equals(projectHeader.getProjectKind()) )
+                throw new WebTriggerNotApplicable("WebTrigger not applicable to this kind of project: " + projectHeader.getProjectKind(),e);
+            else
+                throw new WebTriggerNotAvailable("WebTrigger not available for this project",e);
+        }
+        // find the owner of the project
         String owner = projectHeader.getOwner();
         if (RvdUtils.isEmpty(owner))
             throw new CallControlException("Project '" + projectName + "' has no owner and can't be started using WebTrigger.");
@@ -370,16 +382,17 @@ public class RvdController extends SecuredRestService {
                 RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"executeActionHtml", logging.getPrefix(), e.getMessage()));
             //logger.warn(e);
             return buildWebTriggerHtmlResponse("Web Trigger", "Create call", "failure", "Authentication error", 401);
-        } catch (CallControlException e) {
+        } catch (WebTriggerNotAvailable | WebTriggerNotApplicable e) {
+            RvdLoggers.global.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"executeActionHtml", logging.getPrefix(), e.getMessage()));
+            return buildWebTriggerHtmlResponse("Web Trigger", "Create call", "failure", e.getMessage(), 404);
+        }
+        catch (CallControlException e) {
             // TODO check that the e.getMessage() contains adequate information
             RvdLoggers.global.log(Level.WARN, logging.getPrefix() + e.getMessage());
             int httpStatus = 500;
             if (e.getStatusCode() != null)
                 httpStatus = e.getStatusCode();
             return buildWebTriggerHtmlResponse("Web Trigger", "Create call", "failure", "", httpStatus);
-        } catch (StorageEntityNotFound e) {
-            RvdLoggers.global.log(Level.ERROR, logging.getPrefix(), e);
-            return Response.status(Status.NOT_FOUND).build(); // for case when the cc file does not exist
         } catch (StorageException e) {
             RvdLoggers.global.log(Level.ERROR, logging.getPrefix(), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(selectedMediaType).build();
@@ -402,6 +415,9 @@ public class RvdController extends SecuredRestService {
             if (RvdLoggers.local.isEnabledFor(Level.INFO))
                 RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"executeActionJson", logging.getPrefix(),e.getMessage()));
             return buildWebTriggerJsonResponse(CallControlAction.createCall, CallControlStatus.failure, 401, null);
+        } catch (WebTriggerNotAvailable | WebTriggerNotApplicable e) {
+            RvdLoggers.global.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"executeActionHtml", logging.getPrefix(), e.getMessage()));
+            return buildWebTriggerJsonResponse(CallControlAction.createCall, CallControlStatus.failure, 404, e.getMessage());
         } catch (CallControlException e) {
             // TODO check that the e.getMessage() contains adequate information
             RvdLoggers.global.log(Level.WARN, logging.getPrefix() + e.getMessage());
@@ -409,9 +425,6 @@ public class RvdController extends SecuredRestService {
             if (e.getStatusCode() != null)
                 httpStatus = e.getStatusCode();
             return buildWebTriggerJsonResponse(CallControlAction.createCall, CallControlStatus.failure, httpStatus, null);
-        } catch (StorageEntityNotFound e) {
-            RvdLoggers.global.log(Level.ERROR, logging.getPrefix(), e);
-            return Response.status(Status.NOT_FOUND).build(); // for case when the cc file does not exist
         } catch (StorageException e) {
             RvdLoggers.global.log(Level.ERROR, logging.getPrefix(), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(selectedMediaType).build();
