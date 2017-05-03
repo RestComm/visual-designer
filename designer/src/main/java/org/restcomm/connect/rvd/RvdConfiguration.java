@@ -71,7 +71,7 @@ public class RvdConfiguration {
     private RvdConfig rvdConfig;  // the configuration settings from rvd.xml
     private RestcommConfig restcommConfig;
 
-    private String contextRootPath;
+    private String contextRootPath; // e.g. a/path/ending/in/slash/
     private URI restcommBaseUri;
     private Integer externalServiceTimeout;
 
@@ -80,13 +80,14 @@ public class RvdConfiguration {
     }
 
     public RvdConfiguration(ServletContext servletContext) {
-        contextRootPath = servletContext.getRealPath("/");
-        logger.info("context root path is " + contextRootPath);
-        load();
+        this(servletContext.getRealPath("/"));
     }
 
     public RvdConfiguration(String contextRootPath) {
         this.contextRootPath = contextRootPath;
+        // append trailing slash if not already there
+        if (this.contextRootPath != null && !this.contextRootPath.endsWith("/"))
+            this.contextRootPath += "/";
         logger.info("context root path is " + contextRootPath);
         load();
     }

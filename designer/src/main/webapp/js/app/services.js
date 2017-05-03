@@ -90,7 +90,7 @@ angular.module('Rvd').service('initializer',function (authentication, storage,  
     };
 });
 
-angular.module('Rvd').service('authentication', function ($http, $q, IdentityConfig, storage, $state, md5, $rootScope) {
+angular.module('Rvd').service('authentication', function ($http, $q, IdentityConfig, storage, $state, md5, $rootScope, RvdConfiguration) {
     var authInfo = {};
 	var account = null; // if this is set it means that user logged in: authentication succeeded and account was retrieved
 
@@ -138,7 +138,7 @@ angular.module('Rvd').service('authentication', function ($http, $q, IdentityCon
 	function restcommLogin(username,password) {
 	    var deferredLogin = $q.defer();
 	    var authHeader = basicAuthHeader(username, password);
-        $http({method:'GET', url:'/restcomm/2012-04-24/Accounts.json/' + encodeURIComponent(username), headers: {Authorization: authHeader}}).then(function (response) {
+        $http({method:'GET', url: RvdConfiguration.restcommBaseUrl + '/restcomm/2012-04-24/Accounts.json/' + encodeURIComponent(username), headers: {Authorization: authHeader}}).then(function (response) {
             var acc = response.data; // store temporarily the account returned
             $http({method:'GET', url:'services/auth/keepalive', headers: {Authorization: "Basic " + btoa(acc.email_address + ":" +acc.auth_token)}}).then(function (response) {
                 // ok, access to both restcomm and RVD is verified
@@ -877,5 +877,6 @@ angular.module('Rvd').factory('fileRetriever', function (Blob, FileSaver, $http)
 // keeps various configuration settings that we need to control from a single point. Fetching from server is also possible.
 angular.module('Rvd').service('RvdConfiguration', function () {
     this.projectsRootPath = '/restcomm-rvd/services/projects';
+    this.restcommBaseUrl = 'http://192.168.2.3'
 });
 

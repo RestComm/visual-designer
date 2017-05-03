@@ -1,4 +1,4 @@
-App.controller('projectManagerCtrl', function ( $scope, $http, $location, $stateParams, $timeout, $upload, notifications, authentication, fileRetriever ) {
+App.controller('projectManagerCtrl', function ( $scope, $http, $location, $stateParams, $timeout, $upload, notifications, authentication, fileRetriever, RvdConfiguration ) {
 
 	var account = authentication.getAccount();
 
@@ -17,7 +17,7 @@ App.controller('projectManagerCtrl', function ( $scope, $http, $location, $state
 		$scope.appItems = [];
 		$scope.retrievingApps = true;
 		$http({
-			url: '/restcomm/2012-04-24/Accounts/' + account.sid + '/Applications.json',
+			url: RvdConfiguration.restcommBaseUrl + '/restcomm/2012-04-24/Accounts/' + account.sid + '/Applications.json',
 			method: 'GET',
 			headers: {Authorization: authentication.getAuthHeader()}
 		}).success(function (data, status, headers, config) {
