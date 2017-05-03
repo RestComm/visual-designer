@@ -249,7 +249,7 @@ angular.module('Rvd').controller('wavManagerController', function ($rootScope, $
 		      }).success(function(data, status, headers, config) {
 		        // file is uploaded successfully
 		    	  console.log('file uploaded successfully');
-		    	  $rootScope.$broadcast("fileupload");
+		    	  $rootScope.$broadcast("mediafile-uploaded");
 		      }).progress(function () {});
 		      // .error(...)
 		      // .then(success, error, progress);

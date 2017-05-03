@@ -232,10 +232,6 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 		step.urlParams.splice( step.urlParams.indexOf(urlParam), 1 );
 	}
 
-	$scope.$on('fileupload', function(event, data) {
-		$scope.refreshWavList();
-	});
-
 	$scope.addDialNoun = function (classAttribute, pos, listmodel) {
 		// console.log("adding dial noun");
 		r = RegExp("dial-noun-([^ ]+)");
@@ -341,6 +337,10 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 		// .then( function () { console.log('project saved and built')});
 	}
 
+    $scope.$on('mediafile-uploaded', function(event, data) {
+        $scope.refreshWavList();
+        $scope.showAudioResources = true;
+    });
     // handle messages sent from main menu
 	$scope.$on('project-wav-removed', function (event,data) {
 		$scope.refreshWavList();
