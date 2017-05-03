@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.restcomm.connect.rvd.exceptions.InvalidServiceParameters;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.exceptions.RvdException;
+import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.exceptions.project.UnsupportedProjectVersion;
 import org.restcomm.connect.rvd.jsonvalidation.ProjectValidator;
@@ -64,7 +65,7 @@ public class ProjectService {
 
     public ProjectService(RvdContext rvdContext, WorkspaceStorage workspaceStorage) {
         this.servletContextPath = rvdContext.getServletContext().getContextPath();
-        this.configuration = rvdContext.getSettings();
+        this.configuration = rvdContext.getConfiguration();
         this.workspaceStorage = workspaceStorage;
         this.marshaler = rvdContext.getMarshaler();
     }
@@ -407,8 +408,8 @@ public class ProjectService {
         }
     }
 
-    public void addWavToProject(String projectName, String wavName, InputStream wavStream) throws StorageException {
-        FsProjectStorage.storeWav(projectName, wavName, wavStream, workspaceStorage);
+    public void addWavToProject(String projectName, String wavName, InputStream wavStream) throws StorageException, StreamDoesNotFitInFile {
+        FsProjectStorage.storeWav(projectName, wavName, wavStream, workspaceStorage, configuration.getMaxMediaFileSize());
     }
 
     public List<WavItem> getWavs(String appName) throws StorageException {

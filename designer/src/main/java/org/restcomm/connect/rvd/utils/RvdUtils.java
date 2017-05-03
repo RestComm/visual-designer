@@ -1,6 +1,9 @@
 package org.restcomm.connect.rvd.utils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -10,12 +13,13 @@ import java.util.Map.Entry;
 
 import org.apache.commons.codec.binary.Base64;
 import org.restcomm.connect.rvd.exceptions.RvdException;
-
+import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 
 
 public class RvdUtils {
 
     private static final int TEMP_DIR_ATTEMPTS = 10000;
+    private static final int STREAM_COPY_BUFFER_SIZE = 1024;
 
     public RvdUtils() {
         // TODO Auto-generated constructor stub
@@ -80,6 +84,35 @@ public class RvdUtils {
         } catch (UnsupportedEncodingException e) {
             // TODO issue a warning here
             return value;
+        }
+    }
+
+    /**
+     * Copies data from a stream to a file. If the file already exists it's overwritten.
+     * It won't transfer more than max_bytes bytes of data. If that happens the destination file
+     * is removed and an exception is thrown.
+     *
+     * NOTE: Don't forget to close the stream afterwards!
+     *
+     * @param input
+     * @param outputFile
+     * @return
+     */
+    public static int streamToFile(InputStream input, File outputFile, Integer max_bytes) throws IOException, StreamDoesNotFitInFile {
+        byte[] buffer = new byte[STREAM_COPY_BUFFER_SIZE];
+        FileOutputStream outputStream = new FileOutputStream(outputFile);
+        try {
+            int copiedSize = 0; // how much is actually written
+            while (input.available() > 0) {
+                int readCount = input.read(buffer);
+                if (max_bytes != null  &&  copiedSize + readCount > max_bytes)
+                    throw new StreamDoesNotFitInFile();
+                outputStream.write(buffer, 0, readCount);
+                copiedSize += readCount;
+            }
+            return copiedSize;
+        } finally {
+            outputStream.close();
         }
     }
 }

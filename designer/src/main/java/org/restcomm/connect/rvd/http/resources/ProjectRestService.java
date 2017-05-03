@@ -44,6 +44,7 @@ import org.restcomm.connect.rvd.exceptions.IncompatibleProjectVersion;
 import org.restcomm.connect.rvd.exceptions.InvalidServiceParameters;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.exceptions.RvdException;
+import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.exceptions.project.UnsupportedProjectVersion;
 import org.restcomm.connect.rvd.http.RvdResponse;
@@ -83,7 +84,7 @@ public class ProjectRestService extends SecuredRestService {
     HttpServletRequest request;
 
     private ProjectService projectService;
-    private RvdConfiguration rvdSettings;
+    private RvdConfiguration configuration;
     private ProjectState activeProject;
     private ModelMarshaler marshaler;
     private WorkspaceStorage workspaceStorage;
@@ -99,9 +100,9 @@ public class ProjectRestService extends SecuredRestService {
         logging = new LoggingContext("[designer]");
         logging.appendAccountSid(getUserIdentityContext().getAccountSid());
         rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), logging);
-        rvdSettings = rvdContext.getSettings();
+        configuration = rvdContext.getConfiguration();
         marshaler = rvdContext.getMarshaler();
-        workspaceStorage = new WorkspaceStorage(rvdSettings.getWorkspaceBasePath(), marshaler);
+        workspaceStorage = new WorkspaceStorage(configuration.getWorkspaceBasePath(), marshaler);
         projectService = new ProjectService(rvdContext, workspaceStorage);
     }
 
@@ -561,10 +562,19 @@ public class ProjectRestService extends SecuredRestService {
                     if (filename != null) {
                         // is this an appropriate media filename ?
                         if (! mediaFilenamePattern.matcher(filename).matches()) {
-                            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(logging.getPrefix(), "media filename/extension not allowed: " + filename ) );
+                            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(logging.getPrefix(), "Media filename/extension not allowed: " + filename ) );
                             return Response.status(Status.BAD_REQUEST).entity("{\"error\":\"FILE_EXT_NOT_ALLOWED\"}").build();
                         }
-                        projectService.addWavToProject(applicationSid, filename, item.openStream());
+                        try {
+                            projectService.addWavToProject(applicationSid, filename, item.openStream());
+                        } catch (StreamDoesNotFitInFile e) {
+                            // Oops, the uploaded file is too big. Back off..
+                            Integer maxSize = rvdContext.getConfiguration().getMaxMediaFileSize();
+                            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(logging.getPrefix(), "Media file too big. Maximum size is " + maxSize)  + " bytes");
+                            return Response.status(Status.BAD_REQUEST).entity("{\"error\":\"FILE_TOO_BIG\", \"maxSize\": " + maxSize + "}").build();
+
+                        }
+
                         fileinfo.addProperty("name", filename);
                         // fileinfo.addProperty("size", size(item.openStream()));
                         if (RvdLoggers.local.isDebugEnabled())

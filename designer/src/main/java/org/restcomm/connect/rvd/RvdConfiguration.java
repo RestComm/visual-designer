@@ -68,6 +68,7 @@ public class RvdConfiguration {
     public static final String RESTCOMM_HEADER_PREFIX_DIAL = "DialSipHeader_"; // another prefix
     // File upload
     public static final String MEDIA_FILENAME_PATTERN = ".*\\.(wav|mp4)$"; // only allow upload of media files whose name matches this pattern i.e. file extension ends in .wav or .mp4
+    private Integer maxMediaFileSize = 1024*1024; // maximum size allowed for media file uploads (in bytes)
 
     private String workspaceBasePath;
     private RvdConfig rvdConfig;  // the configuration settings from rvd.xml
@@ -291,5 +292,9 @@ public class RvdConfiguration {
     // package private setter to be used from RvdConfigurationBuilder only
     void setRestcommBaseUri(URI uri) {
         this.restcommBaseUri = uri;
+    }
+
+    public Integer getMaxMediaFileSize() {
+        return maxMediaFileSize;
     }
 }

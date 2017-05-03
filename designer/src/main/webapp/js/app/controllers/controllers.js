@@ -254,7 +254,9 @@ angular.module('Rvd').controller('wavManagerController', function ($rootScope, $
 		      .progress(function () {})
 		      .error( function (data,status) {
 		        if (status == 400 && data && data.error == "FILE_EXT_NOT_ALLOWED")
-		            notifications.put({message:"Media file not supported", type:"warning"});
+		            notifications.put({message:"Media file not supported", type:"danger"});
+		        if (status == 400 && data && data.error == "FILE_TOO_BIG")
+		            notifications.put({message:"Media file is too big! Only files up to " + data.maxSize + " bytes allowed :-(", type:"danger"});
 		        else
 		            notifications.put({message:"Error uploading media file", type:"danger"});
 		      });

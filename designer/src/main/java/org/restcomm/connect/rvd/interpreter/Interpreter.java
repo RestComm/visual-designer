@@ -132,7 +132,7 @@ public class Interpreter {
 
     public Interpreter(ProjectAwareRvdContext rvdContext, String targetParam, String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, WorkspaceStorage workspaceStorage, ApplicationContext applicationContext) {
         this.rvdContext = rvdContext;
-        this.rvdSettings = rvdContext.getSettings();
+        this.rvdSettings = rvdContext.getConfiguration();
         this.httpRequest = httpRequest;
         this.targetParam = requestParams.getFirst("target");
         //this.targetParam = targetParam;
