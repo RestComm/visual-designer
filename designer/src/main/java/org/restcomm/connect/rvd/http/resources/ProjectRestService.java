@@ -6,6 +6,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
+
 import org.apache.log4j.Level;
 
 import javax.annotation.PostConstruct;
@@ -88,6 +90,8 @@ public class ProjectRestService extends SecuredRestService {
     private LoggingContext logging;
 
     RvdContext rvdContext;
+
+    static Pattern mediaFilenamePattern = Pattern.compile(RvdConfiguration.MEDIA_FILENAME_PATTERN);
 
     @PostConstruct
     public void init() {
@@ -553,12 +557,18 @@ public class ProjectRestService extends SecuredRestService {
 
                     // is this a file part (talking about multipart requests, there might be parts that are not actual files).
                     // They will be ignored
-                    if (item.getName() != null) {
-                        projectService.addWavToProject(applicationSid, item.getName(), item.openStream());
-                        fileinfo.addProperty("name", item.getName());
+                    String filename = item.getName();
+                    if (filename != null) {
+                        // is this an appropriate media filename ?
+                        if (! mediaFilenamePattern.matcher(filename).matches()) {
+                            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(logging.getPrefix(), "media filename/extension not allowed: " + filename ) );
+                            return Response.status(Status.BAD_REQUEST).entity("{\"error\":\"FILE_EXT_NOT_ALLOWED\"}").build();
+                        }
+                        projectService.addWavToProject(applicationSid, filename, item.openStream());
+                        fileinfo.addProperty("name", filename);
                         // fileinfo.addProperty("size", size(item.openStream()));
                         if (RvdLoggers.local.isDebugEnabled())
-                            RvdLoggers.local.log(Level.DEBUG, logging.getPrefix() + " uploaded wav " + item.getName());
+                            RvdLoggers.local.log(Level.DEBUG, logging.getPrefix() + " uploaded wav " + filename);
                     } else {
                         if (RvdLoggers.local.isEnabledFor(Level.INFO))
                             RvdLoggers.local.log(Level.INFO, logging.getPrefix() + " non-file part found in upload");
