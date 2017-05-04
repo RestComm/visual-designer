@@ -39,6 +39,7 @@ import org.restcomm.connect.rvd.storage.exceptions.StorageException;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class RecordStep extends Step {
+
     String next;
     String method;
     Integer timeout;
@@ -46,13 +47,15 @@ public class RecordStep extends Step {
     Integer maxLength;
     Boolean transcribe;
     String transcribeCallback;
+    Boolean playBeep;
+    String media;
+
     public String getTranscribeCallback() {
         return transcribeCallback;
     }
     public void setTranscribeCallback(String transcribeCallback) {
         this.transcribeCallback = transcribeCallback;
     }
-    Boolean playBeep;
     public String getNext() {
         return next;
     }
@@ -95,6 +98,11 @@ public class RecordStep extends Step {
     public void setPlayBeep(Boolean playBeep) {
         this.playBeep = playBeep;
     }
+
+    public String getMedia() {
+        return media;
+    }
+
     public RcmlRecordStep render(Interpreter interpreter) {
         RcmlRecordStep rcmlStep = new RcmlRecordStep();
 
@@ -113,6 +121,7 @@ public class RecordStep extends Step {
         rcmlStep.setTimeout(getTimeout());
         rcmlStep.setTranscribe(getTranscribe());
         rcmlStep.setTranscribeCallback(getTranscribeCallback());
+        rcmlStep.setMedia(getMedia());
 
         return rcmlStep;
     }

@@ -16,6 +16,17 @@
 			<div class='row form-group'>
 				<div class='col-md-4'>
 					<div class="input-group">
+						<span class="input-group-addon">{{'Media' | translate}}</span>
+						<select auto-clear ng-model="step.media" class="mask-invalid form-control">
+							<option value=""></option>
+							<option value="audio_only">{{'audio only' | translate}}</option>
+							<option value="video_only">{{'video only' | translate}}</option>
+							<option value="audio_video">{{'audio and video' | translate}}</option>
+						</select>
+					</div>
+				</div>
+				<div class='col-md-4'>
+					<div class="input-group">
 						<span class="input-group-addon help-tooltip"  tooltip-trigger='mouseenter' tooltip-popup-delay='1000' tooltip="{{'recordStepContinueToTooltip' | translate}}">{{'recordStepContinueToLabel' | translate}}</span>
 						<select sync-model name='next' ng-model='step.next' ng-options='target.name as target.label for target in getAllTargets()' class="form-control" required>
 							<option value=""></option>

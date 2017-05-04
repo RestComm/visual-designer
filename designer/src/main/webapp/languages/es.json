@@ -544,5 +544,10 @@
 	"User parameter scope": "User parameter scope",
 	"Application": "Application",
 
-	"Pick a name": "Pick a name for your project"
+	"Pick a name": "Pick a name for your project",
+
+	"Media": "Media",
+	"audio only": "audio only",
+	"video only": "video only",
+	"audio and video": "audio and video"
 }
