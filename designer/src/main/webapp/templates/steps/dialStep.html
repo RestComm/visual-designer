@@ -88,6 +88,45 @@
 								<span  class="input-group-addon fa fa-cog rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
 								<span class="input-group-addon fa fa-times rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
 							</div>
+
+							<div class="input-group input-group-sm noun-advanced">
+								<span class="input-group-addon"><strong>Video</strong></span>
+								<select ng-model="dialnoun.enableVideo" auto-clear ng-options='pair.value as pair.caption for pair in yesNoBooleanOptions' class="form-control mask-invalid">
+									<option value=""></option>
+									<option value="yes">Yes</option>
+									<option value="no">No</option>
+								</select>
+								<span ng-show="dialnoun.enableVideo" class="input-group-addon">Mode</span>
+								<select ng-show="dialnoun.enableVideo" ng-model="dialnoun.videoMode" auto-clear class="form-control mask-invalid">
+									<option value=""></option>
+									<option value="mcu">MCU</option>
+									<option value="sfu">SFU</option>
+								</select>
+								<span ng-show="dialnoun.enableVideo" class="input-group-addon">Resolution</span>
+								<select ng-show="dialnoun.enableVideo" ng-model="dialnoun.videoResolution" auto-clear class="form-control">
+									<option value=""></option>
+									<option value="CIF">CIF</option>
+									<option value="4CIF">4CIF</option>
+									<option value="16CIF">16CIF</option>
+									<option value="QCIF">QCIF</option>
+									<option value="VGA">VGA</option>
+									<option value="720p">720p</option>
+								</select>
+								<span ng-show="dialnoun.enableVideo" class="input-group-addon">Layout</span>
+								<select ng-show="dialnoun.enableVideo" ng-model="dialnoun.videoLayout" auto-clear class="form-control">
+									<option value=""></option>
+									<option value="linear">linear</option>
+									<option value="tile">tile</option>
+								</select>
+								<span ng-show="dialnoun.enableVideo" class="input-group-addon">Overlay</span>
+								<input ng-show="dialnoun.enableVideo" ng-model="dialnoun.videoOverlay" class="form-control">
+								<!--
+
+								CIF, 4CIF, 16CIF, QCIF, VGA, and 720p
+                                                                 resolution="720p" layout="linear" overlay="text"
+                                -->
+							</div>
+
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
 								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'dialStepConferenceMutedTooltip' | translate}}">{{'dialStepConferenceMutedLabel' | translate}}</span>
 								<select ng-model='dialnoun.muted' auto-clear ng-options='pair.value as pair.caption for pair in yesNoBooleanOptions' class="form-control">
