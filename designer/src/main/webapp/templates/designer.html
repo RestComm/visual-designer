@@ -77,10 +77,10 @@
 
 				<!-- wavManager -->
 				<div ng-controller="wavManagerController" ng-show='project.projectKind=="voice"'>
-					<h5 class='text-center'><strong>{{'designerAudioResourcesLabel' | translate}}</strong></h5>
+					<h5 class='text-center'><strong>{{'Media resources' | translate}}</strong></h5>
 
 					<div class='drop-area' ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="dropping" ng-show="dropSupported">
-						<div class="drop-prompt">{{'designerDropAudioLabel' | translate}}</div>
+						<div class="drop-prompt">{{'Drop new media' | translate}}</div>
 					</div>
 					<div ng-file-drop-available="dropSupported=true" ng-show="!dropSupported">{{'designerHtml5DropLabel' | translate}}</div>
 
