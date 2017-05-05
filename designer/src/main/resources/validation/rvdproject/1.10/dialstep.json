@@ -67,7 +67,12 @@
 				"waitMethod": {"enum":["GET","POST"]},
 				"maxParticipants": {"type":"integer"},
 				"statusCallback": {"type": "string"},
-				"statusCallbackModule": {"type":"string","minLength": 1}
+				"statusCallbackModule": {"type":"string","minLength": 1},
+				"enableVideo": {"type": "boolean"},
+				"videoMode": {"type": "string"},
+				"videoResolution": {"type": "string"},
+				"videoLayout": {"type": "string"},
+				"videoOverlay": {"type": "string"}
 			},
 			"required": ["dialType","destination"]
 		},	

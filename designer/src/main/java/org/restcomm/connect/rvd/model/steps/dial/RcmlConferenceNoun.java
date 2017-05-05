@@ -2,6 +2,15 @@ package org.restcomm.connect.rvd.model.steps.dial;
 
 
 public class RcmlConferenceNoun extends RcmlNoun {
+
+    public static class Video {
+        public Boolean enable;
+        public String mode;
+        public String resolution;
+        public String layout;
+        public String overlay;
+    }
+
     Boolean muted;
     Boolean beep;
     Boolean startConferenceOnEnter;
@@ -11,6 +20,7 @@ public class RcmlConferenceNoun extends RcmlNoun {
     Integer maxParticipants;
     String destination;
     String statusCallback;
+    Video video;
 
     public String getDestination() {
         return destination;

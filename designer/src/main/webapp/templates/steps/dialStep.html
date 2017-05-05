@@ -11,7 +11,7 @@
 				<div basic-draggable drop-target='.dial-nouns' class="dial-noun dial-noun-sipuri label label-default rvd-pickable">{{'dialStepSipUriLabel' | translate}}</div>
 			</div>
 		</div>
-
+		
 		<div class='row'>
 			<div class='col-md-12'>
 				<div basic-sortable list-model='step.dialNouns' class='dial-nouns form-group' ng-class="{'drop-area':step.dialNouns.length==0}" item-added='addDialNoun'>
@@ -97,13 +97,13 @@
 									<option value="no">No</option>
 								</select>
 								<span ng-show="dialnoun.enableVideo" class="input-group-addon">Mode</span>
-								<select ng-show="dialnoun.enableVideo" ng-model="dialnoun.videoMode" auto-clear class="form-control mask-invalid">
+								<select ng-model="dialnoun.videoMode" ng-show="dialnoun.enableVideo" auto-clear class="form-control mask-invalid">
 									<option value=""></option>
 									<option value="mcu">MCU</option>
 									<option value="sfu">SFU</option>
 								</select>
 								<span ng-show="dialnoun.enableVideo" class="input-group-addon">Resolution</span>
-								<select ng-show="dialnoun.enableVideo" ng-model="dialnoun.videoResolution" auto-clear class="form-control">
+								<select ng-model="dialnoun.videoResolution" ng-show="dialnoun.enableVideo" auto-clear class="mask-invalid form-control">
 									<option value=""></option>
 									<option value="CIF">CIF</option>
 									<option value="4CIF">4CIF</option>
@@ -113,13 +113,13 @@
 									<option value="720p">720p</option>
 								</select>
 								<span ng-show="dialnoun.enableVideo" class="input-group-addon">Layout</span>
-								<select ng-show="dialnoun.enableVideo" ng-model="dialnoun.videoLayout" auto-clear class="form-control">
+								<select ng-model="dialnoun.videoLayout" ng-show="dialnoun.enableVideo" auto-clear class="mask-invalid form-control">
 									<option value=""></option>
 									<option value="linear">linear</option>
 									<option value="tile">tile</option>
 								</select>
 								<span ng-show="dialnoun.enableVideo" class="input-group-addon">Overlay</span>
-								<input ng-show="dialnoun.enableVideo" ng-model="dialnoun.videoOverlay" class="form-control">
+								<input ng-model="dialnoun.videoOverlay" ng-show="dialnoun.enableVideo" auto-clear class="mask-invalid form-control">
 								<!--
 
 								CIF, 4CIF, 16CIF, QCIF, VGA, and 720p
