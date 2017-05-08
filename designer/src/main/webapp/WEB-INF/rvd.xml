@@ -34,6 +34,6 @@
 	<externalServiceTimeout></externalServiceTimeout>
 
 	<!-- Enable Video support in RCML produced. Requires XMS. -->
-	<videoSupport>true</videoSupport>
+	<videoSupport>false</videoSupport>
 
 </rvd>
