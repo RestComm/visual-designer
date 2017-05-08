@@ -519,5 +519,15 @@
 	"Media": "Media",
 	"audio only": "audio only",
 	"video only": "video only",
-	"audio and video": "audio and video"
+	"audio and video": "audio and video",
+	"videoOverlayHint": "Text title to display over video stream. No more than 15 characters will be displayed.",
+	"videoLayoutHint": "Positioning of participant views in the screen. Only available in MCU mode. Defaults to 'tile'.",
+	"videoResolutionHint": "Video resolution. Defaults to CIF.",
+	"videoModeHint": "Video mixing mode. MCU will mix on server while SFU will create multiple parallel video streams. Defaults to 'MCU'.",
+	"videoEnableHint": "Enable video for this conference call",
+	"Video": "Video",
+	"Mode": "Mode",
+	"Resolution": "Resolution",
+	"Layout": "Layout",
+	"Overlay": "Overlay"
 }

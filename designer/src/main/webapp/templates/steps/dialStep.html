@@ -90,19 +90,17 @@
 							</div>
 
 							<div class="input-group input-group-sm noun-advanced">
-								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoEnableHint' | translate}}"><strong>Video</strong></span>
+								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoEnableHint' | translate}}"><strong>{{'Video' | translate}}</strong></span>
 								<select ng-model="dialnoun.enableVideo" auto-clear ng-options='pair.value as pair.caption for pair in yesNoBooleanOptions' class="form-control mask-invalid">
 									<option value=""></option>
-									<option value="yes">Yes</option>
-									<option value="no">No</option>
 								</select>
-								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoModeHint' | translate}}">Mode</span>
+								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoModeHint' | translate}}">{{'Mode' | translate}}</span>
 								<select ng-model="dialnoun.videoMode" ng-show="dialnoun.enableVideo" auto-clear class="form-control mask-invalid">
 									<option value=""></option>
 									<option value="mcu">MCU</option>
 									<option value="sfu">SFU</option>
 								</select>
-								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoResolutionHint' | translate}}">Resolution</span>
+								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoResolutionHint' | translate}}">{{'Resolution' | translate}}</span>
 								<select ng-model="dialnoun.videoResolution" ng-show="dialnoun.enableVideo" auto-clear class="mask-invalid form-control">
 									<option value=""></option>
 									<option value="CIF">CIF</option>
@@ -112,13 +110,13 @@
 									<option value="VGA">VGA</option>
 									<option value="720p">720p</option>
 								</select>
-								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoLayoutHint' | translate}}">Layout</span>
+								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoLayoutHint' | translate}}">{{'Layout' | translate}}</span>
 								<select ng-model="dialnoun.videoLayout" ng-show="dialnoun.enableVideo" auto-clear class="mask-invalid form-control">
 									<option value=""></option>
 									<option value="linear">linear</option>
 									<option value="tile">tile</option>
 								</select>
-								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoOverlayHint' | translate}}">Overlay</span>
+								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoOverlayHint' | translate}}">{{'Overlay' | translate}}</span>
 								<input ng-model="dialnoun.videoOverlay" ng-show="dialnoun.enableVideo" auto-clear class="mask-invalid form-control">
 							</div>
 
