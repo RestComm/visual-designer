@@ -14,7 +14,7 @@
 	<div class="panel-body" ng-hide='step.iface.isCollapsed'>
 		<form name='form' novalidate>
 			<div class='row form-group'>
-				<div class='col-md-4'>
+				<div ng-if="videoSupport" class='col-md-4'>
 					<div class="input-group">
 						<span class="input-group-addon">{{'Media' | translate}}</span>
 						<select auto-clear ng-model="step.media" class="mask-invalid form-control">

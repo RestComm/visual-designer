@@ -89,7 +89,7 @@
 								<span class="input-group-addon fa fa-times rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
 							</div>
 
-							<div class="input-group input-group-sm noun-advanced">
+							<div ng-show="videoSupport" class="input-group input-group-sm noun-advanced">
 								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoEnableHint' | translate}}"><strong>{{'Video' | translate}}</strong></span>
 								<select ng-model="dialnoun.enableVideo" auto-clear ng-options='pair.value as pair.caption for pair in yesNoBooleanOptions' class="form-control mask-invalid">
 									<option value=""></option>

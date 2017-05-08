@@ -1,8 +1,9 @@
-var designerCtrl = App.controller('designerCtrl', function($scope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever) {
+var designerCtrl = App.controller('designerCtrl', function($scope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration ) {
 
 	$scope.project = project;
 	$scope.visibleNodes = editedNodes.getEditedNodes();
 	$scope.showGraph = false;
+	$scope.videoSupport = RvdConfiguration.videoSupport;
 
 	function download(applicationSid,projectName) {
 	    var downloadUrl =  '/restcomm-rvd/services/projects/' + applicationSid + '/archive?projectName=' + projectName;

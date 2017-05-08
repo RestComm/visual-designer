@@ -33,4 +33,7 @@
 	<!-- Timeout for external service requests in milliseconds. Defaults to 5000 if not given -->
 	<externalServiceTimeout></externalServiceTimeout>
 
+	<!-- Enable Video support in RCML produced. Requires XMS. -->
+	<videoSupport>true</videoSupport>
+
 </rvd>

@@ -321,8 +321,6 @@ angular.module('Rvd')
 })
 ;
 
-
-
 angular.module('Rvd').directive('conferenceDialNoun', function (RvdConfiguration) {
     return {
         restrict: 'A',
@@ -370,6 +368,10 @@ angular.module('Rvd').directive('conferenceDialNoun', function (RvdConfiguration
             if (!!scope.dialnoun.muted || !!scope.dialnoun.beep || !!scope.dialnoun.startConferenceOnEnter
 				|| !!scope.dialnoun.endConferenceOnExit || !!scope.dialnoun.waitModule || !!scope.dialnoun.waitUrl) {
 					scope.dialnoun.iface = {advancedShown: true}
+			}
+			// clear video attributes if videoSupport is off
+			if (!RvdConfiguration.videoSupport) {
+			    scope.dialnoun.enableVideo = false;
 			}
 
             // public interface

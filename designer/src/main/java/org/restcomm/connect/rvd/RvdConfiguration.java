@@ -77,6 +77,7 @@ public class RvdConfiguration {
     private String contextRootPath;
     private URI restcommBaseUri;
     private Integer externalServiceTimeout;
+    private Boolean videoSupport;
 
     // package-private constructor to be used from RvdConfigurationBuilder
     RvdConfiguration() {
@@ -127,6 +128,8 @@ public class RvdConfiguration {
                 logger.log(Level.WARN, "could not load restcomm configuration");
             }
         }
+
+        this.videoSupport = rvdConfig.getVideoSupport();
     }
 
     /**
@@ -296,5 +299,9 @@ public class RvdConfiguration {
 
     public Integer getMaxMediaFileSize() {
         return maxMediaFileSize;
+    }
+
+    public Boolean getVideoSupport() {
+        return videoSupport;
     }
 }

@@ -90,7 +90,7 @@ angular.module('Rvd').service('initializer',function (authentication, storage,  
     };
 });
 
-angular.module('Rvd').service('authentication', function ($http, $q, IdentityConfig, storage, $state, md5, $rootScope) {
+angular.module('Rvd').service('authentication', function ($http, $q, storage, $state, md5, $rootScope) {
     var authInfo = {};
 	var account = null; // if this is set it means that user logged in: authentication succeeded and account was retrieved
 
@@ -171,22 +171,16 @@ angular.module('Rvd').service('authentication', function ($http, $q, IdentityCon
 	        - chains other errors fro restcommLogin()
 	*/
 	function checkRvdAccess(role) {
-	    // TODO implement role checking
-	    // ...
-	    if (IdentityConfig.securedByRestcomm()) {
-            if (!account) {
-                // There is no account set. If there are credentials in the storage we will try logging in using them
-                var creds = storage.getCredentials();
-                if (creds) {
-                    return restcommLogin(creds.username, creds.password); // a chained promise is returned
-                } else
-                    throw 'NEED_LOGIN';
-            } else {
-                return; // everythig is OK!
-            }
-	    } else {
-	        throw 'UNSUPPORTED_AUTH_TYPE';
-	    }
+        if (!account) {
+            // There is no account set. If there are credentials in the storage we will try logging in using them
+            var creds = storage.getCredentials();
+            if (creds) {
+                return restcommLogin(creds.username, creds.password); // a chained promise is returned
+            } else
+                throw 'NEED_LOGIN';
+        } else {
+            return; // everythig is OK!
+        }
 	}
 
     // creates an auth header using a username (or sid) and a plaintext password (not already md5ed)
@@ -798,43 +792,6 @@ angular.module('Rvd').factory('keepAliveResource', function($resource) {
     return $resource('services/auth/keepalive');
 });
 
-// IdentityConfig service constructor. See app.js. This service is created early before the Rvd angular module is initialized and is accessible as a 'constant' service.
-function IdentityConfig(server, instance,$q) {
-    var This = this;
-    this.server = server;
-    this.instance = instance;
-
-    // is an identity server configured in Restcomm ?
-    function identityServerConfigured () {
-        return !!This.server && (!!This.server.authServerUrl);
-    }
-    // True is Restcomm is configured to use an authorization server and an identity instance is already in place
-    function securedByKeycloak () {
-        return identityServerConfigured() && (!!This.instance) && (!!This.instance.name);
-    }
-    // True if Restcomm is used for authorization (legacy mode). No keycloak needs to be present.
-    function securedByRestcomm() {
-        return !identityServerConfigured();
-    }
-    function getIdentity() {
-        if (!identityServerConfigured())
-            return null;
-        var deferred = $q.defer();
-        if (!!This.instance && !!This.instance.name)
-            deferred.resolve(This.instance);
-        else
-            deferred.reject("KEYCLOAK_INSTANCE_NOT_REGISTERED");
-        return deferred.promise;
-    }
-
-    // Public interface
-
-    this.identityServerConfigured = identityServerConfigured;
-    this.securedByKeycloak = securedByKeycloak;
-    this.securedByRestcomm = securedByRestcomm;
-    this.getIdentity = getIdentity;
-}
-
 angular.module('Rvd').factory('fileRetriever', function (Blob, FileSaver, $http) {
     // Returns a promise.
     // resolved: nothing is returned - the file has been saved normally
@@ -873,9 +830,3 @@ angular.module('Rvd').factory('fileRetriever', function (Blob, FileSaver, $http)
 	    download: download
 	}
 });
-
-// keeps various configuration settings that we need to control from a single point. Fetching from server is also possible.
-angular.module('Rvd').service('RvdConfiguration', function () {
-    this.projectsRootPath = '/restcomm-rvd/services/projects';
-});
-
