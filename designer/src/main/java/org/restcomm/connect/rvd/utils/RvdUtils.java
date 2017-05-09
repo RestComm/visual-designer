@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 
@@ -55,6 +56,18 @@ public class RvdUtils {
 
     public static boolean safeEquals(String value1, String value2) {
         return value1 == null ? (value1 == value2) : (value1.equals(value2));
+    }
+
+    /**
+     * Returns false if _value_ is null or false. True otherwise.
+     *
+     * @param booleanValue
+     * @return
+     */
+    public static boolean isTrue( Boolean booleanValue) {
+        if (booleanValue != null && booleanValue)
+            return true;
+        return false;
     }
 
     /**
@@ -103,12 +116,17 @@ public class RvdUtils {
         FileOutputStream outputStream = new FileOutputStream(outputFile);
         try {
             int copiedSize = 0; // how much is actually written
-            while (input.available() > 0) {
-                int readCount = input.read(buffer);
-                if (max_bytes != null  &&  copiedSize + readCount > max_bytes)
+            //IOUtils.copy(input, outputStream);
+            int readCount = input.read(buffer);
+            while (readCount > 0) {
+                if (max_bytes != null  &&  ((copiedSize + readCount) > max_bytes)) {
+                    outputStream.close();
+                    FileUtils.deleteQuietly(outputFile);
                     throw new StreamDoesNotFitInFile();
+                }
                 outputStream.write(buffer, 0, readCount);
                 copiedSize += readCount;
+                readCount = input.read(buffer);
             }
             return copiedSize;
         } finally {

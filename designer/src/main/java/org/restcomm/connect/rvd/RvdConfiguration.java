@@ -13,13 +13,14 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import org.restcomm.connect.rvd.commons.http.SslMode;
+import org.restcomm.connect.rvd.configuration.CustomIntegerConverter;
 import org.restcomm.connect.rvd.configuration.RestcommConfig;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigNotFound;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigurationException;
 import org.restcomm.connect.rvd.http.utils.UriUtils;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.RvdConfig;
+import org.restcomm.connect.rvd.configuration.RvdConfig;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import com.thoughtworks.xstream.XStream;
@@ -28,7 +29,8 @@ import com.thoughtworks.xstream.XStream;
  * Configuration settings for RVD. Contains both static hardcoded and loaded values.
  *
  * Besides hardcoded values, information form rvd.xml as well as proxied values from restcomm.xml
- * are also contained.
+ * are contained. It also provides vary basic logic so that default values are returned too.
+ * For example if 'videoSupport' configuration option is missing, it will return false (and not null).
  *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
@@ -68,7 +70,7 @@ public class RvdConfiguration {
     public static final String RESTCOMM_HEADER_PREFIX_DIAL = "DialSipHeader_"; // another prefix
     // File upload
     public static final String MEDIA_FILENAME_PATTERN = ".*\\.(wav|mp4)$"; // only allow upload of media files whose name matches this pattern i.e. file extension ends in .wav or .mp4
-    private Integer maxMediaFileSize = 1024*1024; // maximum size allowed for media file uploads (in bytes)
+    private Integer maxMediaFileSize; // Maximum size allowed for media file uploads (in bytes). If set to null no limit is enforced
 
     private String workspaceBasePath;
     private RvdConfig rvdConfig;  // the configuration settings from rvd.xml
@@ -128,8 +130,10 @@ public class RvdConfiguration {
                 logger.log(Level.WARN, "could not load restcomm configuration");
             }
         }
-
+        // video support
         this.videoSupport = rvdConfig.getVideoSupport();
+        // maxMediaFileSize
+        maxMediaFileSize = rvdConfig.getMaxMediaFileSize();
     }
 
     /**
@@ -142,6 +146,7 @@ public class RvdConfiguration {
             FileInputStream input = new FileInputStream(pathToXml);
             XStream xstream = new XStream();
             xstream.alias("rvd", RvdConfig.class);
+            xstream.registerConverter(new CustomIntegerConverter());
             rvdConfig = (RvdConfig) xstream.fromXML( input );
             return rvdConfig;
         } catch (FileNotFoundException e) {
@@ -302,6 +307,6 @@ public class RvdConfiguration {
     }
 
     public Boolean getVideoSupport() {
-        return videoSupport;
+        return RvdUtils.isTrue(videoSupport);
     }
 }

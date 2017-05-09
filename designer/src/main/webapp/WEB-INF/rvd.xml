@@ -33,7 +33,11 @@
 	<!-- Timeout for external service requests in milliseconds. Defaults to 5000 if not given -->
 	<externalServiceTimeout></externalServiceTimeout>
 
-	<!-- Enable Video support in RCML produced. Requires XMS. -->
+	<!-- Enable Video support in RCML produced and UI. Defaults to 'false'. Requires XMS. -->
 	<videoSupport>false</videoSupport>
+
+	<!-- Maximum media file size allowed when uploading (in bytes). If video is supported make sure you
+	 provide a large enough value -->
+	<maxMediaFileSize>4194304</maxMediaFileSize>
 
 </rvd>

@@ -638,17 +638,22 @@ public class ProjectRestService extends SecuredRestService {
     }
 
     /*
-     * Return a wav file from the project. It's the same as getWav() but it has the Query parameters converted to Path
+     * Return a media file from the project. It's the same as getWav() but it has the Query parameters converted to Path
      * parameters
      */
     @GET
-    @Path("{applicationSid}/wavs/{filename}.wav")
+    @Path("{applicationSid}/{placeholder: (wavs|media)}/{filename}.{ext: (wav|mp4)}")
     public Response getWavNoQueryParams(@PathParam("applicationSid") String applicationSid,
-            @PathParam("filename") String filename) {
+            @PathParam("filename") String filename, @PathParam("ext") String extension) {
         InputStream wavStream;
         try {
-            wavStream = FsProjectStorage.getWav(applicationSid, filename + ".wav", workspaceStorage);
-            return Response.ok(wavStream, "audio/x-wav").header("Content-Disposition", "attachment; filename = " + filename)
+            wavStream = FsProjectStorage.getWav(applicationSid, filename + "." + extension, workspaceStorage);
+            String mediaType;
+            if ( "mp4".equals(extension))
+                mediaType = "video/mp4";
+            else
+                mediaType = "audio/x-wav";
+            return Response.ok(wavStream, mediaType).header("Content-Disposition", "attachment; filename = " + filename + "." + extension)
                     .build();
         } catch (WavItemDoesNotExist e) {
             return Response.status(Status.NOT_FOUND).build(); // ordinary error page is returned since this will be consumed

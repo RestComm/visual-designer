@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package org.restcomm.connect.rvd.model;
+package org.restcomm.connect.rvd.configuration;
 
 /**
  * Model class for loading configuration from rvd.xml
@@ -31,6 +31,7 @@ public class RvdConfig {
     private String restcommBaseUrl;
     private String externalServiceTimeout;
     private Boolean videoSupport;
+    private Integer maxMediaFileSize;
 
     public RvdConfig() {
     }
@@ -64,5 +65,9 @@ public class RvdConfig {
 
     public Boolean getVideoSupport() {
         return videoSupport;
+    }
+
+    public Integer getMaxMediaFileSize() {
+        return maxMediaFileSize;
     }
 }
