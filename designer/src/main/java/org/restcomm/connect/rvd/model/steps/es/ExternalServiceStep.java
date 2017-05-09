@@ -213,7 +213,7 @@ public class ExternalServiceStep extends Step {
 
             // *** Make the request and get a status code and a response. Build a JsonElement from the response  ***
 
-            CloseableHttpClient client = interpreter.getApplicationContext().getHttpClientBuilder().buildHttpClient(interpreter.getRvdContext().getSettings().getExternalServiceTimeout());
+            CloseableHttpClient client = interpreter.getApplicationContext().getHttpClientBuilder().buildHttpClient(interpreter.getRvdContext().getConfiguration().getExternalServiceTimeout());
             CloseableHttpResponse response;
             int statusCode;
             JsonElement response_element = null;

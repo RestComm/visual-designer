@@ -98,7 +98,7 @@ public class RvdController extends SecuredRestService {
         } catch (ProjectDoesNotExist projectDoesNotExist) {
             throw new ResponseWrapperException( Response.status(Status.NOT_FOUND).build() );
         }
-        rvdSettings = rvdContext.getSettings();
+        rvdSettings = rvdContext.getConfiguration();
         marshaler = rvdContext.getMarshaler();
         workspaceStorage = rvdContext.getWorkspaceStorage();
     }

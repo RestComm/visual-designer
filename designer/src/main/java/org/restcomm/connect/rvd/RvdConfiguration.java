@@ -13,13 +13,14 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import org.restcomm.connect.rvd.commons.http.SslMode;
+import org.restcomm.connect.rvd.configuration.CustomIntegerConverter;
 import org.restcomm.connect.rvd.configuration.RestcommConfig;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigNotFound;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigurationException;
 import org.restcomm.connect.rvd.http.utils.UriUtils;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.RvdConfig;
+import org.restcomm.connect.rvd.configuration.RvdConfig;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import com.thoughtworks.xstream.XStream;
@@ -28,7 +29,8 @@ import com.thoughtworks.xstream.XStream;
  * Configuration settings for RVD. Contains both static hardcoded and loaded values.
  *
  * Besides hardcoded values, information form rvd.xml as well as proxied values from restcomm.xml
- * are also contained.
+ * are contained. It also provides vary basic logic so that default values are returned too.
+ * For example if 'videoSupport' configuration option is missing, it will return false (and not null).
  *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
@@ -41,7 +43,7 @@ public class RvdConfiguration {
     public static final String USERS_DIRECTORY_NAME = "@users";
 
     public static final String WAVS_DIRECTORY_NAME = "wavs";
-    private static final String RVD_PROJECT_VERSION = "1.9"; // version for rvd project syntax
+    private static final String RVD_PROJECT_VERSION = "1.10"; // version for rvd project syntax
     private static final String PACKAGING_VERSION = "1.0";
     private static final String RAS_APPLICATION_VERSION = "2"; // version of the RAS application specification
     public static final String STICKY_PREFIX = "sticky_"; // a  prefix for rvd sticky variable names
@@ -66,6 +68,9 @@ public class RvdConfiguration {
                     "CallTimestamp", "ForwardedFrom", "SmsSid", "SmsStatus", "InstanceId","ReferTarget","Transferor","Transferee"}));
     public static final String RESTCOMM_HEADER_PREFIX = "SipHeader_"; // the prefix added to HTTP headers from Restcomm
     public static final String RESTCOMM_HEADER_PREFIX_DIAL = "DialSipHeader_"; // another prefix
+    // File upload
+    public static final String DEFAULT_MEDIA_ALLOWED_EXTENSIONS = "wav|mp4"; // only allow upload of media files whose name matches this pattern i.e. file extension ends in .wav or .mp4
+    private Integer maxMediaFileSize; // Maximum size allowed for media file uploads (in bytes). If set to null no limit is enforced
 
     private String workspaceBasePath;
     private RvdConfig rvdConfig;  // the configuration settings from rvd.xml
@@ -74,6 +79,7 @@ public class RvdConfiguration {
     private String contextRootPath;
     private URI restcommBaseUri;
     private Integer externalServiceTimeout;
+    private Boolean videoSupport;
 
     // package-private constructor to be used from RvdConfigurationBuilder
     RvdConfiguration() {
@@ -124,6 +130,10 @@ public class RvdConfiguration {
                 logger.log(Level.WARN, "could not load restcomm configuration");
             }
         }
+        // video support
+        this.videoSupport = rvdConfig.getVideoSupport();
+        // maxMediaFileSize
+        maxMediaFileSize = rvdConfig.getMaxMediaFileSize();
     }
 
     /**
@@ -136,6 +146,7 @@ public class RvdConfiguration {
             FileInputStream input = new FileInputStream(pathToXml);
             XStream xstream = new XStream();
             xstream.alias("rvd", RvdConfig.class);
+            xstream.registerConverter(new CustomIntegerConverter());
             rvdConfig = (RvdConfig) xstream.fromXML( input );
             return rvdConfig;
         } catch (FileNotFoundException e) {
@@ -289,5 +300,13 @@ public class RvdConfiguration {
     // package private setter to be used from RvdConfigurationBuilder only
     void setRestcommBaseUri(URI uri) {
         this.restcommBaseUri = uri;
+    }
+
+    public Integer getMaxMediaFileSize() {
+        return maxMediaFileSize;
+    }
+
+    public Boolean getVideoSupport() {
+        return RvdUtils.isTrue(videoSupport);
     }
 }

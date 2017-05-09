@@ -12,7 +12,7 @@ import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 public class RvdContext {
 
     private ModelMarshaler marshaler;
-    private RvdConfiguration settings;
+    private RvdConfiguration configuration;
     private ServletContext servletContext;
     protected WorkspaceStorage workspaceStorage;
     public LoggingContext logging;
@@ -20,9 +20,9 @@ public class RvdContext {
     public RvdContext(HttpServletRequest request, ServletContext servletContext, RvdConfiguration config, LoggingContext logging) {
         if (request == null || servletContext == null)
             throw new IllegalArgumentException();
-        this.settings = config;
+        this.configuration = config;
         this.marshaler = new ModelMarshaler();
-        this.workspaceStorage = new WorkspaceStorage(settings.getWorkspaceBasePath(), marshaler);
+        this.workspaceStorage = new WorkspaceStorage(configuration.getWorkspaceBasePath(), marshaler);
         this.servletContext = servletContext;
         this.logging = logging;
     }
@@ -35,8 +35,8 @@ public class RvdContext {
         return marshaler;
     }
 
-    public RvdConfiguration getSettings() {
-        return settings;
+    public RvdConfiguration getConfiguration() {
+        return configuration;
     }
 
     public ServletContext getServletContext() {

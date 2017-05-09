@@ -135,26 +135,7 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     $translateProvider.preferredLanguage('en-US');
 }]);
 
-/*
-App.config([ '$routeProvider', '$translateProvider', function($routeProvider, $translateProvider) {
-
-	.when('/upgrade/:projectName', {
-		templateUrl : 'templates/upgrade.html',
-		controller : 'upgradeCtrl',
-		resolve: {
-			authInfo: function (authentication) {return authentication.authResolver();}
-		}
-	})
-
-	.otherwise({
-		redirectTo : '/home'
-	});
-
-}]);
-*/
-
-
-// Rvd module and Identity bootstrapping
+// Rvd module and
 
 var keycloakAuth = {};
 var keycloakLogout = function(){
@@ -168,66 +149,21 @@ angular.element(document).ready(['$http',function ($http) {
   var initInjector = angular.injector(["ng"]);
   var $q = initInjector.get("$q");
 
-  // try to retrieve Identity server configuration
-  var serverPromise = $q.defer();
-  // Disable until keycloak/organizations are applied. For now resolve to null.
-  /*
-  $http.get("/restcomm/2012-04-24/Identity/Server").success(function (serverConfig) {
-    console.log(serverConfig);
-    serverPromise.resolve(serverConfig);
-  }).error( function (response) {
-    if (response.status == 404)
-        serverPromise.resolve(null);
-    else
-        serverPromise.reject();
-  });*/
-  serverPromise.resolve(null);
-
-  // try to retrieve IdentityInstance
-  var instancePromise = $q.defer();
-  // Disable until keycloak/organizations are applied. For now resolve to null.
-  /*
-  $http.get("/restcomm/2012-04-24/Identity/Instances/current").success(function (instance) {
-    instancePromise.resolve(instance);
-  }).error(function (response) {
-    if (response.status == 404)
-      instancePromise.resolve(null);
-    else
-      instancePromise.reject();
-  });
-  */
-  instancePromise.resolve(null);
-
-  // when both responses are received do sth...
-  $q.all([serverPromise.promise,instancePromise.promise]).then(function (responses) {
-    //console.log("Received restcomm configuration");
-    // create a constant with keycloak server and instance identity configuration
-    var identityConfig = new IdentityConfig(responses[0],responses[1],$q);
-    angular.module('Rvd').constant('IdentityConfig', identityConfig);
-    angular.module('Rvd').factory('KeycloakAuth', function() {
-      return keycloakAuth;
+  var configPromise = $q.defer();
+  $http.get("services/config").success(function (clientConfig) {
+    angular.module('Rvd').factory('RvdConfiguration', function () {
+        return {
+            projectsRootPath: '/restcomm-rvd/services/projects',
+            videoSupport: clientConfig.videoSupport
+        }
     });
-    if ( identityConfig.securedByKeycloak() ) {
-      // if the instance is already secured by keycloak
-      var keycloak = new Keycloak({ url: identityConfig.server.authServerUrl, realm: identityConfig.server.realm, clientId: identityConfig.instance.name + "-rvd-ui" });
-			keycloakAuth.loggedIn = false;
-			keycloak.init({ onLoad: 'login-required' }).success(function () {
-				keycloakAuth.loggedIn = true;
-				keycloakAuth.authz = keycloak;
-				keycloakAuth.logoutUrl = identityConfig.server.authServerUrl + "/realms/" + identityConfig.server.realm + "/protocol/openid-connect/logout?redirect_uri=" + window.location.origin;
-        angular.bootstrap(document, ["Rvd"]);
-			}).error(function (a, b) {
-					window.location.reload();
-			});
-    } else
-    if (identityConfig.identityServerConfigured() && !identityConfig.securedByKeycloak()){
-      // keycloak is already configured but no identity instance yet
-      angular.bootstrap(document, ["Rvd"]);
-    } else {
-      // no identity configuration. We should run in compatibility authorization mode
-      angular.bootstrap(document, ["Rvd"]);
-    }
+    configPromise.resolve(clientConfig);
+  }).error(function () {
+    configPromise.reject();
+  });
 
+  $q.all([configPromise.promise]).then(function (responses) {
+    angular.bootstrap(document, ["Rvd"]);
   }, function () {
     console.log("Internal server error");
   });

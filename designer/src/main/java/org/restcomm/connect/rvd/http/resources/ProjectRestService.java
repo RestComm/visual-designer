@@ -6,6 +6,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
+
 import org.apache.log4j.Level;
 
 import javax.annotation.PostConstruct;
@@ -42,6 +44,7 @@ import org.restcomm.connect.rvd.exceptions.IncompatibleProjectVersion;
 import org.restcomm.connect.rvd.exceptions.InvalidServiceParameters;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.exceptions.RvdException;
+import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.exceptions.project.UnsupportedProjectVersion;
 import org.restcomm.connect.rvd.http.RvdResponse;
@@ -81,7 +84,7 @@ public class ProjectRestService extends SecuredRestService {
     HttpServletRequest request;
 
     private ProjectService projectService;
-    private RvdConfiguration rvdSettings;
+    private RvdConfiguration configuration;
     private ProjectState activeProject;
     private ModelMarshaler marshaler;
     private WorkspaceStorage workspaceStorage;
@@ -89,15 +92,17 @@ public class ProjectRestService extends SecuredRestService {
 
     RvdContext rvdContext;
 
+    static Pattern mediaFilenamePattern = Pattern.compile( ".*\\.(" + RvdConfiguration.DEFAULT_MEDIA_ALLOWED_EXTENSIONS + ")$" );
+
     @PostConstruct
     public void init() {
         super.init();
         logging = new LoggingContext("[designer]");
         logging.appendAccountSid(getUserIdentityContext().getAccountSid());
         rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), logging);
-        rvdSettings = rvdContext.getSettings();
+        configuration = rvdContext.getConfiguration();
         marshaler = rvdContext.getMarshaler();
-        workspaceStorage = new WorkspaceStorage(rvdSettings.getWorkspaceBasePath(), marshaler);
+        workspaceStorage = new WorkspaceStorage(configuration.getWorkspaceBasePath(), marshaler);
         projectService = new ProjectService(rvdContext, workspaceStorage);
     }
 
@@ -553,12 +558,27 @@ public class ProjectRestService extends SecuredRestService {
 
                     // is this a file part (talking about multipart requests, there might be parts that are not actual files).
                     // They will be ignored
-                    if (item.getName() != null) {
-                        projectService.addWavToProject(applicationSid, item.getName(), item.openStream());
-                        fileinfo.addProperty("name", item.getName());
+                    String filename = item.getName();
+                    if (filename != null) {
+                        // is this an appropriate media filename ?
+                        if (! mediaFilenamePattern.matcher(filename).matches()) {
+                            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(logging.getPrefix(), "Media filename/extension not allowed: " + filename ) );
+                            return Response.status(Status.BAD_REQUEST).entity("{\"error\":\"FILE_EXT_NOT_ALLOWED\"}").build();
+                        }
+                        try {
+                            projectService.addWavToProject(applicationSid, filename, item.openStream());
+                        } catch (StreamDoesNotFitInFile e) {
+                            // Oops, the uploaded file is too big. Back off..
+                            Integer maxSize = rvdContext.getConfiguration().getMaxMediaFileSize();
+                            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(logging.getPrefix(), "Media file too big. Maximum size is " + maxSize)  + " bytes");
+                            return Response.status(Status.BAD_REQUEST).entity("{\"error\":\"FILE_TOO_BIG\", \"maxSize\": " + maxSize + "}").build();
+
+                        }
+
+                        fileinfo.addProperty("name", filename);
                         // fileinfo.addProperty("size", size(item.openStream()));
                         if (RvdLoggers.local.isDebugEnabled())
-                            RvdLoggers.local.log(Level.DEBUG, logging.getPrefix() + " uploaded wav " + item.getName());
+                            RvdLoggers.local.log(Level.DEBUG, logging.getPrefix() + " uploaded wav " + filename);
                     } else {
                         if (RvdLoggers.local.isEnabledFor(Level.INFO))
                             RvdLoggers.local.log(Level.INFO, logging.getPrefix() + " non-file part found in upload");
@@ -618,17 +638,22 @@ public class ProjectRestService extends SecuredRestService {
     }
 
     /*
-     * Return a wav file from the project. It's the same as getWav() but it has the Query parameters converted to Path
+     * Return a media file from the project. It's the same as getWav() but it has the Query parameters converted to Path
      * parameters
      */
     @GET
-    @Path("{applicationSid}/wavs/{filename}.wav")
+    @Path("{applicationSid}/{placeholder: (wavs|media)}/{filename}.{ext: (wav|mp4)}")
     public Response getWavNoQueryParams(@PathParam("applicationSid") String applicationSid,
-            @PathParam("filename") String filename) {
+            @PathParam("filename") String filename, @PathParam("ext") String extension) {
         InputStream wavStream;
         try {
-            wavStream = FsProjectStorage.getWav(applicationSid, filename + ".wav", workspaceStorage);
-            return Response.ok(wavStream, "audio/x-wav").header("Content-Disposition", "attachment; filename = " + filename)
+            wavStream = FsProjectStorage.getWav(applicationSid, filename + "." + extension, workspaceStorage);
+            String mediaType;
+            if ( "mp4".equals(extension))
+                mediaType = "video/mp4";
+            else
+                mediaType = "audio/x-wav";
+            return Response.ok(wavStream, mediaType).header("Content-Disposition", "attachment; filename = " + filename + "." + extension)
                     .build();
         } catch (WavItemDoesNotExist e) {
             return Response.status(Status.NOT_FOUND).build(); // ordinary error page is returned since this will be consumed

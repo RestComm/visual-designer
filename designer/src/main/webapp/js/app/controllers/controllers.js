@@ -226,7 +226,7 @@ App.controller('translateController', function($translate, $scope) {
   }
 });
 
-angular.module('Rvd').controller('wavManagerController', function ($rootScope, $scope, $http, $upload) {
+angular.module('Rvd').controller('wavManagerController', function ($rootScope, $scope, $http, $upload, notifications) {
 	$scope.deleteWav = function (wavItem) {
 		$http({url: 'services/projects/' + $scope.applicationSid + '/wavs?filename=' + wavItem.filename, method: "DELETE"})
 		.success(function (data, status, headers, config) {
@@ -249,9 +249,17 @@ angular.module('Rvd').controller('wavManagerController', function ($rootScope, $
 		      }).success(function(data, status, headers, config) {
 		        // file is uploaded successfully
 		    	  console.log('file uploaded successfully');
-		    	  $rootScope.$broadcast("fileupload");
-		      }).progress(function () {});
-		      // .error(...)
+		    	  $rootScope.$broadcast("mediafile-uploaded");
+		      })
+		      .progress(function () {})
+		      .error( function (data,status) {
+		        if (status == 400 && data && data.error == "FILE_EXT_NOT_ALLOWED")
+		            notifications.put({message:"Media file not supported", type:"danger"});
+		        if (status == 400 && data && data.error == "FILE_TOO_BIG")
+		            notifications.put({message:"Media file is too big! Only files up to " + data.maxSize + " bytes allowed :-(", type:"danger"});
+		        else
+		            notifications.put({message:"Error uploading media file", type:"danger"});
+		      });
 		      // .then(success, error, progress);
 		    }
 	};

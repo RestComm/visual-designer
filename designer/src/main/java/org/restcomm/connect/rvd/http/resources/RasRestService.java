@@ -83,7 +83,7 @@ public class RasRestService extends SecuredRestService {
         logging = new LoggingContext("[designer]");
         logging.appendAccountSid(getUserIdentityContext().getAccountSid());
         rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), logging);
-        settings = rvdContext.getSettings();
+        settings = rvdContext.getConfiguration();
         marshaler = rvdContext.getMarshaler();
         workspaceStorage = new WorkspaceStorage(settings.getWorkspaceBasePath(), marshaler);
         rasService = new RasService(rvdContext, workspaceStorage);

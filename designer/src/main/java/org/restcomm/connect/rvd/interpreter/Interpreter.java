@@ -86,7 +86,7 @@ import com.thoughtworks.xstream.XStream;
 
 public class Interpreter {
 
-    private RvdConfiguration rvdSettings;
+    private RvdConfiguration configuration;
     private HttpServletRequest httpRequest;
     private ProjectLogger projectLogger;
     private ProjectAwareRvdContext rvdContext;
@@ -104,8 +104,8 @@ public class Interpreter {
         this.projectLogger = projectLogger;
     }
 
-    public void setRvdSettings(RvdConfiguration rvdSettings) {
-        this.rvdSettings = rvdSettings;
+    public void setConfiguration(RvdConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     private WorkspaceStorage workspaceStorage;
@@ -132,7 +132,7 @@ public class Interpreter {
 
     public Interpreter(ProjectAwareRvdContext rvdContext, String targetParam, String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, WorkspaceStorage workspaceStorage, ApplicationContext applicationContext) {
         this.rvdContext = rvdContext;
-        this.rvdSettings = rvdContext.getSettings();
+        this.configuration = rvdContext.getConfiguration();
         this.httpRequest = httpRequest;
         this.targetParam = requestParams.getFirst("target");
         //this.targetParam = targetParam;
@@ -206,6 +206,7 @@ public class Interpreter {
         xstream.useAttributeFor(RcmlRecordStep.class, "transcribe");
         xstream.useAttributeFor(RcmlRecordStep.class, "transcribeCallback");
         xstream.useAttributeFor(RcmlRecordStep.class, "playBeep");
+        xstream.useAttributeFor(RcmlRecordStep.class, "media");
         xstream.useAttributeFor(RcmlDialStep.class, "action");
         xstream.useAttributeFor(RcmlDialStep.class, "method");
         xstream.useAttributeFor(RcmlDialStep.class, "timeout");
@@ -221,8 +222,8 @@ public class Interpreter {
         gson = new GsonBuilder().registerTypeAdapter(Step.class, new StepJsonDeserializer()).create();
     }
 
-    public RvdConfiguration getRvdSettings() {
-        return rvdSettings;
+    public RvdConfiguration getConfiguration() {
+        return configuration;
     }
 
     public String getAppName() {

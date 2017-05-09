@@ -63,8 +63,7 @@ angular.module('Rvd').factory('RestcommAuthenticationInterceptor', function ($in
         request: request
     }
 });
-// enable the interceptor above only if we do use Restcomm for authentication
-angular.module('Rvd').config( function($httpProvider, IdentityConfig) {
-    if (IdentityConfig.securedByRestcomm())
-        $httpProvider.interceptors.push('RestcommAuthenticationInterceptor');
+
+angular.module('Rvd').config( function($httpProvider) {
+    $httpProvider.interceptors.push('RestcommAuthenticationInterceptor');
 });

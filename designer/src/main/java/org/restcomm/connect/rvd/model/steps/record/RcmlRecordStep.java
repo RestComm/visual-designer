@@ -11,6 +11,8 @@ public class RcmlRecordStep extends RcmlStep {
     Boolean transcribe;
     String transcribeCallback;
     Boolean playBeep;
+    String media;
+
     public String getAction() {
         return action;
     }
@@ -58,5 +60,13 @@ public class RcmlRecordStep extends RcmlStep {
     }
     public void setPlayBeep(Boolean playBeep) {
         this.playBeep = playBeep;
+    }
+
+    public String getMedia() {
+        return media;
+    }
+
+    public void setMedia(String media) {
+        this.media = media;
     }
 }

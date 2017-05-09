@@ -1,8 +1,9 @@
-var designerCtrl = App.controller('designerCtrl', function($scope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever) {
+var designerCtrl = App.controller('designerCtrl', function($scope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration ) {
 
 	$scope.project = project;
 	$scope.visibleNodes = editedNodes.getEditedNodes();
 	$scope.showGraph = false;
+	$scope.videoSupport = RvdConfiguration.videoSupport;
 
 	function download(applicationSid,projectName) {
 	    var downloadUrl =  '/restcomm-rvd/services/projects/' + applicationSid + '/archive?projectName=' + projectName;
@@ -232,10 +233,6 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 		step.urlParams.splice( step.urlParams.indexOf(urlParam), 1 );
 	}
 
-	$scope.$on('fileupload', function(event, data) {
-		$scope.refreshWavList();
-	});
-
 	$scope.addDialNoun = function (classAttribute, pos, listmodel) {
 		// console.log("adding dial noun");
 		r = RegExp("dial-noun-([^ ]+)");
@@ -341,6 +338,10 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 		// .then( function () { console.log('project saved and built')});
 	}
 
+    $scope.$on('mediafile-uploaded', function(event, data) {
+        $scope.refreshWavList();
+        $scope.showAudioResources = true;
+    });
     // handle messages sent from main menu
 	$scope.$on('project-wav-removed', function (event,data) {
 		$scope.refreshWavList();

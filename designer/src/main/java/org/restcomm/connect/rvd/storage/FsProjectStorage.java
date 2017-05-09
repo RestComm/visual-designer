@@ -44,6 +44,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.restcomm.connect.rvd.ProjectService;
 import org.restcomm.connect.rvd.RvdConfiguration;
+import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.RvdContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
@@ -58,6 +59,7 @@ import org.restcomm.connect.rvd.storage.exceptions.ProjectAlreadyExists;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.storage.exceptions.WavItemDoesNotExist;
+import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.utils.Zipper;
 import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
 import org.restcomm.connect.rvd.model.client.Step;
@@ -405,12 +407,12 @@ public class FsProjectStorage {
         }
     }
 
-    public static void storeWav(String projectName, String wavname, InputStream wavStream, WorkspaceStorage storage) throws StorageException {
+    public static void storeWav(String projectName, String wavname, InputStream wavStream, WorkspaceStorage storage, Integer maxSize) throws StorageException, StreamDoesNotFitInFile {
         String wavPathname = getProjectWavsPath(projectName, storage) + File.separator + wavname;
         if(logger.isDebugEnabled())
             logger.log(Level.DEBUG, LoggingHelper.buildMessage(FsProjectStorage.class,"storeWav", "writing wav file to {0}", wavPathname));
         try {
-            FileUtils.copyInputStreamToFile(wavStream, new File(wavPathname) );
+            RvdUtils.streamToFile(wavStream, new File(wavPathname), maxSize);
         } catch (IOException e) {
             throw new StorageException("Error writing to " + wavPathname, e);
         }

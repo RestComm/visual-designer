@@ -266,7 +266,7 @@ angular.module('Rvd')
     }
 
 })
-.directive('recordStep', function (nodeRegistry) {
+.directive('recordStep', function (nodeRegistry, RvdConfiguration) {
     return {
         restict: 'E',
                 templateUrl: "templates/directive/recordStep.html",
@@ -274,8 +274,13 @@ angular.module('Rvd')
             step: '='
         },
         link: function (scope, element, attrs) {
-            scope.yesNoBooleanOptions = [{caption:"Yes", value:true}, {caption:"No", value:false}];
             var step = scope.step;
+
+            scope.yesNoBooleanOptions = [{caption:"Yes", value:true}, {caption:"No", value:false}];
+            scope.videoSupport = RvdConfiguration.videoSupport;
+            if (! RvdConfiguration.videoSupport)
+                delete step.media;
+            
             var stepUi = {}
             scope.stepUi = stepUi;
             if ( ! step.finishOnKey )
@@ -320,8 +325,6 @@ angular.module('Rvd')
     }
 })
 ;
-
-
 
 angular.module('Rvd').directive('conferenceDialNoun', function (RvdConfiguration) {
     return {
@@ -370,6 +373,10 @@ angular.module('Rvd').directive('conferenceDialNoun', function (RvdConfiguration
             if (!!scope.dialnoun.muted || !!scope.dialnoun.beep || !!scope.dialnoun.startConferenceOnEnter
 				|| !!scope.dialnoun.endConferenceOnExit || !!scope.dialnoun.waitModule || !!scope.dialnoun.waitUrl) {
 					scope.dialnoun.iface = {advancedShown: true}
+			}
+			// clear video attributes if videoSupport is off
+			if (!RvdConfiguration.videoSupport) {
+			    scope.dialnoun.enableVideo = false;
 			}
 
             // public interface

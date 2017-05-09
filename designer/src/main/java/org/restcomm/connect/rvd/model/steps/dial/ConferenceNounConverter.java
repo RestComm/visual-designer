@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.restcomm.connect.rvd.utils.RvdUtils;
 
 public class ConferenceNounConverter implements Converter {
 
@@ -33,8 +34,25 @@ public class ConferenceNounConverter implements Converter {
             writer.addAttribute("waitMethod", step.getWaitMethod());
         if (step.getStatusCallback() != null)
             writer.addAttribute("statusCallback", step.getStatusCallback());
-
-        writer.setValue(step.getDestination());
+        if (step.video != null) {
+            // if video attributes exist, we need to use 'name' conference name as the 'name' attribute and not as the body/text of the noun element
+            if (!RvdUtils.isEmpty(step.getDestination()))
+                writer.addAttribute("name", step.getDestination());
+            // video attributes
+            writer.startNode("Video");
+            if (step.video.enable != null)
+                writer.addAttribute("enable", step.video.enable.toString());
+            if (step.video.mode != null)
+                writer.addAttribute("mode", step.video.mode);
+            if (step.video.resolution != null)
+                writer.addAttribute("resolution", step.video.resolution);
+            if (step.video.layout != null)
+                writer.addAttribute("layout", step.video.layout);
+            if (step.video.overlay != null)
+                writer.addAttribute("overlay", step.video.overlay);
+            writer.endNode();
+        } else
+            writer.setValue(step.getDestination());
     }
 
     @Override

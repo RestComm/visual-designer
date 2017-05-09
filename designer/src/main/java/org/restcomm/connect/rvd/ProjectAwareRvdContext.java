@@ -30,7 +30,7 @@ public class ProjectAwareRvdContext extends RvdContext {
             throw new IllegalArgumentException();
         setProjectName(projectName);
         // setup application logging
-        this.projectLogger = new ProjectLogger(projectName, getSettings(), getMarshaler(), residentInfo.logRotationSemaphore);
+        this.projectLogger = new ProjectLogger(projectName, getConfiguration(), getMarshaler(), residentInfo.logRotationSemaphore);
         // initialize project settings
         try {
             this.projectSettings = FsProjectStorage.loadProjectSettings(projectName, workspaceStorage);
