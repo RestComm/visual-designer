@@ -206,6 +206,7 @@ public class Interpreter {
         xstream.useAttributeFor(RcmlRecordStep.class, "transcribe");
         xstream.useAttributeFor(RcmlRecordStep.class, "transcribeCallback");
         xstream.useAttributeFor(RcmlRecordStep.class, "playBeep");
+        xstream.useAttributeFor(RcmlRecordStep.class, "media");
         xstream.useAttributeFor(RcmlDialStep.class, "action");
         xstream.useAttributeFor(RcmlDialStep.class, "method");
         xstream.useAttributeFor(RcmlDialStep.class, "timeout");
