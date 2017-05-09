@@ -92,7 +92,7 @@ public class ProjectRestService extends SecuredRestService {
 
     RvdContext rvdContext;
 
-    static Pattern mediaFilenamePattern = Pattern.compile(RvdConfiguration.MEDIA_FILENAME_PATTERN);
+    static Pattern mediaFilenamePattern = Pattern.compile( ".*\\.(" + RvdConfiguration.DEFAULT_MEDIA_ALLOWED_EXTENSIONS + ")$" );
 
     @PostConstruct
     public void init() {

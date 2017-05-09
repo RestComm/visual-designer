@@ -69,7 +69,7 @@ public class RvdConfiguration {
     public static final String RESTCOMM_HEADER_PREFIX = "SipHeader_"; // the prefix added to HTTP headers from Restcomm
     public static final String RESTCOMM_HEADER_PREFIX_DIAL = "DialSipHeader_"; // another prefix
     // File upload
-    public static final String MEDIA_FILENAME_PATTERN = ".*\\.(wav|mp4)$"; // only allow upload of media files whose name matches this pattern i.e. file extension ends in .wav or .mp4
+    public static final String DEFAULT_MEDIA_ALLOWED_EXTENSIONS = "wav|mp4"; // only allow upload of media files whose name matches this pattern i.e. file extension ends in .wav or .mp4
     private Integer maxMediaFileSize; // Maximum size allowed for media file uploads (in bytes). If set to null no limit is enforced
 
     private String workspaceBasePath;
