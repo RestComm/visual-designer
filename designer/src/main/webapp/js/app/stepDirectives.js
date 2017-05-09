@@ -266,7 +266,7 @@ angular.module('Rvd')
     }
 
 })
-.directive('recordStep', function (nodeRegistry) {
+.directive('recordStep', function (nodeRegistry, RvdConfiguration) {
     return {
         restict: 'E',
                 templateUrl: "templates/directive/recordStep.html",
@@ -274,8 +274,13 @@ angular.module('Rvd')
             step: '='
         },
         link: function (scope, element, attrs) {
-            scope.yesNoBooleanOptions = [{caption:"Yes", value:true}, {caption:"No", value:false}];
             var step = scope.step;
+
+            scope.yesNoBooleanOptions = [{caption:"Yes", value:true}, {caption:"No", value:false}];
+            scope.videoSupport = RvdConfiguration.videoSupport;
+            if (! RvdConfiguration.videoSupport)
+                delete step.media;
+            
             var stepUi = {}
             scope.stepUi = stepUi;
             if ( ! step.finishOnKey )
