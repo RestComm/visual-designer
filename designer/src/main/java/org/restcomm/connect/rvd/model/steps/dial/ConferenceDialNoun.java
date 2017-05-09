@@ -124,7 +124,7 @@ public class ConferenceDialNoun extends DialNoun {
             Map<String, String> pairs = new HashMap<String, String>();
             pairs.put("target", getWaitModule());
             String action = interpreter.buildAction(pairs);
-            rcmlNoun.setWaitUrl( interpreter.getRvdSettings().getApplicationsRelativeUrl() + "/" + interpreter.getAppName() + "/" + action  );
+            rcmlNoun.setWaitUrl( interpreter.getConfiguration().getApplicationsRelativeUrl() + "/" + interpreter.getAppName() + "/" + action  );
         } else
         if ( ! RvdUtils.isEmpty(getWaitUrl())) {
             rcmlNoun.setWaitUrl(interpreter.populateVariables(getWaitUrl()));
@@ -145,8 +145,8 @@ public class ConferenceDialNoun extends DialNoun {
             pairs.put("target", statusCallbackModule);
             rcmlNoun.statusCallback = interpreter.buildAction(pairs);
         }
-        // video attributes
-        if (this.enableVideo != null && this.enableVideo) {
+        // populate video attributes (only if video is supported by configuration)
+        if (interpreter.getConfiguration().getVideoSupport() && (this.enableVideo != null && this.enableVideo)) {
             rcmlNoun.video = new RcmlConferenceNoun.Video();
             rcmlNoun.video.enable = this.enableVideo;
             if (this.videoMode != null)

@@ -121,7 +121,9 @@ public class RecordStep extends Step {
         rcmlStep.setTimeout(getTimeout());
         rcmlStep.setTranscribe(getTranscribe());
         rcmlStep.setTranscribeCallback(getTranscribeCallback());
-        rcmlStep.setMedia(getMedia());
+        // include media attribute only if enabled by configuration
+        if (interpreter.getConfiguration().getVideoSupport())
+            rcmlStep.setMedia(getMedia());
 
         return rcmlStep;
     }
