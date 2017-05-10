@@ -32,10 +32,18 @@ import com.thoughtworks.xstream.XStream;
  * are contained. It also provides vary basic logic so that default values are returned too.
  * For example if 'videoSupport' configuration option is missing, it will return false (and not null).
  *
+ * rvd.xml and restcomm.xml configuration options are applied in the following way:
+ *
+ *  restcomm.xml based will be loaded first if available. Any option defined in rvd.xml will override
+ *  these values if the option is defined (i.e.the XML element is there even if empty).
+ *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class RvdConfiguration {
     static Logger logger = RvdLoggers.local;
+
+    public static final SslMode DEFAULT_SSL_MODE = SslMode.strict;
+    public static final boolean DEFAULT_USE_HOSTNAME_TO_RESOLVE_RELATIVE_URL = true;
 
     private static final String WORKSPACE_DIRECTORY_NAME = "workspace";
     public static final String PROTO_DIRECTORY_PREFIX = "_proto";
@@ -76,6 +84,9 @@ public class RvdConfiguration {
     private URI restcommBaseUri;
     private Integer externalServiceTimeout;
     private Boolean videoSupport;
+    private SslMode sslMode;
+    private String hostnameOverride;
+    private Boolean useHostnameToResolveRelativeUrl;
 
     // package-private constructor to be used from RvdConfigurationBuilder
     RvdConfiguration() {
@@ -130,6 +141,26 @@ public class RvdConfiguration {
         this.videoSupport = rvdConfig.getVideoSupport();
         // maxMediaFileSize
         maxMediaFileSize = rvdConfig.getMaxMediaFileSize();
+        // sslMode
+        if (restcommConfig != null)
+            sslMode = restcommConfig.getSslMode();
+        if (rvdConfig.getSslMode() != null)
+            sslMode = SslMode.valueOf(rvdConfig.getSslMode());
+        if (sslMode == null)
+            sslMode = DEFAULT_SSL_MODE;
+        // hostnameOverride (hostname in restcomm.xml)
+        if (restcommConfig != null)
+            hostnameOverride = restcommConfig.getHostname();
+        if (rvdConfig.getHostnameOverride() != null)
+            hostnameOverride = rvdConfig.getHostnameOverride();
+        // useHostnameToResolveRelativeUrl
+        if (restcommConfig != null)
+            useHostnameToResolveRelativeUrl = restcommConfig.getUseHostnameToResolveRelativeUrl();
+        if (rvdConfig.getUseHostnameToResolveRelativeUrl() != null)
+            useHostnameToResolveRelativeUrl = rvdConfig.getUseHostnameToResolveRelativeUrl();
+        if (useHostnameToResolveRelativeUrl == null)
+            useHostnameToResolveRelativeUrl = DEFAULT_USE_HOSTNAME_TO_RESOLVE_RELATIVE_URL;
+
     }
 
     /**
@@ -194,7 +225,7 @@ public class RvdConfiguration {
     }
 
     public SslMode getSslMode() {
-        return restcommConfig.getSslMode();
+        return sslMode;
     }
 
     public Integer getExternalServiceTimeout() {
@@ -214,11 +245,11 @@ public class RvdConfiguration {
     }
 
     public boolean getUseHostnameToResolveRelativeUrl() {
-        return restcommConfig.isUseHostnameToResolveRelativeUrl();
+        return useHostnameToResolveRelativeUrl;
     }
 
     public String getHostnameOverride() {
-        return restcommConfig.getHostname();
+        return hostnameOverride;
     }
 
     // this is lazy loaded because HttpConnector enumeration (done in resolve()) fails otherwise

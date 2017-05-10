@@ -86,7 +86,7 @@ public class RestcommConfig {
                 this.sslMode = SslMode.valueOf(sslMode);
             // hostname option
             this.hostname = hostname;
-            // useHostnameToResolveRelativeUrl options
+            // getUseHostnameToResolveRelativeUrl options
             try {
                 this.useHostnameToResolveRelativeUrl = Boolean.parseBoolean(useHostname);
             } catch (Exception e) {
@@ -111,7 +111,7 @@ public class RestcommConfig {
         return hostname;
     }
 
-    public boolean isUseHostnameToResolveRelativeUrl() {
+    public boolean getUseHostnameToResolveRelativeUrl() {
         return useHostnameToResolveRelativeUrl;
     }
 

@@ -28,6 +28,8 @@ public class RvdConfig {
     private String workspaceLocation;
     private String workspaceBackupLocation;
     private String sslMode;
+    private String hostnameOverride;
+    private Boolean useHostnameToResolveRelativeUrl;
     private String restcommBaseUrl;
     private String externalServiceTimeout;
     private Boolean videoSupport;
@@ -69,5 +71,13 @@ public class RvdConfig {
 
     public Integer getMaxMediaFileSize() {
         return maxMediaFileSize;
+    }
+
+    public String getHostnameOverride() {
+        return hostnameOverride;
+    }
+
+    public Boolean getUseHostnameToResolveRelativeUrl() {
+        return useHostnameToResolveRelativeUrl;
     }
 }
