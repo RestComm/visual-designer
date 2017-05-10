@@ -56,10 +56,6 @@ public class RvdConfiguration {
     public static final String PROJECT_LOG_FILENAME = "rvdapp"; //will produce rvdapp.log, rvdapp-1.log etc.
     public static final int PROJECT_LOG_BACKLOG_COUNT = 3; // the number of rotated files besides the main log file
     public static final int PROJECT_LOG_ROTATION_SIZE = 300000;
-    // local logging
-    public static int SYSTEM_LOG_FILE_COUNT = 3; // total number of rotated files
-    public static int SYSTEM_LOG_FILE_SIZE = 100000; // avarage maximum size of each rotated file
-    public static Level SYSTEM_LOG_LEVEL = Level.DEBUG;
     // App Store
     public static final String DEFAULT_APPSTORE_DOMAIN = "apps.restcomm.com";
     // the names of the parameters supplied by restcomm request when starting an application
@@ -250,41 +246,6 @@ public class RvdConfiguration {
             logger.info("using restcomm server at " + this.restcommBaseUri.toString());
         }
         return restcommBaseUri;
-    }
-
-    /**
-     * Returns a valid base url of the authorization server or null
-     *
-     * @return
-     */
-    public String getAuthServerUrl() {
-        if (restcommConfig != null && ! RvdUtils.isEmpty(restcommConfig.getAuthServerUrl()) )
-            return restcommConfig.getAuthServerUrl();
-        return null;
-    }
-
-    public String getRealm() {
-        if (restcommConfig != null)
-            return restcommConfig.getRealm();
-        return null;
-    }
-
-    public String getRealmPublicKey() {
-        if (restcommConfig != null)
-            return restcommConfig.getRealmPublicKey();
-        return null;
-    }
-
-    /**
-     * Returns whether keycloak has been configured or not. It's possible that keylcoak is enabled but the
-     * Restcomm instance.is not registered. In that case the function will still return true.
-     *
-     * @return
-     */
-    public boolean keycloakEnabled() {
-        if (getAuthServerUrl() != null)
-            return true;
-        return false;
     }
 
     /*

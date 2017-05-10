@@ -18,10 +18,6 @@ public class SecuredRestService extends RestService {
         super.init();
         RvdConfiguration config = applicationContext.getConfiguration();
         AccountProvider accountProvider = applicationContext.getAccountProvider();
-        // if it is secured by keycloak try to create a deployment too
-        if (config.keycloakEnabled()) {
-            throw new UnsupportedOperationException();
-        }
         String authorizationHeader = request.getHeader("Authorization");
         userIdentityContext = new UserIdentityContext(authorizationHeader, accountProvider);
     }

@@ -49,10 +49,6 @@ public class RestcommConfig {
     SslMode sslMode;
     String hostname;
     boolean useHostnameToResolveRelativeUrl;
-    // identity-related configuration properties
-    String authServerUrl; // keycloak url e.g. http://my.keycloak:8080/auth. THIS IS A FLAG!
-    String realmPublicKey;
-    String realm; // keycloak realm to use for auth.
 
     /**
      * Tries to load and process restcomm configuration (restcomm.xml) from path restcommXmlPath
@@ -81,15 +77,6 @@ public class RestcommConfig {
             // hostname
             expr = xpath.compile("/restcomm/http-client/hostname/text()");
             String hostname = (String) expr.evaluate(doc, XPathConstants.STRING);
-            // keycloak auth-server-url
-            expr = xpath.compile("/restcomm/identity/auth-server-url/text()");
-            this.authServerUrl = (String) expr.evaluate(doc, XPathConstants.STRING);
-            // keycloak realm public key
-            expr = xpath.compile("/restcomm/identity/realm-public-key/text()");
-            this.realmPublicKey = (String) expr.evaluate(doc, XPathConstants.STRING);
-            // keycloak realm
-            expr = xpath.compile("/restcomm/identity/realm/text()");
-            this.realm = (String) expr.evaluate(doc, XPathConstants.STRING);
 
             // process raw values if needed
 
@@ -114,9 +101,6 @@ public class RestcommConfig {
         this.sslMode = sslMode;
         this.hostname = hostname;
         this.useHostnameToResolveRelativeUrl = useHostnameToResolveRelativeUrl;
-        this.authServerUrl = authServerUrl;
-        this.realmPublicKey = realmPublicKey;
-        this.realm = realm;
     }
 
     public SslMode getSslMode() {
@@ -131,15 +115,4 @@ public class RestcommConfig {
         return useHostnameToResolveRelativeUrl;
     }
 
-    public String getAuthServerUrl() {
-        return authServerUrl;
-    }
-
-    public String getRealmPublicKey() {
-        return realmPublicKey;
-    }
-
-    public String getRealm() {
-        return realm;
-    }
 }
