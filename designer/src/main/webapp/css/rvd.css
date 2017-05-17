@@ -486,6 +486,9 @@ label.rvd-label {
 .control-step .action-capture .form-group.regex-field, .control-step .action-capture .form-group.data-field {
     width: 49%;
 }
+.control-step .action-capture .form-group.regex-field input {
+    width:100%;
+}
 .control-step .condition .type-chooser {
     margin-left: 5px;
 }
