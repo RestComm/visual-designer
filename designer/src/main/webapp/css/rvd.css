@@ -525,6 +525,11 @@ vardef .assign-arrow {
     top: 11px;
     left: 8px;
 }
+.vardef .var-scope {
+    display: inline;
+    padding: 0;
+    font-size: smaller;
+}
 
 /* module-url-picker */
 
