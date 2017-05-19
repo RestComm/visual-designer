@@ -35,11 +35,6 @@ img.logo {
     margin-top: 50px;
     margin-bottom: 10px;
 }
-.mainmenu {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-}
 .mainmenu .navbar {
     margin: 0 auto;
     width: 680px;
@@ -486,6 +481,9 @@ label.rvd-label {
 .control-step .action-capture .form-group.regex-field, .control-step .action-capture .form-group.data-field {
     width: 49%;
 }
+.control-step .action-capture .form-group.regex-field input {
+    width:100%;
+}
 .control-step .condition .type-chooser {
     margin-left: 5px;
 }
@@ -521,6 +519,11 @@ vardef .assign-arrow {
     position: absolute;
     top: 11px;
     left: 8px;
+}
+.vardef .var-scope {
+    display: inline;
+    padding: 0;
+    font-size: smaller;
 }
 
 /* module-url-picker */

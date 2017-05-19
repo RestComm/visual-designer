@@ -30,39 +30,13 @@ angular.module('Rvd')
 	return notifications;
 }]);
 
-/*
-angular.module('Rvd').service('projectModules', [function () {
-	var serviceInstance = {moduleData: []};
-
-	serviceInstance.addModule = function (module) {
-		serviceInstance.moduleData.push({name:module.name, label:module.label});
-	}
-
-	serviceInstance.removeModule = function (module) {
-		serviceInstance.moduleData.splice(serviceInstance.moduleData.indexOf(module),1);
-	}
-
-	serviceInstance.getModuleSummary = function () {
-		return serviceInstance.moduleData;
-	}
-
-	serviceInstance.log = function () {
-		for (var i = 0; i < serviceInstance.moduleData.length; i++) {
-			console.log(serviceInstance.moduleData[i]);
-		}
-	}
-
-	return serviceInstance;
-}]);
-*/
-
 angular.module('Rvd').service('storage',function ($sessionStorage) {
     function getCredentials() {
         return $sessionStorage.rvdCredentials;
     }
 
-    function setCredentials(username, password, sid) {
-        $sessionStorage.rvdCredentials = {username: username, password: password, sid: sid};
+    function setCredentials(username, token, sid) {
+        $sessionStorage.rvdCredentials = {username: username, token: token, sid: sid};
     }
 
     function clearCredentials() {
@@ -122,7 +96,7 @@ angular.module('Rvd').service('authentication', function ($http, $q, storage, $s
 
 	function getAuthHeader() {
 	    if (account)
-	        return "Basic " + btoa(account.email_address + ":" + account.auth_token);
+	        return "Basic " + btoa(account.sid + ":" + account.auth_token);
 	     return null;
 	}
 
@@ -135,16 +109,17 @@ angular.module('Rvd').service('authentication', function ($http, $q, storage, $s
 	        - RVD_ACCESS_OUT_OF_SYNC. Restcomm authentication succeeded but RVD failed. RVD is not operational. account and storage credentnials will be cleared.
 	        - NEED_LOGIN. Authentication failed. User will have to try the login screen (applies for restcomm auth type)
 	*/
-	function restcommLogin(username,password) {
+	function restcommLogin(usernameOrSid,password,token) {
 	    var deferredLogin = $q.defer();
-	    var authHeader = basicAuthHeader(username, password);
-        $http({method:'GET', url: RvdConfiguration.restcommBaseUrl + '/restcomm/2012-04-24/Accounts.json/' + encodeURIComponent(username), headers: {Authorization: authHeader}}).then(function (response) {
+	    var secret = !!password ? md5.createHash(password) : token; // use 'password' as secret value if set. Otherwise use 'token'
+	    var authHeader = basicAuthHeader(usernameOrSid, secret);
+        $http({method:'GET', url: RvdConfiguration.restcommBaseUrl + '/restcomm/2012-04-24/Accounts.json/' + encodeURIComponent(usernameOrSid), headers: {Authorization: authHeader}}).then(function (response) {
             var acc = response.data; // store temporarily the account returned
-            $http({method:'GET', url:'services/auth/keepalive', headers: {Authorization: "Basic " + btoa(acc.email_address + ":" +acc.auth_token)}}).then(function (response) {
+            $http({method:'GET', url:'services/auth/keepalive', headers: {Authorization: "Basic " + btoa(acc.sid + ":" +acc.auth_token)}}).then(function (response) {
                 // ok, access to both restcomm and RVD is verified
                 setAccount(acc);
                 authInfo.username = acc.email_address; // TODO will probably add other fields here too that are not necessarily tied with the Restcomm account notion
-                storage.setCredentials(username,password,acc.sid);
+                storage.setCredentials(null,acc.auth_token,acc.sid);
                 deferredLogin.resolve();
             }, function (response) {
                 setAccount(null);
@@ -175,7 +150,7 @@ angular.module('Rvd').service('authentication', function ($http, $q, storage, $s
             // There is no account set. If there are credentials in the storage we will try logging in using them
             var creds = storage.getCredentials();
             if (creds) {
-                return restcommLogin(creds.username, creds.password); // a chained promise is returned
+                return restcommLogin(creds.sid, null, creds.token); // a chained promise is returned
             } else
                 throw 'NEED_LOGIN';
         } else {
@@ -184,8 +159,8 @@ angular.module('Rvd').service('authentication', function ($http, $q, storage, $s
 	}
 
     // creates an auth header using a username (or sid) and a plaintext password (not already md5ed)
-	function basicAuthHeader(username, password) {
-	    var auth_header = "Basic " + btoa(username + ":" + md5.createHash(password));
+	function basicAuthHeader(username, secret) {
+	    var auth_header = "Basic " + btoa(username + ":" + secret);
         return auth_header;
 	}
 
@@ -830,4 +805,3 @@ angular.module('Rvd').factory('fileRetriever', function (Blob, FileSaver, $http)
 	    download: download
 	}
 });
-
