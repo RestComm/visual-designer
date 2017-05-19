@@ -35,11 +35,6 @@ img.logo {
     margin-top: 50px;
     margin-bottom: 10px;
 }
-.mainmenu {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-}
 .mainmenu .navbar {
     margin: 0 auto;
     width: 680px;
