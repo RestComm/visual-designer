@@ -87,6 +87,8 @@ public class RvdConfiguration {
     private SslMode sslMode;
     private String hostnameOverride;
     private Boolean useHostnameToResolveRelativeUrl;
+    private String baseUrl;
+    private Boolean useAbsoluteApplicationUrl;
 
     // package-private constructor to be used from RvdConfigurationBuilder
     RvdConfiguration() {
@@ -161,6 +163,10 @@ public class RvdConfiguration {
             useHostnameToResolveRelativeUrl = rvdConfig.getUseHostnameToResolveRelativeUrl();
         if (useHostnameToResolveRelativeUrl == null)
             useHostnameToResolveRelativeUrl = DEFAULT_USE_HOSTNAME_TO_RESOLVE_RELATIVE_URL;
+        // baseUrl
+        if (! RvdUtils.isEmpty(rvdConfig.getBaseUrl()) )
+            baseUrl = rvdConfig.getBaseUrl();
+        this.useAbsoluteApplicationUrl = rvdConfig.getUseAbsoluteApplicationUrl();
 
     }
 
@@ -305,5 +311,13 @@ public class RvdConfiguration {
 
     public RvdConfig getRawRvdConfig() {
         return rvdConfig;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public Boolean useAbsoluteApplicationUrl() {
+        return useAbsoluteApplicationUrl;
     }
 }
