@@ -16,6 +16,8 @@ import org.apache.commons.io.FileUtils;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 
+import javax.servlet.ServletContext;
+
 
 public class RvdUtils {
 
@@ -132,5 +134,13 @@ public class RvdUtils {
         } finally {
             outputStream.close();
         }
+    }
+
+    // make sure context root path ends with "/"
+    public static String safeGetServletContextRealRootPath(ServletContext servletContext) {
+        String path = servletContext.getRealPath("/");
+        if (path != null && !path.endsWith("/"))
+            path += "/";
+        return path;
     }
 }

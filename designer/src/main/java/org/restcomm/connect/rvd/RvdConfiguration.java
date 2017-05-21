@@ -93,7 +93,7 @@ public class RvdConfiguration {
     }
 
     public RvdConfiguration(ServletContext servletContext) {
-        this(servletContext.getRealPath("/"));
+        this(RvdUtils.safeGetServletContextRealRootPath(servletContext));
     }
 
     public RvdConfiguration(String contextRootPath) {
