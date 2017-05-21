@@ -302,4 +302,8 @@ public class RvdConfiguration {
     public Boolean getVideoSupport() {
         return RvdUtils.isTrue(videoSupport);
     }
+
+    public RvdConfig getRawRvdConfig() {
+        return rvdConfig;
+    }
 }

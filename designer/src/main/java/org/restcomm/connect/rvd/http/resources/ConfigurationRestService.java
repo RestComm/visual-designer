@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.http.RestService;
 import org.restcomm.connect.rvd.model.ClientConfiguration;
+import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.GET;
@@ -49,6 +50,9 @@ public class ConfigurationRestService extends RestService {
         RvdConfiguration config = this.applicationContext.getConfiguration();
         ClientConfiguration clientConfig = new ClientConfiguration();
         clientConfig.videoSupport = config.getVideoSupport();
+        // return rvd.xml/restcommBaseUrl parameter if set
+        if (config.getRawRvdConfig() != null && ! RvdUtils.isEmpty(config.getRawRvdConfig().getRestcommBaseUrl()) )
+            clientConfig.restcommBaseUrl = config.getRawRvdConfig().getRestcommBaseUrl();
         Gson gson = new Gson();
         return Response.ok(gson.toJson(clientConfig), MediaType.APPLICATION_JSON_TYPE).build();
     }
