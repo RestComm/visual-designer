@@ -16,8 +16,6 @@ import org.apache.commons.io.FileUtils;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 
-import javax.servlet.ServletContext;
-
 
 public class RvdUtils {
 
@@ -136,11 +134,15 @@ public class RvdUtils {
         }
     }
 
-    // make sure context root path ends with "/"
-    public static String safeGetServletContextRealRootPath(ServletContext servletContext) {
-        String path = servletContext.getRealPath("/");
-        if (path != null && !path.endsWith("/"))
-            path += "/";
-        return path;
+    /**
+     * Makes sure a url or path ends with "/"
+     *
+     * @param urlOrPath
+     * @return
+     */
+    public static String addTrailingSlashIfMissing(String urlOrPath) {
+        if (urlOrPath != null && ! urlOrPath.endsWith("/"))
+            urlOrPath += "/";
+        return urlOrPath;
     }
 }

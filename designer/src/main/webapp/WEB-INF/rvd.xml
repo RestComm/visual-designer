@@ -30,13 +30,14 @@
 	-->
 	<restcommBaseUrl>http://this:8080</restcommBaseUrl>
 
-	<baseUrl>http://rvd.this:8081/restcomm-rvd</baseUrl>
-
 	<!--
-		If 'true' is will register application to restcomm using absolute urls instead of relative.useAbsoluteApplicationUrls
-	    Default is false.
+		If 'useAbsoluteApplicationUrl' is true application registration to restcomm will use absolute urls instead of relative.
+	    These absolute urls will start with 'baseUrl'
+
+	    Default value for useAbsoluteApplicationUrl is false.
 	-->
 	<useAbsoluteApplicationUrl>true</useAbsoluteApplicationUrl>
+	<baseUrl>http://rvd.this:8081/restcomm-rvd</baseUrl>
 
 	<!-- Timeout for external service requests in milliseconds. Defaults to 5000 if not given -->
 	<externalServiceTimeout></externalServiceTimeout>

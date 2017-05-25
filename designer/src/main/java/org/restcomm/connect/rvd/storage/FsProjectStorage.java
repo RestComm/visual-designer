@@ -458,7 +458,7 @@ public class FsProjectStorage {
     public static List<WavItem> listBundledWavs( RvdContext rvdContext ) {
         List<WavItem> items = new ArrayList<WavItem>();
 
-        String contextRealPath = RvdUtils.safeGetServletContextRealRootPath(rvdContext.getServletContext());
+        String contextRealPath = RvdUtils.addTrailingSlashIfMissing(rvdContext.getServletContext().getRealPath("/"));
         String audioRealPath = contextRealPath + "audio";
         String contextPath = rvdContext.getServletContext().getContextPath();
 

@@ -34,7 +34,7 @@ public class RvdConfig {
     private String externalServiceTimeout;
     private Boolean videoSupport;
     private Integer maxMediaFileSize;
-    private String baseUrl; //e.g. http://this:8080/restcomm-rvd
+    private String  baseUrl; //e.g. http://this:8080/restcomm-rvd
     private Boolean useAbsoluteApplicationUrl;
 
     public RvdConfig() {
@@ -87,7 +87,7 @@ public class RvdConfig {
         return baseUrl;
     }
 
-    public Boolean getUseAbsoluteApplicationUrl() {
+    public Boolean useAbsoluteApplicationUrl() {
         return useAbsoluteApplicationUrl;
     }
 }

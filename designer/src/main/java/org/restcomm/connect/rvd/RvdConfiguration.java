@@ -95,14 +95,11 @@ public class RvdConfiguration {
     }
 
     public RvdConfiguration(ServletContext servletContext) {
-        this(RvdUtils.safeGetServletContextRealRootPath(servletContext));
+        this(servletContext.getRealPath("/"));
     }
 
     public RvdConfiguration(String contextRootPath) {
-        this.contextRootPath = contextRootPath;
-        // append trailing slash if not already there
-        if (this.contextRootPath != null && !this.contextRootPath.endsWith("/"))
-            this.contextRootPath += "/";
+        this.contextRootPath = RvdUtils.addTrailingSlashIfMissing(contextRootPath);
         logger.info("context root path is " + contextRootPath);
         load();
     }
@@ -166,7 +163,7 @@ public class RvdConfiguration {
         // baseUrl
         if (! RvdUtils.isEmpty(rvdConfig.getBaseUrl()) )
             baseUrl = rvdConfig.getBaseUrl();
-        this.useAbsoluteApplicationUrl = rvdConfig.getUseAbsoluteApplicationUrl();
+        this.useAbsoluteApplicationUrl = rvdConfig.useAbsoluteApplicationUrl();
 
     }
 
