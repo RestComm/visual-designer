@@ -81,6 +81,7 @@ public class RvdConfiguration {
     private RestcommConfig restcommConfig;
 
     private String contextRootPath; // e.g. a/path/ending/in/slash/
+    private String contextPath; // e.g. /restcomm-rvd
     private URI restcommBaseUri;
     private Integer externalServiceTimeout;
     private Boolean videoSupport;
@@ -95,19 +96,20 @@ public class RvdConfiguration {
     }
 
     public RvdConfiguration(ServletContext servletContext) {
-        this(servletContext.getRealPath("/"));
+        this(servletContext.getContextPath(), servletContext.getRealPath("/"));
     }
 
-    public RvdConfiguration(String contextRootPath) {
+    public RvdConfiguration(String contextPath, String contextRootPath) {
         this.contextRootPath = RvdUtils.addTrailingSlashIfMissing(contextRootPath);
         logger.info("context root path is " + contextRootPath);
         load();
     }
 
-    public RvdConfiguration(String workspaceBasePath, RvdConfig rvdConfig, RestcommConfig restcommConfig, String contextRootPath, URI restcommBaseUri) {
+    public RvdConfiguration(String workspaceBasePath, RvdConfig rvdConfig, RestcommConfig restcommConfig, String contextPath, String contextRootPath, URI restcommBaseUri) {
         this.workspaceBasePath = workspaceBasePath;
         this.rvdConfig = rvdConfig;
         this.restcommConfig = restcommConfig;
+        this.contextPath = contextPath;
         this.contextRootPath = contextRootPath;
         this.restcommBaseUri = restcommBaseUri;
     }
@@ -316,5 +318,9 @@ public class RvdConfiguration {
 
     public Boolean useAbsoluteApplicationUrl() {
         return useAbsoluteApplicationUrl;
+    }
+
+    public String getContextPath() {
+        return contextPath;
     }
 }
