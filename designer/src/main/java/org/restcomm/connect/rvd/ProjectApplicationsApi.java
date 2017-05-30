@@ -67,9 +67,9 @@ public class ProjectApplicationsApi {
         String relativeUrl =  "/services/apps/" + applicationSid + "/controller";
         RvdConfiguration config = appContext.getConfiguration();
         if (config.useAbsoluteApplicationUrl())
-            rcmlUrl = config.getBaseUrl() + relativeUrl;
+            rcmlUrl = config.getBaseUrl() + config.getContextPath() + relativeUrl;
         else
-            rcmlUrl = "/restcomm-rvd" + relativeUrl; // get 'restcomm-rvd' part from context
+            rcmlUrl = config.getContextPath() + relativeUrl;
         params.clear();
         params.put("Sid", applicationSid);
         params.put("RcmlUrl", rcmlUrl);
