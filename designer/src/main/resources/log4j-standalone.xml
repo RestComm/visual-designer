@@ -23,6 +23,7 @@
     <logger name="org.restcomm.connect.rvd.LOCAL">
         <level value="INFO" />
         <appender-ref ref="RVD" />
+        <appender-ref ref="console" />
     </logger>
     <!--
     <logger name="org.restcomm.connect.rvd.GLOBAL">
