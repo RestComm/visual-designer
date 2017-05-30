@@ -101,7 +101,9 @@ public class RvdConfiguration {
 
     public RvdConfiguration(String contextPath, String contextRootPath) {
         this.contextRootPath = RvdUtils.addTrailingSlashIfMissing(contextRootPath);
-        logger.info("context root path is " + contextRootPath);
+        this.contextPath = contextPath;
+        logger.info("context filesystem root path is " + this.contextRootPath);
+        logger.info("context path is " + this.contextPath);
         load();
     }
 
