@@ -49,4 +49,23 @@
 	 provide a large enough value -->
 	<maxMediaFileSize>4194304</maxMediaFileSize>
 
+
+	<!-- When RVD is deployed on a different domain than restcomm, cors origin whitelist should be provided
+		 Many, <origin/> elements are allowed. Also, special <origin>*</origin> element will allow access to all cors requests.
+
+		 Example 1
+
+			 <corsWhitelist>
+				<origin>http://allowedhost1:8080</origin>
+				<origin>http://allowedhost2:8080</origin>
+			</corsWhitelist>
+
+		Example 2
+			<corsWhitelist>
+					<origin>*</origin>
+			</corsWhitelist>
+	-->
+	<corsWhitelist>
+	</corsWhitelist>
+
 </rvd>

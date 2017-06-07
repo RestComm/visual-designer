@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -17,6 +18,7 @@ import org.restcomm.connect.rvd.configuration.CustomIntegerConverter;
 import org.restcomm.connect.rvd.configuration.RestcommConfig;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigNotFound;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigurationException;
+import org.restcomm.connect.rvd.exceptions.XmlParserException;
 import org.restcomm.connect.rvd.http.utils.UriUtils;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
@@ -24,6 +26,7 @@ import org.restcomm.connect.rvd.configuration.RvdConfig;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import com.thoughtworks.xstream.XStream;
+import org.restcomm.connect.rvd.utils.XmlParser;
 
 /**
  * Configuration settings for RVD. Contains both static hardcoded and loaded values.
@@ -176,17 +179,25 @@ public class RvdConfiguration {
      * @param pathToXml
      * @return
      */
-    private RvdConfig loadRvdXmlConfig(String pathToXml) {
+    public static RvdConfig loadRvdXmlConfig(String pathToXml) {
         try {
             FileInputStream input = new FileInputStream(pathToXml);
             XStream xstream = new XStream();
             xstream.alias("rvd", RvdConfig.class);
+            xstream.omitField(RvdConfig.class, "corsWhitelist");
             xstream.registerConverter(new CustomIntegerConverter());
-            rvdConfig = (RvdConfig) xstream.fromXML( input );
+            RvdConfig rvdConfig = (RvdConfig) xstream.fromXML( input );
+            // read some more configuration options that xstream fails to read in a clean way
+            XmlParser xml = new XmlParser(pathToXml);
+            rvdConfig.setAllowedCorsOrigins(xml.getElementList("/rvd/corsWhitelist/origin"));
             return rvdConfig;
         } catch (FileNotFoundException e) {
-            logger.warn(LoggingHelper.buildMessage(getClass(),"loadRvdXmlConfig",null,"RVD configuration file not found: " + pathToXml));
+            logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"loadRvdXmlConfig",null,"RVD configuration file not found: " + pathToXml));
             return null;
+        } catch (XmlParserException e) {
+            logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"loadRvdXmlConfig",null,"Error parsing RVD configuration file: " + pathToXml), e);
+            return null;
+
         }
     }
 

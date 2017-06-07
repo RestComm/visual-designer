@@ -20,6 +20,8 @@
 package org.restcomm.connect.rvd.exceptions;
 
 /**
+ * Thrown for any type of error in custom XmlParser class
+ * 
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class XmlParserException extends Exception {
