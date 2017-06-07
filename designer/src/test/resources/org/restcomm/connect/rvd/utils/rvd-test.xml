@@ -1,0 +1,59 @@
+<rvd>
+    <!--
+        A path to the projects' workspace. Both absolute and relative paths are supported. Relative paths
+        are related RVD web application context. Namely $RESTCOMM_HOME/standalone/deployments/restcomm-rvd.war/.
+
+        Example:
+            Absolute path example:
+                /home/otsakir/Restcomm/standalone/deployments/restcomm-rvd.war/workspace
+
+            Relative path example:
+                workspace
+
+        Required: yes
+    -->
+    <workspaceLocation>workspace</workspaceLocation>
+
+    <!-- Absolute or relative path on which the workspace backups will be created.
+    The value of the element "workspaceBackupLocation" must be different than the value of the
+    element "workspaceLocation", since the backup will use the directory informed in "workspaceLocation"
+    as source and the directory informed in "workspaceBackupLocation" as target, to perform the copy operation.
+    If left as blank, rvd's context root path will be used by default.
+    -->
+    <workspaceBackupLocation></workspaceBackupLocation>
+
+    <!--
+        Override automatic restcomm address resolution.
+
+        Example:
+            <restcommBaseUrl>http://192.168.0.2:8080</restcommBaseUrl>
+    -->
+    <restcommBaseUrl>http://this:8080</restcommBaseUrl>
+
+    <!--
+        If 'useAbsoluteApplicationUrl' is true application registration to restcomm will use absolute urls instead of relative.
+        These absolute urls will start with 'baseUrl'
+
+        Default value for useAbsoluteApplicationUrl is false.
+    -->
+    <useAbsoluteApplicationUrl>true</useAbsoluteApplicationUrl>
+    <baseUrl>http://rvd.this:8081/restcomm-rvd</baseUrl>
+
+    <!-- Timeout for external service requests in milliseconds. Defaults to 5000 if not given -->
+    <externalServiceTimeout></externalServiceTimeout>
+
+    <!-- Enable Video support in RCML produced and UI. Defaults to 'false'. Requires XMS. -->
+    <videoSupport>false</videoSupport>
+
+    <!-- Maximum media file size allowed when uploading (in bytes). If video is supported make sure you
+     provide a large enough value -->
+    <maxMediaFileSize>4194304</maxMediaFileSize>
+
+    <corsWhitelist>
+            <origin>http://this:8080</origin>
+            <origin>http://that:8080</origin>
+    </corsWhitelist>
+
+    <empty></empty>
+
+</rvd>
