@@ -66,6 +66,7 @@
 			</corsWhitelist>
 	-->
 	<corsWhitelist>
+		<origin>*</origin>
 	</corsWhitelist>
 
 </rvd>
