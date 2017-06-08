@@ -27,6 +27,7 @@ import org.restcomm.connect.rvd.configuration.RvdConfig;
 
 import javax.ws.rs.ext.Provider;
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -38,12 +39,14 @@ public class CorsFilter implements ContainerResponseFilter {
     List<String> allowedOrigins; // If null, or [], no origins will be allowed
 
     public CorsFilter() {
-        String rootPath =  this.getClass().getResource(".").getFile();
-        String webInfPath = rootPath.substring(0, rootPath.indexOf("/classes/org/"));
+        //String rootPath =  CorsFilter.class.getResource(".").getFile();
+        URL url = CorsFilter.class.getClassLoader().getResource("rvd.version");
+        String rootPath = url.getFile();
+
+        String webInfPath = rootPath.substring(0, rootPath.indexOf("/classes/"));
         File rvdXmlFile = new File(webInfPath + "/rvd.xml");
         RvdConfig rvdConfig = RvdConfiguration.loadRvdXmlConfig(rvdXmlFile.getAbsolutePath());
         allowedOrigins = rvdConfig.getAllowedCorsOrigins();
-        System.out.println(rvdConfig.getVideoSupport());
     }
 
     @Override
