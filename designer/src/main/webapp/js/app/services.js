@@ -64,7 +64,7 @@ angular.module('Rvd').service('initializer',function (authentication, storage,  
     };
 });
 
-angular.module('Rvd').service('authentication', function ($http, $q, storage, $state, md5, $rootScope) {
+angular.module('Rvd').service('authentication', function ($http, $q, storage, $state, md5, $rootScope, RvdConfiguration) {
     var authInfo = {};
 	var account = null; // if this is set it means that user logged in: authentication succeeded and account was retrieved
 
@@ -113,7 +113,7 @@ angular.module('Rvd').service('authentication', function ($http, $q, storage, $s
 	    var deferredLogin = $q.defer();
 	    var secret = !!password ? md5.createHash(password) : token; // use 'password' as secret value if set. Otherwise use 'token'
 	    var authHeader = basicAuthHeader(usernameOrSid, secret);
-        $http({method:'GET', url:'/restcomm/2012-04-24/Accounts.json/' + encodeURIComponent(usernameOrSid), headers: {Authorization: authHeader}}).then(function (response) {
+        $http({method:'GET', url: RvdConfiguration.restcommBaseUrl + '/restcomm/2012-04-24/Accounts.json/' + encodeURIComponent(usernameOrSid), headers: {Authorization: authHeader}}).then(function (response) {
             var acc = response.data; // store temporarily the account returned
             $http({method:'GET', url:'services/auth/keepalive', headers: {Authorization: "Basic " + btoa(acc.sid + ":" +acc.auth_token)}}).then(function (response) {
                 // ok, access to both restcomm and RVD is verified

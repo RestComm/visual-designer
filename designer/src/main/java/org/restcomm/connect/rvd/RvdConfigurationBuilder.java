@@ -50,7 +50,7 @@ public class RvdConfigurationBuilder {
     }
 
     public RvdConfiguration build() {
-        RvdConfiguration instance = new RvdConfiguration(null, null,restcommConfig,null,restcommBaseUri);
+        RvdConfiguration instance = new RvdConfiguration(null, null,restcommConfig,null,null,restcommBaseUri);
         return instance;
     }
 }

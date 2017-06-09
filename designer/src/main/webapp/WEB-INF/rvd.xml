@@ -30,6 +30,15 @@
 	-->
 	<restcommBaseUrl></restcommBaseUrl>
 
+	<!--
+		If 'useAbsoluteApplicationUrl' is true application registration to restcomm will use absolute urls instead of relative.
+	    These absolute urls will start with 'baseUrl'
+
+	    Default value for useAbsoluteApplicationUrl is false.
+	-->
+	<useAbsoluteApplicationUrl>false</useAbsoluteApplicationUrl>
+	<baseUrl>/restcomm-rvd</baseUrl>
+
 	<!-- Timeout for external service requests in milliseconds. Defaults to 5000 if not given -->
 	<externalServiceTimeout></externalServiceTimeout>
 
@@ -39,5 +48,25 @@
 	<!-- Maximum media file size allowed when uploading (in bytes). If video is supported make sure you
 	 provide a large enough value -->
 	<maxMediaFileSize>4194304</maxMediaFileSize>
+
+
+	<!-- When RVD is deployed on a different domain than restcomm, cors origin whitelist should be provided
+		 Many, <origin/> elements are allowed. Also, special <origin>*</origin> element will allow access to all cors requests.
+
+		 Example 1
+
+			 <corsWhitelist>
+				<origin>http://allowedhost1:8080</origin>
+				<origin>http://allowedhost2:8080</origin>
+			</corsWhitelist>
+
+		Example 2
+			<corsWhitelist>
+					<origin>*</origin>
+			</corsWhitelist>
+	-->
+	<corsWhitelist>
+		<origin>*</origin>
+	</corsWhitelist>
 
 </rvd>

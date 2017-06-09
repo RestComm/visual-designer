@@ -19,6 +19,8 @@
 
 package org.restcomm.connect.rvd.configuration;
 
+import java.util.List;
+
 /**
  * Model class for loading configuration from rvd.xml
  *
@@ -34,6 +36,10 @@ public class RvdConfig {
     private String externalServiceTimeout;
     private Boolean videoSupport;
     private Integer maxMediaFileSize;
+    private String  baseUrl; //e.g. http://this:8080/restcomm-rvd
+    private Boolean useAbsoluteApplicationUrl;
+
+    private List<String> allowedCorsOrigins;
 
     public RvdConfig() {
     }
@@ -79,5 +85,21 @@ public class RvdConfig {
 
     public Boolean getUseHostnameToResolveRelativeUrl() {
         return useHostnameToResolveRelativeUrl;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public Boolean useAbsoluteApplicationUrl() {
+        return useAbsoluteApplicationUrl;
+    }
+
+    public List<String> getAllowedCorsOrigins() {
+        return allowedCorsOrigins;
+    }
+
+    public void setAllowedCorsOrigins(List<String> allowedCorsOrigins) {
+        this.allowedCorsOrigins = allowedCorsOrigins;
     }
 }

@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -17,6 +18,7 @@ import org.restcomm.connect.rvd.configuration.CustomIntegerConverter;
 import org.restcomm.connect.rvd.configuration.RestcommConfig;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigNotFound;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigurationException;
+import org.restcomm.connect.rvd.exceptions.XmlParserException;
 import org.restcomm.connect.rvd.http.utils.UriUtils;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
@@ -24,6 +26,7 @@ import org.restcomm.connect.rvd.configuration.RvdConfig;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import com.thoughtworks.xstream.XStream;
+import org.restcomm.connect.rvd.utils.XmlParser;
 
 /**
  * Configuration settings for RVD. Contains both static hardcoded and loaded values.
@@ -80,35 +83,38 @@ public class RvdConfiguration {
     private RvdConfig rvdConfig;  // the configuration settings from rvd.xml
     private RestcommConfig restcommConfig;
 
-    private String contextRootPath;
+    private String contextRootPath; // e.g. a/path/ending/in/slash/
+    private String contextPath; // e.g. /restcomm-rvd
     private URI restcommBaseUri;
     private Integer externalServiceTimeout;
     private Boolean videoSupport;
     private SslMode sslMode;
     private String hostnameOverride;
     private Boolean useHostnameToResolveRelativeUrl;
+    private String baseUrl;
+    private Boolean useAbsoluteApplicationUrl;
 
     // package-private constructor to be used from RvdConfigurationBuilder
     RvdConfiguration() {
     }
 
     public RvdConfiguration(ServletContext servletContext) {
-        this(servletContext.getRealPath("/"));
+        this(servletContext.getContextPath(), servletContext.getRealPath("/"));
     }
 
-    public RvdConfiguration(String contextRootPath) {
-        this.contextRootPath = contextRootPath;
-        // append trailing slash if not already there
-        if (this.contextRootPath != null && !this.contextRootPath.endsWith("/"))
-            this.contextRootPath += "/";
-        logger.info("context root path is " + contextRootPath);
+    public RvdConfiguration(String contextPath, String contextRootPath) {
+        this.contextRootPath = RvdUtils.addTrailingSlashIfMissing(contextRootPath);
+        this.contextPath = contextPath;
+        logger.info("context filesystem root path is " + this.contextRootPath);
+        logger.info("context path is " + this.contextPath);
         load();
     }
 
-    public RvdConfiguration(String workspaceBasePath, RvdConfig rvdConfig, RestcommConfig restcommConfig, String contextRootPath, URI restcommBaseUri) {
+    public RvdConfiguration(String workspaceBasePath, RvdConfig rvdConfig, RestcommConfig restcommConfig, String contextPath, String contextRootPath, URI restcommBaseUri) {
         this.workspaceBasePath = workspaceBasePath;
         this.rvdConfig = rvdConfig;
         this.restcommConfig = restcommConfig;
+        this.contextPath = contextPath;
         this.contextRootPath = contextRootPath;
         this.restcommBaseUri = restcommBaseUri;
     }
@@ -161,6 +167,10 @@ public class RvdConfiguration {
             useHostnameToResolveRelativeUrl = rvdConfig.getUseHostnameToResolveRelativeUrl();
         if (useHostnameToResolveRelativeUrl == null)
             useHostnameToResolveRelativeUrl = DEFAULT_USE_HOSTNAME_TO_RESOLVE_RELATIVE_URL;
+        // baseUrl
+        if (! RvdUtils.isEmpty(rvdConfig.getBaseUrl()) )
+            baseUrl = rvdConfig.getBaseUrl();
+        this.useAbsoluteApplicationUrl = rvdConfig.useAbsoluteApplicationUrl();
 
     }
 
@@ -169,17 +179,25 @@ public class RvdConfiguration {
      * @param pathToXml
      * @return
      */
-    private RvdConfig loadRvdXmlConfig(String pathToXml) {
+    public static RvdConfig loadRvdXmlConfig(String pathToXml) {
         try {
             FileInputStream input = new FileInputStream(pathToXml);
             XStream xstream = new XStream();
             xstream.alias("rvd", RvdConfig.class);
+            xstream.omitField(RvdConfig.class, "corsWhitelist");
             xstream.registerConverter(new CustomIntegerConverter());
-            rvdConfig = (RvdConfig) xstream.fromXML( input );
+            RvdConfig rvdConfig = (RvdConfig) xstream.fromXML( input );
+            // read some more configuration options that xstream fails to read in a clean way
+            XmlParser xml = new XmlParser(pathToXml);
+            rvdConfig.setAllowedCorsOrigins(xml.getElementList("/rvd/corsWhitelist/origin"));
             return rvdConfig;
         } catch (FileNotFoundException e) {
-            logger.warn(LoggingHelper.buildMessage(getClass(),"loadRvdXmlConfig",null,"RVD configuration file not found: " + pathToXml));
+            logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"loadRvdXmlConfig",null,"RVD configuration file not found: " + pathToXml));
             return null;
+        } catch (XmlParserException e) {
+            logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"loadRvdXmlConfig",null,"Error parsing RVD configuration file: " + pathToXml), e);
+            return null;
+
         }
     }
 
@@ -301,5 +319,21 @@ public class RvdConfiguration {
 
     public Boolean getVideoSupport() {
         return RvdUtils.isTrue(videoSupport);
+    }
+
+    public RvdConfig getRawRvdConfig() {
+        return rvdConfig;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public Boolean useAbsoluteApplicationUrl() {
+        return useAbsoluteApplicationUrl;
+    }
+
+    public String getContextPath() {
+        return contextPath;
     }
 }

@@ -63,7 +63,13 @@ public class ProjectApplicationsApi {
         params.put("FriendlyName", friendlyName);
         params.put("Kind", projectKind);
         String applicationSid = accessApi(params, AccessApiAction.CREATE);
-        String rcmlUrl = "/restcomm-rvd/services/apps/" + applicationSid + "/controller";
+        String rcmlUrl;
+        String relativeUrl =  "/services/apps/" + applicationSid + "/controller";
+        RvdConfiguration config = appContext.getConfiguration();
+        if (config.useAbsoluteApplicationUrl())
+            rcmlUrl = config.getBaseUrl() + config.getContextPath() + relativeUrl;
+        else
+            rcmlUrl = config.getContextPath() + relativeUrl;
         params.clear();
         params.put("Sid", applicationSid);
         params.put("RcmlUrl", rcmlUrl);

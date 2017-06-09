@@ -80,7 +80,7 @@ public class TestUtils {
         } catch (URISyntaxException e) {
             return null;
         }
-        return new RvdConfiguration(rvdRoot.getPath() + "/");
+        return new RvdConfiguration("/restcomm-rvd", rvdRoot.getPath() + "/");
     }
 
     public static RvdConfiguration initRvdConfiguration() {

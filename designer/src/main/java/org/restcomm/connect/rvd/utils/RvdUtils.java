@@ -133,4 +133,16 @@ public class RvdUtils {
             outputStream.close();
         }
     }
+
+    /**
+     * Makes sure a url or path ends with "/"
+     *
+     * @param urlOrPath
+     * @return
+     */
+    public static String addTrailingSlashIfMissing(String urlOrPath) {
+        if (urlOrPath != null && ! urlOrPath.endsWith("/"))
+            urlOrPath += "/";
+        return urlOrPath;
+    }
 }
