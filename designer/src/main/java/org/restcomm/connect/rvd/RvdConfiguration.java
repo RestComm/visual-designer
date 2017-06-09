@@ -47,6 +47,7 @@ public class RvdConfiguration {
 
     public static final SslMode DEFAULT_SSL_MODE = SslMode.strict;
     public static final boolean DEFAULT_USE_HOSTNAME_TO_RESOLVE_RELATIVE_URL = true;
+    public static final boolean DEFAULT_USE_ABSOLUTE_APPLICATION_URL = false;
 
     private static final String WORKSPACE_DIRECTORY_NAME = "workspace";
     public static final String PROTO_DIRECTORY_PREFIX = "_proto";
@@ -170,8 +171,11 @@ public class RvdConfiguration {
         // baseUrl
         if (! RvdUtils.isEmpty(rvdConfig.getBaseUrl()) )
             baseUrl = rvdConfig.getBaseUrl();
-        this.useAbsoluteApplicationUrl = rvdConfig.useAbsoluteApplicationUrl();
-
+        // useAbsoluteApplicationUrl
+        if (! RvdUtils.isEmpty(rvdConfig.useAbsoluteApplicationUrl()))
+            useAbsoluteApplicationUrl = rvdConfig.useAbsoluteApplicationUrl();
+        else
+            useAbsoluteApplicationUrl = DEFAULT_USE_ABSOLUTE_APPLICATION_URL;
     }
 
     /**
