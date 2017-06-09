@@ -89,7 +89,7 @@ import javax.ws.rs.core.MultivaluedMap;
 @RunWith(Arquillian.class)
 public class CorsAccessTestSingleOrigin extends RestServiceTest {
     private final static Logger logger = Logger.getLogger(ProjectRestServiceTest.class);
-    private static final String version = Version.getVersion();
+    //private static final String version = Version.getVersion();
 
     static final String username = "administrator@company.com";
     static final String password = "adminpass";

@@ -38,6 +38,10 @@
 			<param name="ConversionPattern" value="%p %t %l - %m%n" />
 		</layout>
 	</appender>
+	<logger name="org.restcomm.connect.rvd.LOCAL">
+		<level value="INFO" />
+		<appender-ref ref="console" />
+	</logger>
 	<root>
 		<priority value="DEBUG" />
 		<appender-ref ref="console" />

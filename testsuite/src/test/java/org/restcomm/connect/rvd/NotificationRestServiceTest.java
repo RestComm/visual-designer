@@ -32,7 +32,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.archive.ShrinkWrapMaven;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.restcomm.connect.commons.Version;
 
 import javax.ws.rs.core.MediaType;
 
@@ -44,7 +43,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 @RunWith(Arquillian.class)
 public class NotificationRestServiceTest extends RestServiceTest {
     private final static Logger logger = Logger.getLogger(NotificationRestServiceTest.class);
-    private static final String version = Version.getVersion();
+    //private static final String version = Version.getVersion();
 
     @Test
     public void notifyApplicationRemovalWorks() {
@@ -73,7 +72,7 @@ public class NotificationRestServiceTest extends RestServiceTest {
         logger.info("version");
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "restcomm-rvd.war");
         final WebArchive restcommArchive = ShrinkWrapMaven.resolver()
-                .resolve("org.restcomm:restcomm-connect-rvd:war:" + version).withoutTransitivity()
+                .resolve("org.restcomm:restcomm-connect-rvd:war:" + "1.0-SNAPSHOT").withoutTransitivity()
                 .asSingle(WebArchive.class);
         archive = archive.merge(restcommArchive);
 
