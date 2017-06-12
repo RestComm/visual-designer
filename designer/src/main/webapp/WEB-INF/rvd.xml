@@ -69,4 +69,8 @@
 		<origin>*</origin>
 	</corsWhitelist>
 
+	<ussd>
+		<enabled>true</enabled>
+	</ussd>
+
 </rvd>

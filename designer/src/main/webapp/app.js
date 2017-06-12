@@ -155,7 +155,8 @@ angular.element(document).ready(['$http',function ($http) {
         return {
             projectsRootPath: '/restcomm-rvd/services/projects',
             videoSupport: clientConfig.videoSupport,
-            restcommBaseUrl: clientConfig.restcommBaseUrl || ""
+            restcommBaseUrl: clientConfig.restcommBaseUrl || "",
+            ussdEnabled: clientConfig.ussdEnabled
         }
     });
     configPromise.resolve(clientConfig);

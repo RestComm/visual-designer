@@ -48,6 +48,7 @@ public class RvdConfiguration {
     public static final SslMode DEFAULT_SSL_MODE = SslMode.strict;
     public static final boolean DEFAULT_USE_HOSTNAME_TO_RESOLVE_RELATIVE_URL = true;
     public static final boolean DEFAULT_USE_ABSOLUTE_APPLICATION_URL = false;
+    public static final boolean DEFAULT_USSD_ENABLED = true;
 
     private static final String WORKSPACE_DIRECTORY_NAME = "workspace";
     public static final String PROTO_DIRECTORY_PREFIX = "_proto";
@@ -94,6 +95,7 @@ public class RvdConfiguration {
     private Boolean useHostnameToResolveRelativeUrl;
     private String baseUrl;
     private Boolean useAbsoluteApplicationUrl;
+    private boolean ussdEnabled;
 
     // package-private constructor to be used from RvdConfigurationBuilder
     RvdConfiguration() {
@@ -176,6 +178,18 @@ public class RvdConfiguration {
             useAbsoluteApplicationUrl = rvdConfig.useAbsoluteApplicationUrl();
         else
             useAbsoluteApplicationUrl = DEFAULT_USE_ABSOLUTE_APPLICATION_URL;
+        // ussd support
+        if ( RvdUtils.isEmpty(rvdConfig.getUssdEnabled()) )
+            ussdEnabled = DEFAULT_USSD_ENABLED;
+        else {
+            try {
+                ussdEnabled = Boolean.parseBoolean(rvdConfig.getUssdEnabled());
+            } catch ( Exception e) {
+                ussdEnabled = DEFAULT_USSD_ENABLED;
+                logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"load",null,"Error parsing rvd.xml:ussd/enabled option. Falling back to default: " + ussdEnabled),e);
+            }
+        }
+
     }
 
     /**
@@ -189,11 +203,13 @@ public class RvdConfiguration {
             XStream xstream = new XStream();
             xstream.alias("rvd", RvdConfig.class);
             xstream.omitField(RvdConfig.class, "corsWhitelist");
+            xstream.omitField(RvdConfig.class, "ussd");
             xstream.registerConverter(new CustomIntegerConverter());
             RvdConfig rvdConfig = (RvdConfig) xstream.fromXML( input );
             // read some more configuration options that xstream fails to read in a clean way
             XmlParser xml = new XmlParser(pathToXml);
             rvdConfig.setAllowedCorsOrigins(xml.getElementList("/rvd/corsWhitelist/origin"));
+            rvdConfig.setUssdEnabled(xml.getElementContent("/rvd/ussd/enabled"));
             return rvdConfig;
         } catch (FileNotFoundException e) {
             logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"loadRvdXmlConfig",null,"RVD configuration file not found: " + pathToXml));
@@ -339,5 +355,9 @@ public class RvdConfiguration {
 
     public String getContextPath() {
         return contextPath;
+    }
+
+    public boolean isUssdEnabled() {
+        return ussdEnabled;
     }
 }
