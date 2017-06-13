@@ -25,6 +25,15 @@
         <appender-ref ref="RVD" />
         <appender-ref ref="console" />
     </logger>
+
+    <!-- Log request/response at Jersey level -->
+    <!--
+    <logger name="com.sun.jersey.api.container.filter.LoggingFilter">
+        <level value="INFO"/>
+        <appender-ref ref="RVD" />
+    </logger>
+    -->
+
     <!--
     <logger name="org.restcomm.connect.rvd.GLOBAL">
         <level value="INFO" />
