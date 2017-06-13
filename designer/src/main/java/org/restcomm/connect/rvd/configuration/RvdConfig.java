@@ -38,7 +38,7 @@ public class RvdConfig {
     private Integer maxMediaFileSize;
     private String  baseUrl; //e.g. http://this:8080/restcomm-rvd
     private Boolean useAbsoluteApplicationUrl;
-    private String ussdEnabled;
+    private String ussdSupport;
 
     private List<String> allowedCorsOrigins;
 
@@ -104,11 +104,11 @@ public class RvdConfig {
         this.allowedCorsOrigins = allowedCorsOrigins;
     }
 
-    public String getUssdEnabled() {
-        return ussdEnabled;
+    public String getUssdSupport() {
+        return ussdSupport;
     }
 
-    public void setUssdEnabled(String ussdEnabled) {
-        this.ussdEnabled = ussdEnabled;
+    public void setUssdSupport(String ussdSupport) {
+        this.ussdSupport = ussdSupport;
     }
 }

@@ -53,7 +53,7 @@ public class ConfigurationRestService extends RestService {
         // return rvd.xml/restcommBaseUrl parameter if set
         if (config.getRawRvdConfig() != null && ! RvdUtils.isEmpty(config.getRawRvdConfig().getRestcommBaseUrl()) )
             clientConfig.restcommBaseUrl = config.getRawRvdConfig().getRestcommBaseUrl();
-        clientConfig.ussdEnabled = config.isUssdEnabled();
+        clientConfig.ussdSupport = config.isUssdSupport();
         Gson gson = new Gson();
         return Response.ok(gson.toJson(clientConfig), MediaType.APPLICATION_JSON_TYPE).build();
     }

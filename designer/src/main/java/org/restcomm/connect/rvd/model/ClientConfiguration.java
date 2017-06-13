@@ -27,5 +27,5 @@ package org.restcomm.connect.rvd.model;
 public class ClientConfiguration {
     public Boolean videoSupport;
     public String restcommBaseUrl;
-    public Boolean ussdEnabled;
+    public Boolean ussdSupport;
 }

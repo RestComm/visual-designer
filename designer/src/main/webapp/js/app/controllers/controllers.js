@@ -275,3 +275,7 @@ angular.module('Rvd').controller('playStepController', function ($scope) {
 			$scope.step.local.wavLocalFilename = "";
 	});
 });
+
+angular.module('Rvd').controller('homeCtrl', function ($scope, RvdConfiguration) {
+    $scope.ussdSupport = RvdConfiguration.ussdSupport;
+});

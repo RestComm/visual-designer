@@ -65,7 +65,8 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     });
     $stateProvider.state('root.rvd.home',{
         url:"/home",
-        templateUrl: 'templates/home.html'
+        templateUrl: 'templates/home.html',
+        controller: 'homeCtrl'
     });
     $stateProvider.state('root.rvd.projectManager',{
         url: '/project-manager/:projectKind',
@@ -156,7 +157,7 @@ angular.element(document).ready(['$http',function ($http) {
             projectsRootPath: '/restcomm-rvd/services/projects',
             videoSupport: clientConfig.videoSupport,
             restcommBaseUrl: clientConfig.restcommBaseUrl || "",
-            ussdEnabled: clientConfig.ussdEnabled
+            ussdSupport: clientConfig.ussdSupport
         }
     });
     configPromise.resolve(clientConfig);

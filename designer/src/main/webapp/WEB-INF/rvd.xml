@@ -69,8 +69,12 @@
 		<origin>*</origin>
 	</corsWhitelist>
 
-	<ussd>
-		<enabled>true</enabled>
-	</ussd>
+	<!-- USSD project support in UI. By default it's 'true'.
+
+		To disable:
+
+			<ussdSupport>false</ussdSupport>
+	-->
+	<ussdSupport>true</ussdSupport>
 
 </rvd>
