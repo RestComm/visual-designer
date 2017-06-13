@@ -17,7 +17,7 @@ import org.restcomm.connect.commons.Version;
 import javax.ws.rs.core.MultivaluedMap;
 
 /**
- * Tests cross site ajax requests rvd.xml has a single origin - <origin>http://host.restcomm.com</origin>
+ * Tests cross site ajax requests with various configurations in rvd.xml
  *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
@@ -87,7 +87,7 @@ import javax.ws.rs.core.MultivaluedMap;
 //    X-Powered-By:Undertow/1
 
 @RunWith(Arquillian.class)
-public class CorsAccessTestSingleOrigin extends RestServiceTest {
+public class CorsAccessAnyOriginTest extends RestServiceTest {
     private final static Logger logger = Logger.getLogger(ProjectRestServiceTest.class);
     //private static final String version = Version.getVersion();
 
@@ -98,24 +98,21 @@ public class CorsAccessTestSingleOrigin extends RestServiceTest {
     public void testCorsRequest() {
         // Bypass jersey restriction for "Origin" header. By default it can't be added to a WebResource object.
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
-        // from rvd.xml: <origin>http://host.restcomm.com</origin>
+        // from rvd.xml: <origin>*</origin>
         Client jersey = getClient(username, password);
-        // make a preflight OPTIONS request using an origin present in rvd.xml i.e. http://host.restcomm.com
+
         WebResource resource = jersey.resource(getResourceUrl("/services/projects"));
         ClientResponse response = resource.header("Origin", "http://host.restcomm.com").options(ClientResponse.class);
         Assert.assertEquals(200, response.getStatus());
-        MultivaluedMap<String,String> headers = response.getHeaders();
-        String originHeader = headers.getFirst("Access-Control-Allow-Origin");
-        Assert.assertEquals("http://host.restcomm.com",originHeader);
-        // make a preflight OPTIONS request using an origin NOT present in rvd.xml i.e. http://otherhost.restcomm.com
-        WebResource resource2 = jersey.resource(getResourceUrl("/services/projects"));
-        ClientResponse response2 = resource2.header("Origin", "http://otherhost.restcomm.com").options(ClientResponse.class);
-        originHeader = response2.getHeaders().getFirst("Access-Control-Allow-Origin");
-        Assert.assertEquals(200, response2.getStatus());
-        Assert.assertNull(originHeader);
+        Assert.assertEquals("http://host.restcomm.com",response.getHeaders().getFirst("Access-Control-Allow-Origin"));
+
+        resource = jersey.resource(getResourceUrl("/services/projects"));
+        response = resource.header("Origin", "http://otherhost.restcomm.com").options(ClientResponse.class);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals("http://otherhost.restcomm.com", response.getHeaders().getFirst("Access-Control-Allow-Origin"));
     }
 
-    @Deployment(name = "CorsAccessTestSingleOrigin", managed = true, testable = false)
+    @Deployment(name = "CorsAccessAnyOriginTest", managed = true, testable = false)
     public static WebArchive createWebArchiveNoGw() {
         logger.info("Packaging Test App");
         logger.info("version");
@@ -126,7 +123,7 @@ public class CorsAccessTestSingleOrigin extends RestServiceTest {
         archive = archive.merge(restcommArchive);
 
         archive.delete("/WEB-INF/rvd.xml");
-        archive.addAsWebInfResource("CorsAccessTest_single.xml", "rvd.xml");
+        archive.addAsWebInfResource("CorsAccessTest_any.xml", "rvd.xml");
         logger.info("Packaged Test App");
         return archive;
     }
