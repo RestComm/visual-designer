@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	id="WebApp_ID" version="2.5">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
 	<display-name>RVD</display-name>
 
 	<servlet>
@@ -19,12 +16,14 @@
 			in JBoss -->
 		<!-- <init-param> <param-name>com.sun.jersey.config.property.packages</param-name> 
 			<param-value>org.restcomm.connect.rvd</param-value> </init-param> -->
+		
 		<!-- In order to add a resource class add it manually from Application 
 			class specified below -->
 		<init-param>
 			<param-name>javax.ws.rs.Application</param-name>
 			<param-value>org.restcomm.connect.rvd.bootstrap.RvdRestApplication</param-value>
 		</init-param>
+
 		<!-- Enable CORS request filter (allows all cors requests) -->
 		<!--
 		<init-param>
@@ -32,13 +31,6 @@
 			<param-value>org.restcomm.connect.rvd.http.cors.CorsFilter</param-value>
 		</init-param>
 		-->
-
-		<!--
-		<init-param>
-  			<param-name>com.sun.jersey.spi.container.ResourceFilters</param-name>
-  			<param-value>org.restcomm.connect.rvd.security.RvdResourceFilterFactory</param-value>
-  		</init-param>
-  		-->
 		
 		<!-- Enable resource matching trace for Jersey. Very handy. It uses HTTP headers in the REST response. -->
 		<!--
@@ -48,16 +40,17 @@
         </init-param>
 		-->
 
-		<!-- Jersey request logging -->
+		<!-- Jersey request/response logging -->
+		<!--
 		<init-param>
 			<param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
 			<param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
 		</init-param>
-		<!-- Jersey request logging -->
 		<init-param>
 			<param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
 			<param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
 		</init-param>
+		-->
 
         <load-on-startup>1</load-on-startup>
 	</servlet>
@@ -82,13 +75,4 @@
 		<param-value>false</param-value>
 	</context-param>
 
-	<!--security-constraint>
-    <web-resource-collection>
-        <web-resource-name>RestComm</web-resource-name>
-        <url-pattern>/*</url-pattern>
-    </web-resource-collection>
-    <user-data-constraint>
-        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-    </user-data-constraint>
-    </security-constraint-->
 </web-app>
