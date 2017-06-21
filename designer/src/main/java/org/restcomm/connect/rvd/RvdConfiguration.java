@@ -44,11 +44,12 @@ import org.restcomm.connect.rvd.utils.XmlParser;
  */
 public class RvdConfiguration {
     static Logger logger = RvdLoggers.local;
-
+    // these defaults are used when there are no values defined in the configuration files
     public static final SslMode DEFAULT_SSL_MODE = SslMode.strict;
     public static final boolean DEFAULT_USE_HOSTNAME_TO_RESOLVE_RELATIVE_URL = true;
     public static final boolean DEFAULT_USE_ABSOLUTE_APPLICATION_URL = false;
     public static final boolean DEFAULT_USSD_SUPPORT = true;
+    public static final String DEFAULT_DEFAULT_WELCOME_MESSAGE = "Welcome to Telestax Restcom Visual Designer Demo";
 
     private static final String WORKSPACE_DIRECTORY_NAME = "workspace";
     public static final String PROTO_DIRECTORY_PREFIX = "_proto";
@@ -96,6 +97,8 @@ public class RvdConfiguration {
     private String baseUrl;
     private Boolean useAbsoluteApplicationUrl;
     private boolean ussdSupport;
+    // whitelabeling configuration
+    private String defaultWelcomeMessage;
 
     // package-private constructor to be used from RvdConfigurationBuilder
     RvdConfiguration() {
@@ -189,7 +192,8 @@ public class RvdConfiguration {
                 logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"load",null,"Error parsing rvd.xml:ussd/enabled option. Falling back to default: " + ussdSupport),e);
             }
         }
-
+        // load whitelabeling configuration
+        loadWhitelabelConfig(contextRootPath + "WEB-INF/whitelabel.xml");
     }
 
     /**
@@ -236,6 +240,23 @@ public class RvdConfiguration {
         } catch (RestcommConfigurationException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
             return null;
+        }
+    }
+
+    private void loadWhitelabelConfig(String pathToXml) {
+        defaultWelcomeMessage = DEFAULT_DEFAULT_WELCOME_MESSAGE;
+        try {
+            XmlParser xml = new XmlParser(pathToXml);
+            String value = xml.getElementContent("/whitelabel/defaultWelcomeMessage");
+            if (value != null)
+                defaultWelcomeMessage = value;
+            logger.info("Loaded whitelabeling information");
+        } catch (XmlParserException e) {
+            if ( e.getCause() instanceof FileNotFoundException)
+                logger.info("No whitelabeling file found (" + pathToXml + "). Hardcoded defaults will be used.");
+            else
+                logger.error(LoggingHelper.buildMessage(RvdConfiguration.class,"loadWhitelabelConfig",null,"Error parsing whitelabeling configuration file: " + pathToXml), e);
+            return;
         }
     }
 
@@ -359,5 +380,9 @@ public class RvdConfiguration {
 
     public boolean isUssdSupport() {
         return ussdSupport;
+    }
+
+    public String getDefaultWelcomeMessage() {
+        return defaultWelcomeMessage;
     }
 }
