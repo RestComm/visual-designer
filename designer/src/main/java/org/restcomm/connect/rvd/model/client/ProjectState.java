@@ -22,7 +22,7 @@ public class ProjectState {
         super();
     }
 
-    public static ProjectState createEmptyVoice(String owner) {
+    public static ProjectState createEmptyVoice(String owner, RvdConfiguration configuration) {
         String kind = "voice";
         ProjectState state = new ProjectState();
 
@@ -35,7 +35,7 @@ public class ProjectState {
 
         List<Node> nodes = new ArrayList<Node>();
         Node node = Node.createDefault("voice", "start", "Welcome");
-        SayStep step = SayStep.createDefault("step1", "Welcome to Telestax Restcom Visual Designer Demo");
+        SayStep step = SayStep.createDefault("step1", configuration.getDefaultWelcomeMessage());
         node.getSteps().add(step);
         nodes.add(node);
         state.setNodes(nodes);
@@ -46,7 +46,7 @@ public class ProjectState {
         return state;
     }
 
-    public static ProjectState createEmptySms(String owner) {
+    public static ProjectState createEmptySms(String owner, RvdConfiguration configuration) {
         String kind = "sms";
         ProjectState state = new ProjectState();
 
@@ -59,7 +59,7 @@ public class ProjectState {
 
         List<Node> nodes = new ArrayList<Node>();
         Node node = Node.createDefault("sms", "start", "Welcome");
-        SmsStep step = SmsStep.createDefault("step1", "Welcome to Telestax Restcom Visual Designer");
+        SmsStep step = SmsStep.createDefault("step1", configuration.getDefaultWelcomeMessage());
         node.getSteps().add(step);
         nodes.add(node);
         state.setNodes(nodes);
@@ -70,7 +70,7 @@ public class ProjectState {
         return state;
     }
 
-    public static ProjectState createEmptyUssd(String owner) {
+    public static ProjectState createEmptyUssd(String owner, RvdConfiguration configuration) {
         String kind = "ussd";
         ProjectState state = new ProjectState();
 
@@ -83,7 +83,7 @@ public class ProjectState {
 
         List<Node> nodes = new ArrayList<Node>();
         Node node = Node.createDefault("ussd", "start", "Welcome");
-        UssdSayStep step = UssdSayStep.createDefault("step1", "Welcome to Telestax Restcom Visual Designer");
+        UssdSayStep step = UssdSayStep.createDefault("step1", configuration.getDefaultWelcomeMessage());
         node.getSteps().add(step);
         nodes.add(node);
         state.setNodes(nodes);

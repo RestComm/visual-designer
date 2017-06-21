@@ -1,4 +1,4 @@
 <whitelabel>
     <!-- Customize the message played by default in a newly created RVD app -->
-    <defaultWelcomeMessage>Welcome to Telestax Restcom Visual Designer demo</defaultWelcomeMessage>
+    <defaultWelcomeMessage>Welcome to Telestax Restcom Visual Designer</defaultWelcomeMessage>
 </whitelabel>

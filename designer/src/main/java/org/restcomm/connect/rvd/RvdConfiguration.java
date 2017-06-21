@@ -250,7 +250,7 @@ public class RvdConfiguration {
             String value = xml.getElementContent("/whitelabel/defaultWelcomeMessage");
             if (value != null)
                 defaultWelcomeMessage = value;
-            logger.info("Loaded whitelabeling information");
+            logger.info("Loaded whitelabeling information: " + pathToXml);
         } catch (XmlParserException e) {
             if ( e.getCause() instanceof FileNotFoundException)
                 logger.info("No whitelabeling file found (" + pathToXml + "). Hardcoded defaults will be used.");
