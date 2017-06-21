@@ -35,7 +35,7 @@ public class ProjectState {
 
         List<Node> nodes = new ArrayList<Node>();
         Node node = Node.createDefault("voice", "start", "Welcome");
-        SayStep step = SayStep.createDefault("step1", configuration.getDefaultWelcomeMessage());
+        SayStep step = SayStep.createDefault("step1", configuration.getWelcomeMessage());
         node.getSteps().add(step);
         nodes.add(node);
         state.setNodes(nodes);
@@ -59,7 +59,7 @@ public class ProjectState {
 
         List<Node> nodes = new ArrayList<Node>();
         Node node = Node.createDefault("sms", "start", "Welcome");
-        SmsStep step = SmsStep.createDefault("step1", configuration.getDefaultWelcomeMessage());
+        SmsStep step = SmsStep.createDefault("step1", configuration.getWelcomeMessage());
         node.getSteps().add(step);
         nodes.add(node);
         state.setNodes(nodes);
@@ -83,7 +83,7 @@ public class ProjectState {
 
         List<Node> nodes = new ArrayList<Node>();
         Node node = Node.createDefault("ussd", "start", "Welcome");
-        UssdSayStep step = UssdSayStep.createDefault("step1", configuration.getDefaultWelcomeMessage());
+        UssdSayStep step = UssdSayStep.createDefault("step1", configuration.getWelcomeMessage());
         node.getSteps().add(step);
         nodes.add(node);
         state.setNodes(nodes);

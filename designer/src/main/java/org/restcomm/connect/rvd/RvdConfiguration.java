@@ -49,7 +49,7 @@ public class RvdConfiguration {
     public static final boolean DEFAULT_USE_HOSTNAME_TO_RESOLVE_RELATIVE_URL = true;
     public static final boolean DEFAULT_USE_ABSOLUTE_APPLICATION_URL = false;
     public static final boolean DEFAULT_USSD_SUPPORT = true;
-    public static final String DEFAULT_DEFAULT_WELCOME_MESSAGE = "Welcome to Telestax Restcom Visual Designer Demo";
+    public static final String DEFAULT_WELCOME_MESSAGE = "Welcome to Telestax Restcom Visual Designer Demo";
 
     private static final String WORKSPACE_DIRECTORY_NAME = "workspace";
     public static final String PROTO_DIRECTORY_PREFIX = "_proto";
@@ -98,7 +98,7 @@ public class RvdConfiguration {
     private Boolean useAbsoluteApplicationUrl;
     private boolean ussdSupport;
     // whitelabeling configuration
-    private String defaultWelcomeMessage;
+    private String welcomeMessage;
 
     // package-private constructor to be used from RvdConfigurationBuilder
     RvdConfiguration() {
@@ -244,12 +244,12 @@ public class RvdConfiguration {
     }
 
     private void loadWhitelabelConfig(String pathToXml) {
-        defaultWelcomeMessage = DEFAULT_DEFAULT_WELCOME_MESSAGE;
+        welcomeMessage = DEFAULT_WELCOME_MESSAGE;
         try {
             XmlParser xml = new XmlParser(pathToXml);
-            String value = xml.getElementContent("/whitelabel/defaultWelcomeMessage");
+            String value = xml.getElementContent("/whitelabel/welcomeMessage");
             if (value != null)
-                defaultWelcomeMessage = value;
+                welcomeMessage = value;
             logger.info("Loaded whitelabeling information: " + pathToXml);
         } catch (XmlParserException e) {
             if ( e.getCause() instanceof FileNotFoundException)
@@ -382,7 +382,7 @@ public class RvdConfiguration {
         return ussdSupport;
     }
 
-    public String getDefaultWelcomeMessage() {
-        return defaultWelcomeMessage;
+    public String getWelcomeMessage() {
+        return welcomeMessage;
     }
 }
