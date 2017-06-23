@@ -91,7 +91,7 @@ public class RestServiceMockedTest {
 
     protected void createProject(String projectName, String owner) throws IOException {
         new File(workspaceDir.getPath() + "/" + projectName).mkdir();
-        String state = marshaler.toData(ProjectState.createEmptyVoice(owner));
+        String state = marshaler.toData(ProjectState.createEmptyVoice(owner, configuration));
         FileUtils.writeStringToFile(new File(workspaceDir.getPath() + "/" + projectName + "/state"), state );
     }
 
