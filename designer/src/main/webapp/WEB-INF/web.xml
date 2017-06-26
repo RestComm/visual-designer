@@ -38,7 +38,7 @@
         </init-param>
 		-->
 
-		<!-- Jersey request/response logging -->
+		<!-- Jersey request/response logging. Beware, enabling request logging will cause POST method handlers that rely on streamed input to fail - https://github.com/RestComm/visual-designer/issues/165. -->
 		<!--
 		<init-param>
 			<param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
