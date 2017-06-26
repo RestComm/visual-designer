@@ -125,7 +125,9 @@ public class CorsAccessSingleOriginTest extends RestServiceTest {
         archive = archive.merge(restcommArchive);
 
         archive.delete("/WEB-INF/rvd.xml");
+        archive.delete("/WEB-INF/web.xml");
         archive.addAsWebInfResource("CorsAccessTest_single.xml", "rvd.xml");
+        archive.addAsWebInfResource("enable_cors_filter_web.xml", "web.xml");
         logger.info("Packaged Test App");
         return archive;
     }

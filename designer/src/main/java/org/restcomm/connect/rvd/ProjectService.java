@@ -261,13 +261,13 @@ public class ProjectService {
 
         ProjectState state = null;
         if ( "voice".equals(kind) )
-            state = ProjectState.createEmptyVoice(owner);
+            state = ProjectState.createEmptyVoice(owner, configuration);
         else
         if ( "ussd".equals(kind) )
-            state = ProjectState.createEmptyUssd(owner);
+            state = ProjectState.createEmptyUssd(owner, configuration);
         else
         if ( "sms".equals(kind) )
-            state = ProjectState.createEmptySms(owner);
+            state = ProjectState.createEmptySms(owner, configuration);
 
         //projectStorage.createProjectSlot(projectName);
         FsProjectStorage.createProjectSlot(projectName, workspaceStorage);

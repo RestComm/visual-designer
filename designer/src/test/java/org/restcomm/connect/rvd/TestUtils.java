@@ -64,10 +64,10 @@ public class TestUtils {
     }
 
     // TODO hasen't been tested or used.
-    public static File createDefaultProject(String projectName, String owner, File workspaceDir, ModelMarshaler marshaler) throws IOException {
+    public static File createDefaultProject(String projectName, String owner, File workspaceDir, ModelMarshaler marshaler, RvdConfiguration configuration) throws IOException {
         File projectFile = new File(workspaceDir.getPath() + "/" + projectName);
         projectFile.mkdir();
-        String state = marshaler.toData(ProjectState.createEmptyVoice(owner));
+        String state = marshaler.toData(ProjectState.createEmptyVoice(owner, configuration ));
         FileUtils.writeStringToFile(new File(workspaceDir.getPath() + "/" + projectName + "/state"), state );
         return projectFile;
     }
