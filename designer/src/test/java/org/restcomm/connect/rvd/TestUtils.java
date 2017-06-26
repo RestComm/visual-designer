@@ -75,11 +75,7 @@ public class TestUtils {
     public static RvdConfiguration initRvdConfiguration(String contextToUse) {
         URL url = TestUtils.class.getResource("contexts/" + contextToUse + "/restcomm-rvd.war");
         File rvdRoot = null;
-        try {
-            rvdRoot = new File(url.toURI());
-        } catch (URISyntaxException e) {
-            return null;
-        }
+        rvdRoot = new File(url.getFile());
         return new RvdConfiguration("/restcomm-rvd", rvdRoot.getPath() + "/");
     }
 
