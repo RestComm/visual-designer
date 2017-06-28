@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
+	"$schema": "http://json-schema.org/draft-04/schema#",
 	"title": "RVD project 0.1",
 	"description": "Specification for RVD 7.1.4",
 	"type": "object",
@@ -12,6 +12,8 @@
 		"timeout":{"type": "integer"},
 		"finishOnKey":{	"type": "string", "pattern": "($^)|(^[0-9*#]$)" },
 		"numDigits": {"type": "integer"},
+		"hints": {"type": "string"},
+		"language": {"type": "string"},
 		"steps": {
 			"type": "array",
 			"items": {
@@ -22,8 +24,8 @@
 				]
 			}
 		},
-		"gatherType": {"enum": ["menu","collectdigits"]},
-		"inputType": {"enum": ["dtmf","speech", "dtmf_speech"]},
+		"gatherType": {"enum": ["menu", "collectdigits"]},
+		"inputType": {"enum": ["dtmf", "speech", "speech_dtmf"]},
 		"menu": {
 			"type": "object",
 			"properties": {

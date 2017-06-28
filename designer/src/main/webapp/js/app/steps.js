@@ -129,13 +129,17 @@ angular.module('Rvd')
 		this.timeout = undefined;
 		this.finishOnKey = undefined;
 		this.numDigits = undefined;
+		this.language = undefined;
+		this.hints = undefined;
 		this.steps = [];
 		this.validation = {userPattern: "", regexPattern: undefined};
 		this.invalidMessage = new sayModel();
 		this.gatherType = "menu";
-		this.menu = {mappings:[] }; //{digits:1, next:"welcome.step1"}
+		this.menu = {mappings:[], speechMapping:[] }; //{value:1, next:"welcome.step1"}
 		this.collectdigits = {collectVariable:'',next:'', scope:"module"};
+		this.collectspeech = {collectVariable:'',next:'', scope:"module"};
 		this.iface = {}	;
+		this.inputType = "dtmf"; // dtmf, speech, dtmf_speech
 	}	
 	GatherModel.prototype = new rvdModel();
 	GatherModel.prototype.constructor = GatherModel;
@@ -162,6 +166,8 @@ angular.module('Rvd')
 			this.menu = {mappings:[] };
 		if (!this.collectdigits)
 			this.collectdigits = {collectVariable:'',next:'', scope:"module"};
+		if (!this.collectspeech)
+			this.collectspeech = {collectVariable:'',next:'', scope:"module"};
 	}
 	GatherModel.prototype.pack = function () {
 		//console.log("gatherModel:pack() - " + this.name);
