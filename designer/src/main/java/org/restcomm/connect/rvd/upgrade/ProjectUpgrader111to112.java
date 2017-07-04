@@ -19,7 +19,9 @@
 
 package org.restcomm.connect.rvd.upgrade;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 /**
  * @author Orestis Tsakiridis
@@ -27,7 +29,48 @@ import com.google.gson.JsonElement;
 public class ProjectUpgrader111to112 implements ProjectUpgrader {
     @Override
     public JsonElement upgrade(JsonElement sourceElement) {
-        return ProjectUpgrader10to11.setVersion(sourceElement, getResultingVersion());
+        sourceElement = renameDigitsCollectMenu(sourceElement);
+        sourceElement = ProjectUpgrader10to11.setVersion(sourceElement, getResultingVersion());
+        return sourceElement;
+    }
+
+    // rename collect-menu keys 'digits' to 'key'
+    public static JsonElement renameDigitsCollectMenu(JsonElement rootElement) {
+        JsonElement nodesElement = rootElement.getAsJsonObject().get("nodes");
+        if ( nodesElement != null) {
+            JsonArray nodes = nodesElement.getAsJsonArray();
+            for ( int i = 0; i < nodes.size(); i++ ) {
+                JsonObject node = nodes.get(i).getAsJsonObject();
+                String kind = node.get("kind").getAsString();
+                if ( "voice".equals(kind) ) {
+                    JsonElement stepsElement = node.get("steps");
+                    if ( stepsElement != null ) {
+                        JsonArray steps = stepsElement.getAsJsonArray();
+                        for ( int steps_i = 0; steps_i < steps.size(); steps_i ++ ) {
+                            JsonObject step = steps.get(steps_i).getAsJsonObject();
+                            String stepkind = step.get("kind").getAsString();
+                            if ( "gather".equals(stepkind) ) {
+                                JsonElement menuElement = step.get("menu");
+                                if ( menuElement != null ) {
+                                    JsonElement mappingsElement = menuElement.getAsJsonObject().get("mappings");
+                                    if ( mappingsElement != null) {
+                                        JsonArray mappings = mappingsElement.getAsJsonArray();
+                                        for ( int mappings_i = 0; mappings_i < mappings.size();  mappings_i ++ ) {
+                                            JsonObject mapping = mappings.get(mappings_i).getAsJsonObject();
+                                            // rename 'digits' to 'key'
+                                            String digits = mapping.get("digits").getAsString();
+                                            mapping.remove("digits");
+                                            mapping.addProperty("key", digits);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return rootElement;
     }
 
     @Override
