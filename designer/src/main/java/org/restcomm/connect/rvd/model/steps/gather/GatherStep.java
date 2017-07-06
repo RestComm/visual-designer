@@ -72,8 +72,8 @@ public class GatherStep extends Step {
     private String language;
 
     public final class Menu {
-        private List<Mapping> mappings;
-        private List<Mapping> speechMapping;
+        private List<DtmfMapping> mappings;
+        private List<SpeechMapping> speechMapping;
     }
 
     public final class Collectdigits {
@@ -82,9 +82,39 @@ public class GatherStep extends Step {
         private String scope;
     }
 
-    public static class Mapping {
+    interface Mapping {
+        String getKey();
+        String getNext();
+    }
+
+    public class DtmfMapping implements Mapping {
+        private String digits;
+        private String next;
+
+        @Override
+        public String getKey() {
+            return digits;
+        }
+
+        @Override
+        public String getNext() {
+            return next;
+        }
+    }
+
+    public class SpeechMapping implements Mapping {
         private String key;
         private String next;
+
+        @Override
+        public String getKey() {
+            return key;
+        }
+
+        @Override
+        public String getNext() {
+            return next;
+        }
     }
 
     public final class Validation {
@@ -118,20 +148,24 @@ public class GatherStep extends Step {
         return rcmlStep;
     }
 
-    private boolean handleMapping(Interpreter interpreter, Target originTarget, String key, List<Mapping> mappings, boolean isPattern) throws StorageException, InterpreterException {
+    private boolean handleMapping(Interpreter interpreter, Target originTarget, String key, List<? extends Mapping> mappings, boolean isPattern) throws StorageException, InterpreterException {
         LoggingContext logging = interpreter.getRvdContext().logging;
-        for (Mapping mapping : mappings) {
+        if (mappings != null) {
+            for (Mapping mapping : mappings) {
 
-            if (RvdLoggers.local.isTraceEnabled())
-                RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(), "handleAction", "{0} checking key: {1} - {2}", new Object[]{logging.getPrefix(), mapping.key, key}));
-
-            //mapping.key is not null always
-            if (!isPattern && mapping.key.equals(key) || isPattern && Pattern.matches(mapping.key, key)) {
-                // seems we found out menu selection
                 if (RvdLoggers.local.isTraceEnabled())
-                    RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), " seems we found our menu selection: " + key));
-                interpreter.interpret(mapping.next, null, null, originTarget);
-                return true;
+                    RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(), "handleAction", "{0} checking key: {1} - {2}", new Object[]{logging.getPrefix(), mapping.getKey(), key}));
+
+                if (key != null) {
+                    //mapping.key is not null always
+                    if (!isPattern && mapping.getKey().equals(key) || isPattern && Pattern.matches(mapping.getKey(), key)) {
+                        // seems we found out menu selection
+                        if (RvdLoggers.local.isTraceEnabled())
+                            RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), " seems we found our menu selection: " + key));
+                        interpreter.interpret(mapping.getNext(), null, null, originTarget);
+                        return true;
+                    }
+                }
             }
         }
         return false;

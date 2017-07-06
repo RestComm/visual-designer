@@ -34,11 +34,11 @@
 					"items": {
 						"type": "object",
 						"properties": {
-							"key": {"type": "string","minLength":1},
+							"digits": {"type": "string","minLength":1},
 							"next": {"type": "string","minLength":1},
 							"scope": {"type": "string"}
 						},
-						"required":["key","next"]
+						"required":["digits","next"]
 					},
 					"minItems": 0
 				},
@@ -55,8 +55,7 @@
 					},
 					"minItems": 0
 				}
-			},
-			"required":["mappings", "speechMapping"]
+			}
 		},
 		"collectdigits": {
 			"type": "object",

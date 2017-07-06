@@ -163,7 +163,9 @@ angular.module('Rvd')
 		if (!this.invalidMessage)
 			this.invalidMessage = new sayModel();
 		if (!this.menu)
-			this.menu = {mappings:[] };
+			this.menu = {mappings:[], speechMapping :[] };
+		if (!this.menu.speechMapping)
+		    this.menu.speechMapping = [];
 		if (!this.collectdigits)
 			this.collectdigits = {collectVariable:'',next:'', scope:"module"};
 		if (!this.collectspeech)

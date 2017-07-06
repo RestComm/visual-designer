@@ -117,7 +117,7 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 		gatherStep.menu.mappings.push({digits:"", next:""});
 	};
 	$scope.addSpeechGatherMapping = function( gatherStep ) {
-        gatherStep.menu.speechMapping.push({digits:"", next:""});
+        gatherStep.menu.speechMapping.push({key:"", next:""});
     };
 	$scope.removeGatherMapping = function (gatherStep, mapping) {
 		gatherStep.menu.mappings.splice( gatherStep.menu.mappings.indexOf(mapping), 1 );

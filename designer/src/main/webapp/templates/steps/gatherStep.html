@@ -2,6 +2,7 @@
 	<div class="panel-heading">
 		<step-heading></step-heading>		</div>
 	<div class="panel-body" ng-hide='step.iface.isCollapsed'>
+		{{step}}
 		<div class="row">
 			<div class="col-md-6">
 				<h4>{{'gatherStepPromptLabel' | translate}}</h4>
@@ -37,7 +38,7 @@
 						<!-- <input type="radio" ng-model="step.gatherType" value="custom"> Custom -->
 					</div>
 					<div ng-if="step.gatherType=='menu'">
-						<div ng-show="step.inputType != 'speech'">
+						<div ng-show="!step.inputType || step.inputType == 'dtmf' || step.inputType == 'speech_dtmf'">
 							<h5>{{'gatherStepDigitsMappingTitle' | translate}}</h5>
 							<div ng-repeat="mapping in step.menu.mappings" class='form-group row'>
 								<form name="form" novalidate>
@@ -45,9 +46,9 @@
 
 										<div class="input-group input-group-sm">
 											<span class="input-group-addon">{{'gatherStepDigitLabel' | translate}}</span>
-											<input name="key" class="form-control ng-pristine ng-valid ng-valid-pattern" type="text" placeholder="{{'gatherStepDigitInputPlaceholder' | translate}}" ng-pattern="/^[0-9*#ABCD]+$/" ng-model='mapping.key' required title="{{'gatherStepDigitTooltip' | translate}}"></input>
+											<input name="digits" class="form-control ng-pristine ng-valid ng-valid-pattern" type="text" placeholder="{{'gatherStepDigitInputPlaceholder' | translate}}" ng-pattern="/^[0-9*#ABCD]+$/" ng-model='mapping.digits' required title="{{'gatherStepDigitTooltip' | translate}}"></input>
 										</div>
-										<div class="validation-error"  ng-show="form.key.$invalid">{{'gatherStepDigitValidationErrorLabel' | translate}}</div>
+										<div class="validation-error"  ng-show="form.digits.$invalid">{{'gatherStepDigitValidationErrorLabel' | translate}}</div>
 
 
 									</div>
@@ -69,7 +70,7 @@
 								<button ng-click="addGatherMapping(step)" type="button" class="btn btn-primary btn-xs"><span>{{'gatherStepAddMappingButton' | translate}}</span></button>
 							</div>
 						</div>
-						<div ng-show="step.inputType!='dtmf'">
+						<div ng-show="step.inputType=='speech' || step.inputType=='speech_dtmf'">
 							<h5>{{'gatherStepSpeechMappingTitle' | translate}}</h5>
 							<div ng-repeat="mapping in step.menu.speechMapping" class='form-group row'>
 								<form name="form" novalidate>
@@ -135,7 +136,7 @@
 						</form>
 					</div>
 
-					<div ng-if="step.gatherType=='collectdigits' && step.inputType!='dtmf'">
+					<div ng-if="step.gatherType=='collectdigits' && (step.inputType=='speech' || step.inputType=='speech_dtmf') ">
 						<h5>{{'gatherStepCollectSpeechVarLabel' | translate}}</h5>
 						<form name="form" novalidate>
 							<div class='form-group row'>
@@ -188,7 +189,7 @@
 									</ul>
 								</div>
 							</div>
-							<div ng-show="!!step.numDigits && (!!step.validation.userPattern || !!step.validation.regexPattern)" class="validation-warning row">
+							<div ng-show="step.inputType=='dtmf' && !!step.numDigits && (!!step.validation.userPattern || !!step.validation.regexPattern)" class="validation-warning row">
 								<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"><i class="fa fa-warning step-warning-icon"></i></div>
 								<div class="col-lg-10 col-md-10 com-sm-10 col-xs-10"> <span translate="gatherStepNumberOfDigitsConflictWarning"></span></div>
 							</div>
@@ -226,7 +227,9 @@
 			<div class="panel-group">
 				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="dtmf">{{'gatherStepDtmfInput' | translate}}</label>
 				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="speech">{{'gatherStepSpeechInput' | translate}}</label>
+				<!-- hybrid input not supported  yet
 				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="speech_dtmf">{{'gatherStepDtmfSpeechInput' | translate}}</label>
+				-->
 			</div>
 
 			<div class="panel-group" ng-show="step.inputType != 'dtmf'">

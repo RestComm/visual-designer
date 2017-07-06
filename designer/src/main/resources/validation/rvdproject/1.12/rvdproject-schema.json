@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
 	"title": "RVD project 1.12",
-	"description": "Added video options to Dial/Sip, Dial/Client",
+	"description": "ASR additions to Gather",
 	"rvdproject": {
 		"type": "object",
 		"properties": {
