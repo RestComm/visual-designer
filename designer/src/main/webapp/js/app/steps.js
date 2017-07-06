@@ -133,7 +133,9 @@ angular.module('Rvd')
 		this.hints = undefined;
 		this.steps = [];
 		this.validation = {userPattern: "", regexPattern: undefined};
+		this.speechValidation = {userPattern: "", regexPattern: undefined};
 		this.invalidMessage = new sayModel();
+		this.speechInvalidMessage = new sayModel();
 		this.gatherType = "menu";
 		this.menu = {mappings:[], speechMapping:[] }; //{value:1, next:"welcome.step1"}
 		this.collectdigits = {collectVariable:'',next:'', scope:"module"};
@@ -160,8 +162,12 @@ angular.module('Rvd')
 	GatherModel.prototype.validate = function() {
 		if (!this.validation || (!this.validation.userPattern && !this.validation.regexPattern))
 			this.validation = {userPattern: "", regexPattern: undefined};
+		if (!this.speechValidation || (!this.speechValidation.userPattern && !this.speechValidation.regexPattern))
+			this.speechValidation = {userPattern: undefined, regexPattern: ""};
 		if (!this.invalidMessage)
 			this.invalidMessage = new sayModel();
+		if (!this.speechInvalidMessage)
+			this.speechInvalidMessage = new sayModel();
 		if (!this.menu)
 			this.menu = {mappings:[], speechMapping :[] };
 		if (!this.menu.speechMapping)
@@ -181,8 +187,12 @@ angular.module('Rvd')
 			delete clone.menu;
 		if (!clone.validation.userPattern && !clone.validation.regexPattern)
 			delete clone.validation;
+		if (!clone.speechValidation.userPattern && !clone.speechValidation.regexPattern)
+			delete clone.speechValidation;
 		if (clone.invalidMessage.phrase == "")
 			delete clone.invalidMessage;
+		if (clone.speechInvalidMessage.phrase == "")
+			delete clone.speechInvalidMessage;
 		for (var i=0; i<clone.steps.length; i++) {
 			var step;
 			if (clone.steps[i].kind == 'say')

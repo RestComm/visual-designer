@@ -25,7 +25,7 @@
 			}
 		},
 		"gatherType": {"enum": ["menu", "collectdigits"]},
-		"inputType": {"enum": ["dtmf", "speech", "speech_dtmf"]},
+		"inputType": {"enum": ["dtmf", "speech", "dtmf speech"]},
 		"menu": {
 			"type": "object",
 			"properties": {

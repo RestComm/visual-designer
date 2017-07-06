@@ -51,7 +51,10 @@ public class GatherStep extends Step {
             if ("speech".equalsIgnoreCase(value)) {
                 return SPEECH;
             }
-            return DTMF_SPEECH;
+            if ("dtmf speech".equalsIgnoreCase((value))) {
+                return DTMF_SPEECH;
+            }
+            return DTMF; //default
         }
     }
 
@@ -62,7 +65,9 @@ public class GatherStep extends Step {
     private Integer numDigits;
     private List<Step> steps;
     private Validation validation;
+    private Validation speechValidation;
     private Step invalidMessage;
+    private Step speechInvalidMessage;
     private Menu menu;
     private Collectdigits collectdigits;
     private Collectdigits collectspeech;
@@ -171,7 +176,7 @@ public class GatherStep extends Step {
         return false;
     }
 
-    private String getPattern(final Interpreter interpreter) {
+    private String getPattern(final Interpreter interpreter, final Validation validation) {
         if (validation == null) {
             return null;
         }
@@ -184,6 +189,16 @@ public class GatherStep extends Step {
             RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(), "handleAction", interpreter.getRvdContext().logging.getPrefix(), " Invalid validation information in gather. Validation object exists while other patterns are null"));
         }
         return effectivePattern;
+    }
+
+    private Step getInvalidMessage(InputType inputType) {
+        switch (inputType) {
+            case DTMF:
+                return invalidMessage;
+            case SPEECH:
+                return speechInvalidMessage;
+        }
+        return null;
     }
 
     private void putVariable(final Interpreter interpreter, final Collectdigits collect, String varName, String varValue) {
@@ -204,8 +219,9 @@ public class GatherStep extends Step {
         return !StringUtils.isEmpty(value) && value.matches(pattern);
     }
 
-    private boolean handleDigitsCollect(final Interpreter interpreter, Target originTarget, String digitsString, String effectivePattern) throws StorageException, InterpreterException {
+    private boolean handleDigitsCollect(final Interpreter interpreter, Target originTarget, String digitsString, Validation validation) throws StorageException, InterpreterException {
         LoggingContext logging = interpreter.getRvdContext().logging;
+        String effectivePattern = getPattern(interpreter, validation);
         String variableDigitsName = collectdigits.collectVariable;
         String variableDigitsValue = digitsString;
         if (variableDigitsValue == null) {
@@ -225,8 +241,9 @@ public class GatherStep extends Step {
         }
     }
 
-    private boolean handleSpeechCollect(final Interpreter interpreter, Target originTarget, String speechString, String effectivePattern) throws StorageException, InterpreterException {
+    private boolean handleSpeechCollect(final Interpreter interpreter, Target originTarget, String speechString, Validation validation ) throws StorageException, InterpreterException {
         LoggingContext logging = interpreter.getRvdContext().logging;
+        String effectivePattern = getPattern(interpreter, validation);
         String variableSpeechName = collectspeech.collectVariable;
         String currentSpeechValue = interpreter.getVariables().get(collectspeech.scope + "_" + variableSpeechName);
         String variableSpeechValue = currentSpeechValue != null ? currentSpeechValue : "";
@@ -261,41 +278,52 @@ public class GatherStep extends Step {
             interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "Speech", speechString);
 
         boolean isValid = true;
+
         InputType inputTypeE = InputType.parse(inputType);
+        Step effectiveInvalidMessage = null;
+        InputType actualInputType = null; // the input  type of the channel that was actuall used by the request
         if ("menu".equals(gatherType)) {
             switch (inputTypeE) {
                 case DTMF:
                     isValid = handleMapping(interpreter, originTarget, digitsString, menu.mappings, false);
+                    actualInputType = InputType.DTMF;
                     break;
                 case SPEECH:
                     isValid = handleMapping(interpreter, originTarget, speechString, menu.speechMapping, true);
+                    actualInputType = InputType.SPEECH;
                     break;
                 case DTMF_SPEECH:
                     if (!StringUtils.isEmpty(digitsString)) {
                         isValid = handleMapping(interpreter, originTarget, digitsString, menu.mappings, false);
+                        actualInputType = InputType.DTMF;
                     } else if (!StringUtils.isEmpty(speechString)) {
                         isValid = handleMapping(interpreter, originTarget, speechString, menu.speechMapping, true);
+                        actualInputType = InputType.SPEECH;
                     } else {
+                        actualInputType = InputType.DTMF; // use this by default
                         isValid = false;
                     }
                     break;
             }
         } else if ("collectdigits".equals(gatherType)) {
-            //validation pattern
-            String effectivePattern = getPattern(interpreter);
             switch (inputTypeE) {
                 case DTMF:
-                    isValid = handleDigitsCollect(interpreter, originTarget, digitsString, effectivePattern);
+                    isValid = handleDigitsCollect(interpreter, originTarget, digitsString, validation);
+                    actualInputType = InputType.DTMF;
                     break;
                 case SPEECH:
-                    isValid = handleSpeechCollect(interpreter, originTarget, speechString, effectivePattern);
+                    isValid = handleSpeechCollect(interpreter, originTarget, speechString, speechValidation);
+                    actualInputType = InputType.SPEECH;
                     break;
                 case DTMF_SPEECH:
                     if (!StringUtils.isEmpty(digitsString)) {
-                        isValid = handleDigitsCollect(interpreter, originTarget, digitsString, effectivePattern);
+                        isValid = handleDigitsCollect(interpreter, originTarget, digitsString, validation);
+                        actualInputType = InputType.DTMF;
                     } else if (!StringUtils.isEmpty(speechString)) {
-                        isValid = handleSpeechCollect(interpreter, originTarget, speechString, effectivePattern);
+                        isValid = handleSpeechCollect(interpreter, originTarget, speechString, speechValidation);
+                        actualInputType = InputType.SPEECH;
                     } else {
+                        actualInputType = InputType.DTMF; // use this by default
                         isValid = false;
                     }
                     break;
@@ -303,6 +331,7 @@ public class GatherStep extends Step {
         }
 
         if (!isValid) { // this should always be true
+            Step invalidMessage = getInvalidMessage(actualInputType);
             interpreter.interpret(interpreter.getTarget().getNodename() + "." + interpreter.getTarget().getStepname(), null, (invalidMessage != null) ? invalidMessage : null, originTarget);
         }
     }

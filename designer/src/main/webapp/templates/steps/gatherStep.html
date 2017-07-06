@@ -38,7 +38,7 @@
 						<!-- <input type="radio" ng-model="step.gatherType" value="custom"> Custom -->
 					</div>
 					<div ng-if="step.gatherType=='menu'">
-						<div ng-show="!step.inputType || step.inputType == 'dtmf' || step.inputType == 'speech_dtmf'">
+						<div ng-show="!step.inputType || step.inputType == 'dtmf' || step.inputType == 'dtmf speech'">
 							<h5>{{'gatherStepDigitsMappingTitle' | translate}}</h5>
 							<div ng-repeat="mapping in step.menu.mappings" class='form-group row'>
 								<form name="form" novalidate>
@@ -70,7 +70,7 @@
 								<button ng-click="addGatherMapping(step)" type="button" class="btn btn-primary btn-xs"><span>{{'gatherStepAddMappingButton' | translate}}</span></button>
 							</div>
 						</div>
-						<div ng-show="step.inputType=='speech' || step.inputType=='speech_dtmf'">
+						<div ng-show="step.inputType=='speech' || step.inputType=='dtmf speech'">
 							<h5>{{'gatherStepSpeechMappingTitle' | translate}}</h5>
 							<div ng-repeat="mapping in step.menu.speechMapping" class='form-group row'>
 								<form name="form" novalidate>
@@ -136,7 +136,7 @@
 						</form>
 					</div>
 
-					<div ng-if="step.gatherType=='collectdigits' && (step.inputType=='speech' || step.inputType=='speech_dtmf') ">
+					<div ng-if="step.gatherType=='collectdigits' && (step.inputType=='speech' || step.inputType=='dtmf speech') ">
 						<h5>{{'gatherStepCollectSpeechVarLabel' | translate}}</h5>
 						<form name="form" novalidate>
 							<div class='form-group row'>
@@ -168,24 +168,24 @@
 						</form>
 					</div>
 
-
-					<div>
+					<!-- dtmf validation -->
+					<div ng-show="!step.inputType || step.inputType=='dtmf'">
 						<h4>{{'gatherStepValidationLabel' | translate}}</h4>
 						<div ng-show="step.gatherType=='collectdigits'" class="form-group">
 							<div class="input-group">
 									<span class="input-group-addon help-tooltip"  tooltip="{{'gatherStepValidationPatternTooltip' | translate}}" tooltip-trigger='mouseenter' tooltip-popup-delay='1000'>
 										{{'gatherStepValidationPatternLabel' | translate}}
 									</span>
-								<input ng-if='getEffectiveValidationType()=="Regex"' ng-model='step.validation.regexPattern' class="form-control">
-								<input ng-if='getEffectiveValidationType()=="One of"' ng-model='step.validation.userPattern' class="form-control">
+								<input ng-if='getEffectiveValidationType(step.validation)=="Regex"' ng-model='step.validation.regexPattern' class="form-control">
+								<input ng-if='getEffectiveValidationType(step.validation)=="One of"' ng-model='step.validation.userPattern' class="form-control">
 								<div class="input-group-btn">
 									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-										{{getEffectiveValidationType()}}
+										{{getEffectiveValidationType(step.validation)}}
 										<span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu pull-right" role="menu">
-										<li><a ng-click='setValidationTypeOneOf()'>{{'gatherStepValidationPatternOption1' | translate}}</a></li>
-										<li><a ng-click='setValidationTypeRegex()'>{{'gatherStepValidationPatternOption2' | translate}}</a></li>
+										<li><a ng-click='setValidationTypeOneOf(step.validation)'>{{'gatherStepValidationPatternOption1' | translate}}</a></li>
+										<li><a ng-click='setValidationTypeRegex(step.validation)'>{{'gatherStepValidationPatternOption2' | translate}}</a></li>
 									</ul>
 								</div>
 							</div>
@@ -200,7 +200,33 @@
 						<!--<div basic-droppable drop-model='step.invalidInputStep' drop-accept='.verb-button.button-say' style="width:50px; height:100px; background-color:grey;">
                         </div>-->
 					</div>
-					<!-- {{step.validation}} -->
+					<!-- speech validation -->
+					<div ng-show="step.inputType=='speech'">
+						<h4>{{'gatherStepValidationLabel' | translate}}</h4>
+						<div ng-show="step.gatherType=='collectdigits'" class="form-group">
+							<div class="input-group">
+									<span class="input-group-addon help-tooltip"  tooltip="{{'gatherStepValidationPatternTooltip' | translate}}" tooltip-trigger='mouseenter' tooltip-popup-delay='1000'>
+										{{'gatherStepValidationPatternLabel' | translate}}
+									</span>
+								<input ng-if='getEffectiveValidationType(step.speechValidation)=="Regex"' ng-model='step.speechValidation.regexPattern' class="form-control">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+										{{getEffectiveValidationType(step.speechValidation)}}
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu pull-right" role="menu">
+										<li><a ng-click='setValidationTypeRegex(step.speechValidation)'>{{'gatherStepValidationPatternOption2' | translate}}</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<label>{{'gatherStepSayInvalidLabel' | translate}}</label>
+						<textarea ng-model='step.speechInvalidMessage.phrase' type="text" class="form-control" placeholder="{{'gatherStepSayInvalidPlaceholder' | translate}}"></textarea>
+						<!--<div basic-droppable drop-model='step.invalidInputStep' drop-accept='.verb-button.button-say' style="width:50px; height:100px; background-color:grey;">
+                        </div>-->
+					</div>
+
 
 				</div>
 				<!--
@@ -228,7 +254,7 @@
 				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="dtmf">{{'gatherStepDtmfInput' | translate}}</label>
 				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="speech">{{'gatherStepSpeechInput' | translate}}</label>
 				<!-- hybrid input not supported  yet
-				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="speech_dtmf">{{'gatherStepDtmfSpeechInput' | translate}}</label>
+				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="dtmf speech">{{'gatherStepDtmfSpeechInput' | translate}}</label>
 				-->
 			</div>
 
