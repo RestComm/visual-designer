@@ -28,13 +28,16 @@ import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
+import org.restcomm.connect.rvd.model.client.Node;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.restcomm.connect.rvd.jsonvalidation.ValidationErrorItem;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -280,8 +283,7 @@ public class GatherStep extends Step {
         boolean isValid = true;
 
         InputType inputTypeE = InputType.parse(inputType);
-        Step effectiveInvalidMessage = null;
-        InputType actualInputType = null; // the input  type of the channel that was actuall used by the request
+        InputType actualInputType = null; // the input  type of the channel that was actuall used by the request based on 'Speech' of 'Digits' presence too
         if ("menu".equals(gatherType)) {
             switch (inputTypeE) {
                 case DTMF:
@@ -335,4 +337,38 @@ public class GatherStep extends Step {
             interpreter.interpret(interpreter.getTarget().getNodename() + "." + interpreter.getTarget().getStepname(), null, (invalidMessage != null) ? invalidMessage : null, originTarget);
         }
     }
+
+    /**
+     * Checks for semantic validation error in the state object and returns them as ErrorItems. If no error
+     * is detected an empty list is returned
+     *
+     * @return a list of ValidationErrorItem objects or an empty list
+     * @param stepPath
+     * @param module
+     */
+    @Override
+    public List<ValidationErrorItem> validate(String stepPath, Node module) {
+        List<ValidationErrorItem> errorItems = new ArrayList<ValidationErrorItem>();
+
+        InputType actualInputType = InputType.parse(inputType);
+        if (actualInputType == InputType.DTMF && "menu".equals(gatherType) ) {
+            if (menu == null || menu.mappings == null || menu.mappings.isEmpty() ) {
+                errorItems.add(new ValidationErrorItem("error", "No DTMF mappings found", stepPath));
+            }
+        }
+        if (actualInputType == InputType.SPEECH && "menu".equals(gatherType) ) {
+            if (menu == null || menu.speechMapping == null || menu.speechMapping.isEmpty() ) {
+                errorItems.add(new ValidationErrorItem("error", "No speech mappings found", stepPath));
+            }
+        }
+        if (actualInputType == InputType.DTMF_SPEECH && "menu".equals(gatherType) ) {
+            if ((menu == null || menu.speechMapping == null || menu.speechMapping.isEmpty())
+                    && (menu == null || menu.mappings == null || menu.mappings.isEmpty() )) {
+                errorItems.add(new ValidationErrorItem("error", "Neither DTMF nor speech mappings found", stepPath));
+            }
+        }
+
+        return errorItems;
+    }
+
 }
