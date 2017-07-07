@@ -81,7 +81,7 @@ public class GatherStep extends Step {
 
     public final class Menu {
         private List<DtmfMapping> mappings;
-        private List<SpeechMapping> speechMapping;
+        private List<SpeechMapping> speechMappings;
     }
 
     public final class Collectdigits {
@@ -291,7 +291,7 @@ public class GatherStep extends Step {
                     actualInputType = InputType.DTMF;
                     break;
                 case SPEECH:
-                    isValid = handleMapping(interpreter, originTarget, speechString, menu.speechMapping, true);
+                    isValid = handleMapping(interpreter, originTarget, speechString, menu.speechMappings, true);
                     actualInputType = InputType.SPEECH;
                     break;
                 case DTMF_SPEECH:
@@ -299,7 +299,7 @@ public class GatherStep extends Step {
                         isValid = handleMapping(interpreter, originTarget, digitsString, menu.mappings, false);
                         actualInputType = InputType.DTMF;
                     } else if (!StringUtils.isEmpty(speechString)) {
-                        isValid = handleMapping(interpreter, originTarget, speechString, menu.speechMapping, true);
+                        isValid = handleMapping(interpreter, originTarget, speechString, menu.speechMappings, true);
                         actualInputType = InputType.SPEECH;
                     } else {
                         actualInputType = InputType.DTMF; // use this by default
@@ -357,12 +357,12 @@ public class GatherStep extends Step {
             }
         }
         if (actualInputType == InputType.SPEECH && "menu".equals(gatherType) ) {
-            if (menu == null || menu.speechMapping == null || menu.speechMapping.isEmpty() ) {
+            if (menu == null || menu.speechMappings == null || menu.speechMappings.isEmpty() ) {
                 errorItems.add(new ValidationErrorItem("error", "No speech mappings found", stepPath));
             }
         }
         if (actualInputType == InputType.DTMF_SPEECH && "menu".equals(gatherType) ) {
-            if ((menu == null || menu.speechMapping == null || menu.speechMapping.isEmpty())
+            if ((menu == null || menu.speechMappings == null || menu.speechMappings.isEmpty())
                     && (menu == null || menu.mappings == null || menu.mappings.isEmpty() )) {
                 errorItems.add(new ValidationErrorItem("error", "Neither DTMF nor speech mappings found", stepPath));
             }

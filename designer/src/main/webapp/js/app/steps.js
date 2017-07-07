@@ -137,7 +137,7 @@ angular.module('Rvd')
 		this.invalidMessage = new sayModel();
 		this.speechInvalidMessage = new sayModel();
 		this.gatherType = "menu";
-		this.menu = {mappings:[], speechMapping:[] }; //{value:1, next:"welcome.step1"}
+		this.menu = {mappings:[], speechMappings:[] }; //{value:1, next:"welcome.step1"}
 		this.collectdigits = {collectVariable:'',next:'', scope:"module"};
 		this.collectspeech = {collectVariable:'',next:'', scope:"module"};
 		this.iface = {}	;
@@ -169,9 +169,11 @@ angular.module('Rvd')
 		if (!this.speechInvalidMessage)
 			this.speechInvalidMessage = new sayModel();
 		if (!this.menu)
-			this.menu = {mappings:[], speechMapping :[] };
-		if (!this.menu.speechMapping)
-		    this.menu.speechMapping = [];
+			this.menu = {mappings:[], speechMappings :[] };
+		if (!this.menu.speechMappings)
+		    this.menu.speechMappings = [];
+		if (!this.menu.mappings)
+		    this.menu.mappings = [];
 		if (!this.collectdigits)
 			this.collectdigits = {collectVariable:'',next:'', scope:"module"};
 		if (!this.collectspeech)
@@ -180,11 +182,22 @@ angular.module('Rvd')
 	GatherModel.prototype.pack = function () {
 		//console.log("gatherModel:pack() - " + this.name);
 		var clone = angular.copy(this);
-		if (clone.gatherType == "menu")
+
+		if (! (clone.gatherType == "collectdigits" && clone.inputType.indexOf("dtmf") != -1) )
 			delete clone.collectdigits;
-		else
+
+		if (! (clone.gatherType == "collectdigits" && clone.inputType.indexOf("speech") != -1) )
+        	delete clone.collectspeech;
+
 		if (clone.gatherType == "collectdigits")
 			delete clone.menu;
+		else {
+		    if (clone.inputType.indexOf("dtmf") == -1)
+		        delete clone.menu.mappings;
+		    if (clone.inputType.indexOf("speech") == -1)
+		        delete clone.menu.speechMappings;
+		}
+
 		if (!clone.validation.userPattern && !clone.validation.regexPattern)
 			delete clone.validation;
 		if (!clone.speechValidation.userPattern && !clone.speechValidation.regexPattern)

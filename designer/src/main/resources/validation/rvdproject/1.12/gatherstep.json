@@ -42,7 +42,7 @@
 					},
 					"minItems": 0
 				},
-				"speechMapping": {
+				"speechMappings": {
 					"type": "array",
 					"items": {
 						"type": "object",

@@ -71,7 +71,7 @@
 						</div>
 						<div ng-show="step.inputType=='speech' || step.inputType=='dtmf speech'">
 							<h5>{{'gatherStepSpeechMappingTitle' | translate}}</h5>
-							<div ng-repeat="mapping in step.menu.speechMapping" class='form-group row'>
+							<div ng-repeat="mapping in step.menu.speechMappings" class='form-group row'>
 								<form name="form" novalidate>
 									<div class="container-fluid">
 										<div class="form-group">

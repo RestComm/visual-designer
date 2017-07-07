@@ -117,13 +117,13 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 		gatherStep.menu.mappings.push({digits:"", next:""});
 	};
 	$scope.addSpeechGatherMapping = function( gatherStep ) {
-        gatherStep.menu.speechMapping.push({key:"", next:""});
+        gatherStep.menu.speechMappings.push({key:"", next:""});
     };
 	$scope.removeGatherMapping = function (gatherStep, mapping) {
 		gatherStep.menu.mappings.splice( gatherStep.menu.mappings.indexOf(mapping), 1 );
 	}
 	$scope.removeSpeechGatherMapping = function (gatherStep, mapping) {
-        gatherStep.menu.speechMapping.splice( gatherStep.menu.speechMapping.indexOf(mapping), 1 );
+        gatherStep.menu.speechMappings.splice( gatherStep.menu.speechMappings.indexOf(mapping), 1 );
     }
 	// ussd collect handles adding mappings a little differently
 	$scope.addUssdCollectMapping = function (collectStep) {
