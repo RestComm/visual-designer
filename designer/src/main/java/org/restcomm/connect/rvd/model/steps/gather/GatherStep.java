@@ -222,44 +222,20 @@ public class GatherStep extends Step {
         return !StringUtils.isEmpty(value) && value.matches(pattern);
     }
 
-    private boolean handleDigitsCollect(final Interpreter interpreter, Target originTarget, String digitsString, Validation validation) throws StorageException, InterpreterException {
+    private boolean handleCollect(final Interpreter interpreter, Target originTarget, final Collectdigits collect, String newValue, Validation validation) throws StorageException, InterpreterException {
         LoggingContext logging = interpreter.getRvdContext().logging;
         String effectivePattern = getPattern(interpreter, validation);
-        String variableDigitsName = collectdigits.collectVariable;
-        String variableDigitsValue = digitsString;
-        if (variableDigitsValue == null) {
-            RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), "'Digits' parameter was null. Is this a valid restcomm request?"));
-            variableDigitsValue = "";
+        String variableName = collect.collectVariable;
+        String variableValue = newValue;
+        if (variableValue == null) {
+            RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), "'Digits/Speech' parameter was null. Is this a valid restcomm request?"));
+            variableValue = "";
         }
 
-        // validation for digits
-        if (effectivePattern == null || isMatchesPattern(effectivePattern, variableDigitsValue, logging)) {
-            putVariable(interpreter, collectdigits, variableDigitsName, variableDigitsValue);
-            interpreter.interpret(collectdigits.next, null, null, originTarget);
-            return true;
-        } else {
-            if (RvdLoggers.local.isTraceEnabled())
-                RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), "{0} Invalid input for gather/collectdigits. Will say the validation message and rerun the gather"));
-            return false;
-        }
-    }
-
-    private boolean handleSpeechCollect(final Interpreter interpreter, Target originTarget, String speechString, Validation validation ) throws StorageException, InterpreterException {
-        LoggingContext logging = interpreter.getRvdContext().logging;
-        String effectivePattern = getPattern(interpreter, validation);
-        String variableSpeechName = collectspeech.collectVariable;
-        String currentSpeechValue = interpreter.getVariables().get(collectspeech.scope + "_" + variableSpeechName);
-        String variableSpeechValue = currentSpeechValue != null ? currentSpeechValue : "";
-        if (speechString == null) {
-            RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), "'Speech' parameter was null. Is this a valid restcomm request?"));
-        } else {
-            variableSpeechValue += " " + speechString;
-        }
-
-        // validation for speech
-        if (effectivePattern == null || isMatchesPattern(effectivePattern, variableSpeechValue.trim(), logging)) {
-            putVariable(interpreter, collectspeech, variableSpeechName, variableSpeechValue.trim());
-            interpreter.interpret(collectspeech.next, null, null, originTarget);
+        // validation
+        if (effectivePattern == null || isMatchesPattern(effectivePattern, variableValue, logging)) {
+            putVariable(interpreter, collect, variableName, variableValue);
+            interpreter.interpret(collect.next, null, null, originTarget);
             return true;
         } else {
             if (RvdLoggers.local.isTraceEnabled())
@@ -310,19 +286,19 @@ public class GatherStep extends Step {
         } else if ("collectdigits".equals(gatherType)) {
             switch (inputTypeE) {
                 case DTMF:
-                    isValid = handleDigitsCollect(interpreter, originTarget, digitsString, validation);
+                    isValid = handleCollect(interpreter, originTarget, collectdigits, digitsString, validation);
                     actualInputType = InputType.DTMF;
                     break;
                 case SPEECH:
-                    isValid = handleSpeechCollect(interpreter, originTarget, speechString, speechValidation);
+                    isValid = handleCollect(interpreter, originTarget, collectspeech, speechString, speechValidation);
                     actualInputType = InputType.SPEECH;
                     break;
                 case DTMF_SPEECH:
                     if (!StringUtils.isEmpty(digitsString)) {
-                        isValid = handleDigitsCollect(interpreter, originTarget, digitsString, validation);
+                        isValid = handleCollect(interpreter, originTarget, collectdigits, digitsString, validation);
                         actualInputType = InputType.DTMF;
                     } else if (!StringUtils.isEmpty(speechString)) {
-                        isValid = handleSpeechCollect(interpreter, originTarget, speechString, speechValidation);
+                        isValid = handleCollect(interpreter, originTarget, collectspeech, speechString, speechValidation);
                         actualInputType = InputType.SPEECH;
                     } else {
                         actualInputType = InputType.DTMF; // use this by default
