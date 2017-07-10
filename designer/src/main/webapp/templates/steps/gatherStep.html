@@ -38,7 +38,7 @@
 					</div>
 					<div ng-if="step.gatherType=='menu'">
 						<div ng-show="!step.inputType || step.inputType == 'dtmf' || step.inputType == 'dtmf speech'">
-							<h5>{{'gatherStepDigitsMappingTitle' | translate}}</h5>
+							<h5>{{'Digits mapping' | translate}}</h5>
 							<div ng-repeat="mapping in step.menu.mappings" class='form-group row'>
 								<form name="form" novalidate>
 									<div class='col-md-4'>
@@ -70,16 +70,16 @@
 							</div>
 						</div>
 						<div ng-show="step.inputType=='speech' || step.inputType=='dtmf speech'">
-							<h5>{{'gatherStepSpeechMappingTitle' | translate}}</h5>
+							<h5>{{'Speech mapping' | translate}}</h5>
 							<div ng-repeat="mapping in step.menu.speechMappings" class='form-group row'>
 								<form name="form" novalidate>
 									<div class="container-fluid">
 										<div class="form-group">
 											<div class="input-group input-group-sm">
-												<span class="input-group-addon">{{'gatherStepSpeechOptionLabel' | translate}}</span>
-												<input name="key" class="form-control ng-pristine ng-valid" type="text" placeholder="{{'gatherStepSpeechInputPlaceholder' | translate}}" ng-model='mapping.key' required title=""></input>
+												<span class="input-group-addon">{{'Text' | translate}}</span>
+												<input name="key" class="form-control ng-pristine ng-valid" type="text" placeholder="{{'some text or regex' | translate}}" ng-model='mapping.key' required title=""></input>
 											</div>
-											<div class="validation-error"  ng-show="form.key.$invalid">{{'gatherStepDigitValidationErrorLabel' | translate}}</div>
+											<div class="validation-error"  ng-show="form.key.$invalid">{{'Invalid mapping key' | translate}}</div>
 										</div>
 										<div class="row">
 											<div class='col-md-11'>
@@ -104,7 +104,7 @@
 						</div>
 					</div>
 					<div ng-if="step.gatherType=='collectdigits' && step.inputType!='speech'">
-						<h5>{{'gatherStepCollectDigitVarLabel' | translate}}</h5>
+						<h5>{{'Digits variable' | translate}}</h5>
 						<form name="form" novalidate>
 							<div class='form-group row'>
 								<div class='col-md-12'>
@@ -136,7 +136,7 @@
 					</div>
 
 					<div ng-if="step.gatherType=='collectdigits' && (step.inputType=='speech' || step.inputType=='dtmf speech') ">
-						<h5>{{'gatherStepCollectSpeechVarLabel' | translate}}</h5>
+						<h5>{{'Speech variable' | translate}}</h5>
 						<form name="form" novalidate>
 							<div class='form-group row'>
 								<div class='col-md-12'>
@@ -250,10 +250,10 @@
 		<i ng-click="step.iface.optionsVisible = !step.iface.optionsVisible" class='fa fa-cog rvd-clickable' ng-class="{'rvd-active': step.iface.optionsVisible }"></i>
 		<div ng-show="step.iface.optionsVisible">
 			<div class="panel-group">
-				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="dtmf">{{'gatherStepDtmfInput' | translate}}</label>
-				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="speech">{{'gatherStepSpeechInput' | translate}}</label>
+				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="dtmf">{{'DTMF' | translate}}</label>
+				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="speech">{{'Speech' | translate}}</label>
 				<!-- hybrid input not supported  yet
-				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="dtmf speech">{{'gatherStepDtmfSpeechInput' | translate}}</label>
+				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="dtmf speech">{{'DTMF and Speech' | translate}}</label>
 				-->
 			</div>
 
@@ -267,8 +267,8 @@
 			</div>
 
 			<div class="panel-group" ng-show="step.inputType != 'dtmf'">
-				<h4>{{'gatherStepHotWordsTextArea' | translate}}</h4>
-				<textarea ng-model='step.hints' type="text" class="form-control" placeholder="{{'gatherStepHotWordsPlaceholder' | translate}}"></textarea>
+				<h4>{{'Hot words' | translate}}</h4>
+				<textarea ng-model='step.hints' type="text" class="form-control" placeholder="{{'Hot words placeholder' | translate}}"></textarea>
 			</div>
 
 			<div class="row">

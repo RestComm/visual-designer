@@ -529,5 +529,18 @@
 	"Mode": "Mode",
 	"Resolution": "Resolution",
 	"Layout": "Layout",
-	"Overlay": "Overlay"
+	"Overlay": "Overlay",
+
+	"Invalid mapping key": "Invalid mapping key",
+	"Hot words": "Hot words",
+	"Hot words placeholder": "Use ',' as separator between Hot words",
+	"DTMF": "DTMF",
+	"Speech": "Speech",
+	"DTMF and Speech": "DTMF and Speech",
+	"Digits mapping": "Digits mapping",
+	"Speech mapping": "Speech mapping",
+	"Text": "Text",
+	"some text or regex": "some text or regex",
+	"Digits variable": "Digits' variable",
+	"Speech variable": "Speech variable"
 }

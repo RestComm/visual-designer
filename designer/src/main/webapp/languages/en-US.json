@@ -310,17 +310,6 @@
 	"gatherStepNumberDigitsPlaceholder": "123",
 	"gatherStepNumberOfDigitsConflictWarning": "value may conflict with <strong>Number of digits</strong>",
 	"gatherStepValidationConflictWarning": "value may conflict with <strong>Validation pattern</strong>",
-	"gatherStepHotWordsTextArea": "Hot words",
-	"gatherStepHotWordsPlaceholder": "Use ',' as separator between Hot words",
-	"gatherStepDtmfInput": "DTMF",
-	"gatherStepSpeechInput": "Speech",
-	"gatherStepDtmfSpeechInput": "DTMF and Speech",
-	"gatherStepDigitsMappingTitle": "Digits mapping",
-	"gatherStepSpeechMappingTitle": "Speech mapping",
-	"gatherStepSpeechOptionLabel": "Text",
-	"gatherStepSpeechInputPlaceholder": "some text",
-	"gatherStepCollectDigitVarLabel": "Digits' variable",
-	"gatherStepCollectSpeechVarLabel": "Speech variable",
 
 	"homeStartLabel": "Start a new project",
 	"homeVoiceLabel": "Voice",
@@ -569,5 +558,18 @@
 	"Mode": "Mode",
 	"Resolution": "Resolution",
 	"Layout": "Layout",
-	"Overlay": "Overlay"
+	"Overlay": "Overlay",
+
+	"Invalid mapping key": "Invalid mapping key",
+	"Hot words": "Hot words",
+	"Hot words placeholder": "Use ',' as separator between Hot words",
+	"DTMF": "DTMF",
+	"Speech": "Speech",
+	"DTMF and Speech": "DTMF and Speech",
+	"Digits mapping": "Digits mapping",
+	"Speech mapping": "Speech mapping",
+	"Text": "Text",
+	"some text or regex": "some text or regex",
+	"Digits variable": "Digits' variable",
+	"Speech variable": "Speech variable"
 }
