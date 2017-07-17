@@ -162,9 +162,11 @@
                     <input ng-model='step.timeout' type="number" id="gatherTimeout" class="form-control" placeholder="5" tooltip-placement='left' tooltip='Time (in seconds) to wait for the caller to press another digit'>
                 </div>
                 -->
-				<div class="col-lg-3 input-group input-group-sm">
+				<div class="col-lg-3">
+					<div class="input-group input-group-sm">
 					<span class="input-group-addon">{{'gatherStepFinishLabel' | translate}}</span>
 					<input ng-model='step.finishOnKey' auto-clear ng-pattern='/^[0-9\#\*]$/' type="text" class="form-control" placeholder="{{'gatherStepFinishPlaceholder' | translate}}">
+					</div>
 				</div>
 
 				<!--
