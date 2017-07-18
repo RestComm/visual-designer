@@ -23,11 +23,13 @@
 		<div collapse='!step.iface.optionsVisible'>
 			<br/>
 			<div class="row">
-				<div class="col-lg-5  form-group input-group language">
-					<span class="input-group-addon ">{{'sayStepLanguageLabel' | translate}}</span>
-					<select ng-model='step.language' auto-clear ng-options='language.name as language.text for language in languages'  id="languageSelect" class="form-control say-language-dropdown" >
-						<option value=""></option>
-					</select>
+				<div class="col-lg-5  form-group language">
+					<div class="input-group">
+						<span class="input-group-addon ">{{'sayStepLanguageLabel' | translate}}</span>
+						<select ng-model='step.language' auto-clear ng-options='language.name as language.text for language in languages'  id="languageSelect" class="form-control say-language-dropdown" >
+							<option value=""></option>
+						</select>
+					</div>
 				</div>
 				<div class="col-lg-5 form-group btn-toolbar voice" role="toolbar">
 					  <span class="btn-group">
@@ -37,11 +39,13 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12 input-group loop">
-					<span class='input-group-addon help-tooltip' tooltip-trigger='mouseenter' tooltip-popup-delay='1000' tooltip="{{'sayStepLoopTooltip' | translate}}">{{'sayStepLoopLabel' | translate}}</span>
-					<input ng-model='step.loop' auto-clear type='number' class='form-control' placeholder="{{'sayStepLoopInputPlaceholder' | translate}}" />
+				<div class="col-md-12 loop">
+					<div class="input-group">
+						<span class='input-group-addon help-tooltip' tooltip-trigger='mouseenter' tooltip-popup-delay='1000' tooltip="{{'sayStepLoopTooltip' | translate}}">{{'sayStepLoopLabel' | translate}}</span>
+						<input ng-model='step.loop' auto-clear type='number' class='form-control' placeholder="{{'sayStepLoopInputPlaceholder' | translate}}" />
+					</div>
+					<div ng-show="step.loop==0" class="validation-warning"><i class="fa fa-warning step-warning-icon"></i> {{'sayStepLoopNeverendingWarning' | translate}}</div>
 				</div>
-				<div ng-show="step.loop==0" class="validation-warning"><i class="fa fa-warning step-warning-icon"></i> {{'sayStepLoopNeverendingWarning' | translate}}</div>
 			</div>
 		</div>
 
