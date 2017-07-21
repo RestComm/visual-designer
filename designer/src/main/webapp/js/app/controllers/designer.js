@@ -174,6 +174,11 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 											{name:'th',text: 'Thai'},
 											{name:'tr',text: 'Turkish'}
 										 ];
+    $scope.smsLanguages = [
+        {name:'GSM',text:'GSM (default)'},
+        {name:'UCS-2',text:'UCS-2'},
+        {name:'UTF-8',text:'UTF-8'}
+    ];
 	$scope.methods = ['POST', 'GET'];
 
 	$scope.ussdMaxEnglishChars = 182;

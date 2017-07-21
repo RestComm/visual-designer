@@ -559,5 +559,7 @@
 	"Mode": "Mode",
 	"Resolution": "Resolution",
 	"Layout": "Layout",
-	"Overlay": "Overlay"
+	"Overlay": "Overlay",
+
+	"Encoding": "Encoding"
 }
