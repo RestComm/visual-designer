@@ -27,6 +27,8 @@ public class SmsStepConverter implements Converter {
             writer.addAttribute("method", step.getMethod());
         if (step.getAction() != null )
             writer.addAttribute("action", step.getAction());
+        if (step.getEncoding() != null)
+            writer.addAttribute("encoding", step.getEncoding());
 
         writer.setValue(step.getText());
     }

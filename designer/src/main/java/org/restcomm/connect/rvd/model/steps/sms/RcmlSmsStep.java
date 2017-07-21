@@ -9,6 +9,7 @@ public class RcmlSmsStep extends RcmlStep {
     String action;
     String method;
     String statusCallback;
+    String encoding;
     public String getText() {
         return text;
     }
@@ -44,5 +45,12 @@ public class RcmlSmsStep extends RcmlStep {
     }
     public void setStatusCallback(String statusCallback) {
         this.statusCallback = statusCallback;
+    }
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 }
