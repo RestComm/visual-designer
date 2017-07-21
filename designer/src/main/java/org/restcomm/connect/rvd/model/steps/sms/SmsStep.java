@@ -44,6 +44,7 @@ public class SmsStep extends Step {
     String statusCallback;
     String method;
     String next;
+    String encoding;
 
     public static SmsStep createDefault(String name, String phrase) {
         SmsStep step = new SmsStep();
@@ -92,6 +93,9 @@ public class SmsStep extends Step {
     public void setStatusCallback(String statusCallback) {
         this.statusCallback = statusCallback;
     }
+    public String getEncoding() {
+        return encoding;
+    }
     public RcmlSmsStep render(Interpreter interpreter) {
         RcmlSmsStep rcmlStep = new RcmlSmsStep();
 
@@ -108,6 +112,7 @@ public class SmsStep extends Step {
         rcmlStep.setTo(interpreter.populateVariables(getTo()));
         rcmlStep.setStatusCallback(getStatusCallback());
         rcmlStep.setText(interpreter.populateVariables(getText()));
+        rcmlStep.setEncoding(getEncoding());
 
         return rcmlStep;
     }

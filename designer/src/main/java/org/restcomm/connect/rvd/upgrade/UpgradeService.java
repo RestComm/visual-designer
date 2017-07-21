@@ -19,11 +19,10 @@
 
 package org.restcomm.connect.rvd.upgrade;
 
-import java.util.Arrays;
-import java.util.List;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
 import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.InvalidProjectVersion;
@@ -38,8 +37,8 @@ import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.upgrade.exceptions.NoUpgradePathException;
 import org.restcomm.connect.rvd.upgrade.exceptions.UpgradeException;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -70,6 +69,11 @@ public class UpgradeService {
      * @throws InvalidProjectVersion
      */
     public static boolean checkBackwardCompatible(String checkedProjectVesion, String referenceProjectVersion) throws InvalidProjectVersion {
+        if ( "1.12".equals(referenceProjectVersion)) {
+            if ( "1.12".equals(checkedProjectVesion))
+                return true;
+            return false;
+        } else
         if ( "1.11".equals(referenceProjectVersion)) {
             if ( "1.11".equals(checkedProjectVesion) || "1.10".equals(checkedProjectVesion) || "1.9".equals(checkedProjectVesion) || "1.8".equals(checkedProjectVesion) || "1.7".equals(checkedProjectVesion) || "1.6".equals(checkedProjectVesion) )
                 return true;
