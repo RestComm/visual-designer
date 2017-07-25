@@ -147,8 +147,10 @@ public class GatherStep extends Step {
         rcmlStep.setHints(hints);
         rcmlStep.setLanguage(language);
         rcmlStep.setInput(inputType);
-        rcmlStep.setPartialResultCallback(action);
-        rcmlStep.setPartialResultCallbackMethod(method);
+        if (!"dtmf".equalsIgnoreCase(inputType)) {
+            rcmlStep.setPartialResultCallback(action);
+            rcmlStep.setPartialResultCallbackMethod(method);
+        }
 
         for (Step nestedStep : steps)
             rcmlStep.getSteps().add(nestedStep.render(interpreter));
