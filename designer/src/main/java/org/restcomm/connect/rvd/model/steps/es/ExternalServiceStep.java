@@ -220,10 +220,14 @@ public class ExternalServiceStep extends Step {
             // *** Make the request and get a status code and a response. Build a JsonElement from the response  ***
 
             // Set the request timeout. Try with ES element 'timeout' property and if not set fallback to global configuration setting.
+            Integer configTimeout = interpreter.getRvdContext().getConfiguration().getExternalServiceTimeout();
             if (getTimeout() != null)
                 requestTimeout = getTimeout();
             else
                 requestTimeout = interpreter.getRvdContext().getConfiguration().getExternalServiceTimeout();
+            // if the effective timeout is greater than the one specified in configuration, truncate it to that value.
+            if (requestTimeout > configTimeout)
+                requestTimeout = configTimeout;
             CloseableHttpClient client = interpreter.getApplicationContext().getHttpClientBuilder().buildHttpClient(requestTimeout);
             CloseableHttpResponse response;
             int statusCode;
@@ -415,7 +419,7 @@ public class ExternalServiceStep extends Step {
         } catch (IOException e) {
             // it this is a timeout error log and invoke onTimeout handler
             if (e instanceof SocketTimeoutException) {
-                String message = LoggingHelper.buildMessage(getClass(), "process", "[notify] {0} request to '{1}' timed out. Timeout set to {2} ms.", new Object[]{logging.getPrefix(), getUrl(), requestTimeout});
+                String message = LoggingHelper.buildMessage(getClass(), "process", "[notify] {0} request to {1} timed out. Effective timeout was {2} ms.", new Object[]{logging.getPrefix(), getUrl(), requestTimeout});
                 RvdLoggers.local.log(Level.WARN, message);
                 if ( interpreter.getRvdContext().getProjectSettings().getLogging() )
                     interpreter.getProjectLogger().log("Request timed out. Timeout set to " + requestTimeout).tag("app",interpreter.getAppName()).tag("ES").done();

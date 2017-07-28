@@ -233,7 +233,7 @@
 
 						<div class="form-group col-md-7">
 							<div class="input-group">
-								<span class="input-group-addon help-tooltip" tooltip="Milliseconds to wait for response before giving up" tooltip-trigger='mouseenter' tooltip-popup-delay='1000'>Timeout</span>
+								<span class="input-group-addon help-tooltip" tooltip="{{'esTimeoutLimitTooltip' | translate}}" tooltip-trigger='mouseenter' tooltip-popup-delay='1000'>{{'Timeout' | translate}}</span>
 								<input ng-model="step.timeout" placeholder="5000" type="number" auto-clear class="form-control mask-invalid" />
 								<span class="input-group-addon help-tooltip" tooltip="{{'esTimeoutTooltip' | translate}}" tooltip-trigger='mouseenter' tooltip-popup-delay='1000'>{{'esTimeoutLabel' | translate}}</span>
 								<module-picker ng-model='step.onTimeout' auto-clear></module-picker>

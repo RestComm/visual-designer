@@ -559,5 +559,8 @@
 	"Mode": "Mode",
 	"Resolution": "Resolution",
 	"Layout": "Layout",
-	"Overlay": "Overlay"
+	"Overlay": "Overlay",
+
+	"Timeout": "Timeout",
+	"esTimeoutLimitTooltip": "Milliseconds to wait for the response before giving up"
 }
