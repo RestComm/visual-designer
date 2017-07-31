@@ -35,7 +35,7 @@ public class ProjectRegistry {
     private Map<String, ResidentProjectInfo> projects = new ConcurrentHashMap<String, ResidentProjectInfo>();
 
     // Retrieves semaphore for a specific project. In case they do not exists yet they are created.
-    public ResidentProjectInfo getProjectSemaphores(String applicationId) {
+    public ResidentProjectInfo getResidentProjectInfo(String applicationId) {
         ResidentProjectInfo residentProjectInfo = projects.get(applicationId);
         if (residentProjectInfo == null) {
             // the synchronized operation is rare. Only once per project per application launch

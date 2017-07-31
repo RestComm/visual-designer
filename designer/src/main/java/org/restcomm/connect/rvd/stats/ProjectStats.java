@@ -18,16 +18,22 @@
  *
  */
 
-package org.restcomm.connect.rvd.concurrency;
+package org.restcomm.connect.rvd.stats;
 
-import org.restcomm.connect.rvd.stats.ProjectStats;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Information for a project that needs to stay in memory. For example semaphores etc.
- *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class ResidentProjectInfo {
-    public LogRotationSemaphore logRotationSemaphore = new LogRotationSemaphore(); // application log rotation synchronizes on this
-    public ProjectStats stats = new ProjectStats();
+public class ProjectStats {
+
+    public ProjectStats() {
+        rcmlRequestsTotal = new AtomicInteger(0);
+        startTime = new AtomicLong(new Date().getTime());
+    }
+
+    public AtomicInteger rcmlRequestsTotal; // total number of incoming requests for RCML no matter what their outcome was
+    public AtomicLong startTime; // number of seconds since year 1970 GMT
 }

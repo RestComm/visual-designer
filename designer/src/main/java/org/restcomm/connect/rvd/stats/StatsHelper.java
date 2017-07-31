@@ -18,16 +18,15 @@
  *
  */
 
-package org.restcomm.connect.rvd.concurrency;
-
-import org.restcomm.connect.rvd.stats.ProjectStats;
+package org.restcomm.connect.rvd.stats;
 
 /**
- * Information for a project that needs to stay in memory. For example semaphores etc.
- *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class ResidentProjectInfo {
-    public LogRotationSemaphore logRotationSemaphore = new LogRotationSemaphore(); // application log rotation synchronizes on this
-    public ProjectStats stats = new ProjectStats();
+
+
+public class StatsHelper {
+    public static void countIncomingRcmlRequest( ProjectStats projectStats) {
+        projectStats.rcmlRequestsTotal.incrementAndGet();
+    }
 }
