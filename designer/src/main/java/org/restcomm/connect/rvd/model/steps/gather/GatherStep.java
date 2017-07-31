@@ -252,11 +252,14 @@ public class GatherStep extends Step {
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), "handling gather action"));
 
         String digitsString = interpreter.getRequestParams().getFirst("Digits");
-        String speechString = interpreter.getRequestParams().getFirst("Speech");
+        String unstableSpeechString = interpreter.getRequestParams().getFirst("UnstableSpeechResult");
+        String speechResultString = interpreter.getRequestParams().getFirst("SpeechResult");
         if (digitsString != null)
             interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "Digits", digitsString);
-        if (speechString != null)
-            interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "Speech", speechString);
+        if (unstableSpeechString != null)
+            interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "UnstableSpeechResult", unstableSpeechString);
+        if (speechResultString != null)
+            interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "SpeechResult", speechResultString);
 
         boolean isValid = true;
 
@@ -269,15 +272,17 @@ public class GatherStep extends Step {
                     actualInputType = InputType.DTMF;
                     break;
                 case SPEECH:
-                    isValid = handleMapping(interpreter, originTarget, speechString, menu.speechMappings, true);
+                    if (!StringUtils.isEmpty(speechResultString)) {
+                        isValid = handleMapping(interpreter, originTarget, speechResultString, menu.speechMappings, true);
+                    }
                     actualInputType = InputType.SPEECH;
                     break;
                 case DTMF_SPEECH:
                     if (!StringUtils.isEmpty(digitsString)) {
                         isValid = handleMapping(interpreter, originTarget, digitsString, menu.mappings, false);
                         actualInputType = InputType.DTMF;
-                    } else if (!StringUtils.isEmpty(speechString)) {
-                        isValid = handleMapping(interpreter, originTarget, speechString, menu.speechMappings, true);
+                    } else if (!StringUtils.isEmpty(speechResultString)) {
+                        isValid = handleMapping(interpreter, originTarget, speechResultString, menu.speechMappings, true);
                         actualInputType = InputType.SPEECH;
                     } else {
                         actualInputType = InputType.DTMF; // use this by default
@@ -292,15 +297,23 @@ public class GatherStep extends Step {
                     actualInputType = InputType.DTMF;
                     break;
                 case SPEECH:
-                    isValid = handleCollect(interpreter, originTarget, collectspeech, speechString, speechValidation);
+                    if (!StringUtils.isEmpty(unstableSpeechString)) {
+                        putVariable(interpreter, collectspeech, collectspeech.collectVariable, unstableSpeechString);
+                    }
+                    if (!StringUtils.isEmpty(speechResultString)) {
+                        isValid = handleCollect(interpreter, originTarget, collectspeech, speechResultString, speechValidation);
+                    }
                     actualInputType = InputType.SPEECH;
                     break;
                 case DTMF_SPEECH:
                     if (!StringUtils.isEmpty(digitsString)) {
                         isValid = handleCollect(interpreter, originTarget, collectdigits, digitsString, validation);
                         actualInputType = InputType.DTMF;
-                    } else if (!StringUtils.isEmpty(speechString)) {
-                        isValid = handleCollect(interpreter, originTarget, collectspeech, speechString, speechValidation);
+                    } else if (!StringUtils.isEmpty(unstableSpeechString)) {
+                        putVariable(interpreter, collectspeech, collectspeech.collectVariable, unstableSpeechString);
+                        actualInputType = InputType.SPEECH;
+                    } else if (!StringUtils.isEmpty(speechResultString)) {
+                        isValid = handleCollect(interpreter, originTarget, collectspeech, speechResultString, speechValidation);
                         actualInputType = InputType.SPEECH;
                     } else {
                         actualInputType = InputType.DTMF; // use this by default
