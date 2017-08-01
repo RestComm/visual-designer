@@ -30,10 +30,63 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ProjectStats {
 
     public ProjectStats() {
-        rcmlRequestsTotal = new AtomicInteger(0);
         startTime = new AtomicLong(new Date().getTime());
+        rcmlRequestsTotal = new AtomicInteger(0);
+        esCallsTotal = new AtomicInteger(0);
+        esCallsPending = new AtomicInteger(0);
+        esCallsSuccess = new AtomicInteger(0);
+        esCallsServerError = new AtomicInteger(0);
+        esCallsTimeout = new AtomicInteger(0);
     }
 
-    public AtomicInteger rcmlRequestsTotal; // total number of incoming requests for RCML no matter what their outcome was
+    /**
+     *
+     */
     public AtomicLong startTime; // number of seconds since year 1970 GMT
+
+    /**
+     * Total number of incoming requests for RCML no matter what their outcome was
+     */
+    public AtomicInteger rcmlRequestsTotal;
+
+    /**
+     * Total number or ES requests
+     *
+     * All ES calls even those that failed with a URL parsing exception before making the HTTP request
+     * are counted.
+     */
+    public AtomicInteger esCallsTotal;
+
+    /**
+     * Numbers of ES request that are pending
+     * <p>
+     *     When a request is sent, it's marked as pending. When the thread unblocks, pending counter
+     *     is decremented.
+     * </p>
+     */
+    public AtomicInteger esCallsPending;
+
+    /**
+     * Numbers of ES request that timed out
+     * <p>
+     *     Technically, this is the number of requests that threw SocketTimeoutException.
+     * </p>
+     */
+    public AtomicInteger esCallsTimeout;
+
+    /**
+     * Number of ES requests that resulted in external server HTTP error
+     *
+     * All responses returning a 4xx or 5xx status code are counted. Such responses are coupled
+     * with an RemoteServiceError exception thrown in the logs.
+     */
+    public AtomicInteger esCallsServerError;
+
+    /**
+     * Number of ES requests that were completed successfully.
+     *
+     * Requests that received a successfull response from external server (non 4xx or 5xx) and
+     * had no problems parsing responses, performing assigning and routing will be counted as such
+     */
+    public AtomicInteger esCallsSuccess;
 }

@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.Level;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.restcomm.connect.rvd.concurrency.ResidentProjectInfo;
 import org.restcomm.connect.rvd.exceptions.ESRequestException;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
@@ -39,6 +41,7 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.model.client.UrlParam;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
+import org.restcomm.connect.rvd.stats.StatsHelper;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import com.google.gson.JsonElement;
@@ -186,8 +189,10 @@ public class ExternalServiceStep extends Step {
         // cache this for easier access
         LoggingContext logging = interpreter.getRvdContext().logging;
         Integer requestTimeout = null;
+        ResidentProjectInfo projectInfo = interpreter.getApplicationContext().getProjectRegistry().getResidentProjectInfo(interpreter.getAppName());
+        // count ES request
+        StatsHelper.countEsCallTotal(projectInfo.stats);
 
-        //ExternalServiceStep esStep = (ExternalServiceStep) step;
         String next = null;
         try {
 
@@ -281,7 +286,15 @@ public class ExternalServiceStep extends Step {
                 if ( !RvdUtils.isEmpty(getUsername()) )
                     request.addHeader("Authorization", "Basic " + RvdUtils.buildHttpAuthorizationToken(getUsername(), getPassword()));
 
-                response = client.execute( request );
+                String appName = interpreter.getAppName(); // TODO remove me!!
+                try {
+                    // mark ES call as pending
+                    StatsHelper.countEsCallPending(projectInfo.stats,1);
+                    response = client.execute(request);
+                } finally {
+                    // 'mark' as not pending when thread is unblocked
+                    StatsHelper.countEsCallPending(projectInfo.stats, -1); // decrease pending ES counter
+                }
             } else
             if ( getMethod() == null || getMethod().equals("GET") || getMethod().equals("DELETE") ) {
                 HttpRequestBase request;
@@ -292,25 +305,33 @@ public class ExternalServiceStep extends Step {
 
                 if ( !RvdUtils.isEmpty(getUsername()) )
                     request.addHeader("Authorization", "Basic " + RvdUtils.buildHttpAuthorizationToken(getUsername(), getPassword()));
-                response = client.execute( request );
+                try {
+                    // mark ES call as pending
+                    StatsHelper.countEsCallPending(projectInfo.stats, 1);
+                    response = client.execute(request);
+                } finally {
+                    // 'mark' as not pending when threas is unblocked
+                    StatsHelper.countEsCallPending(projectInfo.stats, -1); // decrease pending ES counter
+                }
             } else
                 throw new InterpreterException("Unknonwn HTTP method specified: " + getMethod() );
 
             // got response
             try {
-
                 statusCode = response.getStatusLine().getStatusCode();
-
                 // In  case of error in the service no need to proceed. Just continue the "onException" module if set
                 if (statusCode >= 400 && statusCode < 600) {
+                    // counts HTTP errors returned
+                    StatsHelper.countEsCallServerError(projectInfo.stats);
+                    // logging
                     if (RvdLoggers.local.isEnabledFor(Level.INFO))
                         RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"process", logging.getPrefix(), " remove service failed with: " + response.getStatusLine()));
+                    // invoke exception handler module if set
                     if (!RvdUtils.isEmpty(getExceptionNext()))
                         return getExceptionNext();
                     else
                         throw new RemoteServiceError("Service " + url + " failed with: " + response.getStatusLine() + ". Throwing an error since no 'On Remote Exception' has been defined.");
                 }
-
                 // Parse the response if (a) there are assignments or (b) there is dynamic or mapped routing
                 if (getAssignments() != null && getAssignments().size() > 0
                         || getDoRouting() && ("responseBased".equals(getNextType()) || "mapped".equals(getNextType()))) {
@@ -415,14 +436,21 @@ public class ExternalServiceStep extends Step {
             } catch (JsonSyntaxException e) {
                 throw new BadExternalServiceResponse("External Service request received a malformed JSON response" );
             }
+            // at this point we know we've had a successfull request with a valid and properly parsed response
+            // count the request as succesfull
+            StatsHelper.countEsCallSuccess(projectInfo.stats);
 
         } catch (IOException e) {
             // it this is a timeout error log and invoke onTimeout handler
             if (e instanceof SocketTimeoutException) {
+                // count this ES request as timed-out
+                StatsHelper.countEsCallTimeout(projectInfo.stats);
+                // logging
                 String message = LoggingHelper.buildMessage(getClass(), "process", "[notify] {0} request to {1} timed out. Effective timeout was {2} ms.", new Object[]{logging.getPrefix(), getUrl(), requestTimeout});
                 RvdLoggers.local.log(Level.WARN, message);
                 if ( interpreter.getRvdContext().getProjectSettings().getLogging() )
                     interpreter.getProjectLogger().log("Request timed out. Timeout set to " + requestTimeout).tag("app",interpreter.getAppName()).tag("ES").done();
+                // invoce onTimeout handler
                 if ( !RvdUtils.isEmpty(this.onTimeout) )
                     next = this.onTimeout;
             } else

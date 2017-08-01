@@ -159,7 +159,7 @@ public class RvdController extends SecuredRestService {
             RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"controllerGet","{0}request details: {1}", new Object[] {logging.getPrefix(), ui.getRequestUri().toString()}));
         // count the request
         ProjectStats stats = applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId).stats; // at this point we know that we have a valid applicationId
-        StatsHelper.countIncomingRcmlRequest(stats);
+        StatsHelper.countRcmlRequestIncoming(stats);
 
         Enumeration<String> headerNames = (Enumeration<String>) httpRequest.getHeaderNames();
         // TODO remove this loop (?)
@@ -183,7 +183,7 @@ public class RvdController extends SecuredRestService {
             RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"controllerPost","{0}POST request: {1} form: {2}", new Object[] {logging.getPrefix(), ui.getRequestUri().toString(), requestParams.toString()}));
         // count the request
         ProjectStats stats = applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId).stats; // at this point we know that we have a valid applicationId
-        StatsHelper.countIncomingRcmlRequest(stats);
+        StatsHelper.countRcmlRequestIncoming(stats);
 
         return runInterpreter(applicationId, httpRequest, requestParams);
     }

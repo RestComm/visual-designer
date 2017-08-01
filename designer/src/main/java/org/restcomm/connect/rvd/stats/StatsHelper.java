@@ -26,7 +26,27 @@ package org.restcomm.connect.rvd.stats;
 
 
 public class StatsHelper {
-    public static void countIncomingRcmlRequest( ProjectStats projectStats) {
+    public static void countRcmlRequestIncoming(ProjectStats projectStats) {
         projectStats.rcmlRequestsTotal.incrementAndGet();
+    }
+
+    public static void countEsCallTotal(ProjectStats stats) {
+        stats.esCallsTotal.incrementAndGet();
+    }
+
+    public static void countEsCallPending(ProjectStats stats, int delta ) {
+        stats.esCallsPending.addAndGet(delta);
+    }
+
+    public static void countEsCallTimeout(ProjectStats stats) {
+        stats.esCallsTimeout.incrementAndGet();
+    }
+
+    public static void countEsCallServerError(ProjectStats stats) {
+        stats.esCallsServerError.incrementAndGet();
+    }
+
+    public static void countEsCallSuccess(ProjectStats stats) {
+        stats.esCallsSuccess.incrementAndGet();
     }
 }

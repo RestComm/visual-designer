@@ -38,6 +38,11 @@ public class StatsRestService extends SecuredRestService {
         TotalStatsDto dto = new TotalStatsDto();
         dto.setRcmlRequestsTotal(projectInfo.stats.rcmlRequestsTotal.get());
         dto.setStartTime(projectInfo.stats.startTime.get());
+        dto.setEsCallsPending(projectInfo.stats.esCallsPending.get());
+        dto.setEsCallsServerError(projectInfo.stats.esCallsServerError.get());
+        dto.setEsCallsTimeout(projectInfo.stats.esCallsTimeout.get());
+        dto.setEsCallsSuccess(projectInfo.stats.esCallsSuccess.get());
+        dto.setEsCallsTotal(projectInfo.stats.esCallsTotal.get());
         //dto.
         Gson gson = new Gson();
         String data = gson.toJson(dto);
