@@ -59,7 +59,7 @@ import org.restcomm.connect.rvd.model.client.StateHeader;
 import org.restcomm.connect.rvd.restcomm.RestcommAccountInfo;
 import org.restcomm.connect.rvd.restcomm.RestcommClient;
 import org.restcomm.connect.rvd.restcomm.RestcommCallArray;
-import org.restcomm.connect.rvd.stats.ProjectStats;
+import org.restcomm.connect.rvd.stats.AggregateStats;
 import org.restcomm.connect.rvd.stats.StatsHelper;
 import org.restcomm.connect.rvd.storage.FsProfileDao;
 import org.restcomm.connect.rvd.storage.ProfileDao;
@@ -158,8 +158,10 @@ public class RvdController extends SecuredRestService {
         if (RvdLoggers.local.isDebugEnabled())
             RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"controllerGet","{0}request details: {1}", new Object[] {logging.getPrefix(), ui.getRequestUri().toString()}));
         // count the request
-        ProjectStats stats = applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId).stats; // at this point we know that we have a valid applicationId
-        StatsHelper.countRcmlRequestIncoming(stats);
+        AggregateStats projectStats = applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId).stats; // at this point we know that we have a valid applicationId
+        StatsHelper.countRcmlRequestIncoming(projectStats);
+        AggregateStats globalStats = applicationContext.getGlobalStats();
+        StatsHelper.countRcmlRequestIncoming(globalStats);
 
         Enumeration<String> headerNames = (Enumeration<String>) httpRequest.getHeaderNames();
         // TODO remove this loop (?)
@@ -182,8 +184,10 @@ public class RvdController extends SecuredRestService {
         if (RvdLoggers.local.isDebugEnabled())
             RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"controllerPost","{0}POST request: {1} form: {2}", new Object[] {logging.getPrefix(), ui.getRequestUri().toString(), requestParams.toString()}));
         // count the request
-        ProjectStats stats = applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId).stats; // at this point we know that we have a valid applicationId
-        StatsHelper.countRcmlRequestIncoming(stats);
+        AggregateStats projectStats = applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId).stats; // at this point we know that we have a valid applicationId
+        StatsHelper.countRcmlRequestIncoming(projectStats);
+        AggregateStats globalStats = applicationContext.getGlobalStats();
+        StatsHelper.countRcmlRequestIncoming(globalStats);
 
         return runInterpreter(applicationId, httpRequest, requestParams);
     }

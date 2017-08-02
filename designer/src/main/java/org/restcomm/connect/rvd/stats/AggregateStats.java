@@ -27,9 +27,9 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class ProjectStats {
+public class AggregateStats {
 
-    public ProjectStats() {
+    public AggregateStats() {
         startTime = new AtomicLong(new Date().getTime());
         rcmlRequestsTotal = new AtomicInteger(0);
         esCallsTotal = new AtomicInteger(0);

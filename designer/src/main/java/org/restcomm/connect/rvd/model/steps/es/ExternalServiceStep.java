@@ -41,6 +41,7 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.client.Step;
 import org.restcomm.connect.rvd.model.client.UrlParam;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
+import org.restcomm.connect.rvd.stats.AggregateStats;
 import org.restcomm.connect.rvd.stats.StatsHelper;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
@@ -190,6 +191,7 @@ public class ExternalServiceStep extends Step {
         LoggingContext logging = interpreter.getRvdContext().logging;
         Integer requestTimeout = null;
         ResidentProjectInfo projectInfo = interpreter.getApplicationContext().getProjectRegistry().getResidentProjectInfo(interpreter.getAppName());
+        AggregateStats globalStats = interpreter.getApplicationContext().getGlobalStats();
         // count ES request
         StatsHelper.countEsCallTotal(projectInfo.stats);
 
@@ -290,10 +292,12 @@ public class ExternalServiceStep extends Step {
                 try {
                     // mark ES call as pending
                     StatsHelper.countEsCallPending(projectInfo.stats,1);
+                    StatsHelper.countEsCallPending(globalStats, 1);
                     response = client.execute(request);
                 } finally {
                     // 'mark' as not pending when thread is unblocked
                     StatsHelper.countEsCallPending(projectInfo.stats, -1); // decrease pending ES counter
+                    StatsHelper.countEsCallPending(globalStats, -1);
                 }
             } else
             if ( getMethod() == null || getMethod().equals("GET") || getMethod().equals("DELETE") ) {
@@ -308,10 +312,12 @@ public class ExternalServiceStep extends Step {
                 try {
                     // mark ES call as pending
                     StatsHelper.countEsCallPending(projectInfo.stats, 1);
+                    StatsHelper.countEsCallPending(globalStats, 1);
                     response = client.execute(request);
                 } finally {
                     // 'mark' as not pending when threas is unblocked
                     StatsHelper.countEsCallPending(projectInfo.stats, -1); // decrease pending ES counter
+                    StatsHelper.countEsCallPending(globalStats, -1);
                 }
             } else
                 throw new InterpreterException("Unknonwn HTTP method specified: " + getMethod() );
@@ -323,6 +329,7 @@ public class ExternalServiceStep extends Step {
                 if (statusCode >= 400 && statusCode < 600) {
                     // counts HTTP errors returned
                     StatsHelper.countEsCallServerError(projectInfo.stats);
+                    StatsHelper.countEsCallServerError(globalStats);
                     // logging
                     if (RvdLoggers.local.isEnabledFor(Level.INFO))
                         RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"process", logging.getPrefix(), " remove service failed with: " + response.getStatusLine()));
@@ -439,12 +446,14 @@ public class ExternalServiceStep extends Step {
             // at this point we know we've had a successfull request with a valid and properly parsed response
             // count the request as succesfull
             StatsHelper.countEsCallSuccess(projectInfo.stats);
+            StatsHelper.countEsCallSuccess(globalStats);
 
         } catch (IOException e) {
             // it this is a timeout error log and invoke onTimeout handler
             if (e instanceof SocketTimeoutException) {
                 // count this ES request as timed-out
                 StatsHelper.countEsCallTimeout(projectInfo.stats);
+                StatsHelper.countEsCallTimeout(globalStats);
                 // logging
                 String message = LoggingHelper.buildMessage(getClass(), "process", "[notify] {0} request to {1} timed out. Effective timeout was {2} ms.", new Object[]{logging.getPrefix(), getUrl(), requestTimeout});
                 RvdLoggers.local.log(Level.WARN, message);

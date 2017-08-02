@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class TotalStatsDto {
+public class AppStatsDto {
     Date startTime;
     Integer rcmlRequestsTotal;
     Integer esCallsTotal;
