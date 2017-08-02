@@ -309,13 +309,16 @@ public class ExternalServiceStep extends Step {
 
                 if ( !RvdUtils.isEmpty(getUsername()) )
                     request.addHeader("Authorization", "Basic " + RvdUtils.buildHttpAuthorizationToken(getUsername(), getPassword()));
+
+                //long startTime = System.nanoTime();
                 try {
                     // mark ES call as pending
                     StatsHelper.countEsCallPending(projectInfo.stats, 1);
                     StatsHelper.countEsCallPending(globalStats, 1);
                     response = client.execute(request);
                 } finally {
-                    // 'mark' as not pending when threas is unblocked
+                    //long duration = TimeUnit.NANOSECONDS.toMillis( System.nanoTime() - startTime);
+                    // 'mark' as not pending when thread is unblocked
                     StatsHelper.countEsCallPending(projectInfo.stats, -1); // decrease pending ES counter
                     StatsHelper.countEsCallPending(globalStats, -1);
                 }

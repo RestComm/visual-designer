@@ -2,13 +2,16 @@ package org.restcomm.connect.rvd.http.resources;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.log4j.Level;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.concurrency.ResidentProjectInfo;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.stats.AppStatsDto;
 import org.restcomm.connect.rvd.stats.AggregateStats;
 
 import javax.annotation.PostConstruct;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,7 +35,7 @@ public class StatsRestService extends SecuredRestService {
     }
 
     @GET
-    @Path("app/{appId}/totals")
+    @Path("app/{appId}")
     public Response getApplicationStatsTotal(@PathParam("appId") String appId) {
         ProjectRegistry registry = applicationContext.getProjectRegistry();
         ResidentProjectInfo projectInfo = registry.getResidentProjectInfo(appId);
@@ -51,8 +54,18 @@ public class StatsRestService extends SecuredRestService {
         return Response.ok(data, MediaType.APPLICATION_JSON).build();
     }
 
+
+    @DELETE
+    @Path("app/{appId}")
+    public Response resetApplicationStats(@PathParam("appId") String appId) {
+        ResidentProjectInfo projectInfo = applicationContext.getProjectRegistry().getResidentProjectInfo(appId);
+        projectInfo.setStats(new AggregateStats());
+        RvdLoggers.local.log(Level.INFO, "Application stats were reset" ); // TODO include application sid in logging statement
+        return Response.noContent().build();
+    }
+
     @GET
-    @Path("global/totals")
+    @Path("global")
     public Response getGlobalStatsTotal() {
         AggregateStats stats = applicationContext.getGlobalStats();
 
@@ -69,5 +82,14 @@ public class StatsRestService extends SecuredRestService {
         String data = gson.toJson(dto);
         return Response.ok(data, MediaType.APPLICATION_JSON).build();
     }
+
+    @DELETE
+    @Path("global")
+    public Response resetGlobalStats() {
+        applicationContext.setGlobalStats(new AggregateStats()); // atomic operation...right ?
+        RvdLoggers.local.log(Level.INFO, "Global stats were reset" );
+        return Response.noContent().build();
+    }
+
 
 }

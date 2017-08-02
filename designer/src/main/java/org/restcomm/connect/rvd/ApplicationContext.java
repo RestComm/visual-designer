@@ -63,4 +63,8 @@ public class ApplicationContext {
     public AggregateStats getGlobalStats() {
         return globalStats;
     }
+
+    public void setGlobalStats(AggregateStats globalStats) {
+        this.globalStats = globalStats;
+    }
 }
