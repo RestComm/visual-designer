@@ -19,10 +19,11 @@
 
 package org.restcomm.connect.rvd.upgrade;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+
 import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.InvalidProjectVersion;
@@ -37,8 +38,8 @@ import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.upgrade.exceptions.NoUpgradePathException;
 import org.restcomm.connect.rvd.upgrade.exceptions.UpgradeException;
 
-import java.util.Arrays;
-import java.util.List;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -51,7 +52,7 @@ public class UpgradeService {
     }
 
     // valid project versions. If a version is not here it can either considered 'future' version or garbage.
-    static final String[] versionPath = new String[] {"rvd714","1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8","1.9", "1.10", "1.11", "1.12"};
+    static final String[] versionPath = new String[] {"rvd714","1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8","1.9", "1.10", "1.11","1.12"};
     // project versions where the project state .json file should be upgraded
     static final List<String> upgradesPath = Arrays.asList(new String [] {"1.0","1.6"});
 
@@ -70,7 +71,7 @@ public class UpgradeService {
      */
     public static boolean checkBackwardCompatible(String checkedProjectVesion, String referenceProjectVersion) throws InvalidProjectVersion {
         if ( "1.12".equals(referenceProjectVersion)) {
-            if ( "1.12".equals(checkedProjectVesion))
+            if ( "1.12".equals(checkedProjectVesion) || "1.11".equals(checkedProjectVesion) || "1.10".equals(checkedProjectVesion) || "1.9".equals(checkedProjectVesion) || "1.8".equals(checkedProjectVesion) || "1.7".equals(checkedProjectVesion) || "1.6".equals(checkedProjectVesion) )
                 return true;
             return false;
         } else

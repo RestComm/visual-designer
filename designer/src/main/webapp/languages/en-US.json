@@ -281,7 +281,7 @@
 	"gatherStepDescriptionLabel3": "commands  below to prompt the user to type some digits",
 	"gatherStepCreateMenuLabel": "Create a menu or collect digits",
 	"gatherStepMenuInput": "Menu",
-	"gatherStepCollectDigitsInput": "Collect value",
+	"gatherStepCollectDigitsInput": "Collect digits",
 	"gatherStepDigitLabel": "Digit",
 	"gatherStepDigitTooltip": "DTMF values allowed: 0-9,*,#,A,B,C,D",
 	"gatherStepDigitInputPlaceholder": "123",
@@ -571,5 +571,11 @@
 	"Text": "Text",
 	"some text or regex": "some text or regex",
 	"Digits variable": "Digits' variable",
-	"Speech variable": "Speech variable"
+	"Speech variable": "Speech variable",
+
+	"Timeout": "Timeout",
+	"esTimeoutLimitTooltip": "Milliseconds to wait for the response before giving up",
+
+	"gatherTimeoutTooltip": "Time (in seconds) to wait for the caller to press another digit"
+
 }

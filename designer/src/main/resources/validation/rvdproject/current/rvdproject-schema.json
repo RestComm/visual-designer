@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-	"title": "RVD project 1.1",
-	"description": "Specification for RVD 7.2.0",
+	"title": "RVD project 1.12",
+	"description": "Added timeout to externalService",
 	"rvdproject": {
 		"type": "object",
 		"properties": {
@@ -35,12 +35,14 @@
 									{ "$ref": "gatherstep.json" },
 									{ "$ref": "dialstep.json" },
 									{ "$ref": "hangupstep.json" },
+									{ "$ref": "controlStep.json" },
 									{ "$ref": "externalServiceStep.json" },
 									{ "$ref": "logStep.json" },
 									{ "$ref": "rejectStep.json" },
 									{ "$ref": "pauseStep.json" },
 									{ "$ref": "redirectStep.json" },
 									{ "$ref": "smsStep.json" },
+								    { "$ref": "emailStep.json" },
 									{ "$ref": "recordStep.json" },
 									{ "$ref": "faxStep.json" },
 									{ "$ref": "ussdSayStep.json" },

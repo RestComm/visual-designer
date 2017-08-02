@@ -8,6 +8,12 @@
 		"label": {"type": "string"},
 		"title": {"type": "string"},
 		"url": {"type": "string", "minLength": 1},
+		"method":{"enum": ["GET","POST","PUT","DELETE"]},
+		"contentType":{"enum": ["application/x-www-form-urlencoded","application/json"]},
+		"requestBody": {"type": "string"},
+		"populatePostBodyFromParams": {"type":"boolean"},
+		"username": {"type": "string"},
+		"password": {"type": "string"},
 		"urlParams": {
 			"type": "array",
 			"items": { "$ref": "#/definitions/urlParam"}
@@ -27,10 +33,23 @@
 			}
 		},
 		"doRouting": {"type":"boolean"},
-	
-		"iface": {"type": "object"}
+		"nextType": {"enum": ["fixed","responseBased","mapped"]},
+		"routeMappings": {
+			"type":"array",
+			"items": {
+				"type":"object",
+				"properties": {
+					"value": {"type":"string", "minLength":1},
+					"next": {"type":"string", "minLength":1}
+				},
+				"required": ["value","next"]
+			}
+		},
+		"exceptionNext": {"type": "string"},
+		"onTimeout": {"type":"string","minLength": 1},
+		"timeout" : {"type": "integer", "minimum":0 }
 	},
-	"required": ["name","kind","label","title","url","urlParams","assignments","doRouting"],
+	"required": ["name","kind","label","title","url","doRouting"],
 	
 	"definitions":{
 		"urlParam": {
@@ -59,8 +78,7 @@
 									"property": {"type": "string", "minLength":1},
 									"expression": {"type": "string"}
 								},
-								"required": ["kind","fixed","terminal","action","property","expression"],
-								"additionalProperties": false
+								"required": ["kind","fixed","terminal","action","property","expression"]
 							},
 							{
 								"type": "object",
@@ -72,20 +90,17 @@
 									"position": {"type": "integer", "minimum":0},
 									"expression": {"type": "string"}
 								},
-								"required": ["kind","fixed","terminal","action","position","expression"],
-								"additionalProperties": false
+								"required": ["kind","fixed","terminal","action","position","expression"]
 							},
 							{
 								"type": "object",
 								"properties": {
 									"kind": {"enum": ["value"]},
 									"fixed": {"enum": [true]},
-									"terminal": {"enum":[false]},
-									"action": {"type":"string"},
+									"terminal": {"enum":[true]},
 									"expression": {"type": "string"}
 								},
-								"required": ["kind","fixed","terminal","action","expression"],
-								"additionalProperties": false
+								"required": ["kind","fixed","terminal","expression"]
 							}												
 						]
 					}

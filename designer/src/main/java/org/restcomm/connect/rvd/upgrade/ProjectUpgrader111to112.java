@@ -15,6 +15,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ *
  */
 
 package org.restcomm.connect.rvd.upgrade;
@@ -27,8 +28,7 @@ import com.google.gson.JsonElement;
 public class ProjectUpgrader111to112 implements ProjectUpgrader {
     @Override
     public JsonElement upgrade(JsonElement sourceElement) {
-        sourceElement = ProjectUpgrader10to11.setVersion(sourceElement, getResultingVersion());
-        return sourceElement;
+        return ProjectUpgrader10to11.setVersion(sourceElement, getResultingVersion());
     }
 
     @Override

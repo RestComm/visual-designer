@@ -67,6 +67,7 @@ public class ExternalServiceStep extends Step {
     private List<RouteMapping> routeMappings;
     //private String defaultNext;
     private String exceptionNext;
+    private Integer timeout; // timeout in milliseconds
     private String onTimeout;
 
 
@@ -170,6 +171,10 @@ public class ExternalServiceStep extends Step {
         return onTimeout;
     }
 
+    public Integer getTimeout() {
+        return timeout;
+    }
+
     @Override
     public RcmlStep render(Interpreter interpreter) throws InterpreterException {
         // TODO Auto-generated method stub
@@ -180,6 +185,7 @@ public class ExternalServiceStep extends Step {
     public String process(Interpreter interpreter, HttpServletRequest httpRequest ) throws InterpreterException {
         // cache this for easier access
         LoggingContext logging = interpreter.getRvdContext().logging;
+        Integer requestTimeout = null;
 
         //ExternalServiceStep esStep = (ExternalServiceStep) step;
         String next = null;
@@ -213,7 +219,16 @@ public class ExternalServiceStep extends Step {
 
             // *** Make the request and get a status code and a response. Build a JsonElement from the response  ***
 
-            CloseableHttpClient client = interpreter.getApplicationContext().getHttpClientBuilder().buildHttpClient(interpreter.getRvdContext().getConfiguration().getExternalServiceTimeout());
+            // Set the request timeout. Try with ES element 'timeout' property and if not set fallback to global configuration setting.
+            Integer configTimeout = interpreter.getRvdContext().getConfiguration().getExternalServiceTimeout();
+            if (getTimeout() != null)
+                requestTimeout = getTimeout();
+            else
+                requestTimeout = interpreter.getRvdContext().getConfiguration().getExternalServiceTimeout();
+            // if the effective timeout is greater than the one specified in configuration, truncate it to that value.
+            if (requestTimeout > configTimeout)
+                requestTimeout = configTimeout;
+            CloseableHttpClient client = interpreter.getApplicationContext().getHttpClientBuilder().buildHttpClient(requestTimeout);
             CloseableHttpResponse response;
             int statusCode;
             JsonElement response_element = null;
@@ -402,9 +417,14 @@ public class ExternalServiceStep extends Step {
             }
 
         } catch (IOException e) {
-            // it this is a timeout error invoke onTimeout handler
-            if (e instanceof SocketTimeoutException && !RvdUtils.isEmpty(this.onTimeout)) {
-                next = this.onTimeout;
+            // it this is a timeout error log and invoke onTimeout handler
+            if (e instanceof SocketTimeoutException) {
+                String message = LoggingHelper.buildMessage(getClass(), "process", "[notify] {0} request to {1} timed out. Effective timeout was {2} ms.", new Object[]{logging.getPrefix(), getUrl(), requestTimeout});
+                RvdLoggers.local.log(Level.WARN, message);
+                if ( interpreter.getRvdContext().getProjectSettings().getLogging() )
+                    interpreter.getProjectLogger().log("Request timed out. Timeout set to " + requestTimeout).tag("app",interpreter.getAppName()).tag("ES").done();
+                if ( !RvdUtils.isEmpty(this.onTimeout) )
+                    next = this.onTimeout;
             } else
                 throw new ESRequestException("Problem while processing ExternalService step " + getName() + (e.getMessage() != null ? (" - " + e.getMessage()) : ""), e);
         }

@@ -11,7 +11,6 @@ import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 
-import org.restcomm.connect.rvd.RvdConfiguration;
 
 public class ProjectValidator implements Validator {
 
@@ -19,10 +18,10 @@ public class ProjectValidator implements Validator {
     JsonSchema projectSchema;
 
     public ProjectValidator() throws ProcessingException, IOException {
-        init( RvdConfiguration.getRvdProjectVersion() );
+        init( "current" );
     }
 
-    public ProjectValidator(  /*, String uri,*/ String schemaVersion ) throws ProcessingException, IOException {
+    public ProjectValidator( String schemaVersion ) throws ProcessingException, IOException {
         init(schemaVersion);
     }
 

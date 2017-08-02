@@ -542,5 +542,10 @@
 	"Text": "Text",
 	"some text or regex": "some text or regex",
 	"Digits variable": "Digits' variable",
-	"Speech variable": "Speech variable"
+	"Speech variable": "Speech variable",
+
+	"Timeout": "Timeout",
+	"esTimeoutLimitTooltip": "Milliseconds to wait for the response before giving up",
+
+	"gatherTimeoutTooltip": "Time (in seconds) to wait for the caller to press another digit"
 }
