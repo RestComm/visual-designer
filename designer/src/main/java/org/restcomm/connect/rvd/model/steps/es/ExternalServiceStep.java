@@ -26,6 +26,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.ESRequestException;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
@@ -281,6 +282,8 @@ public class ExternalServiceStep extends Step {
                 if ( !RvdUtils.isEmpty(getUsername()) )
                     request.addHeader("Authorization", "Basic " + RvdUtils.buildHttpAuthorizationToken(getUsername(), getPassword()));
 
+                if (!RvdUtils.isEmpty(interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid")))
+                    request.addHeader("X-CallSid", interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid"));
                 response = client.execute( request );
             } else
             if ( getMethod() == null || getMethod().equals("GET") || getMethod().equals("DELETE") ) {
@@ -292,6 +295,9 @@ public class ExternalServiceStep extends Step {
 
                 if ( !RvdUtils.isEmpty(getUsername()) )
                     request.addHeader("Authorization", "Basic " + RvdUtils.buildHttpAuthorizationToken(getUsername(), getPassword()));
+
+                if (!RvdUtils.isEmpty(interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid")))
+                    request.addHeader("X-CallSid", interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid"));
                 response = client.execute( request );
             } else
                 throw new InterpreterException("Unknonwn HTTP method specified: " + getMethod() );
