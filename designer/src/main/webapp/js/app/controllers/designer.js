@@ -181,13 +181,13 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 											{name:'tr',text: 'Turkish'}
 										 ];
 	$scope.languagesGather = [
-		{name:'en-gb',text: 'British-English'},
-		{name:'en',text:'English'},
-		{name:'es',text: 'Spanish'},
-		{name:'fr',text: 'French'},
-		{name:'it',text: 'Italian'},
-		{name:'pl',text: 'Polish'},
-		{name:'pt',text: 'Portuguese'}
+		{name:'en-GB',text: 'British-English'},
+		{name:'en-US',text:'English'},
+		{name:'es-ES',text: 'Spanish'},
+		{name:'fr-FR',text: 'French'},
+		{name:'it-IT',text: 'Italian'},
+		{name:'pl-PL',text: 'Polish'},
+		{name:'pt-PT',text: 'Portuguese'}
 	];
 	$scope.methods = ['POST', 'GET'];
 

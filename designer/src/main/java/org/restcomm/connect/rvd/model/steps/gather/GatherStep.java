@@ -78,6 +78,8 @@ public class GatherStep extends Step {
     private String inputType;
     private String hints;
     private String language;
+    private String partialResultCallback;
+    private String partialResultCallbackMethod;
 
     public final class Menu {
         private List<DtmfMapping> mappings;
@@ -147,9 +149,9 @@ public class GatherStep extends Step {
         rcmlStep.setHints(hints);
         rcmlStep.setLanguage(language);
         rcmlStep.setInput(inputType);
-        if (!"dtmf".equalsIgnoreCase(inputType)) {
-            rcmlStep.setPartialResultCallback(action);
-            rcmlStep.setPartialResultCallbackMethod(method);
+        if (!"dtmf".equalsIgnoreCase(inputType) && !StringUtils.isEmpty(partialResultCallback)) {
+            rcmlStep.setPartialResultCallback(partialResultCallback);
+            rcmlStep.setPartialResultCallbackMethod(partialResultCallbackMethod);
         }
 
         for (Step nestedStep : steps)
@@ -272,6 +274,10 @@ public class GatherStep extends Step {
                     actualInputType = InputType.DTMF;
                     break;
                 case SPEECH:
+                    if (!StringUtils.isEmpty(unstableSpeechString)) {
+                        //UnstableSpeechResult is not used for now
+                        return;
+                    }
                     if (!StringUtils.isEmpty(speechResultString)) {
                         isValid = handleMapping(interpreter, originTarget, speechResultString, menu.speechMappings, true);
                     }
@@ -281,7 +287,10 @@ public class GatherStep extends Step {
                     if (!StringUtils.isEmpty(digitsString)) {
                         isValid = handleMapping(interpreter, originTarget, digitsString, menu.mappings, false);
                         actualInputType = InputType.DTMF;
-                    } else if (!StringUtils.isEmpty(speechResultString)) {
+                    } else if (!StringUtils.isEmpty(unstableSpeechString)) {
+                        //UnstableSpeechResult is not used for now
+                        return;
+                    }else if (!StringUtils.isEmpty(speechResultString)) {
                         isValid = handleMapping(interpreter, originTarget, speechResultString, menu.speechMappings, true);
                         actualInputType = InputType.SPEECH;
                     } else {
@@ -298,7 +307,8 @@ public class GatherStep extends Step {
                     break;
                 case SPEECH:
                     if (!StringUtils.isEmpty(unstableSpeechString)) {
-                        putVariable(interpreter, collectspeech, collectspeech.collectVariable, unstableSpeechString);
+                        //UnstableSpeechResult is not used for now
+                        return;
                     }
                     if (!StringUtils.isEmpty(speechResultString)) {
                         isValid = handleCollect(interpreter, originTarget, collectspeech, speechResultString, speechValidation);
@@ -310,8 +320,8 @@ public class GatherStep extends Step {
                         isValid = handleCollect(interpreter, originTarget, collectdigits, digitsString, validation);
                         actualInputType = InputType.DTMF;
                     } else if (!StringUtils.isEmpty(unstableSpeechString)) {
-                        putVariable(interpreter, collectspeech, collectspeech.collectVariable, unstableSpeechString);
-                        actualInputType = InputType.SPEECH;
+                        //UnstableSpeechResult is not used for now
+                        return;
                     } else if (!StringUtils.isEmpty(speechResultString)) {
                         isValid = handleCollect(interpreter, originTarget, collectspeech, speechResultString, speechValidation);
                         actualInputType = InputType.SPEECH;
