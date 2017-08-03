@@ -90,16 +90,4 @@ public class AggregateStats {
      */
     public AtomicInteger esCallsSuccess;
 
-    /**
-     * Number of ES calls for which an HTTP request was made and a response is received or an error is
-     * thrown (i.e. they are no more blocked).
-     *
-     * This metric is used in conjuction with esCallsTotalDurationMilis to calculate average execution time
-     */
-    //public AtomicInteger esCallsRequested;
-
-    /**
-     *
-     */
-    //public AtomicLong esCallsTotalDurationMilis;
 }
