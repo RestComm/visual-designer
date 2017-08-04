@@ -142,8 +142,6 @@ angular.module('Rvd')
 		this.collectspeech = {collectVariable:'',next:'', scope:"module"};
 		this.iface = {}	;
 		this.inputType = "dtmf"; // dtmf, speech, dtmf_speech
-		this.partialResultCallback = "";
-		this.partialResultCallbackMethod = "POST";
 	}	
 	GatherModel.prototype = new rvdModel();
 	GatherModel.prototype.constructor = GatherModel;

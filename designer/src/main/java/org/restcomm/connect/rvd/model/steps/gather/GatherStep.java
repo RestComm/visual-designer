@@ -151,7 +151,9 @@ public class GatherStep extends Step {
         rcmlStep.setInput(inputType);
         if (!"dtmf".equalsIgnoreCase(inputType) && !StringUtils.isEmpty(partialResultCallback)) {
             rcmlStep.setPartialResultCallback(partialResultCallback);
-            rcmlStep.setPartialResultCallbackMethod(partialResultCallbackMethod);
+            // by default use POST method
+            // TODO at some point make sure the restcomm side can handle missing partialResultCallbackMethod attribute
+            rcmlStep.setPartialResultCallbackMethod(StringUtils.isEmpty(partialResultCallbackMethod) ? "POST" : partialResultCallbackMethod);
         }
 
         for (Step nestedStep : steps)

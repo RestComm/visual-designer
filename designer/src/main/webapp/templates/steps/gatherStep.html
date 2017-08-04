@@ -313,14 +313,29 @@
 
 			<div class="row" ng-show="step.inputType != 'dtmf'">
 
+				<!--
 				<div class="col-lg-7">
 					<h4>{{'partialResultCallback' | translate}}</h4>
-					<input ng-model='step.partialResultCallback' type="text" id="partialURL" class="form-control">
+					<input ng-model='step.partialResultCallback' auto-clear type="text" id="partialURL" class="form-control">
 				</div>
 				<div class="col-lg-7" ng-show="step.partialResultCallback != ''">
 					<h4>{{'partialResultCallbackMethod' | translate}}</h4>
 					<select ng-model='step.partialResultCallbackMethod' ng-options='method for method in methods' id='partialMethod' class='form-control'/>
 				</div>
+				-->
+
+				<div class="col-md-12">
+					<div class="input-group">
+						<span class="input-group-addon">{{'partialResultCallback' | translate}}</span>
+						<input ng-model='step.partialResultCallback' auto-clear type="text" id="partialURL" class="form-control mask-invalid">
+						<span class='input-group-addon'>{{'Method' | translate}}</span>
+						<select name="method" ng-model='step.partialResultCallbackMethod' ng-options='method for method in methods' auto-clear class="form-control mask-invalid">
+							<option value=""></option>
+						</select>
+					</div>
+				</div>
+
+
 
 				<!--
                 <div class="form-group col-lg-3">

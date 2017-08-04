@@ -578,7 +578,6 @@
 
 	"gatherTimeoutTooltip": "Time (in seconds) to wait for the caller to press another digit",
 
-    "partialResultCallback": "Partial Result Callback URL",
-  	"partialResultCallbackMethod": "Partial Result Callback Method"
-
+    "partialResultCallback": "Partial Result URL",
+	"Method" : "Method"
 }
