@@ -214,6 +214,7 @@ public class RvdConfiguration {
             XmlParser xml = new XmlParser(pathToXml);
             rvdConfig.setAllowedCorsOrigins(xml.getElementList("/rvd/corsWhitelist/origin"));
             rvdConfig.setUssdSupport(xml.getElementContent("/rvd/ussdSupport"));
+            rvdConfig.setExternalServiceTimeout(xml.getElementContent("/rvd/externalServiceTimeout"));
             return rvdConfig;
         } catch (FileNotFoundException e) {
             logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"loadRvdXmlConfig",null,"RVD configuration file not found: " + pathToXml));

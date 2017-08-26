@@ -45,11 +45,12 @@ public class RvdConfig {
     public RvdConfig() {
     }
 
-    public RvdConfig(String workspaceLocation, String workspaceBackupLocation, String restcommPublicIp, String sslMode) {
+    public RvdConfig(String externalServiceTimeout, String workspaceLocation, String workspaceBackupLocation, String restcommPublicIp, String sslMode) {
         super();
         this.workspaceLocation = workspaceLocation;
         this.workspaceBackupLocation = workspaceBackupLocation;
         this.sslMode = sslMode;
+        this.externalServiceTimeout = externalServiceTimeout;
     }
 
     public String getWorkspaceLocation() {
@@ -110,5 +111,9 @@ public class RvdConfig {
 
     public void setUssdSupport(String ussdSupport) {
         this.ussdSupport = ussdSupport;
+    }
+
+    public void setExternalServiceTimeout(String externalServiceTimeout) {
+        this.externalServiceTimeout = externalServiceTimeout;
     }
 }
