@@ -21,7 +21,7 @@ package org.restcomm.connect.rvd.model.steps.ussdsay;
 
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis

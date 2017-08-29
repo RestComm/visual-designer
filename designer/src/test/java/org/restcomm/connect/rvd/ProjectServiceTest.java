@@ -22,9 +22,7 @@ package org.restcomm.connect.rvd;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.restcomm.connect.rvd.ProjectService;
-import org.restcomm.connect.rvd.RvdConfiguration;
-import org.restcomm.connect.rvd.model.client.StateHeader;
+import org.restcomm.connect.rvd.model.project.StateHeader;
 
 /**
  * @author orestis.tsakiridis@telestax.com - Orestis Tsakiridis

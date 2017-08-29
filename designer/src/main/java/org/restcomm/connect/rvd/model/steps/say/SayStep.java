@@ -1,7 +1,7 @@
 package org.restcomm.connect.rvd.model.steps.say;
 
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 
 public class SayStep extends Step {

@@ -1,7 +1,7 @@
 package org.restcomm.connect.rvd.model.steps.reject;
 
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 
 public class RejectStep extends Step {
     String reason;
