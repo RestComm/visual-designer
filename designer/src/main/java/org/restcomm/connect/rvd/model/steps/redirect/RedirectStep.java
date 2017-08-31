@@ -1,7 +1,7 @@
 package org.restcomm.connect.rvd.model.steps.redirect;
 
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 
 public class RedirectStep extends Step {
     String url;

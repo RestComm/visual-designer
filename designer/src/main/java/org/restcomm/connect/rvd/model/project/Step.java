@@ -1,4 +1,4 @@
-package org.restcomm.connect.rvd.model.client;
+package org.restcomm.connect.rvd.model.project;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,10 +14,10 @@ import java.util.List;
 
 public abstract class Step {
 
-    private String kind;
-    private String label;
-    private String title;
-    private String name;
+    String kind;
+    String label;
+    String title;
+    String name;
 
     public String getKind() {
         return kind;

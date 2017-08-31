@@ -1,4 +1,4 @@
-package org.restcomm.connect.rvd.model.client;
+package org.restcomm.connect.rvd.model.project;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,31 +29,35 @@ public class Node {
         return name;
     }
 
-    public void setName(String name) {
+    public Node setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getLabel() {
         return label;
     }
 
-    public void setLabel(String label) {
+    public Node setLabel(String label) {
         this.label = label;
+        return this;
     }
 
     public String getKind() {
         return kind;
     }
 
-    public void setKind(String kind) {
+    public Node setKind(String kind) {
         this.kind = kind;
+        return this;
     }
 
     public List<Step> getSteps() {
         return steps;
     }
 
-    public void setSteps(List<Step> steps) {
+    public Node setSteps(List<Step> steps) {
         this.steps = steps;
+        return this;
     }
 }

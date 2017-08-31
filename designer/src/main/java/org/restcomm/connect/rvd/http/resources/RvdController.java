@@ -55,7 +55,7 @@ import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.UserProfile;
 import org.restcomm.connect.rvd.model.callcontrol.CallControlAction;
 import org.restcomm.connect.rvd.model.callcontrol.CallControlStatus;
-import org.restcomm.connect.rvd.model.client.StateHeader;
+import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.restcomm.RestcommAccountInfo;
 import org.restcomm.connect.rvd.restcomm.RestcommClient;
 import org.restcomm.connect.rvd.restcomm.RestcommCallArray;

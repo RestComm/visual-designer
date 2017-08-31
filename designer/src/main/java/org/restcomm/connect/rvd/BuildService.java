@@ -21,9 +21,9 @@ package org.restcomm.connect.rvd;
 
 import org.restcomm.connect.rvd.model.StepJsonDeserializer;
 import org.restcomm.connect.rvd.model.StepJsonSerializer;
-import org.restcomm.connect.rvd.model.client.Node;
-import org.restcomm.connect.rvd.model.client.ProjectState;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Node;
+import org.restcomm.connect.rvd.model.project.ProjectState;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.server.NodeName;
 import org.restcomm.connect.rvd.model.server.ProjectOptions;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;

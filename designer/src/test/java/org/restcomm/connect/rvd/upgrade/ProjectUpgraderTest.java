@@ -26,12 +26,10 @@ import org.junit.Test;
 import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
-import org.restcomm.connect.rvd.model.client.ProjectState;
+import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
-import org.restcomm.connect.rvd.upgrade.ProjectUpgrader10to11;
-import org.restcomm.connect.rvd.upgrade.UpgradeService;
 import org.restcomm.connect.rvd.upgrade.exceptions.UpgradeException;
 
 /**

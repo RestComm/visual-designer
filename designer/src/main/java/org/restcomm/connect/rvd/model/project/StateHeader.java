@@ -1,4 +1,4 @@
-package org.restcomm.connect.rvd.model.client;
+package org.restcomm.connect.rvd.model.project;
 
 public class StateHeader {
     // application logging settings for this project. If not null logging is enabled.

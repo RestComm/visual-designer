@@ -39,7 +39,13 @@
 	<useAbsoluteApplicationUrl>false</useAbsoluteApplicationUrl>
 	<baseUrl>/restcomm-rvd</baseUrl>
 
-	<!-- Timeout for external service requests in milliseconds. Defaults to 5000 if not given -->
+	<!-- Timeout for external service requests in milliseconds. Defaults to 5000 if not given. Note that custom
+		 overrides from the External Service element timeout setting (UI) will  get ignored if greater that
+		 the value defined here.
+	 	 IMPORTANT: This timeout value is related with the <http-client>/<response-timeout> setting in restcomm.xml
+	 	 		    and should ALWAYS be smaller than that (defaults to 6000). Typically 1000 ms difference is
+	 	 		    ok but it really depends on the roundtrip time when restcomm contacts RVD. 
+	 -->
 	<externalServiceTimeout></externalServiceTimeout>
 
 	<!-- Enable Video support in RCML produced and UI. Defaults to 'false'. Requires XMS. -->

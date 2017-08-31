@@ -22,11 +22,10 @@ package org.restcomm.connect.rvd;
 
 import org.apache.commons.io.FileUtils;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
-import org.restcomm.connect.rvd.model.client.ProjectState;
+import org.restcomm.connect.rvd.model.project.ProjectState;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Random;
 

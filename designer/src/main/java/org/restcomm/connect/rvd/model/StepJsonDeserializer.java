@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
 import org.apache.log4j.Logger;
 
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.steps.control.ControlStep;
 import org.restcomm.connect.rvd.model.steps.dial.DialNoun;
 import org.restcomm.connect.rvd.model.steps.dial.DialNounJsonDeserializer;
