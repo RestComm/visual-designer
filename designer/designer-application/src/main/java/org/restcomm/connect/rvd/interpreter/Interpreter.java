@@ -62,7 +62,7 @@ import org.restcomm.connect.rvd.model.steps.record.RcmlRecordStep;
 import org.restcomm.connect.rvd.model.steps.redirect.RcmlRedirectStep;
 import org.restcomm.connect.rvd.model.steps.redirect.RedirectStepConverter;
 import org.restcomm.connect.rvd.model.steps.reject.RcmlRejectStep;
-import org.restcomm.connect.rvd.model.steps.say.RcmlSayStep;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlSayStep;
 import org.restcomm.connect.rvd.model.steps.say.SayStepConverter;
 import org.restcomm.connect.rvd.model.steps.sms.RcmlSmsStep;
 import org.restcomm.connect.rvd.model.steps.sms.SmsStepConverter;

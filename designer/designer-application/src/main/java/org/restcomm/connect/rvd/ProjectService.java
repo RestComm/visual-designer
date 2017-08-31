@@ -9,13 +9,18 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
+import org.restcomm.connect.rvd.exceptions.IncompatibleProjectVersion;
 import org.restcomm.connect.rvd.exceptions.InvalidServiceParameters;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
+import org.restcomm.connect.rvd.exceptions.project.InvalidProjectKind;
 import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.exceptions.project.UnsupportedProjectVersion;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedSayStep;
 import org.restcomm.connect.rvd.jsonvalidation.ProjectValidator;
 import org.restcomm.connect.rvd.jsonvalidation.ValidationErrorItem;
 import org.restcomm.connect.rvd.jsonvalidation.ValidationResult;
@@ -25,10 +30,15 @@ import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.client.ProjectItem;
 import org.restcomm.connect.rvd.model.project.ProjectState;
+import org.restcomm.connect.rvd.model.project.SmsProject;
 import org.restcomm.connect.rvd.model.project.StateHeader;
-import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.model.project.RvdProject;
+import org.restcomm.connect.rvd.model.project.UssdProject;
+import org.restcomm.connect.rvd.model.project.VoiceProject;
+import org.restcomm.connect.rvd.model.steps.say.SayStep;
+import org.restcomm.connect.rvd.model.steps.sms.SmsStep;
+import org.restcomm.connect.rvd.model.steps.ussdsay.UssdSayStep;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
@@ -39,6 +49,9 @@ import org.restcomm.connect.rvd.upgrade.UpgradeService;
 import org.restcomm.connect.rvd.upgrade.UpgradeService.UpgradabilityStatus;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.utils.Unzipper;
+import org.restcomm.connect.rvd.model.StepJsonSerializer;
+import org.restcomm.connect.rvd.model.StepJsonDeserializer;
+
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -261,13 +274,13 @@ public class ProjectService {
 
         ProjectState state = null;
         if ( "voice".equals(kind) )
-            state = ProjectState.createEmptyVoice(owner, configuration);
+            state = createEmptyVoice(owner, configuration);
         else
         if ( "ussd".equals(kind) )
-            state = ProjectState.createEmptyUssd(owner, configuration);
+            state = createEmptyUssd(owner, configuration);
         else
         if ( "sms".equals(kind) )
-            state = ProjectState.createEmptySms(owner, configuration);
+            state = createEmptySms(owner, configuration);
 
         //projectStorage.createProjectSlot(projectName);
         FsProjectStorage.createProjectSlot(projectName, workspaceStorage);
@@ -434,8 +447,105 @@ public class ProjectService {
         } catch (StorageEntityNotFound e) {
             throw new ProjectDoesNotExist("Error loading project " + projectName, e);
         }
-        RvdProject project = RvdProject.fromJson(projectName, projectJson);
+        RvdProject project = fromJson(projectName, projectJson);
         return project;
+    }
+
+    public static RvdProject fromJson(String name, String projectJson) throws RvdException {
+        ProjectState state = toModel(projectJson);
+        String kind = state.getHeader().getProjectKind();
+        RvdProject project = null;
+        if ( "voice".equals(kind) ) {
+            project = new VoiceProject(name, state);
+        } else
+        if ( "sms".equals(kind) ) {
+            project = new SmsProject(name, state);
+        } else
+        if ( "ussd".equals(kind) ) {
+            project = new UssdProject(name, state);
+        } else {
+            throw new InvalidProjectKind("Can't create project " + name +". Unknown project kind: " + kind);
+        }
+        return project;
+    }
+
+    public static ProjectState toModel(String projectJson) throws RvdException {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Step.class, new StepJsonDeserializer())
+                .registerTypeAdapter(Step.class, new StepJsonSerializer())
+                .create();
+
+        // Check header first
+        JsonParser parser = new JsonParser();
+        JsonElement header_element = parser.parse(projectJson).getAsJsonObject().get("header");
+        if ( header_element == null )
+            throw new BadProjectHeader("No header found. This is probably an old project");
+
+        StateHeader header = gson.fromJson(header_element, StateHeader.class);
+        if ( ! header.getVersion().equals(RvdConfiguration.getRvdProjectVersion()) )
+            throw new IncompatibleProjectVersion("Error loading project. Project version: " + header.getVersion() + " - RVD project version: " + RvdConfiguration.getRvdProjectVersion() );
+        // Looks like a good project. Make a ProjectState object out of it
+        ProjectState projectState = gson.fromJson(projectJson, ProjectState.class);
+        return projectState;
+    }
+
+    public static ProjectState createEmptyVoice(String owner, RvdConfiguration configuration) {
+
+        VoiceProject project = new VoiceProject(null,owner,RvdConfiguration.getRvdProjectVersion());
+        project.newModule("voice","start").setLabel("Welcome");
+        project.addStep(new InterpretedSayStep(configuration.getWelcomeMessage()),"start");
+
+
+        //Node node = Node.createDefault("voice", "start", "Welcome");
+        //SayStep step = SayStep.createDefault("step1", configuration.getWelcomeMessage());
+        //node.getSteps().add(step);
+        //nodes.add(node);
+        //state.setNodes(nodes);
+
+        //state.setLastStepId(1);
+        //state.setLastNodeId(0);
+
+        return project.getState();
+    }
+
+    public static ProjectState createEmptySms(String owner, RvdConfiguration configuration) {
+        String kind = "sms";
+        ProjectState state = new ProjectState();
+
+        StateHeader header = new StateHeader(kind,"start",RvdConfiguration.getRvdProjectVersion(),owner);
+        state.setHeader(header);
+
+        List<Node> nodes = new ArrayList<Node>();
+        Node node = Node.createDefault("sms", "start", "Welcome");
+        SmsStep step = SmsStep.createDefault("step1", configuration.getWelcomeMessage());
+        node.getSteps().add(step);
+        nodes.add(node);
+        state.setNodes(nodes);
+
+        state.setLastStepId(1);
+        state.setLastNodeId(0);
+
+        return state;
+    }
+
+    public static ProjectState createEmptyUssd(String owner, RvdConfiguration configuration) {
+        String kind = "ussd";
+        ProjectState state = new ProjectState();
+
+        StateHeader header = new StateHeader(kind,"start",RvdConfiguration.getRvdProjectVersion(),owner);
+        state.setHeader(header);
+
+        List<Node> nodes = new ArrayList<Node>();
+        Node node = Node.createDefault("ussd", "start", "Welcome");
+        UssdSayStep step = UssdSayStep.createDefault("step1", configuration.getWelcomeMessage());
+        node.getSteps().add(step);
+        nodes.add(node);
+        state.setNodes(nodes);
+
+        state.setLastStepId(1);
+        state.setLastNodeId(0);
+
+        return state;
     }
 
 

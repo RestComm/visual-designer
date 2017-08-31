@@ -1,13 +1,32 @@
 package org.restcomm.connect.rvd.model.steps.say;
 
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 
+public class SayStep extends BaseStep {
 
-public class RcmlSayStep extends RcmlStep {
     private String phrase;
     private String voice;
     private String language;
     private Integer loop;
+
+    /*
+    public static SayStep createDefault(String name, String phrase) {
+        SayStep step = new SayStep();
+        step.setName(name);
+        step.setLabel("say");
+        step.setKind("say");
+        step.setTitle("say");
+        step.setPhrase(phrase);
+
+        return step;
+    }*/
+
+    public SayStep(String phrase) {
+        setLabel("say");
+        setKind("say");
+        setTitle("say");
+        this.phrase = phrase;
+    }
 
     public String getPhrase() {
         return phrase;
@@ -40,4 +59,5 @@ public class RcmlSayStep extends RcmlStep {
     public void setLoop(Integer loop) {
         this.loop = loop;
     }
+
 }

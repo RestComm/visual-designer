@@ -8,7 +8,7 @@ public class Node {
     private String name;
     private String label;
     private String kind;
-    private List<Step> steps;
+    private List<BaseStep> steps;
 
     public Node() {
         // TODO Auto-generated constructor stub
@@ -19,7 +19,7 @@ public class Node {
         node.setName(name);
         node.setLabel(label);
         node.setKind(kind);
-        List<Step> steps = new ArrayList<Step>();
+        List<BaseStep> steps = new ArrayList<BaseStep>();
         node.setSteps(steps);
 
         return node;
@@ -52,11 +52,11 @@ public class Node {
         return this;
     }
 
-    public List<Step> getSteps() {
+    public List<BaseStep> getSteps() {
         return steps;
     }
 
-    public Node setSteps(List<Step> steps) {
+    public Node setSteps(List<BaseStep> steps) {
         this.steps = steps;
         return this;
     }
