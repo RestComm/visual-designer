@@ -1,4 +1,4 @@
-package org.restcomm.connect.rvd.model.steps.sms;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 

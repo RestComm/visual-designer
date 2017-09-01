@@ -29,13 +29,10 @@
 package org.restcomm.connect.rvd.interpreter;
 
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
-import org.restcomm.connect.rvd.jsonvalidation.ValidationErrorItem;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 
 /**
@@ -51,5 +48,4 @@ public interface StepBehavior {
      */
     String process(Interpreter interpreter, HttpServletRequest httpRequest) throws InterpreterException;
 
-    List<ValidationErrorItem> validate(String stepPath, Node parentModule);
 }

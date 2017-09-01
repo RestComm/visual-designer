@@ -3,7 +3,7 @@ package org.restcomm.connect.rvd.interpreter;
 import org.apache.commons.lang.NotImplementedException;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.exceptions.RVDUnsupportedHandlerVerb;
-import org.restcomm.connect.rvd.jsonvalidation.ValidationErrorItem;
+import org.restcomm.connect.rvd.validation.ValidationErrorItem;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -32,8 +32,4 @@ public class DefaultStepBehavior implements StepBehavior {
         return null;
     }
 
-    @Override
-    public List<ValidationErrorItem> validate(String stepPath, Node parentModule) {
-        return null;
-    }
 }

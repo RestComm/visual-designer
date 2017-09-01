@@ -18,7 +18,7 @@
  *
  */
 
-package org.restcomm.connect.rvd.jsonvalidation;
+package org.restcomm.connect.rvd.validation;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -32,5 +32,13 @@ public class ValidationErrorItem {
         this.level = level;
         this.failurePath = failurePath;
         this.summary = summary;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
     }
 }

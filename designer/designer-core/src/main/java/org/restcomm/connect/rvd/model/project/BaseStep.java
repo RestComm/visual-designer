@@ -2,6 +2,9 @@
 package org.restcomm.connect.rvd.model.project;
 
 
+import org.restcomm.connect.rvd.validation.ValidationErrorItem;
+
+import java.util.List;
 
 public abstract class BaseStep {
 
@@ -40,5 +43,9 @@ public abstract class BaseStep {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<ValidationErrorItem> validate(String stepPath, Node parentModule) {
+        return null;
     }
 }

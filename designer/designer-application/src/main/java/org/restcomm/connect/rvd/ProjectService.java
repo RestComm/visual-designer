@@ -21,12 +21,15 @@ import org.restcomm.connect.rvd.exceptions.project.InvalidProjectKind;
 import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.exceptions.project.UnsupportedProjectVersion;
 import org.restcomm.connect.rvd.interpreter.steps.InterpretedSayStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedSmsStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedUssdSayStep;
 import org.restcomm.connect.rvd.jsonvalidation.ProjectValidator;
-import org.restcomm.connect.rvd.jsonvalidation.ValidationErrorItem;
+import org.restcomm.connect.rvd.validation.ValidationErrorItem;
 import org.restcomm.connect.rvd.jsonvalidation.ValidationResult;
 import org.restcomm.connect.rvd.jsonvalidation.exceptions.ValidationException;
 import org.restcomm.connect.rvd.jsonvalidation.exceptions.ValidationFrameworkException;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.client.ProjectItem;
 import org.restcomm.connect.rvd.model.project.ProjectState;
@@ -36,9 +39,6 @@ import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.model.project.RvdProject;
 import org.restcomm.connect.rvd.model.project.UssdProject;
 import org.restcomm.connect.rvd.model.project.VoiceProject;
-import org.restcomm.connect.rvd.model.steps.say.SayStep;
-import org.restcomm.connect.rvd.model.steps.sms.SmsStep;
-import org.restcomm.connect.rvd.model.steps.ussdsay.UssdSayStep;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
@@ -314,7 +314,7 @@ public class ProjectService {
         int i = 0;
         int j = 0;
         for (Node node: project.getNodes()) {
-            for (Step step: node.getSteps()) {
+            for (BaseStep step: node.getSteps()) {
                 String stepPath = new StringBuffer("/nodes/").append(i).append("/steps/").append(j).toString();
                 List<ValidationErrorItem> errors = step.validate(stepPath, node);
                 if (errors != null && errors.size() > 0)
@@ -471,8 +471,8 @@ public class ProjectService {
 
     public static ProjectState toModel(String projectJson) throws RvdException {
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Step.class, new StepJsonDeserializer())
-                .registerTypeAdapter(Step.class, new StepJsonSerializer())
+                .registerTypeAdapter(BaseStep.class, new StepJsonDeserializer())
+                .registerTypeAdapter(BaseStep.class, new StepJsonSerializer())
                 .create();
 
         // Check header first
@@ -509,6 +509,12 @@ public class ProjectService {
     }
 
     public static ProjectState createEmptySms(String owner, RvdConfiguration configuration) {
+
+        SmsProject project = new SmsProject(null,owner,RvdConfiguration.getRvdProjectVersion());
+        project.newModule("sms","start").setLabel("Welcome");
+        project.addStep(new InterpretedSmsStep(configuration.getWelcomeMessage()),"start");
+
+        /*
         String kind = "sms";
         ProjectState state = new ProjectState();
 
@@ -524,11 +530,18 @@ public class ProjectService {
 
         state.setLastStepId(1);
         state.setLastNodeId(0);
+        */
 
-        return state;
+        return project.getState();
     }
 
     public static ProjectState createEmptyUssd(String owner, RvdConfiguration configuration) {
+
+        UssdProject project = new UssdProject(null,owner,RvdConfiguration.getRvdProjectVersion());
+        project.newModule("ussd","start").setLabel("Welcome");
+        project.addStep(new InterpretedUssdSayStep(configuration.getWelcomeMessage()),"start");
+
+        /*
         String kind = "ussd";
         ProjectState state = new ProjectState();
 
@@ -546,6 +559,9 @@ public class ProjectService {
         state.setLastNodeId(0);
 
         return state;
+        */
+
+        return project.getState();
     }
 
 

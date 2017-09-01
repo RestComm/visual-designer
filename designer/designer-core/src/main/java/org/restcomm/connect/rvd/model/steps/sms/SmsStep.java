@@ -19,25 +19,12 @@
 
 package org.restcomm.connect.rvd.model.steps.sms;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.log4j.Level;
-
-import org.restcomm.connect.rvd.RvdConfiguration;
-import org.restcomm.connect.rvd.logging.system.LoggingContext;
-import org.restcomm.connect.rvd.logging.system.LoggingHelper;
-import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.utils.RvdUtils;
-import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.interpreter.Target;
-import org.restcomm.connect.rvd.model.project.Step;
-import org.restcomm.connect.rvd.storage.exceptions.StorageException;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class SmsStep extends Step {
+public class SmsStep extends BaseStep {
     String text;
     String to;
     String from;
@@ -45,6 +32,7 @@ public class SmsStep extends Step {
     String method;
     String next;
 
+    /*
     public static SmsStep createDefault(String name, String phrase) {
         SmsStep step = new SmsStep();
         step.setName(name);
@@ -54,6 +42,16 @@ public class SmsStep extends Step {
         step.setText(phrase);
 
         return step;
+    }
+    */
+
+    // TODO - add the default no-param constructor here ?
+
+    public SmsStep(String phrase) {
+        setLabel("sms");
+        setKind("sms");
+        setTitle("sms");
+        setText(phrase);
     }
 
     public String getNext() {
@@ -92,43 +90,5 @@ public class SmsStep extends Step {
     public void setStatusCallback(String statusCallback) {
         this.statusCallback = statusCallback;
     }
-    public RcmlSmsStep render(Interpreter interpreter) {
-        RcmlSmsStep rcmlStep = new RcmlSmsStep();
 
-        if ( ! RvdUtils.isEmpty(getNext()) ) {
-            String newtarget = interpreter.getTarget().getNodename() + "." + getName() + ".actionhandler";
-            Map<String, String> pairs = new HashMap<String, String>();
-            pairs.put("target", newtarget);
-            String action = interpreter.buildAction(pairs);
-            rcmlStep.setAction(action);
-            rcmlStep.setMethod(getMethod());
-        }
-
-        rcmlStep.setFrom(interpreter.populateVariables(getFrom()));
-        rcmlStep.setTo(interpreter.populateVariables(getTo()));
-        rcmlStep.setStatusCallback(getStatusCallback());
-        rcmlStep.setText(interpreter.populateVariables(getText()));
-
-        return rcmlStep;
-    }
-
-    @Override
-    public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        LoggingContext logging = interpreter.getRvdContext().logging;
-        if (RvdLoggers.local.isEnabledFor(Level.INFO))
-            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling sms action"));
-
-        if ( RvdUtils.isEmpty(getNext()) )
-            throw new InterpreterException( "'next' module is not defined for step " + getName() );
-
-        String SmsSid = interpreter.getRequestParams().getFirst("SmsSid");
-        String SmsStatus = interpreter.getRequestParams().getFirst("SmsStatus");
-
-        if ( SmsSid != null )
-            interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "SmsSid", SmsSid);
-        if (SmsStatus != null )
-            interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "SmsStatus", SmsStatus);
-
-        interpreter.interpret( getNext(), null, null, originTarget );
-    }
 }

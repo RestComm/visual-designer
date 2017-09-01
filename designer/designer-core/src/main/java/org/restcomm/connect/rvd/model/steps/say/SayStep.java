@@ -21,6 +21,8 @@ public class SayStep extends BaseStep {
         return step;
     }*/
 
+    // TODO - add the default no-param constructor here ?
+
     public SayStep(String phrase) {
         setLabel("say");
         setKind("say");

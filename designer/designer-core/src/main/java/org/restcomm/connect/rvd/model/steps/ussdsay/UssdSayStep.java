@@ -19,17 +19,16 @@
 
 package org.restcomm.connect.rvd.model.steps.ussdsay;
 
-import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.project.Step;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class UssdSayStep extends Step {
+public class UssdSayStep extends BaseStep {
 
     String text;
 
+    /*
     public static UssdSayStep createDefault(String name, String phrase) {
         UssdSayStep step = new UssdSayStep();
         step.setName(name);
@@ -40,11 +39,15 @@ public class UssdSayStep extends Step {
 
         return step;
     }
+    */
 
     public UssdSayStep() {
-        // TODO Auto-generated constructor stub
+
     }
 
+    public UssdSayStep(String text) {
+        this.text = text;
+    }
 
     public String getText() {
         return text;
@@ -55,11 +58,4 @@ public class UssdSayStep extends Step {
         this.text = text;
     }
 
-    @Override
-    public UssdSayRcml render(Interpreter interpreter) throws InterpreterException {
-        UssdSayRcml rcmlModel = new UssdSayRcml();
-        rcmlModel.text = interpreter.populateVariables(getText());
-
-        return rcmlModel;
-    }
 }
