@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlConferenceNoun;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
 public class ConferenceNounConverter implements Converter {

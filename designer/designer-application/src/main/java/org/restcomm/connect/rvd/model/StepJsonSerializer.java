@@ -2,7 +2,7 @@ package org.restcomm.connect.rvd.model;
 
 import java.lang.reflect.Type;
 
-import org.restcomm.connect.rvd.model.project.Step;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 import org.restcomm.connect.rvd.model.steps.control.ControlStep;
 import org.restcomm.connect.rvd.model.steps.dial.DialStep;
 import org.restcomm.connect.rvd.model.steps.email.EmailStep;
@@ -28,12 +28,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-public class StepJsonSerializer implements JsonSerializer<Step> {
+public class StepJsonSerializer implements JsonSerializer<BaseStep> {
 
     @Override
-    public JsonElement serialize(Step step, Type arg1, JsonSerializationContext context) {
+    public JsonElement serialize(BaseStep step, Type arg1, JsonSerializationContext context) {
 
-        Gson gson = new GsonBuilder().registerTypeAdapter(Step.class, new StepJsonSerializer()).create();
+        Gson gson = new GsonBuilder().registerTypeAdapter(BaseStep.class, new StepJsonSerializer()).create();
         JsonElement resultElement = null; // TODO update this default value to something or throw an exception or something
         if (step.getClass().equals(SayStep.class)) {
             resultElement = gson.toJsonTree((SayStep) step);

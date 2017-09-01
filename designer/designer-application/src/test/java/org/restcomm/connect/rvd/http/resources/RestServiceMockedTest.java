@@ -34,6 +34,7 @@ import org.restcomm.connect.rvd.identity.AccountProvider;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.project.ProjectState;
+import org.restcomm.connect.rvd.model.project.VoiceProject;
 
 import javax.servlet.ServletContext;
 
@@ -91,7 +92,7 @@ public class RestServiceMockedTest {
 
     protected void createProject(String projectName, String owner) throws IOException {
         new File(workspaceDir.getPath() + "/" + projectName).mkdir();
-        String state = marshaler.toData(ProjectState.createEmptyVoice(owner, configuration));
+        String state = marshaler.toData(new VoiceProject(null, owner, RvdConfiguration.getRvdProjectVersion()).getState());
         FileUtils.writeStringToFile(new File(workspaceDir.getPath() + "/" + projectName + "/state"), state );
     }
 

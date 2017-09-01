@@ -21,9 +21,9 @@ package org.restcomm.connect.rvd;
 
 import org.restcomm.connect.rvd.model.StepJsonDeserializer;
 import org.restcomm.connect.rvd.model.StepJsonSerializer;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.ProjectState;
-import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.server.NodeName;
 import org.restcomm.connect.rvd.model.server.ProjectOptions;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
@@ -48,8 +48,8 @@ public class BuildService {
         this.workspaceStorage = workspaceStorage;
         // Parse the big project state object into a nice dto model
         gson = new GsonBuilder()
-                .registerTypeAdapter(Step.class, new StepJsonDeserializer())
-                .registerTypeAdapter(Step.class, new StepJsonSerializer())
+                .registerTypeAdapter(BaseStep.class, new StepJsonDeserializer())
+                .registerTypeAdapter(BaseStep.class, new StepJsonSerializer())
                 .create();
     }
 
@@ -91,7 +91,7 @@ public class BuildService {
 
         FsProjectStorage.storeNodeStepnames(node, projectName, workspaceStorage);
         // process the steps one-by-one
-        for (Step step : node.getSteps()) {
+        for (BaseStep step : node.getSteps()) {
             FsProjectStorage.storeNodeStep(step, node, projectName, workspaceStorage);
         }
     }

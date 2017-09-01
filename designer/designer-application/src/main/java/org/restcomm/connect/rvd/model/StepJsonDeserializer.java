@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
 import org.apache.log4j.Logger;
 
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.project.Step;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 import org.restcomm.connect.rvd.model.steps.control.ControlStep;
 import org.restcomm.connect.rvd.model.steps.dial.BaseDialNoun;
 import org.restcomm.connect.rvd.storage.json.DialNounJsonDeserializer;
@@ -56,21 +56,21 @@ import com.google.gson.JsonParseException;
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class StepJsonDeserializer implements JsonDeserializer<Step> {
+public class StepJsonDeserializer implements JsonDeserializer<BaseStep> {
     static final Logger logger = RvdLoggers.local;
 
     @Override
-    public Step deserialize(JsonElement rootElement, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
+    public BaseStep deserialize(JsonElement rootElement, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
 
         JsonObject step_object = rootElement.getAsJsonObject();
         String kind = step_object.get("kind").getAsString();
 
         Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Step.class, new StepJsonDeserializer())
+            .registerTypeAdapter(BaseStep.class, new StepJsonDeserializer())
             .registerTypeAdapter(BaseDialNoun.class, new DialNounJsonDeserializer())
             .create();
 
-        Step step;
+        BaseStep step;
         if ("say".equals(kind))
             step = gson.fromJson(step_object, SayStep.class);
         else if ("gather".equals(kind))

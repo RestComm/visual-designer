@@ -7,7 +7,6 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
-import org.restcomm.connect.rvd.validation.ValidationErrorItem;
 
 public class ValidationResult {
 

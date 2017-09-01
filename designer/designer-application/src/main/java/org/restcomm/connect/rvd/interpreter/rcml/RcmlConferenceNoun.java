@@ -20,7 +20,7 @@ public class RcmlConferenceNoun extends Rcml {
     Integer maxParticipants;
     String destination;
     String statusCallback;
-    Video video;
+    public Video video;
 
     public String getDestination() {
         return destination;

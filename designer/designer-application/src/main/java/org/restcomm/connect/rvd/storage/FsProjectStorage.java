@@ -49,6 +49,7 @@ import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.RvdContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
@@ -62,7 +63,6 @@ import org.restcomm.connect.rvd.storage.exceptions.WavItemDoesNotExist;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.utils.Zipper;
 import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
-import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.packaging.Rapp;
 import org.restcomm.connect.rvd.model.server.ProjectOptions;
 
@@ -217,7 +217,7 @@ public class FsProjectStorage {
 
     public static void storeNodeStepnames(Node node, String projectName, WorkspaceStorage storage) throws StorageException {
         List<String> stepnames = new ArrayList<String>();
-        for ( Step step : node.getSteps() ) {
+        for ( BaseStep step : node.getSteps() ) {
             stepnames.add(step.getName());
         }
         storage.storeEntity(stepnames, node.getName()+".node", projectName+"/data");
@@ -228,7 +228,7 @@ public class FsProjectStorage {
         return stepnames;
     }
 
-    public static void storeNodeStep(Step step, Node node, String projectName, WorkspaceStorage storage) throws StorageException {
+    public static void storeNodeStep(BaseStep step, Node node, String projectName, WorkspaceStorage storage) throws StorageException {
         storage.storeEntity(step, node.getName()+"."+step.getName(), projectName+"/data/");
     }
 

@@ -29,7 +29,6 @@
 package org.restcomm.connect.rvd.interpreter;
 
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.interpreter.rcml.Rcml;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 import javax.servlet.http.HttpServletRequest;

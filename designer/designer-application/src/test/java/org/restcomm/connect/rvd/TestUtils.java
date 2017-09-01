@@ -21,8 +21,10 @@
 package org.restcomm.connect.rvd;
 
 import org.apache.commons.io.FileUtils;
+import org.restcomm.connect.rvd.configuration.RvdConfig;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.project.ProjectState;
+import org.restcomm.connect.rvd.model.project.VoiceProject;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +68,7 @@ public class TestUtils {
     public static File createDefaultProject(String projectName, String owner, File workspaceDir, ModelMarshaler marshaler, RvdConfiguration configuration) throws IOException {
         File projectFile = new File(workspaceDir.getPath() + "/" + projectName);
         projectFile.mkdir();
-        String state = marshaler.toData(ProjectState.createEmptyVoice(owner, configuration ));
+        String state = marshaler.toData(new VoiceProject(null,owner, RvdConfiguration.getRvdProjectVersion()).getState());
         FileUtils.writeStringToFile(new File(workspaceDir.getPath() + "/" + projectName + "/state"), state );
         return projectFile;
     }

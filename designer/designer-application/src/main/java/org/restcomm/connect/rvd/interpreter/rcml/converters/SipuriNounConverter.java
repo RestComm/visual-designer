@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlSipuriNoun;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
 public class SipuriNounConverter implements Converter {
@@ -22,8 +23,8 @@ public class SipuriNounConverter implements Converter {
 
         if (step.video != null) {
             // if video attributes exist, we need to use 'name' attribute and not as the body/text of the noun element
-            if (!RvdUtils.isEmpty(step.getDestination()))
-                writer.addAttribute("name", step.getDestination());
+            if (!RvdUtils.isEmpty(step.destination))
+                writer.addAttribute("name", step.destination);
             // video attributes
             writer.startNode("Video");
             if (step.video.enable != null)
@@ -32,7 +33,7 @@ public class SipuriNounConverter implements Converter {
                 writer.addAttribute("overlay", step.video.overlay);
             writer.endNode();
         } else
-            writer.setValue(step.getDestination());
+            writer.setValue(step.destination);
     }
 
     @Override

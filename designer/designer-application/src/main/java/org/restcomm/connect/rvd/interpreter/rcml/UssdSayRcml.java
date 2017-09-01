@@ -3,7 +3,7 @@ package org.restcomm.connect.rvd.interpreter.rcml;
 
 public class UssdSayRcml extends Rcml {
     String language;
-    String text;
+    public String text;
 
     public void setLanguage(String language) {
         this.language = language;
