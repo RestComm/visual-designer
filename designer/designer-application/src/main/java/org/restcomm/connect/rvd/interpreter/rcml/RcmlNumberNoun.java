@@ -1,7 +1,7 @@
-package org.restcomm.connect.rvd.model.steps.dial;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
 
-public class RcmlNumberNoun extends RcmlNoun {
+public class RcmlNumberNoun extends Rcml {
     String sendDigits;
     String url;
     String destination;
@@ -26,4 +26,7 @@ public class RcmlNumberNoun extends RcmlNoun {
         this.destination = destination;
     }
 
+    public void setStatusCallback(String statusCallback) {
+        this.statusCallback = statusCallback;
+    }
 }

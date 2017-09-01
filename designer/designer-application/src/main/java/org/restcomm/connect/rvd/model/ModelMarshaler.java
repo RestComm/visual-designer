@@ -2,7 +2,7 @@ package org.restcomm.connect.rvd.model;
 
 import java.lang.reflect.Type;
 
-import org.restcomm.connect.rvd.model.project.Step;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 import org.restcomm.connect.rvd.model.packaging.RappInfo;
 
 import com.google.gson.Gson;
@@ -16,8 +16,8 @@ public class ModelMarshaler {
 
     public ModelMarshaler() {
         gsonUtil = new GsonBuilder()
-            .registerTypeAdapter(Step.class, new StepJsonDeserializer())
-            .registerTypeAdapter(Step.class, new StepJsonSerializer())
+            .registerTypeAdapter(BaseStep.class, new StepJsonDeserializer())
+            .registerTypeAdapter(BaseStep.class, new StepJsonSerializer())
         .create();
     }
 

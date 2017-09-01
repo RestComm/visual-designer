@@ -1,6 +1,6 @@
-package org.restcomm.connect.rvd.model.client;
+package org.restcomm.connect.rvd.model.steps.es;
 
-public class UrlParam {
+public class EsUrlParam {
     String name;
     String value;
     public String getName() {

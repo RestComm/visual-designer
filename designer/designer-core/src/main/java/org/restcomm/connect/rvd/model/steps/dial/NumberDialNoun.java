@@ -1,16 +1,9 @@
 package org.restcomm.connect.rvd.model.steps.dial;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.restcomm.connect.rvd.utils.RvdUtils;
-import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-
 /**
  * @author Orestis Tsakiridis - otsakir@gmail.com
  */
-public class NumberDialNoun extends DialNoun {
+public class NumberDialNoun extends BaseDialNoun {
 
     private String destination;
     private String beforeConnectModule;
@@ -38,28 +31,19 @@ public class NumberDialNoun extends DialNoun {
         this.sendDigits = sendDigits;
     }
 
+    public void setStatusCallback(String statusCallback) {
+        this.statusCallback = statusCallback;
+    }
 
-    @Override
-    public RcmlNoun render(Interpreter interpreter) throws InterpreterException {
-        RcmlNumberNoun rcmlNoun = new RcmlNumberNoun();
+    public void setStatusCallbackModule(String statusCallbackModule) {
+        this.statusCallbackModule = statusCallbackModule;
+    }
 
-        if ( ! RvdUtils.isEmpty(getBeforeConnectModule()) ) {
-            Map<String, String> pairs = new HashMap<String, String>();
-            pairs.put("target", getBeforeConnectModule());
-            rcmlNoun.setUrl( interpreter.buildAction(pairs) );
-        }
+    public String getStatusCallback() {
+        return statusCallback;
+    }
 
-        rcmlNoun.setSendDigits( getSendDigits() );
-        rcmlNoun.setDestination( interpreter.populateVariables( getDestination() ));
-        if (!RvdUtils.isEmpty(statusCallback))
-            rcmlNoun.statusCallback = statusCallback;
-        else
-        if (!RvdUtils.isEmpty(statusCallbackModule)) {
-            Map<String, String> pairs = new HashMap<String, String>();
-            pairs.put("target", statusCallbackModule);
-            rcmlNoun.statusCallback = interpreter.buildAction(pairs);
-        }
-
-        return rcmlNoun;
+    public String getStatusCallbackModule() {
+        return statusCallbackModule;
     }
 }

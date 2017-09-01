@@ -1,4 +1,4 @@
-package org.restcomm.connect.rvd.model.steps.fax;
+package org.restcomm.connect.rvd.interpreter.rcml.converters;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;

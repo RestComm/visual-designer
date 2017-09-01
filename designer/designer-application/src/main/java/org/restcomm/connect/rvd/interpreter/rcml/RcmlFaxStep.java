@@ -1,8 +1,7 @@
-package org.restcomm.connect.rvd.model.steps.fax;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 
-public class RcmlFaxStep extends RcmlStep {
+public class RcmlFaxStep extends Rcml {
     String text;
     String from;
     String to;

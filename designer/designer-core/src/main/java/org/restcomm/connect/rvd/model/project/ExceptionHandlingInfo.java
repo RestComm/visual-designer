@@ -1,4 +1,4 @@
-package org.restcomm.connect.rvd.model.client;
+package org.restcomm.connect.rvd.model.project;
 
 import java.util.List;
 

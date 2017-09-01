@@ -1,4 +1,4 @@
-package org.restcomm.connect.rvd.model.steps.dial;
+package org.restcomm.connect.rvd.storage.json;
 
 import java.lang.reflect.Type;
 import org.apache.log4j.Logger;
@@ -12,18 +12,23 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
+import org.restcomm.connect.rvd.model.steps.dial.BaseDialNoun;
+import org.restcomm.connect.rvd.model.steps.dial.ClientDialNoun;
+import org.restcomm.connect.rvd.model.steps.dial.ConferenceDialNoun;
+import org.restcomm.connect.rvd.model.steps.dial.NumberDialNoun;
+import org.restcomm.connect.rvd.model.steps.dial.SipuriDialNoun;
 
-public class DialNounJsonDeserializer implements JsonDeserializer<DialNoun> {
+public class DialNounJsonDeserializer implements JsonDeserializer<BaseDialNoun> {
     static final Logger logger = RvdLoggers.local;
 
     @Override
-    public DialNoun deserialize(JsonElement element, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
+    public BaseDialNoun deserialize(JsonElement element, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
         JsonObject noun_object = element.getAsJsonObject();
         String dialType = noun_object.get("dialType").getAsString();
 
         Gson gson = new GsonBuilder().create();
 
-        DialNoun noun;
+        BaseDialNoun noun;
         if ("number".equals(dialType) ) {
             noun = gson.fromJson(noun_object, NumberDialNoun.class);
         } else

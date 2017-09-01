@@ -29,7 +29,7 @@
 package org.restcomm.connect.rvd.interpreter;
 
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
+import org.restcomm.connect.rvd.interpreter.rcml.Rcml;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,8 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public interface StepBehavior {
-    RcmlStep render(Interpreter interpreter) throws InterpreterException;
+public interface InterpretableStep extends Interpretable {
 
     void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException;
 

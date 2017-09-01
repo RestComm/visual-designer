@@ -1,7 +1,7 @@
 package org.restcomm.connect.rvd.exceptions;
 
-import org.restcomm.connect.rvd.jsonvalidation.ValidationResult;
 import org.restcomm.connect.rvd.validation.ValidationReport;
+import org.restcomm.connect.rvd.validation.ValidationResult;
 
 /**
  * Represents the exception fields that makes sense to return in the response.

@@ -1,24 +1,12 @@
 package org.restcomm.connect.rvd.model.steps.email;
 
-import org.restcomm.connect.rvd.RvdConfiguration;
-import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.interpreter.Target;
-import org.restcomm.connect.rvd.logging.system.LoggingContext;
-import org.restcomm.connect.rvd.logging.system.LoggingHelper;
-import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.project.Step;
-import org.restcomm.connect.rvd.storage.exceptions.StorageException;
-import org.restcomm.connect.rvd.utils.RvdUtils;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.log4j.Level;
 
 /**
  * Created by lefty on 6/24/15.
  */
-public class EmailStep extends Step {
+public class EmailStep extends BaseStep {
 
     String text;
     String to;
@@ -83,49 +71,6 @@ public class EmailStep extends Step {
     }
     public void setText(String text) {
         this.text = text;
-    }
-
-    public RcmlEmailStep render(Interpreter interpreter) {
-        RcmlEmailStep rcmlStep = new RcmlEmailStep();
-
-        if ( ! RvdUtils.isEmpty(getNext()) ) {
-            String newtarget = interpreter.getTarget().getNodename() + "." + getName() + ".actionhandler";
-            Map<String, String> pairs = new HashMap<String, String>();
-            pairs.put("target", newtarget);
-            String action = interpreter.buildAction(pairs);
-            rcmlStep.setAction(action);
-            rcmlStep.setMethod(getMethod());
-        }
-
-        rcmlStep.setFrom(interpreter.populateVariables(getFrom()));
-        rcmlStep.setSubject(interpreter.populateVariables(getSubject()));
-        rcmlStep.setTo(interpreter.populateVariables(getTo()));
-        rcmlStep.setCc(interpreter.populateVariables(getCc()));
-        rcmlStep.setBcc(interpreter.populateVariables(getBcc()));
-        rcmlStep.setStatusCallback(getStatusCallback());
-        rcmlStep.setText(interpreter.populateVariables(getText()));
-
-        return rcmlStep;
-    }
-
-    @Override
-    public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        LoggingContext logging = interpreter.getRvdContext().logging;
-        if (RvdLoggers.local.isEnabledFor(Level.INFO))
-            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling email action"));
-
-        if ( RvdUtils.isEmpty(getNext()) )
-            throw new InterpreterException( "'next' module is not defined for step " + getName() );
-
-        String EmailSid = interpreter.getRequestParams().getFirst("EmailSid");
-        String EmailStatus = interpreter.getRequestParams().getFirst("EmailStatus");
-
-        if ( EmailSid != null )
-            interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "EmailSid", EmailSid);
-        if (EmailStatus != null )
-            interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "EmailStatus", EmailStatus);
-
-        interpreter.interpret( getNext(), null, null, originTarget );
     }
 
 }

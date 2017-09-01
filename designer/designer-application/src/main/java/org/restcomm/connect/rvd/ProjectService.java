@@ -25,7 +25,7 @@ import org.restcomm.connect.rvd.interpreter.steps.InterpretedSmsStep;
 import org.restcomm.connect.rvd.interpreter.steps.InterpretedUssdSayStep;
 import org.restcomm.connect.rvd.jsonvalidation.ProjectValidator;
 import org.restcomm.connect.rvd.validation.ValidationErrorItem;
-import org.restcomm.connect.rvd.jsonvalidation.ValidationResult;
+import org.restcomm.connect.rvd.validation.ValidationResult;
 import org.restcomm.connect.rvd.jsonvalidation.exceptions.ValidationException;
 import org.restcomm.connect.rvd.jsonvalidation.exceptions.ValidationFrameworkException;
 import org.restcomm.connect.rvd.model.ModelMarshaler;

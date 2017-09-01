@@ -19,30 +19,8 @@
 
 package org.restcomm.connect.rvd.model.steps.log;
 
-import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.project.Step;
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 
-import javax.servlet.http.HttpServletRequest;
-
-public class LogStep extends Step {
-
-    private String message;
-
-    @Override
-    public RcmlStep render(Interpreter interpreter) throws InterpreterException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String process(Interpreter interpreter, HttpServletRequest httpRequest ) throws InterpreterException {
-        if ( interpreter.getRvdContext().getProjectSettings().getLogging() ) {
-            String expandedMessage = interpreter.populateVariables(message);
-            interpreter.getProjectLogger().log(expandedMessage).tag("app",interpreter.getAppName()).tag("ES").tag("LOG").done();
-        }
-        return null;
-    }
-
+public class LogStep extends BaseStep {
+    protected String message;
 }

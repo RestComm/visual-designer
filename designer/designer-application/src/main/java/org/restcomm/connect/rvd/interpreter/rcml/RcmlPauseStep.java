@@ -1,8 +1,7 @@
-package org.restcomm.connect.rvd.model.steps.pause;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 
-public class RcmlPauseStep extends RcmlStep {
+public class RcmlPauseStep extends Rcml {
     Integer length;
 
     public Integer getLength() {

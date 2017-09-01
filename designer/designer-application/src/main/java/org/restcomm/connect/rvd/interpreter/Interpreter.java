@@ -22,6 +22,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.restcomm.connect.rvd.ApplicationContext;
 import org.restcomm.connect.rvd.ProjectAwareRvdContext;
 import org.restcomm.connect.rvd.RvdConfiguration;
+import org.restcomm.connect.rvd.interpreter.rcml.Rcml;
 import org.restcomm.connect.rvd.logging.ProjectLogger;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.exceptions.RvdException;
@@ -32,30 +33,29 @@ import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.StepJsonDeserializer;
-import org.restcomm.connect.rvd.model.project.Step;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 import org.restcomm.connect.rvd.model.rcml.RcmlResponse;
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 import org.restcomm.connect.rvd.model.server.NodeName;
 import org.restcomm.connect.rvd.model.server.ProjectOptions;
-import org.restcomm.connect.rvd.model.steps.dial.ClientNounConverter;
-import org.restcomm.connect.rvd.model.steps.dial.ConferenceNounConverter;
-import org.restcomm.connect.rvd.model.steps.dial.NumberNounConverter;
-import org.restcomm.connect.rvd.model.steps.dial.RcmlClientNoun;
-import org.restcomm.connect.rvd.model.steps.dial.RcmlConferenceNoun;
-import org.restcomm.connect.rvd.model.steps.dial.RcmlDialStep;
-import org.restcomm.connect.rvd.model.steps.dial.RcmlNumberNoun;
-import org.restcomm.connect.rvd.model.steps.dial.RcmlSipuriNoun;
-import org.restcomm.connect.rvd.model.steps.dial.SipuriNounConverter;
-import org.restcomm.connect.rvd.model.steps.email.RcmlEmailStep;
+import org.restcomm.connect.rvd.interpreter.rcml.converters.ClientNounConverter;
+import org.restcomm.connect.rvd.interpreter.rcml.converters.ConferenceNounConverter;
+import org.restcomm.connect.rvd.interpreter.rcml.converters.NumberNounConverter;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlClientNoun;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlConferenceNoun;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlDialStep;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlNumberNoun;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlSipuriNoun;
+import org.restcomm.connect.rvd.interpreter.rcml.converters.SipuriNounConverter;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlEmailStep;
 import org.restcomm.connect.rvd.model.steps.es.AccessOperation;
 import org.restcomm.connect.rvd.model.steps.es.ExternalServiceStep;
 import org.restcomm.connect.rvd.model.steps.es.ValueExtractor;
-import org.restcomm.connect.rvd.model.steps.fax.FaxStepConverter;
-import org.restcomm.connect.rvd.model.steps.fax.RcmlFaxStep;
-import org.restcomm.connect.rvd.model.steps.email.EmailStepConverter;
+import org.restcomm.connect.rvd.interpreter.rcml.converters.FaxStepConverter;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlFaxStep;
+import org.restcomm.connect.rvd.interpreter.rcml.converters.EmailStepConverter;
 import org.restcomm.connect.rvd.model.steps.gather.RcmlGatherStep;
-import org.restcomm.connect.rvd.model.steps.hangup.RcmlHungupStep;
-import org.restcomm.connect.rvd.model.steps.pause.RcmlPauseStep;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlHungupStep;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlPauseStep;
 import org.restcomm.connect.rvd.model.steps.play.PlayStepConverter;
 import org.restcomm.connect.rvd.model.steps.play.RcmlPlayStep;
 import org.restcomm.connect.rvd.model.steps.record.RcmlRecordStep;
@@ -219,7 +219,7 @@ public class Interpreter {
         xstream.aliasField("Uri", RcmlDialStep.class, "sipuri");
 
         // xstream.aliasField(alias, definedIn, fieldName);
-        gson = new GsonBuilder().registerTypeAdapter(Step.class, new StepJsonDeserializer()).create();
+        gson = new GsonBuilder().registerTypeAdapter(BaseStep.class, new StepJsonDeserializer()).create();
     }
 
     public RvdConfiguration getConfiguration() {
@@ -306,7 +306,7 @@ public class Interpreter {
     }
 
 
-    public String interpret(String targetParam, RcmlResponse rcmlModel, Step prependStep, Target originTarget ) throws InterpreterException, StorageException {
+    public String interpret(String targetParam, RcmlResponse rcmlModel, InterpretableStep prependStep, Target originTarget ) throws InterpreterException, StorageException {
         if (RvdLoggers.local.isTraceEnabled())
             RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"interpret", rvdContext.logging.getPrefix(), "starting interpeter for " + targetParam));
         if ( rvdContext.getProjectSettings().getLogging() )
@@ -337,7 +337,7 @@ public class Interpreter {
 
             // Prepend step if required. Usually used for error messages
             if ( prependStep != null ) {
-                RcmlStep rcmlStep = prependStep.render(this);
+                Rcml rcmlStep = prependStep.render(this);
                 if(RvdLoggers.local.isTraceEnabled())
                     RvdLoggers.local.log(Level.TRACE,LoggingHelper.buildMessage(getClass(),"interpret", "Prepending say step: " + rcmlStep ));
                 rcmlModel.steps.add( rcmlStep );
@@ -351,13 +351,13 @@ public class Interpreter {
 
                 if (startstep_found) {
                     // we found our starting step. Let's start processing
-                    Step step = loadStep(stepname);
+                    InterpretableStep step = loadStep(stepname);
                     String rerouteTo = step.process(this, httpRequest); // is meaningful only for some of the steps like ExternalService steps
                     // check if we have to break the currently rendered module
                     if ( rerouteTo != null )
                         return interpret(rerouteTo, rcmlModel, null, target);
                     // otherwise continue rendering the current module
-                    RcmlStep rcmlStep = step.render(this);
+                    Rcml rcmlStep = step.render(this);
                     if ( rcmlStep != null)
                         rcmlModel.steps.add(rcmlStep);
                 }
@@ -369,11 +369,11 @@ public class Interpreter {
         return rcmlResult; // this is in case of an error
     }
 
-    private Step loadStep(String stepname) throws StorageException  {
+    private InterpretableStep loadStep(String stepname) throws StorageException  {
         String stepfile_json = FsProjectStorage.loadStep(appName, target.getNodename(), stepname, workspaceStorage);
-        Step step = gson.fromJson(stepfile_json, Step.class);
+        BaseStep step = gson.fromJson(stepfile_json, BaseStep.class);
 
-        return step;
+        return (InterpretableStep) step;
     }
 
 
@@ -421,7 +421,7 @@ public class Interpreter {
      * @param step
      * @return String The module name to continue rendering with
      */
-    private String processStep(Step step) throws InterpreterException {
+    private String processStep(BaseStep step) throws InterpreterException {
         if (step.getClass().equals(ExternalServiceStep.class)) {
 
         } // if (step.getClass().equals(ExternalServiceStep.class))

@@ -1,4 +1,4 @@
-package org.restcomm.connect.rvd.jsonvalidation;
+package org.restcomm.connect.rvd.validation;
 
 import java.util.ArrayList;
 import java.util.Iterator;

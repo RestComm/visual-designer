@@ -1,13 +1,7 @@
 package org.restcomm.connect.rvd.model.steps.dial;
 
-import java.util.HashMap;
-import java.util.Map;
 
-import org.restcomm.connect.rvd.utils.RvdUtils;
-import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-
-public class ConferenceDialNoun extends DialNoun {
+public class ConferenceDialNoun extends BaseDialNoun {
 
     public enum VideoMode {
         mcu, sfu
@@ -115,48 +109,39 @@ public class ConferenceDialNoun extends DialNoun {
         return videoOverlay;
     }
 
-    @Override
-    public RcmlNoun render(Interpreter interpreter) throws InterpreterException {
-        RcmlConferenceNoun rcmlNoun = new RcmlConferenceNoun();
+    public String getStatusCallback() {
+        return statusCallback;
+    }
 
-        // set waitUrl
-        if ( ! RvdUtils.isEmpty(getWaitModule()) ) {
-            Map<String, String> pairs = new HashMap<String, String>();
-            pairs.put("target", getWaitModule());
-            String action = interpreter.buildAction(pairs);
-            rcmlNoun.setWaitUrl( interpreter.getConfiguration().getApplicationsRelativeUrl() + "/" + interpreter.getAppName() + "/" + action  );
-        } else
-        if ( ! RvdUtils.isEmpty(getWaitUrl())) {
-            rcmlNoun.setWaitUrl(interpreter.populateVariables(getWaitUrl()));
-        }
+    public void setStatusCallback(String statusCallback) {
+        this.statusCallback = statusCallback;
+    }
 
-        rcmlNoun.setBeep(getBeep());
-        rcmlNoun.setMuted(getMuted());
-        rcmlNoun.setEndConferenceOnExit(getEndConferenceOnExit());
-        rcmlNoun.setStartConferenceOnEnter(getStartConferenceOnEnter());
-        rcmlNoun.setMaxParticipants(getMaxParticipants());
-        rcmlNoun.setWaitMethod(getWaitMethod());
-        rcmlNoun.setDestination( interpreter.populateVariables(getDestination() ));
-        if (!RvdUtils.isEmpty(statusCallback))
-            rcmlNoun.statusCallback = statusCallback;
-        else
-        if (!RvdUtils.isEmpty(statusCallbackModule)) {
-            Map<String, String> pairs = new HashMap<String, String>();
-            pairs.put("target", statusCallbackModule);
-            rcmlNoun.statusCallback = interpreter.buildAction(pairs);
-        }
-        // populate video attributes (only if video is supported by configuration)
-        if (interpreter.getConfiguration().getVideoSupport() && (this.enableVideo != null && this.enableVideo)) {
-            rcmlNoun.video = new RcmlConferenceNoun.Video();
-            rcmlNoun.video.enable = this.enableVideo;
-            if (this.videoMode != null)
-                rcmlNoun.video.mode = this.videoMode.toString();
-            rcmlNoun.video.resolution = this.videoResolution;
-            if (this.videoLayout != null)
-                rcmlNoun.video.layout = this.videoLayout.toString();
-            rcmlNoun.video.overlay = this.videoOverlay;
-        }
+    public String getStatusCallbackModule() {
+        return statusCallbackModule;
+    }
 
-        return rcmlNoun;
+    public void setStatusCallbackModule(String statusCallbackModule) {
+        this.statusCallbackModule = statusCallbackModule;
+    }
+
+    public void setEnableVideo(Boolean enableVideo) {
+        this.enableVideo = enableVideo;
+    }
+
+    public void setVideoMode(VideoMode videoMode) {
+        this.videoMode = videoMode;
+    }
+
+    public void setVideoResolution(String videoResolution) {
+        this.videoResolution = videoResolution;
+    }
+
+    public void setVideoLayout(VideoLayout videoLayout) {
+        this.videoLayout = videoLayout;
+    }
+
+    public void setVideoOverlay(String videoOverlay) {
+        this.videoOverlay = videoOverlay;
     }
 }

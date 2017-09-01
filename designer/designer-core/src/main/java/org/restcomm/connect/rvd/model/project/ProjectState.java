@@ -1,13 +1,7 @@
 package org.restcomm.connect.rvd.model.project;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.restcomm.connect.rvd.RvdConfiguration;
-import org.restcomm.connect.rvd.model.client.ExceptionHandlingInfo;
-import org.restcomm.connect.rvd.model.steps.say.SayStep;
-import org.restcomm.connect.rvd.model.steps.sms.SmsStep;
-import org.restcomm.connect.rvd.model.steps.ussdsay.UssdSayStep;
 
 public class ProjectState {
 

@@ -1,11 +1,10 @@
-package org.restcomm.connect.rvd.model.steps.email;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 
 /**
  * Created by lefty on 6/24/15.
  */
-public class RcmlEmailStep extends RcmlStep {
+public class RcmlEmailStep extends Rcml {
 
     String text;
     String from;

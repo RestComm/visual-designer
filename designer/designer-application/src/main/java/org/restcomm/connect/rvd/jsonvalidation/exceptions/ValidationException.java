@@ -1,7 +1,7 @@
 package org.restcomm.connect.rvd.jsonvalidation.exceptions;
 
 import org.restcomm.connect.rvd.exceptions.RvdException;
-import org.restcomm.connect.rvd.jsonvalidation.ValidationResult;
+import org.restcomm.connect.rvd.validation.ValidationResult;
 
 public class ValidationException extends RvdException {
     private ValidationResult validationResult;

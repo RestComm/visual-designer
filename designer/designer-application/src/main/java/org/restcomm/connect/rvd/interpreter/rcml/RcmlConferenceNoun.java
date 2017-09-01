@@ -1,7 +1,7 @@
-package org.restcomm.connect.rvd.model.steps.dial;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
 
-public class RcmlConferenceNoun extends RcmlNoun {
+public class RcmlConferenceNoun extends Rcml {
 
     public static class Video {
         public Boolean enable;
@@ -74,5 +74,17 @@ public class RcmlConferenceNoun extends RcmlNoun {
     }
     public void setMaxParticipants(Integer maxParticipants) {
         this.maxParticipants = maxParticipants;
+    }
+
+    public void setStatusCallback(String statusCallback) {
+        this.statusCallback = statusCallback;
+    }
+
+    public void setVideo(Video video) {
+        this.video = video;
+    }
+
+    public Video getVideo() {
+        return video;
     }
 }

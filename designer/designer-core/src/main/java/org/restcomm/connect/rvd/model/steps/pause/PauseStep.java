@@ -1,9 +1,9 @@
 package org.restcomm.connect.rvd.model.steps.pause;
 
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.project.Step;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 
-public class PauseStep extends Step {
+public class PauseStep extends BaseStep {
+
     Integer length;
 
     public Integer getLength() {
@@ -13,10 +13,5 @@ public class PauseStep extends Step {
     public void setLength(Integer length) {
         this.length = length;
     }
-    public RcmlPauseStep render(Interpreter interpreter) {
-        RcmlPauseStep rcmlStep = new RcmlPauseStep();
-        if ( getLength() != null )
-            rcmlStep.setLength(getLength());
-        return rcmlStep;
-    }
+
 }

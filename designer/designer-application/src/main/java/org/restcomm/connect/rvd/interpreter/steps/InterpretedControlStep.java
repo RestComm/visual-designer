@@ -3,10 +3,10 @@ package org.restcomm.connect.rvd.interpreter.steps;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.DefaultStepBehavior;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.interpreter.StepBehavior;
+import org.restcomm.connect.rvd.interpreter.InterpretableStep;
 import org.restcomm.connect.rvd.interpreter.Target;
+import org.restcomm.connect.rvd.interpreter.rcml.Rcml;
 import org.restcomm.connect.rvd.model.project.Node;
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 import org.restcomm.connect.rvd.model.steps.control.ControlStep;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.utils.RvdUtils;
@@ -22,19 +22,19 @@ import java.util.regex.Pattern;
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class InterpretedControlStep extends ControlStep implements StepBehavior {
+public class InterpretedControlStep extends ControlStep implements InterpretableStep {
 
-    static StepBehavior defaultStepBehavior = new DefaultStepBehavior();
+    static InterpretableStep defaultInterpretableStep = new DefaultStepBehavior();
 
 
     @Override
-    public RcmlStep render(Interpreter interpreter) throws InterpreterException {
-        return defaultStepBehavior.render(interpreter);
+    public Rcml render(Interpreter interpreter) throws InterpreterException {
+        return defaultInterpretableStep.render(interpreter);
     }
 
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        defaultStepBehavior.handleAction(interpreter,originTarget);
+        defaultInterpretableStep.handleAction(interpreter,originTarget);
     }
 
     public String process(Interpreter interpreter, HttpServletRequest httpRequest) throws InterpreterException {

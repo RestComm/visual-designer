@@ -25,8 +25,8 @@ import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.steps.control.ControlStep;
-import org.restcomm.connect.rvd.model.steps.dial.DialNoun;
-import org.restcomm.connect.rvd.model.steps.dial.DialNounJsonDeserializer;
+import org.restcomm.connect.rvd.model.steps.dial.BaseDialNoun;
+import org.restcomm.connect.rvd.storage.json.DialNounJsonDeserializer;
 import org.restcomm.connect.rvd.model.steps.dial.DialStep;
 import org.restcomm.connect.rvd.model.steps.email.EmailStep;
 import org.restcomm.connect.rvd.model.steps.es.ExternalServiceStep;
@@ -67,7 +67,7 @@ public class StepJsonDeserializer implements JsonDeserializer<Step> {
 
         Gson gson = new GsonBuilder()
             .registerTypeAdapter(Step.class, new StepJsonDeserializer())
-            .registerTypeAdapter(DialNoun.class, new DialNounJsonDeserializer())
+            .registerTypeAdapter(BaseDialNoun.class, new DialNounJsonDeserializer())
             .create();
 
         Step step;

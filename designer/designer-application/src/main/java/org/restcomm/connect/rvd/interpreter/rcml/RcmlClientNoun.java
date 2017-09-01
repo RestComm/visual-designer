@@ -1,7 +1,7 @@
-package org.restcomm.connect.rvd.model.steps.dial;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
 
-public class RcmlClientNoun extends RcmlNoun {
+public class RcmlClientNoun extends Rcml {
 
     public static class Video {
         public Boolean enable;
@@ -28,4 +28,19 @@ public class RcmlClientNoun extends RcmlNoun {
         this.url = url;
     }
 
+    public String getStatusCallback() {
+        return statusCallback;
+    }
+
+    public Video getVideo() {
+        return video;
+    }
+
+    public void setStatusCallback(String statusCallback) {
+        this.statusCallback = statusCallback;
+    }
+
+    public void setVideo(Video video) {
+        this.video = video;
+    }
 }

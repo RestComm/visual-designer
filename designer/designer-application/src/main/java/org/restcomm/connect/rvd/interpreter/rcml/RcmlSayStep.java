@@ -1,9 +1,7 @@
 package org.restcomm.connect.rvd.interpreter.rcml;
 
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 
-
-public class RcmlSayStep extends RcmlStep {
+public class RcmlSayStep extends Rcml {
     private String phrase;
     private String voice;
     private String language;

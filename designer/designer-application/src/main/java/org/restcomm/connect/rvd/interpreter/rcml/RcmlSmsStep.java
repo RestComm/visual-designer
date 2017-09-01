@@ -1,8 +1,6 @@
 package org.restcomm.connect.rvd.interpreter.rcml;
 
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
-
-public class RcmlSmsStep extends RcmlStep {
+public class RcmlSmsStep extends Rcml {
     String text;
     String from;
     String to;
