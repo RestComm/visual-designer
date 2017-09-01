@@ -1,18 +1,16 @@
-package org.restcomm.connect.rvd.model.steps.gather;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
-
-public class RcmlGatherStep extends RcmlStep {
+public class RcmlGatherStep extends Rcml {
     private String action;
     private String method;
     private Integer timeout;
     private String finishOnKey;
     private Integer numDigits;
 
-    private List<RcmlStep> steps = new ArrayList<RcmlStep>();
+    private List<Rcml> steps = new ArrayList<Rcml>();
 
     public String getAction() {
         return action;
@@ -22,11 +20,11 @@ public class RcmlGatherStep extends RcmlStep {
         this.action = action;
     }
 
-    public List<RcmlStep> getSteps() {
+    public List<Rcml> getSteps() {
         return steps;
     }
 
-    public void setSteps(List<RcmlStep> steps) {
+    public void setSteps(List<Rcml> steps) {
         this.steps = steps;
     }
 

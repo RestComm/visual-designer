@@ -53,7 +53,7 @@ import org.restcomm.connect.rvd.model.steps.es.ValueExtractor;
 import org.restcomm.connect.rvd.interpreter.rcml.converters.FaxStepConverter;
 import org.restcomm.connect.rvd.interpreter.rcml.RcmlFaxStep;
 import org.restcomm.connect.rvd.interpreter.rcml.converters.EmailStepConverter;
-import org.restcomm.connect.rvd.model.steps.gather.RcmlGatherStep;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlGatherStep;
 import org.restcomm.connect.rvd.interpreter.rcml.RcmlHungupStep;
 import org.restcomm.connect.rvd.interpreter.rcml.RcmlPauseStep;
 import org.restcomm.connect.rvd.interpreter.rcml.converters.PlayStepConverter;
