@@ -1,8 +1,6 @@
-package org.restcomm.connect.rvd.model.steps.record;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
-
-public class RcmlRecordStep extends RcmlStep {
+public class RcmlRecordStep extends Rcml {
     String action;
     String method;
     Integer timeout;

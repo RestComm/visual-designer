@@ -1,9 +1,7 @@
-package org.restcomm.connect.rvd.model.steps.play;
-
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
 
-public class RcmlPlayStep extends RcmlStep {
+public class RcmlPlayStep extends Rcml {
     private String wavurl;
     private Integer loop;
 

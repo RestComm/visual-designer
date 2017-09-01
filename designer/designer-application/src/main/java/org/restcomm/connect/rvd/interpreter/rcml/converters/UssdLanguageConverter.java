@@ -1,26 +1,28 @@
-package org.restcomm.connect.rvd.model.steps.ussdsay;
+package org.restcomm.connect.rvd.interpreter.rcml.converters;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.restcomm.connect.rvd.interpreter.rcml.UssdLanguageRcml;
 
-public class UssdSayStepConverter implements Converter {
+public class UssdLanguageConverter implements Converter {
 
-    public UssdSayStepConverter() {
+    public UssdLanguageConverter() {
         // TODO Auto-generated constructor stub
     }
 
     @Override
     public boolean canConvert(Class elementClass) {
-        return elementClass.equals(UssdSayRcml.class);
+        return elementClass.equals(UssdLanguageRcml.class);
     }
 
     @Override
     public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext arg2) {
-        UssdSayRcml step = (UssdSayRcml) value;
-        writer.setValue(step.text);
+        UssdLanguageRcml step = (UssdLanguageRcml) value;
+        if ( step.language != null )
+            writer.setValue(step.language);
     }
 
     @Override

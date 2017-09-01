@@ -1,8 +1,7 @@
-package org.restcomm.connect.rvd.model.steps.redirect;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 
-public class RcmlRedirectStep extends RcmlStep {
+public class RcmlRedirectStep extends Rcml {
     String url;
     String method;
 

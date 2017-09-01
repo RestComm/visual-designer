@@ -19,26 +19,17 @@
 
 package org.restcomm.connect.rvd.model.steps.ussdlanguage;
 
-import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.project.Step;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class UssdLanguageStep extends Step {
+public class UssdLanguageStep extends BaseStep {
 
-    String language;
+    protected String language;
 
     public UssdLanguageStep() {
         // TODO Auto-generated constructor stub
-    }
-
-    @Override
-    public UssdLanguageRcml render(Interpreter interpreter) throws InterpreterException {
-        UssdLanguageRcml rcml = new UssdLanguageRcml();
-        rcml.language = language;
-        return rcml;
     }
 
 }

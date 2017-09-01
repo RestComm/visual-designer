@@ -1,9 +1,8 @@
 package org.restcomm.connect.rvd.model.steps.reject;
 
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.project.Step;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 
-public class RejectStep extends Step {
+public class RejectStep extends BaseStep {
     String reason;
 
     public String getReason() {
@@ -12,12 +11,6 @@ public class RejectStep extends Step {
 
     public void setReason(String reason) {
         this.reason = reason;
-    }
-    public RcmlRejectStep render(Interpreter interpreter) {
-        RcmlRejectStep rcmlStep = new RcmlRejectStep();
-        if ( getReason() != null && !"".equals(getReason()))
-            rcmlStep.setReason(getReason());
-        return rcmlStep;
     }
 
 }

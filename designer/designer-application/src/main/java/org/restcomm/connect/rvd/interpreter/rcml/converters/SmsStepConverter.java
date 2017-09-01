@@ -1,10 +1,11 @@
-package org.restcomm.connect.rvd.model.steps.sms;
+package org.restcomm.connect.rvd.interpreter.rcml.converters;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.restcomm.connect.rvd.interpreter.rcml.RcmlSmsStep;
 
 public class SmsStepConverter implements Converter {
 

@@ -1,8 +1,7 @@
-package org.restcomm.connect.rvd.model.steps.reject;
+package org.restcomm.connect.rvd.interpreter.rcml;
 
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 
-public class RcmlRejectStep extends RcmlStep {
+public class RcmlRejectStep extends Rcml {
     String reason;
 
     public String getReason() {

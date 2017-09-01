@@ -19,59 +19,20 @@
 
 package org.restcomm.connect.rvd.model.steps.play;
 
-import java.net.URISyntaxException;
-import org.apache.log4j.Level;
+import org.restcomm.connect.rvd.model.project.BaseStep;
 
-import org.apache.http.client.utils.URIBuilder;
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.logging.system.LoggingContext;
-import org.restcomm.connect.rvd.logging.system.LoggingHelper;
-import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.project.Step;
-import org.restcomm.connect.rvd.model.rcml.RcmlStep;
+public class PlayStep extends BaseStep {
 
-public class PlayStep extends Step {
-    private Integer loop;
-    private String playType;
-    private Local local;
-    private Remote remote;
+    protected Integer loop;
+    protected String playType;
+    protected Local local;
+    protected Remote remote;
 
     public final class Local {
-        private String wavLocalFilename;
+        public String wavLocalFilename;
     }
     public final class Remote {
-        private String wavUrl;
-    }
-
-
-    @Override
-    public RcmlStep render(Interpreter interpreter) {
-        LoggingContext logging = interpreter.getRvdContext().logging;
-        RcmlPlayStep playStep = new RcmlPlayStep();
-        String url = "";
-        if ("local".equals(playType)) {
-            String rawurl = interpreter.getContextPath() + "/services/projects/" + interpreter.getAppName() + "/wavs/" + local.wavLocalFilename;
-            try {
-                URIBuilder uribuilder = new URIBuilder();
-                uribuilder.setPath(rawurl);
-                url = uribuilder.build().toString();
-            } catch (URISyntaxException e) {
-
-                    RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"render", logging.getPrefix(), "error parsing url for play verb: " + rawurl), e);
-                url = rawurl; // best effort
-            }
-        }
-        else {
-            url = interpreter.populateVariables(remote.wavUrl);
-        }
-
-        if (RvdLoggers.local.isTraceEnabled())
-            RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"render","{0} play url: {1}", new Object[] {logging.getPrefix(),url}));
-
-        playStep.setWavurl(url);
-        playStep.setLoop(loop);
-
-        return playStep;
+        public String wavUrl;
     }
 
 }
