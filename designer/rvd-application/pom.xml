@@ -8,9 +8,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <packaging>war</packaging>
 
-    <artifactId>designer-core</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>designer-application</artifactId>
 
     <dependencies>
         <dependency>
@@ -72,6 +72,13 @@
             <version>2.1.8</version>
         </dependency>
 
+        <!-- RVD dependencies -->
+        <dependency>
+            <groupId>org.restcomm</groupId>
+            <artifactId>rvd-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- Testing libraries -->
         <dependency>
             <groupId>junit</groupId>
@@ -126,5 +133,6 @@
 
         <!-- /Testing libraries -->
     </dependencies>
+
 
 </project>
