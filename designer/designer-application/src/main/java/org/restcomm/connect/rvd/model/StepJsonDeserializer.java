@@ -22,28 +22,28 @@ package org.restcomm.connect.rvd.model;
 import java.lang.reflect.Type;
 import org.apache.log4j.Logger;
 
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedControlStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedDialStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedEmailStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedExternalServiceStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedFaxStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedGatherStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedHungupStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedLogStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedPauseStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedPlayStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedRecordStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedRedirectStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedRejectStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedSayStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedSmsStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedUssdCollectStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedUssdLanguageStep;
+import org.restcomm.connect.rvd.interpreter.steps.InterpretedUssdSayStep;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.project.BaseStep;
-import org.restcomm.connect.rvd.model.steps.control.ControlStep;
 import org.restcomm.connect.rvd.model.steps.dial.BaseDialNoun;
 import org.restcomm.connect.rvd.storage.json.DialNounJsonDeserializer;
-import org.restcomm.connect.rvd.model.steps.dial.DialStep;
-import org.restcomm.connect.rvd.model.steps.email.EmailStep;
-import org.restcomm.connect.rvd.model.steps.es.ExternalServiceStep;
-import org.restcomm.connect.rvd.model.steps.fax.FaxStep;
-import org.restcomm.connect.rvd.model.steps.gather.GatherStep;
-import org.restcomm.connect.rvd.model.steps.hangup.HungupStep;
-import org.restcomm.connect.rvd.model.steps.log.LogStep;
-import org.restcomm.connect.rvd.model.steps.pause.PauseStep;
-import org.restcomm.connect.rvd.model.steps.play.PlayStep;
-import org.restcomm.connect.rvd.model.steps.record.RecordStep;
-import org.restcomm.connect.rvd.model.steps.redirect.RedirectStep;
-import org.restcomm.connect.rvd.model.steps.reject.RejectStep;
-import org.restcomm.connect.rvd.model.steps.say.SayStep;
-import org.restcomm.connect.rvd.model.steps.sms.SmsStep;
-import org.restcomm.connect.rvd.model.steps.ussdcollect.UssdCollectStep;
-import org.restcomm.connect.rvd.model.steps.ussdlanguage.UssdLanguageStep;
-import org.restcomm.connect.rvd.model.steps.ussdsay.UssdSayStep;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -72,41 +72,41 @@ public class StepJsonDeserializer implements JsonDeserializer<BaseStep> {
 
         BaseStep step;
         if ("say".equals(kind))
-            step = gson.fromJson(step_object, SayStep.class);
+            step = gson.fromJson(step_object, InterpretedSayStep.class);
         else if ("gather".equals(kind))
-            step = gson.fromJson(step_object, GatherStep.class);
+            step = gson.fromJson(step_object, InterpretedGatherStep.class);
         else if ("dial".equals(kind))
-            step = gson.fromJson(step_object, DialStep.class);
+            step = gson.fromJson(step_object, InterpretedDialStep.class);
         else if ("hungup".equals(kind))
-            step = gson.fromJson(step_object, HungupStep.class);
+            step = gson.fromJson(step_object, InterpretedHungupStep.class);
         else if ("play".equals(kind))
-            step = gson.fromJson(step_object, PlayStep.class);
+            step = gson.fromJson(step_object, InterpretedPlayStep.class);
         else if ("control".equals(kind))
-            step = gson.fromJson(step_object, ControlStep.class);
+            step = gson.fromJson(step_object, InterpretedControlStep.class);
         else if ("externalService".equals(kind))
-            step = gson.fromJson(step_object, ExternalServiceStep.class);
+            step = gson.fromJson(step_object, InterpretedExternalServiceStep.class);
         else if ("log".equals(kind))
-            step = gson.fromJson(step_object, LogStep.class);
+            step = gson.fromJson(step_object, InterpretedLogStep.class);
         else if ("redirect".equals(kind))
-            step = gson.fromJson(step_object, RedirectStep.class);
+            step = gson.fromJson(step_object, InterpretedRedirectStep.class);
         else if ("reject".equals(kind))
-            step = gson.fromJson(step_object, RejectStep.class);
+            step = gson.fromJson(step_object, InterpretedRejectStep.class);
         else if ("pause".equals(kind))
-            step = gson.fromJson(step_object, PauseStep.class);
+            step = gson.fromJson(step_object, InterpretedPauseStep.class);
         else if ("sms".equals(kind))
-            step = gson.fromJson(step_object, SmsStep.class);
+            step = gson.fromJson(step_object, InterpretedSmsStep.class);
         else if ("email".equals(kind))
-            step = gson.fromJson(step_object, EmailStep.class);
+            step = gson.fromJson(step_object, InterpretedEmailStep.class);
         else if ("record".equals(kind))
-            step = gson.fromJson(step_object, RecordStep.class);
+            step = gson.fromJson(step_object, InterpretedRecordStep.class);
         else if ("fax".equals(kind))
-            step = gson.fromJson(step_object, FaxStep.class);
+            step = gson.fromJson(step_object, InterpretedFaxStep.class);
         else if ("ussdSay".equals(kind))
-            step = gson.fromJson(step_object, UssdSayStep.class);
+            step = gson.fromJson(step_object, InterpretedUssdSayStep.class);
         else if ("ussdCollect".equals(kind))
-            step = gson.fromJson(step_object, UssdCollectStep.class);
+            step = gson.fromJson(step_object, InterpretedUssdCollectStep.class);
         else if ("ussdLanguage".equals(kind))
-            step = gson.fromJson(step_object, UssdLanguageStep.class);
+            step = gson.fromJson(step_object, InterpretedUssdLanguageStep.class);
         else {
             step = null;
             logger.error("Cannot deserialize step. Unknown step found."); // TODO remove me and return a nice value!!!
