@@ -23,6 +23,7 @@ package org.restcomm.connect.rvd;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.identity.AccountProvider;
+import org.restcomm.connect.rvd.stats.AggregateStats;
 
 /**
  * This class holds all objects whose lifecycle follows the rvd application.
@@ -37,6 +38,11 @@ public class ApplicationContext {
     CustomHttpClientBuilder httpClientBuilder;
     AccountProvider accountProvider;
     ProjectRegistry projectRegistry;
+    AggregateStats globalStats;
+
+    public ApplicationContext() {
+        globalStats = new AggregateStats();
+    }
 
     public RvdConfiguration getConfiguration() {
         return configuration;
@@ -52,5 +58,13 @@ public class ApplicationContext {
 
     public ProjectRegistry getProjectRegistry() {
         return projectRegistry;
+    }
+
+    public AggregateStats getGlobalStats() {
+        return globalStats;
+    }
+
+    public void setGlobalStats(AggregateStats globalStats) {
+        this.globalStats = globalStats;
     }
 }

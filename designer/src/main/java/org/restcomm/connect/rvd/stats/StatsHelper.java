@@ -18,24 +18,35 @@
  *
  */
 
-package org.restcomm.connect.rvd.concurrency;
-
-import org.restcomm.connect.rvd.stats.AggregateStats;
+package org.restcomm.connect.rvd.stats;
 
 /**
- * Information for a project that needs to stay in memory. For example semaphores etc.
- *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class ResidentProjectInfo {
-    public LogRotationSemaphore logRotationSemaphore = new LogRotationSemaphore(); // application log rotation synchronizes on this
-    public AggregateStats stats = new AggregateStats();
 
-    public AggregateStats getStats() {
-        return stats;
+
+public class StatsHelper {
+    public static void countRcmlRequestIncoming(AggregateStats aggregateStats) {
+        aggregateStats.rcmlRequestsTotal.incrementAndGet();
     }
 
-    public void setStats(AggregateStats stats) {
-        this.stats = stats;
+    public static void countEsCallTotal(AggregateStats stats) {
+        stats.esCallsTotal.incrementAndGet();
+    }
+
+    public static void countEsCallPending(AggregateStats stats, int delta ) {
+        stats.esCallsPending.addAndGet(delta);
+    }
+
+    public static void countEsCallTimeout(AggregateStats stats) {
+        stats.esCallsTimeout.incrementAndGet();
+    }
+
+    public static void countEsCallServerError(AggregateStats stats) {
+        stats.esCallsServerError.incrementAndGet();
+    }
+
+    public static void countEsCallSuccess(AggregateStats stats) {
+        stats.esCallsSuccess.incrementAndGet();
     }
 }
