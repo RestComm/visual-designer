@@ -9,7 +9,7 @@ import org.restcomm.connect.rvd.concurrency.ResidentProjectInfo;
 import org.restcomm.connect.rvd.exceptions.AuthorizationException;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.client.StateHeader;
+import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.stats.AppStatsDto;
 import org.restcomm.connect.rvd.stats.AggregateStats;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
@@ -140,7 +140,7 @@ public class StatsRestService extends SecuredRestService {
         String clientEmail = getUserIdentityContext().getAccountInfo().getEmail_address();
         String clientRole = getUserIdentityContext().getAccountInfo().getRole();
         // access control - user should be either Administrator or owner of the project
-        if (! ("Administator".equals(clientRole) || (clientEmail != null && clientEmail.equals(owner)) ))
+        if (! (RvdConfiguration.ADMINISTRATOR_ROLE.equals(clientRole) || (clientEmail != null && clientEmail.equals(owner)) ))
             throw new AuthorizationException();
 
     }

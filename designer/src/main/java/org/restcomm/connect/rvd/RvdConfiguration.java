@@ -80,6 +80,10 @@ public class RvdConfiguration {
     public static final String RESTCOMM_HEADER_PREFIX_DIAL = "DialSipHeader_"; // another prefix
     // File upload
     public static final String DEFAULT_MEDIA_ALLOWED_EXTENSIONS = "wav|mp4"; // only allow upload of media files whose name matches this pattern i.e. file extension ends in .wav or .mp4
+    // Security/Authentication options related to Restcomm
+    public static final String ADMINISTRATOR_ROLE = "Administrator"; // restcomm role that means _administrator_ access
+
+
     private Integer maxMediaFileSize; // Maximum size allowed for media file uploads (in bytes). If set to null no limit is enforced
 
     private String workspaceBasePath;
