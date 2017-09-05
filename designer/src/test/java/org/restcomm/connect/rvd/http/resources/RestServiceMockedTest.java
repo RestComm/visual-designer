@@ -33,7 +33,7 @@ import org.restcomm.connect.rvd.configuration.RestcommConfigBuilder;
 import org.restcomm.connect.rvd.identity.AccountProvider;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
-import org.restcomm.connect.rvd.model.client.ProjectState;
+import org.restcomm.connect.rvd.model.project.ProjectState;
 
 import javax.servlet.ServletContext;
 

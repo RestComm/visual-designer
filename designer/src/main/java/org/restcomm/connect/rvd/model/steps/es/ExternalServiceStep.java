@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.Level;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.restcomm.connect.rvd.RvdConfiguration;
+import org.restcomm.connect.rvd.concurrency.ResidentProjectInfo;
 import org.restcomm.connect.rvd.exceptions.ESRequestException;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
@@ -36,9 +39,11 @@ import org.restcomm.connect.rvd.interpreter.exceptions.RemoteServiceError;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.client.UrlParam;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
+import org.restcomm.connect.rvd.stats.AggregateStats;
+import org.restcomm.connect.rvd.stats.StatsHelper;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import com.google.gson.JsonElement;
@@ -67,6 +72,7 @@ public class ExternalServiceStep extends Step {
     private List<RouteMapping> routeMappings;
     //private String defaultNext;
     private String exceptionNext;
+    private Integer timeout; // timeout in milliseconds
     private String onTimeout;
 
 
@@ -170,6 +176,10 @@ public class ExternalServiceStep extends Step {
         return onTimeout;
     }
 
+    public Integer getTimeout() {
+        return timeout;
+    }
+
     @Override
     public RcmlStep render(Interpreter interpreter) throws InterpreterException {
         // TODO Auto-generated method stub
@@ -180,8 +190,12 @@ public class ExternalServiceStep extends Step {
     public String process(Interpreter interpreter, HttpServletRequest httpRequest ) throws InterpreterException {
         // cache this for easier access
         LoggingContext logging = interpreter.getRvdContext().logging;
+        Integer requestTimeout = null;
+        ResidentProjectInfo projectInfo = interpreter.getApplicationContext().getProjectRegistry().getResidentProjectInfo(interpreter.getAppName());
+        AggregateStats globalStats = interpreter.getApplicationContext().getGlobalStats();
+        // count ES request
+        StatsHelper.countEsCallTotal(projectInfo.stats);
 
-        //ExternalServiceStep esStep = (ExternalServiceStep) step;
         String next = null;
         try {
 
@@ -213,7 +227,16 @@ public class ExternalServiceStep extends Step {
 
             // *** Make the request and get a status code and a response. Build a JsonElement from the response  ***
 
-            CloseableHttpClient client = interpreter.getApplicationContext().getHttpClientBuilder().buildHttpClient(interpreter.getRvdContext().getConfiguration().getExternalServiceTimeout());
+            // Set the request timeout. Try with ES element 'timeout' property and if not set fallback to global configuration setting.
+            Integer configTimeout = interpreter.getRvdContext().getConfiguration().getExternalServiceTimeout();
+            if (getTimeout() != null)
+                requestTimeout = getTimeout();
+            else
+                requestTimeout = interpreter.getRvdContext().getConfiguration().getExternalServiceTimeout();
+            // if the effective timeout is greater than the one specified in configuration, truncate it to that value.
+            if (requestTimeout > configTimeout)
+                requestTimeout = configTimeout;
+            CloseableHttpClient client = interpreter.getApplicationContext().getHttpClientBuilder().buildHttpClient(requestTimeout);
             CloseableHttpResponse response;
             int statusCode;
             JsonElement response_element = null;
@@ -265,8 +288,21 @@ public class ExternalServiceStep extends Step {
                 // Add authentication headers if present
                 if ( !RvdUtils.isEmpty(getUsername()) )
                     request.addHeader("Authorization", "Basic " + RvdUtils.buildHttpAuthorizationToken(getUsername(), getPassword()));
+                // inject the Call ID as an HTTP header to help tracking calls
+                if (!RvdUtils.isEmpty(interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid")))
+                    request.addHeader("X-RestComm-CallSid", interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid"));
 
-                response = client.execute( request );
+                String appName = interpreter.getAppName(); // TODO remove me!!
+                try {
+                    // mark ES call as pending
+                    StatsHelper.countEsCallPending(projectInfo.stats,1);
+                    StatsHelper.countEsCallPending(globalStats, 1);
+                    response = client.execute(request);
+                } finally {
+                    // 'mark' as not pending when thread is unblocked
+                    StatsHelper.countEsCallPending(projectInfo.stats, -1); // decrease pending ES counter
+                    StatsHelper.countEsCallPending(globalStats, -1);
+                }
             } else
             if ( getMethod() == null || getMethod().equals("GET") || getMethod().equals("DELETE") ) {
                 HttpRequestBase request;
@@ -277,7 +313,19 @@ public class ExternalServiceStep extends Step {
 
                 if ( !RvdUtils.isEmpty(getUsername()) )
                     request.addHeader("Authorization", "Basic " + RvdUtils.buildHttpAuthorizationToken(getUsername(), getPassword()));
-                response = client.execute( request );
+                if (!RvdUtils.isEmpty(interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid")))
+                    request.addHeader("X-RestComm-CallSid", interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid"));
+
+
+                try {
+                    // mark ES call as pending
+                    StatsHelper.countEsCallPending(projectInfo.stats, 1);
+                    StatsHelper.countEsCallPending(globalStats, 1);
+                    response = client.execute(request);
+                } finally {
+                    StatsHelper.countEsCallPending(projectInfo.stats, -1); // decrease pending ES counter
+                    StatsHelper.countEsCallPending(globalStats, -1);
+                }
             } else
                 throw new InterpreterException("Unknonwn HTTP method specified: " + getMethod() );
 
@@ -288,14 +336,18 @@ public class ExternalServiceStep extends Step {
 
                 // In  case of error in the service no need to proceed. Just continue the "onException" module if set
                 if (statusCode >= 400 && statusCode < 600) {
+                    // counts HTTP errors returned
+                    StatsHelper.countEsCallServerError(projectInfo.stats);
+                    StatsHelper.countEsCallServerError(globalStats);
+                    // logging
                     if (RvdLoggers.local.isEnabledFor(Level.INFO))
                         RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"process", logging.getPrefix(), " remove service failed with: " + response.getStatusLine()));
+                    // invoke exception handler module if set
                     if (!RvdUtils.isEmpty(getExceptionNext()))
                         return getExceptionNext();
                     else
                         throw new RemoteServiceError("Service " + url + " failed with: " + response.getStatusLine() + ". Throwing an error since no 'On Remote Exception' has been defined.");
                 }
-
                 // Parse the response if (a) there are assignments or (b) there is dynamic or mapped routing
                 if (getAssignments() != null && getAssignments().size() > 0
                         || getDoRouting() && ("responseBased".equals(getNextType()) || "mapped".equals(getNextType()))) {
@@ -400,11 +452,25 @@ public class ExternalServiceStep extends Step {
             } catch (JsonSyntaxException e) {
                 throw new BadExternalServiceResponse("External Service request received a malformed JSON response" );
             }
+            // at this point we know we've had a successfull request with a valid and properly parsed response
+            // count the request as succesfull
+            StatsHelper.countEsCallSuccess(projectInfo.stats);
+            StatsHelper.countEsCallSuccess(globalStats);
 
         } catch (IOException e) {
-            // it this is a timeout error invoke onTimeout handler
-            if (e instanceof SocketTimeoutException && !RvdUtils.isEmpty(this.onTimeout)) {
-                next = this.onTimeout;
+            // it this is a timeout error log and invoke onTimeout handler
+            if (e instanceof SocketTimeoutException) {
+                // count this ES request as timed-out
+                StatsHelper.countEsCallTimeout(projectInfo.stats);
+                StatsHelper.countEsCallTimeout(globalStats);
+                // logging
+                String message = LoggingHelper.buildMessage(getClass(), "process", "[notify] {0} request to {1} timed out. Effective timeout was {2} ms.", new Object[]{logging.getPrefix(), getUrl(), requestTimeout});
+                RvdLoggers.local.log(Level.WARN, message);
+                if ( interpreter.getRvdContext().getProjectSettings().getLogging() )
+                    interpreter.getProjectLogger().log("Request timed out. Timeout set to " + requestTimeout).tag("app",interpreter.getAppName()).tag("ES").done();
+                // invoce onTimeout handler
+                if ( !RvdUtils.isEmpty(this.onTimeout) )
+                    next = this.onTimeout;
             } else
                 throw new ESRequestException("Problem while processing ExternalService step " + getName() + (e.getMessage() != null ? (" - " + e.getMessage()) : ""), e);
         }

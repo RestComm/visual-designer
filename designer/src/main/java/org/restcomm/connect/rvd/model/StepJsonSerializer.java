@@ -2,7 +2,7 @@ package org.restcomm.connect.rvd.model;
 
 import java.lang.reflect.Type;
 
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.steps.control.ControlStep;
 import org.restcomm.connect.rvd.model.steps.dial.DialStep;
 import org.restcomm.connect.rvd.model.steps.email.EmailStep;

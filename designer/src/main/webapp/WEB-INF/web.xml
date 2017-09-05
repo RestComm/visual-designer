@@ -57,6 +57,7 @@
 	<servlet-mapping>
 		<servlet-name>RVD Services</servlet-name>
 		<url-pattern>/services/*</url-pattern>
+		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
 
 	<!-- Disable JBoss RESTeasy JAX-RS implementation as it conflicts with Jersey -->

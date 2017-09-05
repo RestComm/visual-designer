@@ -156,15 +156,11 @@
 		<div ng-show="step.iface.optionsVisible">
 			<div class='row'>
 				<br/>
-				<!--
-                <div class="form-group col-lg-3">
-                    <label for="gatherTimeout">Timeout</label>
-                    <input ng-model='step.timeout' type="number" id="gatherTimeout" class="form-control" placeholder="5" tooltip-placement='left' tooltip='Time (in seconds) to wait for the caller to press another digit'>
-                </div>
-                -->
-				<div class="col-lg-3 input-group input-group-sm">
-					<span class="input-group-addon">{{'gatherStepFinishLabel' | translate}}</span>
-					<input ng-model='step.finishOnKey' auto-clear ng-pattern='/^[0-9\#\*]$/' type="text" class="form-control" placeholder="{{'gatherStepFinishPlaceholder' | translate}}">
+				<div class="col-lg-3">
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon">{{'gatherStepFinishLabel' | translate}}</span>
+						<input ng-model='step.finishOnKey' auto-clear ng-pattern='/^[0-9\#\*]$/' type="text" class="form-control" placeholder="{{'gatherStepFinishPlaceholder' | translate}}">
+					</div>
 				</div>
 
 				<!--
@@ -183,6 +179,14 @@
 						<div class="col-lg-10 col-md-10 com-sm-10 col-xs-10"> <span translate="gatherStepValidationConflictWarning"></span> </div>
 					</div>
 				</div>
+
+				<div class="form-group col-lg-3">
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon">{{'Timeout' | translate}}</span>
+						<input ng-model='step.timeout' auto-clear type="number" id="gatherTimeout" class="form-control mask-invalid" placeholder="5" title="{{'gatherTimeoutTooltip' | translate}}">
+					</div>
+				</div>
+
 				<!--
                 <div class="form-group col-lg-3">
                     <label for="numDigits">Number of digits</label>

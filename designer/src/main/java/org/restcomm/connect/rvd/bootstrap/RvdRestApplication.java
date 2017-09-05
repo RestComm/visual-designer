@@ -4,6 +4,7 @@ import javax.ws.rs.core.Application;
 
 //import org.restcomm.connect.rvd.http.GenericExceptionMapper;
 import org.restcomm.connect.rvd.http.GenericExceptionMapper;
+import org.restcomm.connect.rvd.http.ResourceNotFoundMapper;
 import org.restcomm.connect.rvd.http.ResponseWrapperExceptionMapper;
 import org.restcomm.connect.rvd.http.resources.ConfigurationRestService;
 import org.restcomm.connect.rvd.http.resources.NotificationsRestService;
@@ -16,6 +17,7 @@ import org.restcomm.connect.rvd.http.resources.ProjectRestService;
 import org.restcomm.connect.rvd.http.resources.RasRestService;
 import org.restcomm.connect.rvd.http.resources.RvdController;
 import org.restcomm.connect.rvd.http.resources.SettingsRestService;
+import org.restcomm.connect.rvd.http.resources.StatsRestService;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,12 +40,14 @@ public class RvdRestApplication extends Application {
         classes.add(DesignerRestService.class);
         classes.add(NotificationsRestService.class);
         classes.add(ConfigurationRestService.class);
+        classes.add(StatsRestService.class);
         // and exception mappers
         classes.add(ProjectDoesNotExistMapper.class);
         classes.add(StorageExceptionMapper.class);
         classes.add(AuthorizationExceptionMapper.class);
         classes.add(ResponseWrapperExceptionMapper.class);
         classes.add(GenericExceptionMapper.class);
+        classes.add(ResourceNotFoundMapper.class);
         return classes;
     }
 

@@ -27,7 +27,7 @@ import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 
 public class PlayStep extends Step {

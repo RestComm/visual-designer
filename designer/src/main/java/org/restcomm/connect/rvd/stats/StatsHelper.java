@@ -15,30 +15,38 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ *
  */
 
-package org.restcomm.connect.rvd.model.steps.ussdlanguage;
-
-import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.project.Step;
+package org.restcomm.connect.rvd.stats;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class UssdLanguageStep extends Step {
 
-    String language;
 
-    public UssdLanguageStep() {
-        // TODO Auto-generated constructor stub
+public class StatsHelper {
+    public static void countRcmlRequestIncoming(AggregateStats aggregateStats) {
+        aggregateStats.rcmlRequestsTotal.incrementAndGet();
     }
 
-    @Override
-    public UssdLanguageRcml render(Interpreter interpreter) throws InterpreterException {
-        UssdLanguageRcml rcml = new UssdLanguageRcml();
-        rcml.language = language;
-        return rcml;
+    public static void countEsCallTotal(AggregateStats stats) {
+        stats.esCallsTotal.incrementAndGet();
     }
 
+    public static void countEsCallPending(AggregateStats stats, int delta ) {
+        stats.esCallsPending.addAndGet(delta);
+    }
+
+    public static void countEsCallTimeout(AggregateStats stats) {
+        stats.esCallsTimeout.incrementAndGet();
+    }
+
+    public static void countEsCallServerError(AggregateStats stats) {
+        stats.esCallsServerError.incrementAndGet();
+    }
+
+    public static void countEsCallSuccess(AggregateStats stats) {
+        stats.esCallsSuccess.incrementAndGet();
+    }
 }

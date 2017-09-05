@@ -15,30 +15,24 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ *
  */
 
-package org.restcomm.connect.rvd.model.steps.ussdlanguage;
+package org.restcomm.connect.rvd.upgrade;
 
-import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.project.Step;
+import com.google.gson.JsonElement;
 
 /**
- * @author otsakir@gmail.com - Orestis Tsakiridis
+ * @author Orestis Tsakiridis
  */
-public class UssdLanguageStep extends Step {
-
-    String language;
-
-    public UssdLanguageStep() {
-        // TODO Auto-generated constructor stub
+public class ProjectUpgrader111to112 implements ProjectUpgrader {
+    @Override
+    public JsonElement upgrade(JsonElement sourceElement) {
+        return ProjectUpgrader10to11.setVersion(sourceElement, getResultingVersion());
     }
 
     @Override
-    public UssdLanguageRcml render(Interpreter interpreter) throws InterpreterException {
-        UssdLanguageRcml rcml = new UssdLanguageRcml();
-        rcml.language = language;
-        return rcml;
+    public String getResultingVersion() {
+        return "1.12";
     }
-
 }

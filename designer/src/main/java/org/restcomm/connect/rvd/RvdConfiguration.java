@@ -57,7 +57,7 @@ public class RvdConfiguration {
     public static final String USERS_DIRECTORY_NAME = "@users";
 
     public static final String WAVS_DIRECTORY_NAME = "wavs";
-    private static final String RVD_PROJECT_VERSION = "1.11"; // version for rvd project syntax
+    private static final String RVD_PROJECT_VERSION = "1.12"; // version for rvd project syntax
     private static final String PACKAGING_VERSION = "1.0";
     private static final String RAS_APPLICATION_VERSION = "2"; // version of the RAS application specification
     public static final String STICKY_PREFIX = "sticky_"; // a  prefix for rvd sticky variable names
@@ -80,6 +80,10 @@ public class RvdConfiguration {
     public static final String RESTCOMM_HEADER_PREFIX_DIAL = "DialSipHeader_"; // another prefix
     // File upload
     public static final String DEFAULT_MEDIA_ALLOWED_EXTENSIONS = "wav|mp4"; // only allow upload of media files whose name matches this pattern i.e. file extension ends in .wav or .mp4
+    // Security/Authentication options related to Restcomm
+    public static final String ADMINISTRATOR_ROLE = "Administrator"; // restcomm role that means _administrator_ access
+
+
     private Integer maxMediaFileSize; // Maximum size allowed for media file uploads (in bytes). If set to null no limit is enforced
 
     private String workspaceBasePath;

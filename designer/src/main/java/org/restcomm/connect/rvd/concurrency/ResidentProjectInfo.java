@@ -20,15 +20,22 @@
 
 package org.restcomm.connect.rvd.concurrency;
 
+import org.restcomm.connect.rvd.stats.AggregateStats;
+
 /**
  * Information for a project that needs to stay in memory. For example semaphores etc.
  *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class ResidentProjectInfo {
-
-    //public static class
-
     public LogRotationSemaphore logRotationSemaphore = new LogRotationSemaphore(); // application log rotation synchronizes on this
-    // ...
+    public AggregateStats stats = new AggregateStats();
+
+    public AggregateStats getStats() {
+        return stats;
+    }
+
+    public void setStats(AggregateStats stats) {
+        this.stats = stats;
+    }
 }
