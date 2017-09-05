@@ -27,6 +27,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.concurrency.ResidentProjectInfo;
 import org.restcomm.connect.rvd.exceptions.ESRequestException;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
@@ -287,6 +288,9 @@ public class ExternalServiceStep extends Step {
                 // Add authentication headers if present
                 if ( !RvdUtils.isEmpty(getUsername()) )
                     request.addHeader("Authorization", "Basic " + RvdUtils.buildHttpAuthorizationToken(getUsername(), getPassword()));
+                // inject the Call ID as an HTTP header to help tracking calls
+                if (!RvdUtils.isEmpty(interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid")))
+                    request.addHeader("X-RestComm-CallSid", interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid"));
 
                 String appName = interpreter.getAppName(); // TODO remove me!!
                 try {
@@ -309,6 +313,9 @@ public class ExternalServiceStep extends Step {
 
                 if ( !RvdUtils.isEmpty(getUsername()) )
                     request.addHeader("Authorization", "Basic " + RvdUtils.buildHttpAuthorizationToken(getUsername(), getPassword()));
+                if (!RvdUtils.isEmpty(interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid")))
+                    request.addHeader("X-RestComm-CallSid", interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid"));
+
 
                 try {
                     // mark ES call as pending
@@ -324,7 +331,9 @@ public class ExternalServiceStep extends Step {
 
             // got response
             try {
+
                 statusCode = response.getStatusLine().getStatusCode();
+
                 // In  case of error in the service no need to proceed. Just continue the "onException" module if set
                 if (statusCode >= 400 && statusCode < 600) {
                     // counts HTTP errors returned
