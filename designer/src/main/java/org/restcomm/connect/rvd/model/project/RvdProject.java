@@ -105,8 +105,8 @@ public abstract class RvdProject {
             throw new BadProjectHeader("No header found. This is probably an old project");
 
         StateHeader header = gson.fromJson(header_element, StateHeader.class);
-        if ( ! header.getVersion().equals(RvdConfiguration.getRvdProjectVersion()) )
-                throw new IncompatibleProjectVersion("Error loading project. Project version: " + header.getVersion() + " - RVD project version: " + RvdConfiguration.getRvdProjectVersion() );
+        if ( ! header.getVersion().equals(RvdConfiguration.RVD_PROJECT_VERSION) )
+                throw new IncompatibleProjectVersion("Error loading project. Project version: " + header.getVersion() + " - RVD project version: " + RvdConfiguration.RVD_PROJECT_VERSION );
         // Looks like a good project. Make a ProjectState object out of it
         ProjectState projectState = gson.fromJson(projectJson, ProjectState.class);
         return projectState;

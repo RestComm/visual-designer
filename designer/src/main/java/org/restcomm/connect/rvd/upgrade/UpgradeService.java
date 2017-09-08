@@ -196,9 +196,9 @@ public class UpgradeService {
             startVersion = "rvd714"; // assume this is an rvd714 project. It could be 713 as well...
         }
 
-        if ( startVersion.equals(RvdConfiguration.getRvdProjectVersion()) )
+        if ( startVersion.equals(RvdConfiguration.RVD_PROJECT_VERSION) )
             return null;
-        if ( checkBackwardCompatible(startVersion, RvdConfiguration.getRvdProjectVersion()) ) {
+        if ( checkBackwardCompatible(startVersion, RvdConfiguration.RVD_PROJECT_VERSION) ) {
             // if current binary is compatible with old project no need to batch upgrade
             return null;
         }
@@ -250,7 +250,7 @@ public class UpgradeService {
                 if ( upgradeProject(projectName) != null ) {
                     upgradedCount ++;
                     if(RvdLoggers.local.isEnabledFor(Level.INFO)) {
-                        RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace", "project '" + projectName + "' upgraded to version " + RvdConfiguration.getRvdProjectVersion() ));
+                        RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace", "project '" + projectName + "' upgraded to version " + RvdConfiguration.RVD_PROJECT_VERSION ));
                     }
                     try {
                         ProjectState projectState = FsProjectStorage.loadProject(projectName, workspaceStorage);
@@ -265,7 +265,7 @@ public class UpgradeService {
                     uptodateCount ++;
             } catch (StorageException | UpgradeException e) {
                 failedCount ++;
-                RvdLoggers.local.log(Level.ERROR, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace","error upgrading project '" + projectName + "' to version " + RvdConfiguration.getRvdProjectVersion()), e );
+                RvdLoggers.local.log(Level.ERROR, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace","error upgrading project '" + projectName + "' to version " + RvdConfiguration.RVD_PROJECT_VERSION), e );
             }
         }
         if ( failedCount > 0 )

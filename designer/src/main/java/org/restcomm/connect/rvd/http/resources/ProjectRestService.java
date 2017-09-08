@@ -355,7 +355,7 @@ public class ProjectRestService extends SecuredRestService {
                 UpgradeService upgradeService = new UpgradeService(workspaceStorage);
                 upgradeService.upgradeProject(applicationSid);
                 if (RvdLoggers.local.isEnabledFor(Level.INFO))
-                    RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "upgradeProject","{0} project {1} upgraded to version {2}", new Object[] {logging.getPrefix(), applicationSid, RvdConfiguration.getRvdProjectVersion() }));
+                    RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "upgradeProject","{0} project {1} upgraded to version {2}", new Object[] {logging.getPrefix(), applicationSid, RvdConfiguration.RVD_PROJECT_VERSION }));
                 // re-build project
                 BuildService buildService = new BuildService(workspaceStorage);
                 buildService.buildProject(applicationSid, activeProject);

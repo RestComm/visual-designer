@@ -82,7 +82,7 @@ public class FaxStep extends Step {
 
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        LoggingContext logging = interpreter.getRvdContext().logging;
+        LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling fax action"));
 

@@ -22,6 +22,7 @@ package org.restcomm.connect.rvd.model;
 import java.lang.reflect.Type;
 import org.apache.log4j.Logger;
 
+import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.steps.control.ControlStep;
@@ -58,6 +59,7 @@ import com.google.gson.JsonParseException;
  */
 public class StepJsonDeserializer implements JsonDeserializer<Step> {
     static final Logger logger = RvdLoggers.local;
+    RvdConfiguration configuration;
 
     @Override
     public Step deserialize(JsonElement rootElement, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {

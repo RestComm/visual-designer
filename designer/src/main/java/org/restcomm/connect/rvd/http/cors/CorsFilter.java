@@ -22,7 +22,7 @@ package org.restcomm.connect.rvd.http.cors;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
 import com.sun.jersey.spi.container.ContainerResponseFilter;
-import org.restcomm.connect.rvd.RvdConfiguration;
+import org.restcomm.connect.rvd.FileRvdConfiguration;
 import org.restcomm.connect.rvd.configuration.RvdConfig;
 
 import javax.ws.rs.ext.Provider;
@@ -45,7 +45,7 @@ public class CorsFilter implements ContainerResponseFilter {
 
         String webInfPath = rootPath.substring(0, rootPath.indexOf("/classes/"));
         File rvdXmlFile = new File(webInfPath + "/rvd.xml");
-        RvdConfig rvdConfig = RvdConfiguration.loadRvdXmlConfig(rvdXmlFile.getAbsolutePath());
+        RvdConfig rvdConfig = FileRvdConfiguration.loadRvdXmlConfig(rvdXmlFile.getAbsolutePath());
         allowedOrigins = rvdConfig.getAllowedCorsOrigins();
     }
 

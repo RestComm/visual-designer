@@ -238,7 +238,7 @@ public class ProjectService {
         if (header == null || header.getVersion() == null)
             return Status.BAD;
         try {
-            UpgradabilityStatus upgradable = UpgradeService.checkUpgradability(header.getVersion(), RvdConfiguration.getRvdProjectVersion());
+            UpgradabilityStatus upgradable = UpgradeService.checkUpgradability(header.getVersion(), RvdConfiguration.RVD_PROJECT_VERSION);
             if (upgradable == UpgradabilityStatus.NOT_NEEDED)
                 return Status.OK;
             else
@@ -327,7 +327,7 @@ public class ProjectService {
         // semantic validation
         validateSemantic(state,validationResult);
         // Make sure the current RVD project version is set
-        state.getHeader().setVersion(configuration.getRvdProjectVersion());
+        state.getHeader().setVersion(configuration.RVD_PROJECT_VERSION);
         // preserve project owner
         state.getHeader().setOwner(existingProject.getHeader().getOwner());
         //projectStorage.storeProject(projectName, state, false);
@@ -376,8 +376,8 @@ public class ProjectService {
             // Create a temporary workspace storage.
             WorkspaceStorage tempStorage = new WorkspaceStorage(tempProjectDir.getParent(), marshaler);
             // is this project compatible (current RVD can open and run without upgrading) ?
-            if ( ! UpgradeService.checkBackwardCompatible(version, RvdConfiguration.getRvdProjectVersion()) ) {
-                if ( UpgradeService.checkUpgradability(version, RvdConfiguration.getRvdProjectVersion()) == UpgradeService.UpgradabilityStatus.UPGRADABLE ) {
+            if ( ! UpgradeService.checkBackwardCompatible(version, RvdConfiguration.RVD_PROJECT_VERSION) ) {
+                if ( UpgradeService.checkUpgradability(version, RvdConfiguration.RVD_PROJECT_VERSION) == UpgradeService.UpgradabilityStatus.UPGRADABLE ) {
                     UpgradeService upgradeService = new UpgradeService(tempStorage);
                     upgradeService.upgradeProject(tempProjectDir.getName());
                     BuildService buildService = new BuildService(tempStorage);

@@ -30,7 +30,7 @@ public class ProjectState {
         StateHeader header = new StateHeader();
         header.owner = owner;
         header.projectKind = kind;
-        header.version = RvdConfiguration.getRvdProjectVersion();
+        header.version = RvdConfiguration.RVD_PROJECT_VERSION;
         header.startNodeName = "start";
         state.setHeader(header);
 
@@ -54,7 +54,7 @@ public class ProjectState {
         StateHeader header = new StateHeader();
         header.owner = owner;
         header.projectKind = kind;
-        header.version = RvdConfiguration.getRvdProjectVersion();
+        header.version = RvdConfiguration.RVD_PROJECT_VERSION;
         header.startNodeName = "start";
         state.setHeader(header);
 
@@ -78,7 +78,7 @@ public class ProjectState {
         StateHeader header = new StateHeader();
         header.owner = owner;
         header.projectKind = kind;
-        header.version = RvdConfiguration.getRvdProjectVersion();
+        header.version = RvdConfiguration.RVD_PROJECT_VERSION;
         header.startNodeName = "start";
         state.setHeader(header);
 

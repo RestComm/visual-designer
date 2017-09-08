@@ -189,7 +189,7 @@ public class ExternalServiceStep extends Step {
     @Override
     public String process(Interpreter interpreter, HttpServletRequest httpRequest ) throws InterpreterException {
         // cache this for easier access
-        LoggingContext logging = interpreter.getRvdContext().logging;
+        LoggingContext logging = interpreter.getLoggingContext();
         Integer requestTimeout = null;
         ResidentProjectInfo projectInfo = interpreter.getApplicationContext().getProjectRegistry().getResidentProjectInfo(interpreter.getAppName());
         AggregateStats globalStats = interpreter.getApplicationContext().getGlobalStats();
@@ -228,11 +228,11 @@ public class ExternalServiceStep extends Step {
             // *** Make the request and get a status code and a response. Build a JsonElement from the response  ***
 
             // Set the request timeout. Try with ES element 'timeout' property and if not set fallback to global configuration setting.
-            Integer configTimeout = interpreter.getRvdContext().getConfiguration().getExternalServiceTimeout();
+            Integer configTimeout = interpreter.getConfiguration().getExternalServiceTimeout();
             if (getTimeout() != null)
                 requestTimeout = getTimeout();
             else
-                requestTimeout = interpreter.getRvdContext().getConfiguration().getExternalServiceTimeout();
+                requestTimeout = interpreter.getConfiguration().getExternalServiceTimeout();
             // if the effective timeout is greater than the one specified in configuration, truncate it to that value.
             if (requestTimeout > configTimeout)
                 requestTimeout = configTimeout;
@@ -243,7 +243,7 @@ public class ExternalServiceStep extends Step {
 
             if (RvdLoggers.local.isDebugEnabled())
                 RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"process",logging.getPrefix(), "requesting from url: " + url));
-            if ( interpreter.getRvdContext().getProjectSettings().getLogging() )
+            if ( interpreter.getProjectSettings().getLogging() )
                 interpreter.getProjectLogger().log("Requesting from url: " + url).tag("app",interpreter.getAppName()).tag("ES").tag("REQUEST").done();
 
             if ( "POST".equals(getMethod()) || "PUT".equals(getMethod()) ) {
@@ -357,7 +357,7 @@ public class ExternalServiceStep extends Step {
                         String entity_string = EntityUtils.toString(entity);
                         //logger.info("ES: Received " + entity_string.length() + " bytes");
                         //logger.debug("ES Response: " + entity_string);
-                        if (interpreter.getRvdContext().getProjectSettings().getLogging())
+                        if (interpreter.getProjectSettings().getLogging())
                             interpreter.getProjectLogger().log(entity_string).tag("app", interpreter.getAppName()).tag("ES").tag("RESPONSE").done();
                         response_element = parser.parse(entity_string);
                     }
@@ -466,7 +466,7 @@ public class ExternalServiceStep extends Step {
                 // logging
                 String message = LoggingHelper.buildMessage(getClass(), "process", "[notify] {0} request to {1} timed out. Effective timeout was {2} ms.", new Object[]{logging.getPrefix(), getUrl(), requestTimeout});
                 RvdLoggers.local.log(Level.WARN, message);
-                if ( interpreter.getRvdContext().getProjectSettings().getLogging() )
+                if ( interpreter.getProjectSettings().getLogging() )
                     interpreter.getProjectLogger().log("Request timed out. Timeout set to " + requestTimeout).tag("app",interpreter.getAppName()).tag("ES").done();
                 // invoce onTimeout handler
                 if ( !RvdUtils.isEmpty(this.onTimeout) )

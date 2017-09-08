@@ -77,7 +77,6 @@ public class RvdController extends SecuredRestService {
     LoggingContext logging; // contectual information regardin logging including app Id and call Id to be prefixed to log messages.
     Pattern appIdPattern = Pattern.compile("^apps\\/([a-zA-Z0-9]+)(\\/|$)");
 
-    private RvdConfiguration rvdSettings;
     private ProjectAwareRvdContext rvdContext;
 
     private WorkspaceStorage workspaceStorage;
@@ -100,7 +99,6 @@ public class RvdController extends SecuredRestService {
         } catch (ProjectDoesNotExist projectDoesNotExist) {
             throw new ResponseWrapperException( Response.status(Status.NOT_FOUND).build() );
         }
-        rvdSettings = rvdContext.getConfiguration();
         marshaler = rvdContext.getMarshaler();
         workspaceStorage = rvdContext.getWorkspaceStorage();
     }
@@ -119,9 +117,8 @@ public class RvdController extends SecuredRestService {
             if (!FsProjectStorage.projectExists(appname, workspaceStorage))
                 return Response.status(Status.NOT_FOUND).build();
 
-            String targetParam = requestParams.getFirst("target");
-            Interpreter interpreter = new Interpreter(rvdContext, targetParam, appname, httpRequest, requestParams,
-                    workspaceStorage,applicationContext);
+            Interpreter interpreter = new Interpreter(appname, httpRequest, requestParams,
+                    workspaceStorage,applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings() );
             rcmlResponse = interpreter.interpret();
 
             // logging rcml response, if configured
@@ -302,7 +299,7 @@ public class RvdController extends SecuredRestService {
                 if ("token".equals(paramName) || "from".equals(paramName) || "to".equals(paramName))
                     continue; // skip parameters that are used by WebTrigger itself i.e. to/from/token
                 // ignore builtin parameters that will be supplied by restcomm when it reaches for the controller
-                if (!rvdSettings.getRestcommParameterNames().contains(paramName)) {
+                if (!RvdConfiguration.builtinRestcommParameters.contains(paramName)) {
                     // the rest are consider user-supplied params and need to be propagated to the url
                     if (RvdUtils.isEmpty(info.userParamScope) || "mod".equals(info.userParamScope))
                         // create module scoped param if userParamScope is 'mod' or empty

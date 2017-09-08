@@ -54,7 +54,7 @@ public class DialStep extends Step {
 
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        LoggingContext logging = interpreter.getRvdContext().logging;
+        LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling dial action"));
         if ( RvdUtils.isEmpty(nextModule) )
@@ -68,7 +68,7 @@ public class DialStep extends Step {
         String restcommRecordingUrl = interpreter.getRequestParams().getFirst("RecordingUrl");
         if ( restcommRecordingUrl != null ) {
             try {
-                String recordingUrl = interpreter.convertRecordingFileResourceHttp(restcommRecordingUrl, interpreter.getHttpRequest());
+                String recordingUrl = interpreter.convertRecordingFileResourceHttp(restcommRecordingUrl);
                 interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "RecordingUrl", recordingUrl);
             } catch (URISyntaxException e) {
                 RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "cannot convert file URL to http URL - " + restcommRecordingUrl), e);

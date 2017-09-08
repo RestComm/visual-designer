@@ -151,7 +151,7 @@ public class RasService {
             RappInfo info = workspaceStorage.loadModelFromXMLFile(tempDir.getPath() + "/app/" + "info.xml", RappInfo.class);
             RappConfig config = workspaceStorage.loadModelFromFile(tempDir.getPath() + "/app/" + "config", RappConfig.class);
             // check project version from info.xml
-            if ( ! UpgradeService.checkBackwardCompatible(info.getRvdAppVersion(), RvdConfiguration.getRvdProjectVersion()) && UpgradeService.checkUpgradability(info.getRvdAppVersion(), RvdConfiguration.getRvdProjectVersion()) != UpgradeService.UpgradabilityStatus.UPGRADABLE ) {
+            if ( ! UpgradeService.checkBackwardCompatible(info.getRvdAppVersion(), RvdConfiguration.RVD_PROJECT_VERSION) && UpgradeService.checkUpgradability(info.getRvdAppVersion(), RvdConfiguration.RVD_PROJECT_VERSION) != UpgradeService.UpgradabilityStatus.UPGRADABLE ) {
                 throw new UnsupportedProjectVersion("Project version " + info.getRvdAppVersion() + " is not supported");
             }
             // check ras package version
@@ -163,7 +163,7 @@ public class RasService {
                     //effectivePackageVersion = 1; // already done
                 }
             }
-            int runtimePackageVersion = Integer.parseInt(RvdConfiguration.getRasApplicationVersion());
+            int runtimePackageVersion = Integer.parseInt(RvdConfiguration.RAS_APPLICATION_VERSION);
             if (runtimePackageVersion < effectivePackageVersion)
                 throw new UnsupportedRasApplicationVersion("Incompatible application package. Version " + effectivePackageVersion + " is not supported");
             // Make sure no such restcomm app already exists (single instance limitation)
@@ -199,8 +199,8 @@ public class RasService {
             throw new RvdValidationException("Cannot validate rapp", report);
 
         // set version since they are affected from the current RVD runtime
-        rapp.getInfo().setRasVersion(RvdConfiguration.getRasApplicationVersion());
-        rapp.getInfo().setRvdAppVersion(RvdConfiguration.getRvdProjectVersion());
+        rapp.getInfo().setRasVersion(RvdConfiguration.RAS_APPLICATION_VERSION);
+        rapp.getInfo().setRvdAppVersion(RvdConfiguration.RVD_PROJECT_VERSION);
 
         // preserve the app's id
         Rapp existingRapp = FsPackagingStorage.loadRapp(projectName,workspaceStorage);
@@ -222,8 +222,8 @@ public class RasService {
             throw new RvdValidationException("Cannot validate rapp", report);
 
         // set version since they are affected from the current RVD runtime
-        rapp.getInfo().setRasVersion(RvdConfiguration.getRasApplicationVersion());
-        rapp.getInfo().setRvdAppVersion(RvdConfiguration.getRvdProjectVersion());
+        rapp.getInfo().setRasVersion(RvdConfiguration.RAS_APPLICATION_VERSION);
+        rapp.getInfo().setRvdAppVersion(RvdConfiguration.RVD_PROJECT_VERSION);
 
         // rapp.getInfo().setId(generateAppId(projectName)); // Let the RAS administrator choose an id for the app after submission
         FsPackagingStorage.storeRapp(rapp, projectName, workspaceStorage);

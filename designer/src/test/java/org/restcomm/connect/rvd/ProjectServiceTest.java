@@ -32,7 +32,7 @@ public class ProjectServiceTest {
     public void testProjectStatusResolving() {
         ProjectService projectService = new ProjectService();
 
-        StateHeader header = new StateHeader("voice","start", RvdConfiguration.getRvdProjectVersion());
+        StateHeader header = new StateHeader("voice","start", RvdConfiguration.RVD_PROJECT_VERSION);
         // latest RVD project version should be ok.
         Assert.assertEquals(ProjectService.Status.OK ,projectService.projectStatus(header));
         // null header should return BAD

@@ -50,7 +50,7 @@ public class ProjectUpgraderTest {
         // check the version changes
         JsonElement rootElement = upgradeService.upgradeProject("project3");
         String upgradedVersion = ProjectUpgrader10to11.getVersion(rootElement);
-        Assert.assertEquals("Actual upgraded project version is wrong", RvdConfiguration.getRvdProjectVersion(), upgradedVersion);
+        Assert.assertEquals("Actual upgraded project version is wrong", RvdConfiguration.RVD_PROJECT_VERSION, upgradedVersion);
         // make sure the project builds also
         ProjectState project = FsProjectStorage.loadProject("collectMenuProject", workspaceStorage);
         buildService.buildProject("project3", project);

@@ -38,7 +38,7 @@ public class LogStep extends Step {
 
     @Override
     public String process(Interpreter interpreter, HttpServletRequest httpRequest ) throws InterpreterException {
-        if ( interpreter.getRvdContext().getProjectSettings().getLogging() ) {
+        if ( interpreter.getProjectSettings().getLogging() ) {
             String expandedMessage = interpreter.populateVariables(message);
             interpreter.getProjectLogger().log(expandedMessage).tag("app",interpreter.getAppName()).tag("ES").tag("LOG").done();
         }
