@@ -49,7 +49,7 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.RappItem;
 import org.restcomm.connect.rvd.model.client.ProjectItem;
-import org.restcomm.connect.rvd.model.client.ProjectState;
+import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.packaging.Rapp;
 import org.restcomm.connect.rvd.model.packaging.RappBinaryInfo;
 import org.restcomm.connect.rvd.model.packaging.RappConfig;

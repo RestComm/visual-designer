@@ -31,7 +31,7 @@ import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.steps.ussdsay.UssdSayStep;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -82,7 +82,7 @@ public class UssdCollectStep extends Step {
 
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        LoggingContext logging = interpreter.getRvdContext().logging;
+        LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling UssdCollect action"));
 

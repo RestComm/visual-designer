@@ -55,10 +55,12 @@ import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.UserProfile;
 import org.restcomm.connect.rvd.model.callcontrol.CallControlAction;
 import org.restcomm.connect.rvd.model.callcontrol.CallControlStatus;
-import org.restcomm.connect.rvd.model.client.StateHeader;
+import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.restcomm.RestcommAccountInfo;
 import org.restcomm.connect.rvd.restcomm.RestcommClient;
 import org.restcomm.connect.rvd.restcomm.RestcommCallArray;
+import org.restcomm.connect.rvd.stats.AggregateStats;
+import org.restcomm.connect.rvd.stats.StatsHelper;
 import org.restcomm.connect.rvd.storage.FsProfileDao;
 import org.restcomm.connect.rvd.storage.ProfileDao;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
@@ -75,7 +77,6 @@ public class RvdController extends SecuredRestService {
     LoggingContext logging; // contectual information regardin logging including app Id and call Id to be prefixed to log messages.
     Pattern appIdPattern = Pattern.compile("^apps\\/([a-zA-Z0-9]+)(\\/|$)");
 
-    private RvdConfiguration rvdSettings;
     private ProjectAwareRvdContext rvdContext;
 
     private WorkspaceStorage workspaceStorage;
@@ -94,11 +95,10 @@ public class RvdController extends SecuredRestService {
         try {
             logging = new LoggingContext(); // TODO put call ID information here
             logging.appendApplicationSid(applicationId);
-            rvdContext = new ProjectAwareRvdContext(applicationId, applicationContext.getProjectRegistry().getProjectSemaphores(applicationId),request, servletContext, applicationContext.getConfiguration(), logging);
+            rvdContext = new ProjectAwareRvdContext(applicationId, applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId),request, servletContext, applicationContext.getConfiguration(), logging);
         } catch (ProjectDoesNotExist projectDoesNotExist) {
             throw new ResponseWrapperException( Response.status(Status.NOT_FOUND).build() );
         }
-        rvdSettings = rvdContext.getConfiguration();
         marshaler = rvdContext.getMarshaler();
         workspaceStorage = rvdContext.getWorkspaceStorage();
     }
@@ -117,9 +117,8 @@ public class RvdController extends SecuredRestService {
             if (!FsProjectStorage.projectExists(appname, workspaceStorage))
                 return Response.status(Status.NOT_FOUND).build();
 
-            String targetParam = requestParams.getFirst("target");
-            Interpreter interpreter = new Interpreter(rvdContext, targetParam, appname, httpRequest, requestParams,
-                    workspaceStorage,applicationContext);
+            Interpreter interpreter = new Interpreter(appname, httpRequest, requestParams,
+                    workspaceStorage,applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings() );
             rcmlResponse = interpreter.interpret();
 
             // logging rcml response, if configured
@@ -155,6 +154,11 @@ public class RvdController extends SecuredRestService {
             RvdLoggers.global.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"controllerGet",logging.getPrefix(), "incoming GET request"));
         if (RvdLoggers.local.isDebugEnabled())
             RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"controllerGet","{0}request details: {1}", new Object[] {logging.getPrefix(), ui.getRequestUri().toString()}));
+        // count the request
+        AggregateStats projectStats = applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId).stats; // at this point we know that we have a valid applicationId
+        StatsHelper.countRcmlRequestIncoming(projectStats);
+        AggregateStats globalStats = applicationContext.getGlobalStats();
+        StatsHelper.countRcmlRequestIncoming(globalStats);
 
         Enumeration<String> headerNames = (Enumeration<String>) httpRequest.getHeaderNames();
         // TODO remove this loop (?)
@@ -176,6 +180,11 @@ public class RvdController extends SecuredRestService {
             RvdLoggers.global.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"controllerPost",logging.getPrefix(), "incoming POST request"));
         if (RvdLoggers.local.isDebugEnabled())
             RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"controllerPost","{0}POST request: {1} form: {2}", new Object[] {logging.getPrefix(), ui.getRequestUri().toString(), requestParams.toString()}));
+        // count the request
+        AggregateStats projectStats = applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId).stats; // at this point we know that we have a valid applicationId
+        StatsHelper.countRcmlRequestIncoming(projectStats);
+        AggregateStats globalStats = applicationContext.getGlobalStats();
+        StatsHelper.countRcmlRequestIncoming(globalStats);
 
         return runInterpreter(applicationId, httpRequest, requestParams);
     }
@@ -290,7 +299,7 @@ public class RvdController extends SecuredRestService {
                 if ("token".equals(paramName) || "from".equals(paramName) || "to".equals(paramName))
                     continue; // skip parameters that are used by WebTrigger itself i.e. to/from/token
                 // ignore builtin parameters that will be supplied by restcomm when it reaches for the controller
-                if (!rvdSettings.getRestcommParameterNames().contains(paramName)) {
+                if (!RvdConfiguration.builtinRestcommParameters.contains(paramName)) {
                     // the rest are consider user-supplied params and need to be propagated to the url
                     if (RvdUtils.isEmpty(info.userParamScope) || "mod".equals(info.userParamScope))
                         // create module scoped param if userParamScope is 'mod' or empty

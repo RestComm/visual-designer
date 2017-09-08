@@ -21,7 +21,7 @@ package org.restcomm.connect.rvd.model.steps.log;
 
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ public class LogStep extends Step {
 
     @Override
     public String process(Interpreter interpreter, HttpServletRequest httpRequest ) throws InterpreterException {
-        if ( interpreter.getRvdContext().getProjectSettings().getLogging() ) {
+        if ( interpreter.getProjectSettings().getLogging() ) {
             String expandedMessage = interpreter.populateVariables(message);
             interpreter.getProjectLogger().log(expandedMessage).tag("app",interpreter.getAppName()).tag("ES").tag("LOG").done();
         }

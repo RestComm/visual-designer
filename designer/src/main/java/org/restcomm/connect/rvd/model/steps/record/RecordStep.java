@@ -32,7 +32,7 @@ import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.interpreter.Target;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 /**
@@ -130,7 +130,7 @@ public class RecordStep extends Step {
 
     @Override
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        LoggingContext logging = interpreter.getRvdContext().logging;
+        LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling record action"));
 
@@ -145,7 +145,7 @@ public class RecordStep extends Step {
         String restcommRecordingUrl = interpreter.getRequestParams().getFirst("RecordingUrl");
         if ( restcommRecordingUrl != null ) {
             try {
-                String recordingUrl = interpreter.convertRecordingFileResourceHttp(restcommRecordingUrl, interpreter.getHttpRequest());
+                String recordingUrl = interpreter.convertRecordingFileResourceHttp(restcommRecordingUrl);
                 interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "RecordingUrl", recordingUrl);
             } catch (URISyntaxException e) {
 

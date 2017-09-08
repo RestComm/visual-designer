@@ -22,9 +22,7 @@ package org.restcomm.connect.rvd;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.restcomm.connect.rvd.ProjectService;
-import org.restcomm.connect.rvd.RvdConfiguration;
-import org.restcomm.connect.rvd.model.client.StateHeader;
+import org.restcomm.connect.rvd.model.project.StateHeader;
 
 /**
  * @author orestis.tsakiridis@telestax.com - Orestis Tsakiridis
@@ -34,7 +32,7 @@ public class ProjectServiceTest {
     public void testProjectStatusResolving() {
         ProjectService projectService = new ProjectService();
 
-        StateHeader header = new StateHeader("voice","start", RvdConfiguration.getRvdProjectVersion());
+        StateHeader header = new StateHeader("voice","start", RvdConfiguration.RVD_PROJECT_VERSION);
         // latest RVD project version should be ok.
         Assert.assertEquals(ProjectService.Status.OK ,projectService.projectStatus(header));
         // null header should return BAD

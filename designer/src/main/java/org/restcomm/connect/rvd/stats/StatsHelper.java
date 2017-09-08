@@ -18,39 +18,35 @@
  *
  */
 
-package org.restcomm.connect.rvd;
-
-import org.restcomm.connect.rvd.configuration.RestcommConfig;
-
-import java.net.URI;
-import java.net.URISyntaxException;
+package org.restcomm.connect.rvd.stats;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class RvdConfigurationBuilder {
-    private URI restcommBaseUri;
-    private RestcommConfig restcommConfig;
 
-    public RvdConfigurationBuilder() {
+
+public class StatsHelper {
+    public static void countRcmlRequestIncoming(AggregateStats aggregateStats) {
+        aggregateStats.rcmlRequestsTotal.incrementAndGet();
     }
 
-    public RvdConfigurationBuilder setRestcommConfig(RestcommConfig restcommConfig) {
-        this.restcommConfig = restcommConfig;
-        return this;
+    public static void countEsCallTotal(AggregateStats stats) {
+        stats.esCallsTotal.incrementAndGet();
     }
 
-    public RvdConfigurationBuilder setRestcommBaseUri(String uriString) {
-        try {
-            this.restcommBaseUri = new URI(uriString);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-        return this;
+    public static void countEsCallPending(AggregateStats stats, int delta ) {
+        stats.esCallsPending.addAndGet(delta);
     }
 
-    public RvdConfiguration build() {
-        RvdConfiguration instance = new FileRvdConfiguration(null, null,restcommConfig,null,null,restcommBaseUri);
-        return instance;
+    public static void countEsCallTimeout(AggregateStats stats) {
+        stats.esCallsTimeout.incrementAndGet();
+    }
+
+    public static void countEsCallServerError(AggregateStats stats) {
+        stats.esCallsServerError.incrementAndGet();
+    }
+
+    public static void countEsCallSuccess(AggregateStats stats) {
+        stats.esCallsSuccess.incrementAndGet();
     }
 }

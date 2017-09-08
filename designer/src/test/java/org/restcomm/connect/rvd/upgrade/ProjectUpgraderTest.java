@@ -26,12 +26,10 @@ import org.junit.Test;
 import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
-import org.restcomm.connect.rvd.model.client.ProjectState;
+import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
-import org.restcomm.connect.rvd.upgrade.ProjectUpgrader10to11;
-import org.restcomm.connect.rvd.upgrade.UpgradeService;
 import org.restcomm.connect.rvd.upgrade.exceptions.UpgradeException;
 
 /**
@@ -52,7 +50,7 @@ public class ProjectUpgraderTest {
         // check the version changes
         JsonElement rootElement = upgradeService.upgradeProject("project3");
         String upgradedVersion = ProjectUpgrader10to11.getVersion(rootElement);
-        Assert.assertEquals("Actual upgraded project version is wrong", RvdConfiguration.getRvdProjectVersion(), upgradedVersion);
+        Assert.assertEquals("Actual upgraded project version is wrong", RvdConfiguration.RVD_PROJECT_VERSION, upgradedVersion);
         // make sure the project builds also
         ProjectState project = FsProjectStorage.loadProject("collectMenuProject", workspaceStorage);
         buildService.buildProject("project3", project);

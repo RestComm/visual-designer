@@ -28,8 +28,8 @@ import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.client.Node;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Node;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 import java.util.ArrayList;
@@ -163,7 +163,7 @@ public class GatherStep extends Step {
     }
 
     private boolean handleMapping(Interpreter interpreter, Target originTarget, String key, List<? extends Mapping> mappings, boolean isPattern) throws StorageException, InterpreterException {
-        LoggingContext logging = interpreter.getRvdContext().logging;
+        LoggingContext logging = interpreter.getLoggingContext();
         if (mappings != null) {
             for (Mapping mapping : mappings) {
 
@@ -195,7 +195,7 @@ public class GatherStep extends Step {
         } else if (validation.regexPattern != null) {
             effectivePattern = interpreter.populateVariables(validation.regexPattern);
         } else {
-            RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(), "handleAction", interpreter.getRvdContext().logging.getPrefix(), " Invalid validation information in gather. Validation object exists while other patterns are null"));
+            RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(), "handleAction", interpreter.getLoggingContext().getPrefix(), " Invalid validation information in gather. Validation object exists while other patterns are null"));
         }
         return effectivePattern;
     }
@@ -229,7 +229,7 @@ public class GatherStep extends Step {
     }
 
     private boolean handleCollect(final Interpreter interpreter, Target originTarget, final Collectdigits collect, String newValue, Validation validation) throws StorageException, InterpreterException {
-        LoggingContext logging = interpreter.getRvdContext().logging;
+        LoggingContext logging = interpreter.getLoggingContext();
         String effectivePattern = getPattern(interpreter, validation);
         String variableName = collect.collectVariable;
         String variableValue = newValue;
@@ -251,7 +251,7 @@ public class GatherStep extends Step {
     }
 
     public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
-        LoggingContext logging = interpreter.getRvdContext().logging;
+        LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), "handling gather action"));
 

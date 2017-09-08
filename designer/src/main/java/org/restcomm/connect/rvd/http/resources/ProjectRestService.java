@@ -58,8 +58,8 @@ import org.restcomm.connect.rvd.model.CallControlInfo;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.client.ProjectItem;
-import org.restcomm.connect.rvd.model.client.ProjectState;
-import org.restcomm.connect.rvd.model.client.StateHeader;
+import org.restcomm.connect.rvd.model.project.ProjectState;
+import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.storage.FsCallControlInfoStorage;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
@@ -355,7 +355,7 @@ public class ProjectRestService extends SecuredRestService {
                 UpgradeService upgradeService = new UpgradeService(workspaceStorage);
                 upgradeService.upgradeProject(applicationSid);
                 if (RvdLoggers.local.isEnabledFor(Level.INFO))
-                    RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "upgradeProject","{0} project {1} upgraded to version {2}", new Object[] {logging.getPrefix(), applicationSid, RvdConfiguration.getRvdProjectVersion() }));
+                    RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "upgradeProject","{0} project {1} upgraded to version {2}", new Object[] {logging.getPrefix(), applicationSid, RvdConfiguration.RVD_PROJECT_VERSION }));
                 // re-build project
                 BuildService buildService = new BuildService(workspaceStorage);
                 buildService.buildProject(applicationSid, activeProject);

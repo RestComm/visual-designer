@@ -2,7 +2,7 @@ package org.restcomm.connect.rvd.model;
 
 import java.lang.reflect.Type;
 
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.packaging.RappInfo;
 
 import com.google.gson.Gson;

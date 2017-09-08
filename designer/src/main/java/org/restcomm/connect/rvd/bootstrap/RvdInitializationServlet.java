@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 
 import org.restcomm.connect.rvd.ApplicationContext;
 import org.restcomm.connect.rvd.ApplicationContextBuilder;
+import org.restcomm.connect.rvd.FileRvdConfiguration;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
@@ -32,10 +33,12 @@ public class RvdInitializationServlet extends HttpServlet {
         ServletContext servletContext = config.getServletContext();
         // first initialize RVD local logging
         RvdLoggers.init(servletContext.getRealPath("/../../log/rvd/"));
-        logger.info("--- Initializing RVD. Project version: " + RvdConfiguration.getRvdProjectVersion() + " ---");
+        logger.info("--- Initializing RVD. Project version: " + RvdConfiguration.RVD_PROJECT_VERSION + " ---");
         RvdConfiguration rvdConfiguration;
         try {
-            rvdConfiguration = new RvdConfiguration(servletContext);
+            FileRvdConfiguration fileRvdconfiguration = new FileRvdConfiguration(servletContext);
+            logger.info(fileRvdconfiguration.toString());
+            rvdConfiguration = fileRvdconfiguration;
         } catch (Exception e) {
             logger.log(Level.ERROR, "Error loading rvd configuration file rvd.xml. RVD operation will be broken.",e);
             throw e;

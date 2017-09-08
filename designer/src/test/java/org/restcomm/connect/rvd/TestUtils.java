@@ -22,11 +22,10 @@ package org.restcomm.connect.rvd;
 
 import org.apache.commons.io.FileUtils;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
-import org.restcomm.connect.rvd.model.client.ProjectState;
+import org.restcomm.connect.rvd.model.project.ProjectState;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Random;
 
@@ -76,7 +75,7 @@ public class TestUtils {
         URL url = TestUtils.class.getResource("contexts/" + contextToUse + "/restcomm-rvd.war");
         File rvdRoot = null;
         rvdRoot = new File(url.getFile());
-        return new RvdConfiguration("/restcomm-rvd", rvdRoot.getPath() + "/");
+        return new FileRvdConfiguration("/restcomm-rvd", rvdRoot.getPath() + "/");
     }
 
     public static RvdConfiguration initRvdConfiguration() {

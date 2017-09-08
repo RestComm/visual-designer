@@ -20,7 +20,6 @@ import java.net.URLEncoder;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.restcomm.connect.rvd.ApplicationContext;
-import org.restcomm.connect.rvd.ProjectAwareRvdContext;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.logging.ProjectLogger;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
@@ -28,11 +27,12 @@ import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.UndefinedTarget;
 import org.restcomm.connect.rvd.interpreter.exceptions.BadExternalServiceResponse;
 import org.restcomm.connect.rvd.interpreter.exceptions.InvalidAccessOperationAction;
+import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.StepJsonDeserializer;
-import org.restcomm.connect.rvd.model.client.Step;
+import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.rcml.RcmlResponse;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 import org.restcomm.connect.rvd.model.server.NodeName;
@@ -86,37 +86,18 @@ import com.thoughtworks.xstream.XStream;
 
 public class Interpreter {
 
-    private RvdConfiguration configuration;
+    private ApplicationContext applicationContext;
     private HttpServletRequest httpRequest;
     private ProjectLogger projectLogger;
-    private ProjectAwareRvdContext rvdContext;
-    private ApplicationContext applicationContext;
-
-    public ProjectLogger getProjectLogger() {
-        return projectLogger;
-    }
-
-    public ProjectAwareRvdContext getRvdContext() {
-        return rvdContext;
-    }
-
-    public void setProjectLogger(ProjectLogger projectLogger) {
-        this.projectLogger = projectLogger;
-    }
-
-    public void setConfiguration(RvdConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
+    private LoggingContext loggingContext;
+    private ProjectSettings projectSettings;
     private WorkspaceStorage workspaceStorage;
-    private ModelMarshaler marshaler;
 
     private XStream xstream;
     private Gson gson;
     private String targetParam;
     private Target target;
     private String appName;
-   // private Map<String,String> requestParameters; // parameters like digits, callSid etc.
     MultivaluedMap<String, String> requestParams;
 
     private String contextPath;
@@ -130,24 +111,21 @@ public class Interpreter {
     }
 
 
-    public Interpreter(ProjectAwareRvdContext rvdContext, String targetParam, String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, WorkspaceStorage workspaceStorage, ApplicationContext applicationContext) {
-        this.rvdContext = rvdContext;
-        this.configuration = rvdContext.getConfiguration();
+    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, WorkspaceStorage workspaceStorage, ApplicationContext applicationContext, LoggingContext loggingContext, ProjectLogger projectLogger, ProjectSettings projectSettings) {
         this.httpRequest = httpRequest;
         this.targetParam = requestParams.getFirst("target");
-        //this.targetParam = targetParam;
         this.appName = appName;
         this.requestParams = requestParams;
         this.workspaceStorage = workspaceStorage;
-        this.marshaler = rvdContext.getMarshaler();
-        this.projectLogger = rvdContext.getProjectLogger();
+        this.projectLogger = projectLogger;
         this.applicationContext = applicationContext;
+        this.loggingContext = loggingContext;
+        this.projectSettings = projectSettings;
 
         this.contextPath = httpRequest.getContextPath();
         init();
     }
 
-    // common intializations for all constructors
     private void init() {
         xstream = new XStream();
         xstream.registerConverter(new SayStepConverter());
@@ -229,8 +207,20 @@ public class Interpreter {
         gson = new GsonBuilder().registerTypeAdapter(Step.class, new StepJsonDeserializer()).create();
     }
 
+    public ProjectLogger getProjectLogger() {
+        return projectLogger;
+    }
+
+    public LoggingContext getLoggingContext() {
+        return loggingContext;
+    }
+
+    public ProjectSettings getProjectSettings() {
+        return projectSettings;
+    }
+
     public RvdConfiguration getConfiguration() {
-        return configuration;
+        return applicationContext.getConfiguration();
     }
 
     public String getAppName() {
@@ -239,15 +229,6 @@ public class Interpreter {
 
     public ApplicationContext getApplicationContext() {
         return applicationContext;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-
-
-    public HttpServletRequest getHttpRequest() {
-        return httpRequest;
     }
 
     public Map<String, String> getVariables() {
@@ -282,7 +263,7 @@ public class Interpreter {
             if (targetParam == null)
                 throw new UndefinedTarget();
             if (RvdLoggers.local.isTraceEnabled())
-                RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"interpret", rvdContext.logging.getPrefix(), "override default target to " + targetParam));
+                RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"interpret", loggingContext.getPrefix(), "override default target to " + targetParam));
         }
 
         processBootstrapParameters();
@@ -307,16 +288,10 @@ public class Interpreter {
         return contextPath;
     }
 
-
-    public void setContextPath(String contextPath) {
-        this.contextPath = contextPath;
-    }
-
-
     public String interpret(String targetParam, RcmlResponse rcmlModel, Step prependStep, Target originTarget ) throws InterpreterException, StorageException {
         if (RvdLoggers.local.isTraceEnabled())
-            RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"interpret", rvdContext.logging.getPrefix(), "starting interpeter for " + targetParam));
-        if ( rvdContext.getProjectSettings().getLogging() )
+            RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"interpret", loggingContext.getPrefix(), "starting interpeter for " + targetParam));
+        if ( projectSettings.getLogging() )
             projectLogger.log("Running target: " + targetParam).tag("app",appName).done();
 
         target = Interpreter.parseTarget(targetParam);
@@ -502,7 +477,7 @@ public class Interpreter {
                     encodedValue = URLEncoder.encode( value, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
 
-                        RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"buildAction", rvdContext.logging.getPrefix(), "error encoding RVD variable " + key + ": " + value), e);
+                        RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"buildAction", loggingContext.getPrefix(), "error encoding RVD variable " + key + ": " + value), e);
                 }
 
             query += key + "=" + encodedValue;
@@ -523,7 +498,7 @@ public class Interpreter {
                         encodedValue = URLEncoder.encode( value, "UTF-8");
                     } catch (UnsupportedEncodingException e) {
 
-                            RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"buildAction", rvdContext.logging.getPrefix(),"error encoding RVD variable " + variableName + ": " + value), e);
+                            RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"buildAction", loggingContext.getPrefix(),"error encoding RVD variable " + variableName + ": " + value), e);
                     }
 
                 query += variableName + "=" + encodedValue;
@@ -597,13 +572,13 @@ public class Interpreter {
      * @param fileResource
      * @return
      */
-    public String convertRecordingFileResourceHttp(String fileResource, HttpServletRequest request) throws URISyntaxException {
+    public String convertRecordingFileResourceHttp(String fileResource) throws URISyntaxException {
         String httpResource = fileResource; // assume this is already an http resource
 
         URIBuilder fileUriBuilder = new URIBuilder(fileResource);
 
         if ( ! fileUriBuilder.isAbsolute() ) {
-                RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"convertRecordingFileResourceHttp", rvdContext.logging.getPrefix(),"cannot convert file URL to http URL - " + fileResource));
+                RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"convertRecordingFileResourceHttp", loggingContext.getPrefix(),"cannot convert file URL to http URL - " + fileResource));
             return "";
         }
 
@@ -615,7 +590,7 @@ public class Interpreter {
             int filenameBeforeStartPos = fileResource.lastIndexOf('/');
             if ( filenameBeforeStartPos != -1 ) {
                 wavFilename = fileResource.substring(filenameBeforeStartPos+1);
-                URIBuilder httpUriBuilder = new URIBuilder().setScheme(request.getScheme()).setHost(request.getLocalAddr()).setPort(request.getServerPort()).setPath("/restcomm/recordings/" + wavFilename);
+                URIBuilder httpUriBuilder = new URIBuilder().setScheme(httpRequest.getScheme()).setHost(httpRequest.getLocalAddr()).setPort(httpRequest.getServerPort()).setPath("/restcomm/recordings/" + wavFilename);
                 httpResource = httpUriBuilder.build().toString();
             }
         }
@@ -781,9 +756,9 @@ public class Interpreter {
                     value = valueElement.getAsJsonPrimitive().getAsString();
                     getVariables().put(name, value);
                     if (RvdLoggers.local.isTraceEnabled())
-                        RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"processBootstrapParameters", rvdContext.logging.getPrefix(),"loaded bootstrap parameter: " + name + " - " + value));
+                        RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"processBootstrapParameters", loggingContext.getPrefix(),"loaded bootstrap parameter: " + name + " - " + value));
                 } else
-                    RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"processBootstrapParameters", rvdContext.logging.getPrefix(), "warning. Not-string bootstrap value found for parameter: " + name));
+                    RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"processBootstrapParameters", loggingContext.getPrefix(), "warning. Not-string bootstrap value found for parameter: " + name));
             }
         }
     }
