@@ -5,8 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Set;
 
+import com.google.gson.Gson;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -62,10 +62,6 @@ public class FileRvdConfiguration implements RvdConfiguration {
     private boolean ussdSupport;
     // whitelabeling configuration
     private String welcomeMessage;
-
-    // package-private constructor to be used from RvdConfigurationBuilder
-    FileRvdConfiguration() {
-    }
 
     public FileRvdConfiguration(ServletContext servletContext) {
         this(servletContext.getContextPath(), servletContext.getRealPath("/"));
@@ -155,6 +151,9 @@ public class FileRvdConfiguration implements RvdConfiguration {
                 logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"load",null,"Error parsing rvd.xml:ussd/enabled option. Falling back to default: " + ussdSupport),e);
             }
         }
+        // External service timeout
+        initExternalServiceTimeout();
+
         // load whitelabeling configuration
         loadWhitelabelConfig(contextRootPath + "WEB-INF/whitelabel.xml");
     }
@@ -233,22 +232,6 @@ public class FileRvdConfiguration implements RvdConfiguration {
         return this.workspaceBasePath + File.separator + projectName;
     }
 
-    public static String getRvdProjectVersion() {
-        return RVD_PROJECT_VERSION;
-    }
-
-    public static String getPackagingVersion() {
-        return PACKAGING_VERSION;
-    }
-
-    public static String getRasApplicationVersion() {
-        return RAS_APPLICATION_VERSION;
-    }
-
-    public static Set<String> getRestcommParameterNames() {
-        return builtinRestcommParameters;
-    }
-
     @Override
     public SslMode getSslMode() {
         return sslMode;
@@ -256,8 +239,12 @@ public class FileRvdConfiguration implements RvdConfiguration {
 
     @Override
     public Integer getExternalServiceTimeout() {
+        return externalServiceTimeout;
+    }
+
+    private void initExternalServiceTimeout() {
         if (externalServiceTimeout != null)
-            return externalServiceTimeout;
+            return;
         if (rvdConfig != null && rvdConfig.getExternalServiceTimeout() != null && rvdConfig.getExternalServiceTimeout().trim().length() > 0) {
             try {
                 this.externalServiceTimeout = Integer.parseInt(rvdConfig.getExternalServiceTimeout());
@@ -268,7 +255,6 @@ public class FileRvdConfiguration implements RvdConfiguration {
         } else {
             this.externalServiceTimeout = DEFAULT_ES_TIMEOUT;
         }
-        return this.externalServiceTimeout;
     }
 
     @Override
@@ -309,6 +295,31 @@ public class FileRvdConfiguration implements RvdConfiguration {
         return restcommBaseUri;
     }
 
+    @Override
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        Gson gson = new Gson();
+        buffer.append("--- Effective RVD Configuration ---");
+        buffer.append("\n maxMediaFileSize:\t").append(getMaxMediaFileSize());
+        buffer.append("\n workspaceBasePath (evaluated from rvd.xml/workspaceLocation):\t").append(getWorkspaceBasePath());
+        //buffer.append("\n rvdConfig (private):\t").append( gson.toJson(rvdConfig, RvdConfig.class));
+        //buffer.append("\n restcommConfig (private):\t").append( gson.toJson(restcommConfig, RestcommConfig.class));
+        buffer.append("\n contextRootPath:\t").append(contextRootPath);
+        buffer.append("\n contextPath:\t").append(contextPath);
+        buffer.append("\n videoSupport:\t").append(getVideoSupport());
+        buffer.append("\n sslMode:\t").append(getSslMode());
+        buffer.append("\n hostnameOverride:\t").append(getHostnameOverride());
+        buffer.append("\n useHostnameToResolveRelativeUrl:\t").append(getUseHostnameToResolveRelativeUrl());
+        buffer.append("\n baseUrl:\t").append(getBaseUrl());
+        buffer.append("\n userAbsoluteApplicationUrl:\t").append(useAbsoluteApplicationUrl());
+        buffer.append("\n ussdSupport:\t").append(isUssdSupport());
+        buffer.append("\n welcomeMessage:\t").append(getWelcomeMessage());
+        buffer.append("\n restcommBaseUri:\t").append(restcommBaseUri);
+        buffer.append("\n\nNote, some null properties like restcommBaseUri are lazily initialized. ");
+
+        return buffer.toString();
+    }
+
     /*
      * Returns a relative url to the base of the application service. Controllers are located under it.
      * Currently hardcoded to /restcomm-rvd/services/apps/
@@ -318,11 +329,6 @@ public class FileRvdConfiguration implements RvdConfiguration {
     @Override
     public String getApplicationsRelativeUrl() {
         return "/restcomm-rvd/services/apps";
-    }
-
-    // package private setter to be used from RvdConfigurationBuilder only
-    void setRestcommBaseUri(URI uri) {
-        this.restcommBaseUri = uri;
     }
 
     @Override

@@ -36,7 +36,9 @@ public class RvdInitializationServlet extends HttpServlet {
         logger.info("--- Initializing RVD. Project version: " + RvdConfiguration.RVD_PROJECT_VERSION + " ---");
         RvdConfiguration rvdConfiguration;
         try {
-            rvdConfiguration = new FileRvdConfiguration(servletContext);
+            FileRvdConfiguration fileRvdconfiguration = new FileRvdConfiguration(servletContext);
+            logger.info(fileRvdconfiguration.toString());
+            rvdConfiguration = fileRvdconfiguration;
         } catch (Exception e) {
             logger.log(Level.ERROR, "Error loading rvd configuration file rvd.xml. RVD operation will be broken.",e);
             throw e;
