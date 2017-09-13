@@ -1,4 +1,4 @@
-App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAliveResource, authentication, notifications, $state) {
+App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAliveResource, authentication, notifications, $state, urlStateTracker) {
 	$rootScope.$on("$routeChangeError", function(event, current, previous, rejection) {
         //console.log('on $routeChangeError');
         if ( rejection == "AUTHENTICATION_ERROR" ) {
@@ -19,6 +19,7 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
 	    // see AuthService.checkAccess() for error definitions
 	    if (error == "NEED_LOGIN") {
     	    event.preventDefault();
+    	    urlStateTracker.remember($location);
 	        $state.go('root.public.login');
 	    }
 	    else
@@ -60,6 +61,8 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
     // this is where you'd log them
     $scope.$on('IdleTimeout', function() {
         authentication.doLogout();
+        // store current url to return to after login
+        urlStateTracker.remember($location);
         $state.go('root.public.login');
         notifications.put({type:"danger", message:"Your session has expired!", timeout:0});
     });
@@ -160,17 +163,18 @@ angular.module('Rvd').controller('headerCtrl', function ($scope, $modal) {
 });
 
 var loginCtrl = angular.module('Rvd')
-.controller('loginCtrl', ['authentication', '$scope', '$http', 'notifications', '$location', function (authentication, $scope, $http, notifications, $location) {
+.controller('loginCtrl', function (authentication, $scope, $http, notifications, $location, urlStateTracker) {
 
 	$scope.doLogin = function (username, password) {
 	    notifications.clear();
 		authentication.doLogin(username,password).then(function () {
-			$location.path("/home");
+		    var oldUrl = urlStateTracker.recall();
+			$location.url(oldUrl ? oldUrl : "/home");
 		}, function () {
 			notifications.put({message:"Login failed", type:"danger"});
 		})
 	}
-}]);
+});
 
 angular.module('Rvd').controller('projectLogCtrl', ['$scope', '$stateParams', 'projectLogService', 'notifications', function ($scope, $stateParams, projectLogService, notifications) {
 	//console.log('in projectLogCtrl');

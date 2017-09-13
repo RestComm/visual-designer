@@ -805,3 +805,28 @@ angular.module('Rvd').factory('fileRetriever', function (Blob, FileSaver, $http)
 	    download: download
 	}
 });
+
+
+// Temporarily stores current url (part that follows #) so that user can later be navigated back to it after login. It is used when a user gets an authentication error while accessing some part of the UI.
+angular.module('Rvd').factory('urlStateTracker', function () {
+    var oldUrl;
+    urlStateTracker = {};
+
+    // stores the current url (which it takes from angular $location service. Note. $location is NOT INJECTED below)
+    urlStateTracker.remember = function ($location) {
+        //console.log("remembering state " + $location.url() );
+        oldUrl = $location.url();
+    }
+
+    urlStateTracker.recall = function () {
+        if (!!oldUrl) {
+            var ret = oldUrl;
+            oldUrl = "";
+            return ret;
+        }
+        else
+            return "";
+    }
+
+    return urlStateTracker;
+});
