@@ -82,4 +82,6 @@ public interface RvdConfiguration {
     boolean isUssdSupport();
 
     String getWelcomeMessage();
+
+    String getRvdInstanceId();
 }
