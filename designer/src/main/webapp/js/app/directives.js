@@ -413,7 +413,31 @@ angular.module('Rvd').directive('vardef', function () {
             }
         }
     }
-})
-;
+});
+angular.module('Rvd').directive('validateHints', [function() {
+		return {
+			require: 'ngModel',
+			link: function(scope, elm, attr, ctrl) {
+				ctrl.$parsers.unshift(function(value) {
+					var hintArray = value.split(",");
+					if (hintArray.length > 50) {
+						ctrl.$setValidity('limit', false);
+						return value;
+					}
+					for (i = 0; i < hintArray.length; i++) {
+						if (hintArray[i].length > 100) {
+							ctrl.$setValidity('limit', false);
+							return value;
+						}
+					}
+					ctrl.$setValidity('limit', true);
+					return value;
+				});
+			}
+		};
+	}]
+);
+
+
 
 
