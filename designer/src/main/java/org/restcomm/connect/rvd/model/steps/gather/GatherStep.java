@@ -33,6 +33,7 @@ import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -368,6 +369,17 @@ public class GatherStep extends Step {
             if ((menu == null || menu.speechMappings == null || menu.speechMappings.isEmpty())
                     && (menu == null || menu.mappings == null || menu.mappings.isEmpty() )) {
                 errorItems.add(new ValidationErrorItem("error", "Neither DTMF nor speech mappings found", stepPath));
+            }
+        }
+        if (!StringUtils.isEmpty(hints)) {
+            List<String> hintList = Arrays.asList(hints.split(","));
+            if (hintList.size() > 50) {
+                errorItems.add(new ValidationErrorItem("error", "More than 50 phrases in Hot words", stepPath));
+            }
+            for (String hint : hintList) {
+                if (hint.length() > 100) {
+                    errorItems.add(new ValidationErrorItem("error", "More than 100 characters in one of Hot words", stepPath));
+                }
             }
         }
 
