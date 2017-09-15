@@ -7,6 +7,7 @@ import java.util.Date;
  */
 public class GlobalStatsDto {
     Date startTime;
+    String instanceId;
     Integer rcmlRequestsTotal;
     Integer esCallsTotal;
     Integer esCallsPending;
@@ -40,5 +41,9 @@ public class GlobalStatsDto {
 
     public void setEsCallsSuccess(Integer esCallsSuccess) {
         this.esCallsSuccess = esCallsSuccess;
+    }
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 }

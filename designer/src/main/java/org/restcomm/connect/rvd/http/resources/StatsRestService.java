@@ -58,6 +58,7 @@ public class StatsRestService extends SecuredRestService {
         ResidentProjectInfo projectInfo = registry.getResidentProjectInfo(appId);
 
         AppStatsDto dto = new AppStatsDto();
+        dto.setInstanceId(config.getRvdInstanceId());
         dto.setRcmlRequestsTotal(projectInfo.stats.rcmlRequestsTotal.get());
         dto.setStartTime(projectInfo.stats.startTime.get());
         dto.setEsCallsPending(projectInfo.stats.esCallsPending.get());
@@ -91,6 +92,7 @@ public class StatsRestService extends SecuredRestService {
         AggregateStats stats = applicationContext.getGlobalStats();
 
         AppStatsDto dto = new AppStatsDto();
+        dto.setInstanceId(config.getRvdInstanceId());
         dto.setRcmlRequestsTotal(stats.rcmlRequestsTotal.get());
         dto.setStartTime(stats.startTime.get());
         dto.setEsCallsPending(stats.esCallsPending.get());

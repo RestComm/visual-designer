@@ -195,6 +195,7 @@ public class ExternalServiceStep extends Step {
         AggregateStats globalStats = interpreter.getApplicationContext().getGlobalStats();
         // count ES request
         StatsHelper.countEsCallTotal(projectInfo.stats);
+        StatsHelper.countEsCallTotal(globalStats);
 
         String next = null;
         try {

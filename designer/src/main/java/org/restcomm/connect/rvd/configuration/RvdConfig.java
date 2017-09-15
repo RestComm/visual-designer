@@ -39,6 +39,7 @@ public class RvdConfig {
     private String  baseUrl; //e.g. http://this:8080/restcomm-rvd
     private Boolean useAbsoluteApplicationUrl;
     private String ussdSupport;
+    private String instanceId;
 
     private List<String> allowedCorsOrigins;
 
@@ -110,5 +111,9 @@ public class RvdConfig {
 
     public void setUssdSupport(String ussdSupport) {
         this.ussdSupport = ussdSupport;
+    }
+
+    public String getInstanceId() {
+        return instanceId;
     }
 }

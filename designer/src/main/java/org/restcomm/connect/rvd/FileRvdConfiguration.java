@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 import com.google.gson.Gson;
 import org.apache.log4j.Level;
@@ -62,6 +63,7 @@ public class FileRvdConfiguration implements RvdConfiguration {
     private boolean ussdSupport;
     // whitelabeling configuration
     private String welcomeMessage;
+    private String rvdInstanceId;
 
     public FileRvdConfiguration(ServletContext servletContext) {
         this(servletContext.getContextPath(), servletContext.getRealPath("/"));
@@ -153,6 +155,11 @@ public class FileRvdConfiguration implements RvdConfiguration {
         }
         // External service timeout
         initExternalServiceTimeout();
+        // RVD instance id. If there is no value configured in rvd.xml, use a random setting
+        if (RvdUtils.isEmpty(rvdConfig.getInstanceId())) {
+            rvdInstanceId = UUID.randomUUID().toString().replace("-", "").substring(0,8);
+        } else
+            rvdInstanceId = rvdConfig.getInstanceId();
 
         // load whitelabeling configuration
         loadWhitelabelConfig(contextRootPath + "WEB-INF/whitelabel.xml");
@@ -300,6 +307,7 @@ public class FileRvdConfiguration implements RvdConfiguration {
         StringBuffer buffer = new StringBuffer();
         Gson gson = new Gson();
         buffer.append("--- Effective RVD Configuration ---");
+        buffer.append("\n instanceId:\t").append(getRvdInstanceId());
         buffer.append("\n maxMediaFileSize:\t").append(getMaxMediaFileSize());
         buffer.append("\n workspaceBasePath (evaluated from rvd.xml/workspaceLocation):\t").append(getWorkspaceBasePath());
         //buffer.append("\n rvdConfig (private):\t").append( gson.toJson(rvdConfig, RvdConfig.class));
@@ -369,5 +377,10 @@ public class FileRvdConfiguration implements RvdConfiguration {
     @Override
     public String getWelcomeMessage() {
         return welcomeMessage;
+    }
+
+    @Override
+    public String getRvdInstanceId() {
+        return rvdInstanceId;
     }
 }

@@ -7,12 +7,17 @@ import java.util.Date;
  */
 public class AppStatsDto {
     Date startTime;
+    String instanceId;
     Integer rcmlRequestsTotal;
     Integer esCallsTotal;
     Integer esCallsPending;
     Integer esCallsTimeout;
     Integer esCallsServerError;
     Integer esCallsSuccess;
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
+    }
 
     public void setStartTime(Long time) {
         this.startTime = new Date(time);
