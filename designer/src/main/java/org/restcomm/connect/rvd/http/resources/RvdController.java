@@ -46,6 +46,7 @@ import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.interpreter.exceptions.BadExternalServiceResponse;
 import org.restcomm.connect.rvd.interpreter.exceptions.ESProcessFailed;
 import org.restcomm.connect.rvd.interpreter.exceptions.RemoteServiceError;
+import org.restcomm.connect.rvd.interpreter.serialization.RcmlSeriallizer;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
@@ -56,6 +57,7 @@ import org.restcomm.connect.rvd.model.UserProfile;
 import org.restcomm.connect.rvd.model.callcontrol.CallControlAction;
 import org.restcomm.connect.rvd.model.callcontrol.CallControlStatus;
 import org.restcomm.connect.rvd.model.project.StateHeader;
+import org.restcomm.connect.rvd.model.rcml.RcmlResponse;
 import org.restcomm.connect.rvd.restcomm.RestcommAccountInfo;
 import org.restcomm.connect.rvd.restcomm.RestcommClient;
 import org.restcomm.connect.rvd.restcomm.RestcommCallArray;
@@ -112,6 +114,7 @@ public class RvdController extends SecuredRestService {
     // handle both GET and POST request in a single place
     private Response runInterpreter(String appname, HttpServletRequest httpRequest,
                                     MultivaluedMap<String, String> requestParams) {
+        RcmlSeriallizer serializer = new RcmlSeriallizer();
         String rcmlResponse;
         try {
             if (!FsProjectStorage.projectExists(appname, workspaceStorage))
@@ -119,7 +122,8 @@ public class RvdController extends SecuredRestService {
 
             Interpreter interpreter = new Interpreter(appname, httpRequest, requestParams,
                     workspaceStorage,applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings() );
-            rcmlResponse = interpreter.interpret();
+            RcmlResponse steplist = interpreter.interpret();
+            rcmlResponse = serializer.serialize(steplist);
 
             // logging rcml response, if configured
             // make sure logging is enabled before allowing access to sensitive log information
@@ -132,12 +136,12 @@ public class RvdController extends SecuredRestService {
             RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"runInterpreter","{0}{1}{2}", new Object[] {logging.getPrefix(),"[app-error] ", e.getMessage()}));
             if (rvdContext.getProjectSettings().getLogging())
                 rvdContext.getProjectLogger().log(e.getMessage()).tag("app", appname).tag("EXCEPTION").done();
-            rcmlResponse = Interpreter.rcmlOnException();
+            rcmlResponse = serializer.serialize(Interpreter.rcmlOnException());
         } catch (Exception e) {
             RvdLoggers.local.log(Level.ERROR, logging.getPrefix(), e);
             if (rvdContext.getProjectSettings().getLogging())
                 rvdContext.getProjectLogger().log(e.getMessage()).tag("app", appname).tag("EXCEPTION").done();
-            rcmlResponse = Interpreter.rcmlOnException();
+            rcmlResponse = serializer.serialize(Interpreter.rcmlOnException());
         }
         if (RvdLoggers.local.isDebugEnabled())
             RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"runInterpreter", logging.getPrefix() + "[RCML]", rcmlResponse));
