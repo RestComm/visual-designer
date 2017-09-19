@@ -20,10 +20,13 @@ import org.restcomm.connect.rvd.RvdConfiguration;
 
 import javax.net.ssl.SSLContext;
 import org.apache.http.HttpHost;
+import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.util.PublicSuffixMatcher;
+import org.apache.http.conn.util.PublicSuffixMatcherLoader;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.restcomm.connect.rvd.configuration.RvdMaxPerHost;
@@ -83,11 +86,21 @@ public class CustomHttpClientBuilder {
             builder.setSSLSocketFactory(sslsf);
         }
         if (routes != null && routes.size() > 0) {
-            final PoolingHttpClientConnectionManager poolingmgr = new PoolingHttpClientConnectionManager(
-                    RegistryBuilder.<ConnectionSocketFactory>create()
+            if (sslsf == null) {
+                //strict mode with no system https properties
+                //taken from apache buider code
+                PublicSuffixMatcher publicSuffixMatcherCopy = PublicSuffixMatcherLoader.getDefault();
+                DefaultHostnameVerifier hostnameVerifierCopy = new DefaultHostnameVerifier(publicSuffixMatcherCopy);
+                sslsf = new SSLConnectionSocketFactory(
+                        SSLContexts.createDefault(),
+                        hostnameVerifierCopy);
+            }
+            Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
                     .register("http", PlainConnectionSocketFactory.getSocketFactory())
                     .register("https", sslsf)
-                    .build(),
+                    .build();
+            final PoolingHttpClientConnectionManager poolingmgr = new PoolingHttpClientConnectionManager(
+                    reg,
                     null,
                     null,
                     null,
