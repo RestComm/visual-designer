@@ -20,6 +20,7 @@
 
 package org.restcomm.connect.rvd;
 
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.identity.AccountProvider;
@@ -30,6 +31,8 @@ import org.restcomm.connect.rvd.identity.AccountProvider;
 public class ApplicationContextBuilder {
     RvdConfiguration configuration;
     CustomHttpClientBuilder httpClientBuilder;
+    CloseableHttpClient defaultHttpClient;
+    CloseableHttpClient externaltHttpClient;
     AccountProvider accountProvider;
     ProjectRegistry projectRegistry;
 
@@ -48,6 +51,15 @@ public class ApplicationContextBuilder {
         return this;
     }
 
+    public ApplicationContextBuilder setDefaultHttpClient(CloseableHttpClient defaultHttpClient) {
+        this.defaultHttpClient = defaultHttpClient;
+        return this;
+    }
+    public ApplicationContextBuilder setExternalHttpClient(CloseableHttpClient httpClient) {
+        this.externaltHttpClient = httpClient;
+        return this;
+    }
+
     public ApplicationContextBuilder setProjectRegistry(ProjectRegistry projectRegistry) {
         this.projectRegistry = projectRegistry;
         return this;
@@ -59,6 +71,8 @@ public class ApplicationContextBuilder {
         instance.httpClientBuilder = this.httpClientBuilder;
         instance.accountProvider = this.accountProvider;
         instance.projectRegistry = this.projectRegistry;
+        instance.defaultHttpClient = this.defaultHttpClient;
+        instance.externaltHttpClient = this.externaltHttpClient;
         return instance;
     }
 }

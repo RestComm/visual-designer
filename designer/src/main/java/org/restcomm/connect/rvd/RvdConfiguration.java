@@ -6,6 +6,8 @@ import org.restcomm.connect.rvd.configuration.RvdConfig;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import org.restcomm.connect.rvd.configuration.RvdMaxPerHost;
 
 /**
  * Implement this interface to provide custom configuration for testing.
@@ -34,6 +36,16 @@ public interface RvdConfiguration {
     String PACKAGING_DIRECTORY_NAME = "packaging";
     // http client (ES)
     int DEFAULT_ES_TIMEOUT = 5000; // milliseconds
+    int DEFAULT_ES_MAX_CONNS = 2000; // connections
+    int DEFAULT_ES_MAX_CONNS_PER_ROUTE = 10; // connections
+    int DEFAULT_ES_TTL = 30; // seconds
+    // http client (default)
+    int DEFAULT_HTTP_TIMEOUT = 1000; // milliseconds
+    int DEFAULT_HTTP_MAX_CONNS = 200; // connections
+    int DEFAULT_HTTP_MAX_CONNS_PER_ROUTE = 100; // connections
+    int DEFAULT_HTTP_TTL = 300; // seconds
+    String[] DEFAULT_HTTP_MAX_PER_ROUTE = {};
+
     // application logging
     String PROJECT_LOG_FILENAME = "rvdapp"; //will produce rvdapp.log, rvdapp-1.log etc.
     int PROJECT_LOG_BACKLOG_COUNT = 3; // the number of rotated files besides the main log file
@@ -58,6 +70,15 @@ public interface RvdConfiguration {
     SslMode getSslMode();
 
     Integer getExternalServiceTimeout();
+    Integer getExternalServiceMaxConns();
+    Integer getExternalServiceMaxConnsPerRoute();
+    Integer getExternalServiceTTL();
+    List<RvdMaxPerHost> getExternalServiceMaxPerRoute();
+    Integer getDefaultHttpTimeout();
+    Integer getDefaultHttpMaxConns();
+    Integer getDefaultHttpMaxConnsPerRoute();
+    Integer getDefaultHttpTTL();
+    List<RvdMaxPerHost> getDefaultHttpMaxPerRoute();
 
     boolean getUseHostnameToResolveRelativeUrl();
 

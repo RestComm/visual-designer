@@ -118,7 +118,7 @@ public class ProjectApplicationsApi {
             if (RvdUtils.isEmpty(identity.getEffectiveAuthorizationHeader()))
                 throw new ApplicationsApiSyncException("Could not determine credentials to access API.");
             // create the client
-            RestcommClient client = new RestcommClient(restcommBaseUri,identity.getEffectiveAuthorizationHeader(),appContext.getHttpClientBuilder());
+            RestcommClient client = new RestcommClient(restcommBaseUri,identity.getEffectiveAuthorizationHeader(),appContext.getDefaultHttpClient());
             String accountSid = identity.getAccountInfo().getSid();
             RestcommApplicationResponse applicationResponse = null;
             String applicationSid;

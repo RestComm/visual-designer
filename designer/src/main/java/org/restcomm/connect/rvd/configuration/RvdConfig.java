@@ -34,6 +34,15 @@ public class RvdConfig {
     private Boolean useHostnameToResolveRelativeUrl;
     private String restcommBaseUrl;
     private String externalServiceTimeout;
+    private Integer externalServiceMaxConns;
+    private Integer externalServiceMaxConnsPerRoute;
+    private Integer externalServiceTTL;
+    private List<RvdMaxPerHost> externalServicepMaxPerRoute;
+    private Integer defaultHttpTimeout;
+    private Integer defaultHttpMaxConns;
+    private Integer defaultHttpMaxConnsPerRoute;
+    private Integer defaultHttpTTL;
+    private List<RvdMaxPerHost> defaultHttpMaxPerRoute;
     private Boolean videoSupport;
     private Integer maxMediaFileSize;
     private String  baseUrl; //e.g. http://this:8080/restcomm-rvd
@@ -115,5 +124,85 @@ public class RvdConfig {
 
     public String getInstanceId() {
         return instanceId;
+    }
+
+    public Integer getExternalServiceMaxConns() {
+        return externalServiceMaxConns;
+    }
+
+    public void setExternalServiceMaxConns(Integer externalServiceMaxConns) {
+        this.externalServiceMaxConns = externalServiceMaxConns;
+    }
+
+    public Integer getExternalServiceMaxConnsPerRoute() {
+        return externalServiceMaxConnsPerRoute;
+    }
+
+    public void setExternalServiceMaxConnsPerRoute(Integer externalServiceMaxConnsPerRoute) {
+        this.externalServiceMaxConnsPerRoute = externalServiceMaxConnsPerRoute;
+    }
+
+    public Integer getExternalServiceTTL() {
+        return externalServiceTTL;
+    }
+
+    public void setExternalServiceTTL(Integer externalServiceTTL) {
+        this.externalServiceTTL = externalServiceTTL;
+    }
+
+    public Integer getDefaultHttpTimeout() {
+        return defaultHttpTimeout;
+    }
+
+    public void setDefaultHttpTimeout(Integer defaultHttpTimeout) {
+        this.defaultHttpTimeout = defaultHttpTimeout;
+    }
+
+    public Integer getDefaultHttpMaxConns() {
+        return defaultHttpMaxConns;
+    }
+
+    public void setDefaultHttpMaxConns(Integer defaultHttpMaxConns) {
+        this.defaultHttpMaxConns = defaultHttpMaxConns;
+    }
+
+    public Integer getDefaultHttpMaxConnsPerRoute() {
+        return defaultHttpMaxConnsPerRoute;
+    }
+
+    public void setDefaultHttpMaxConnsPerRoute(Integer defaultHttpMaxConnsPerRoute) {
+        this.defaultHttpMaxConnsPerRoute = defaultHttpMaxConnsPerRoute;
+    }
+
+    public Integer getDefaultHttpTTL() {
+        return defaultHttpTTL;
+    }
+
+    public void setDefaultHttpTTL(Integer defaultHttpTTL) {
+        this.defaultHttpTTL = defaultHttpTTL;
+    }
+
+    public Boolean getUseAbsoluteApplicationUrl() {
+        return useAbsoluteApplicationUrl;
+    }
+
+    public void setUseAbsoluteApplicationUrl(Boolean useAbsoluteApplicationUrl) {
+        this.useAbsoluteApplicationUrl = useAbsoluteApplicationUrl;
+    }
+
+    public List<RvdMaxPerHost> getExternalServicepMaxPerRoute() {
+        return externalServicepMaxPerRoute;
+    }
+
+    public void setExternalServicepMaxPerRoute(List<RvdMaxPerHost> externalServicepMaxPerRoute) {
+        this.externalServicepMaxPerRoute = externalServicepMaxPerRoute;
+    }
+
+    public List<RvdMaxPerHost> getDefaultHttpMaxPerRoute() {
+        return defaultHttpMaxPerRoute;
+    }
+
+    public void setDefaultHttpMaxPerRoute(List<RvdMaxPerHost> defaultHttpMaxPerRoute) {
+        this.defaultHttpMaxPerRoute = defaultHttpMaxPerRoute;
     }
 }

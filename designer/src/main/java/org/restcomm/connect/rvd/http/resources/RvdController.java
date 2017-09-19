@@ -272,7 +272,7 @@ public class RvdController extends SecuredRestService {
         // initialize a restcomm client object using various information sources
         RestcommClient restcommClient;
         try {
-            restcommClient = new RestcommClient(restcommBaseUri, effectiveAuthHeader,applicationContext.getHttpClientBuilder());
+            restcommClient = new RestcommClient(restcommBaseUri, effectiveAuthHeader,applicationContext.getDefaultHttpClient());
         } catch (RestcommClient.RestcommClientInitializationException e) {
             throw new CallControlException("WebTrigger",e);
         }

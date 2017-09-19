@@ -45,7 +45,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.restcomm.connect.rvd.exceptions.AccessApiException;
-import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
@@ -228,12 +227,12 @@ public class RestcommClient {
      * @param restcommBaseUri
      * @throws RestcommClientInitializationException
      */
-    public RestcommClient (URI restcommBaseUri, String authHeader, CustomHttpClientBuilder httpClientbuilder) throws RestcommClientInitializationException {
+    public RestcommClient (URI restcommBaseUri, String authHeader, CloseableHttpClient client) throws RestcommClientInitializationException {
         if (RvdUtils.isEmpty(authHeader))
             throw new RestcommClientInitializationException("Restcomm client could not determine the user for accessing Restcomm");
         this.authHeader = authHeader;
         this.restcommBaseUrl = restcommBaseUri;
-        apacheClient = httpClientbuilder.buildHttpClient();
+        apacheClient = client;
     }
 
     public URI getRestcommBaseUrl() {
