@@ -4,6 +4,8 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import org.apache.http.client.utils.HttpClientUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
 
 import org.restcomm.connect.rvd.ApplicationContext;
 import org.restcomm.connect.rvd.ApplicationContextBuilder;
@@ -44,10 +46,13 @@ public class RvdInitializationServlet extends HttpServlet {
             throw e;
         }
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(rvdConfiguration);
-        AccountProvider accountProvider = new AccountProvider(rvdConfiguration, httpClientBuilder);
+        CloseableHttpClient buildHttpClient = httpClientBuilder.buildHttpClient();
+        AccountProvider accountProvider = new AccountProvider(rvdConfiguration, buildHttpClient);
         ApplicationContext appContext = new ApplicationContextBuilder()
                 .setConfiguration(rvdConfiguration)
                 .setHttpClientBuilder(httpClientBuilder)
+                .setDefaultHttpClient(buildHttpClient)
+                .setExternalHttpClient(httpClientBuilder.buildExternalHttpClient())
                 .setAccountProvider(accountProvider)
                 .setProjectRegistry(new ProjectRegistry()).build();
         servletContext.setAttribute(ApplicationContext.class.getName(), appContext);
@@ -68,6 +73,9 @@ public class RvdInitializationServlet extends HttpServlet {
     @Override
     public void destroy() {
         logger.info(" --- shutting down RVD --- ");
+        ApplicationContext appCtx = (ApplicationContext) this.getServletContext().getAttribute(ApplicationContext.class.getName());
+        HttpClientUtils.closeQuietly(appCtx.getDefaultHttpClient());
+        HttpClientUtils.closeQuietly(appCtx.getExternaltHttpClient());
         super.destroy();
     }
 

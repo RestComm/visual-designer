@@ -72,10 +72,10 @@ public class TestUtils {
     }
 
     public static RvdConfiguration initRvdConfiguration(String contextToUse) {
-        URL url = TestUtils.class.getResource("contexts/" + contextToUse + "/restcomm-rvd.war");
+        URL url = TestUtils.class.getResource("/contexts/" + contextToUse + "/restcomm-rvd.war/WEB-INF/rvd.xml");
         File rvdRoot = null;
         rvdRoot = new File(url.getFile());
-        return new FileRvdConfiguration("/restcomm-rvd", rvdRoot.getPath() + "/");
+        return new FileRvdConfiguration("/restcomm-rvd", rvdRoot.getParentFile().getParentFile().getPath());
     }
 
     public static RvdConfiguration initRvdConfiguration() {

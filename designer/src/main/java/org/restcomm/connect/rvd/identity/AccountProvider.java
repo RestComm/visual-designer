@@ -9,7 +9,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.restcomm.connect.rvd.commons.GenericResponse;
 import org.restcomm.connect.rvd.RvdConfiguration;
-import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.restcomm.RestcommAccountInfo;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
@@ -30,7 +29,7 @@ public class AccountProvider {
 
     String restcommUrl = null; // this is initialized lazily. Access it through its private getter.
     private boolean restcommUrlInitialized = false;
-    CustomHttpClientBuilder httpClientBuilder;
+    CloseableHttpClient client;
     RvdConfiguration configuration;
 
     /**
@@ -40,18 +39,18 @@ public class AccountProvider {
      * @param restcommUrl
      * @param httpClientBuilder
      */
-    public AccountProvider(String restcommUrl, CustomHttpClientBuilder httpClientBuilder) {
+    public AccountProvider(String restcommUrl, CloseableHttpClient client) {
         if (restcommUrl == null)
             throw new IllegalStateException("restcommUrl cannot be null");
         this.restcommUrl = sanitizeRestcommUrl(restcommUrl);
         this.restcommUrlInitialized = true;
-        this.httpClientBuilder = httpClientBuilder;
+        this.client = client;
     }
 
 
-    public AccountProvider(RvdConfiguration configuration, CustomHttpClientBuilder httpClientBuilder) {
+    public AccountProvider(RvdConfiguration configuration, CloseableHttpClient client) {
         this.configuration = configuration;
-        this.httpClientBuilder = httpClientBuilder;
+        this.client = client;
     }
 
 
@@ -93,7 +92,6 @@ public class AccountProvider {
      *
      */
     public GenericResponse<RestcommAccountInfo> getAccount(String accountName, String authorizationHeader) {
-        CloseableHttpClient client = httpClientBuilder.buildHttpClient();
         HttpGet GETRequest = new HttpGet(buildAccountQueryUrl(accountName));
         GETRequest.addHeader("Authorization", authorizationHeader);
         try {
