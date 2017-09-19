@@ -38,12 +38,12 @@ public interface RvdConfiguration {
     int DEFAULT_ES_TIMEOUT = 5000; // milliseconds
     int DEFAULT_ES_MAX_CONNS = 2000; // connections
     int DEFAULT_ES_MAX_CONNS_PER_ROUTE = 10; // connections
-    int DEFAULT_ES_TTL = 30; // seconds
+    int DEFAULT_ES_TTL = 30000; // milliseconds
     // http client (default)
     int DEFAULT_HTTP_TIMEOUT = 1000; // milliseconds
     int DEFAULT_HTTP_MAX_CONNS = 200; // connections
     int DEFAULT_HTTP_MAX_CONNS_PER_ROUTE = 100; // connections
-    int DEFAULT_HTTP_TTL = 300; // seconds
+    int DEFAULT_HTTP_TTL = 300000; // milliseconds
     String[] DEFAULT_HTTP_MAX_PER_ROUTE = {};
 
     // application logging
