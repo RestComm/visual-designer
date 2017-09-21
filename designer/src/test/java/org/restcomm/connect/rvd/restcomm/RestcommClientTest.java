@@ -34,12 +34,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.Assert;
 import org.junit.Rule;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.restcomm.connect.rvd.configuration.RvdMaxPerHost;
-import org.restcomm.connect.rvd.exceptions.AccessApiException;
 
 /**
  * @author Orestis Tsakiridis
@@ -55,10 +53,10 @@ public class RestcommClientTest {
     }
 
     @Test(expected = RestcommClient.RestcommClientException.class)
-    public void noMoreConnectionsInPool() throws Exception {
+    public void testConfigurationTimeout() throws Exception {
         int connsPerRoute= 5;
         int timeout  = 1000;
-        final String path = "/noMoreConnections";
+        final String path = "/testConfigurationTimeout";
         List<RvdMaxPerHost> routes = new ArrayList();
         routes.add(new RvdMaxPerHost("http://127.0.0.1:8099", connsPerRoute));
         RvdConfiguration configuration = Mockito.mock(RvdConfiguration.class);
@@ -69,31 +67,17 @@ public class RestcommClientTest {
         when(configuration.getDefaultHttpMaxPerRoute()).thenReturn(routes);
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(configuration);
         stubFor(get(urlMatching(path)).willReturn(aResponse()
-                .withFixedDelay(timeout * 10)//delay will cause tiemout to happen on second request
+                .withFixedDelay(timeout * 2)//delay will cause tiemout to happen
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
                 .withBody("{\"sid\":\"" + 1234 + "\",\"email_address\":\"" + "jander@clander.com" + "\",\"status\":\"active\",\"role\":\"administrator\"}")));
         URI create = URI.create("http://127.0.0.1:8099");
         final RestcommClient client = new RestcommClient(create, "authHeader", httpClientBuilder.buildHttpClient());
         final Gson gson = new Gson();
-
-        for (int i = 0; i < connsPerRoute; i++) {
-            Thread newThread = new Thread() {
-                public void run() {
-                    try {
-                        RestcommAccountInfo done = client.get(path).done(gson, RestcommAccountInfo.class);
-                        Assert.fail("these request are expected to fail because of timeout.");
-                    } catch (AccessApiException ex) {
-                    }
-                }
-            };
-            newThread.start();
-        }
-        Thread.sleep(200);
-        client.get("/noMoreConnections").done(gson, RestcommAccountInfo.class);
+        client.get(path).done(gson, RestcommAccountInfo.class);
     }
-
+    
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8099);
-
+    
 }

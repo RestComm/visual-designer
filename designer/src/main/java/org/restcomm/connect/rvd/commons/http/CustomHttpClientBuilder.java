@@ -152,7 +152,6 @@ public class CustomHttpClientBuilder {
         // Allow TLSv1 protocol only
         SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, protocols, null, new NoopHostnameVerifier());
         return sslsf;
-
     }
 
     private String[] getSSLPrototocolsFromSystemProperties() {
