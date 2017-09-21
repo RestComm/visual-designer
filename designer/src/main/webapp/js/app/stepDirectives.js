@@ -10,26 +10,26 @@ angular.module('Rvd')
 					scope.step = new gatherModel();
 				
 				
-				function getEffectiveValidationType() {
-					if ( scope.step.validation.userPattern != undefined )
+				function getEffectiveValidationType(validation) {
+					if ( validation.userPattern != undefined )
 						return "One of";
 					else
 						return "Regex"
 				}
 				scope.getEffectiveValidationType = getEffectiveValidationType;
 				
-				function setValidationTypeOneOf() {
-					if ( getEffectiveValidationType() != "One of" ) {
-						scope.step.validation.userPattern = "";
-						scope.step.validation.regexPattern = undefined;
+				function setValidationTypeOneOf(validation) {
+					if ( getEffectiveValidationType(validation) != "One of" ) {
+						validation.userPattern = "";
+						validation.regexPattern = undefined;
 					}
 				}
 				scope.setValidationTypeOneOf = setValidationTypeOneOf;
 				
-				function setValidationTypeRegex() {
-					if ( getEffectiveValidationType() != "Regex" ) {
-						scope.step.validation.userPattern = undefined;
-						scope.step.validation.regexPattern = "";
+				function setValidationTypeRegex(validation) {
+					if ( getEffectiveValidationType(validation) != "Regex" ) {
+						validation.userPattern = undefined;
+						validation.regexPattern = "";
 					}
 				}		
 				scope.setValidationTypeRegex = 	setValidationTypeRegex;

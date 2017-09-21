@@ -196,7 +196,6 @@ public class Interpreter {
             loadStep(target.stepname).handleAction(this, target);
         } else {
             // RCML Generation
-
             if (rcmlModel == null )
                 rcmlModel = new RcmlResponse();
             List<String> nodeStepnames = FsProjectStorage.loadNodeStepnames(appName, target.getNodename(), workspaceStorage);

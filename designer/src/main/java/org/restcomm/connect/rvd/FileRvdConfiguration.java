@@ -25,23 +25,30 @@ import org.restcomm.connect.rvd.configuration.RvdConfig;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import com.thoughtworks.xstream.XStream;
+import java.util.List;
+import org.restcomm.connect.rvd.configuration.RvdMaxPerHost;
 import org.restcomm.connect.rvd.utils.XmlParser;
 
 /**
- * Configuration settings for RVD. Contains both static hardcoded and loaded values.
+ * Configuration settings for RVD. Contains both static hardcoded and loaded
+ * values.
  *
- * Besides hardcoded values, information form rvd.xml as well as proxied values from restcomm.xml
- * are contained. It also provides vary basic logic so that default values are returned too.
- * For example if 'videoSupport' configuration option is missing, it will return false (and not null).
+ * Besides hardcoded values, information form rvd.xml as well as proxied values
+ * from restcomm.xml are contained. It also provides vary basic logic so that
+ * default values are returned too. For example if 'videoSupport' configuration
+ * option is missing, it will return false (and not null).
  *
- * rvd.xml and restcomm.xml configuration options are applied in the following way:
+ * rvd.xml and restcomm.xml configuration options are applied in the following
+ * way:
  *
- *  restcomm.xml based will be loaded first if available. Any option defined in rvd.xml will override
- *  these values if the option is defined (i.e.the XML element is there even if empty).
+ * restcomm.xml based will be loaded first if available. Any option defined in
+ * rvd.xml will override these values if the option is defined (i.e.the XML
+ * element is there even if empty).
  *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class FileRvdConfiguration implements RvdConfiguration {
+
     static Logger logger = RvdLoggers.local;
     // these defaults are used when there are no values defined in the configuration files
     private Integer maxMediaFileSize; // Maximum size allowed for media file uploads (in bytes). If set to null no limit is enforced
@@ -91,11 +98,12 @@ public class FileRvdConfiguration implements RvdConfiguration {
         rvdConfig = loadRvdXmlConfig(contextRootPath + "WEB-INF/rvd.xml");
         // workspaceBasePath option
         String workspaceBasePath = contextRootPath + WORKSPACE_DIRECTORY_NAME;
-        if (rvdConfig.getWorkspaceLocation() != null  &&  !"".equals(rvdConfig.getWorkspaceLocation()) ) {
-            if ( rvdConfig.getWorkspaceLocation().startsWith("/") )
+        if (rvdConfig.getWorkspaceLocation() != null && !"".equals(rvdConfig.getWorkspaceLocation())) {
+            if (rvdConfig.getWorkspaceLocation().startsWith("/")) {
                 workspaceBasePath = rvdConfig.getWorkspaceLocation(); // this is an absolute path
-            else
+            } else {
                 workspaceBasePath = contextRootPath + rvdConfig.getWorkspaceLocation(); // this is a relative path hooked under RVD context
+            }
         }
         this.workspaceBasePath = workspaceBasePath;
         RvdLoggers.global.info("workspace located under " + workspaceBasePath);
@@ -116,50 +124,61 @@ public class FileRvdConfiguration implements RvdConfiguration {
         // maxMediaFileSize
         maxMediaFileSize = rvdConfig.getMaxMediaFileSize();
         // sslMode
-        if (restcommConfig != null)
+        if (restcommConfig != null) {
             sslMode = restcommConfig.getSslMode();
-        if (rvdConfig.getSslMode() != null)
+        }
+        if (rvdConfig.getSslMode() != null) {
             sslMode = SslMode.valueOf(rvdConfig.getSslMode());
-        if (sslMode == null)
+        }
+        if (sslMode == null) {
             sslMode = DEFAULT_SSL_MODE;
+        }
         // hostnameOverride (hostname in restcomm.xml)
-        if (restcommConfig != null)
+        if (restcommConfig != null) {
             hostnameOverride = restcommConfig.getHostname();
-        if (rvdConfig.getHostnameOverride() != null)
+        }
+        if (rvdConfig.getHostnameOverride() != null) {
             hostnameOverride = rvdConfig.getHostnameOverride();
+        }
         // useHostnameToResolveRelativeUrl
-        if (restcommConfig != null)
+        if (restcommConfig != null) {
             useHostnameToResolveRelativeUrl = restcommConfig.getUseHostnameToResolveRelativeUrl();
-        if (rvdConfig.getUseHostnameToResolveRelativeUrl() != null)
+        }
+        if (rvdConfig.getUseHostnameToResolveRelativeUrl() != null) {
             useHostnameToResolveRelativeUrl = rvdConfig.getUseHostnameToResolveRelativeUrl();
-        if (useHostnameToResolveRelativeUrl == null)
+        }
+        if (useHostnameToResolveRelativeUrl == null) {
             useHostnameToResolveRelativeUrl = DEFAULT_USE_HOSTNAME_TO_RESOLVE_RELATIVE_URL;
+        }
         // baseUrl
-        if (! RvdUtils.isEmpty(rvdConfig.getBaseUrl()) )
+        if (!RvdUtils.isEmpty(rvdConfig.getBaseUrl())) {
             baseUrl = rvdConfig.getBaseUrl();
+        }
         // useAbsoluteApplicationUrl
-        if (! RvdUtils.isEmpty(rvdConfig.useAbsoluteApplicationUrl()))
+        if (!RvdUtils.isEmpty(rvdConfig.useAbsoluteApplicationUrl())) {
             useAbsoluteApplicationUrl = rvdConfig.useAbsoluteApplicationUrl();
-        else
+        } else {
             useAbsoluteApplicationUrl = DEFAULT_USE_ABSOLUTE_APPLICATION_URL;
+        }
         // ussd support
-        if ( RvdUtils.isEmpty(rvdConfig.getUssdSupport()) )
+        if (RvdUtils.isEmpty(rvdConfig.getUssdSupport())) {
             ussdSupport = DEFAULT_USSD_SUPPORT;
-        else {
+        } else {
             try {
                 ussdSupport = Boolean.parseBoolean(rvdConfig.getUssdSupport());
-            } catch ( Exception e) {
+            } catch (Exception e) {
                 ussdSupport = DEFAULT_USSD_SUPPORT;
-                logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"load",null,"Error parsing rvd.xml:ussd/enabled option. Falling back to default: " + ussdSupport),e);
+                logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class, "load", null, "Error parsing rvd.xml:ussd/enabled option. Falling back to default: " + ussdSupport), e);
             }
         }
         // External service timeout
         initExternalServiceTimeout();
         // RVD instance id. If there is no value configured in rvd.xml, use a random setting
         if (RvdUtils.isEmpty(rvdConfig.getInstanceId())) {
-            rvdInstanceId = UUID.randomUUID().toString().replace("-", "").substring(0,8);
-        } else
+            rvdInstanceId = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+        } else {
             rvdInstanceId = rvdConfig.getInstanceId();
+        }
 
         // load whitelabeling configuration
         loadWhitelabelConfig(contextRootPath + "WEB-INF/whitelabel.xml");
@@ -167,6 +186,7 @@ public class FileRvdConfiguration implements RvdConfiguration {
 
     /**
      * Loads rvd.xml into an RvdConfig. Returns null if the file is not found
+     *
      * @param pathToXml
      * @return
      */
@@ -175,27 +195,29 @@ public class FileRvdConfiguration implements RvdConfiguration {
             FileInputStream input = new FileInputStream(pathToXml);
             XStream xstream = new XStream();
             xstream.alias("rvd", RvdConfig.class);
+            xstream.alias("rvdMaxPerHost", RvdMaxPerHost.class);
             xstream.omitField(RvdConfig.class, "corsWhitelist");
             xstream.omitField(RvdConfig.class, "ussd");
             xstream.registerConverter(new CustomIntegerConverter());
-            RvdConfig rvdConfig = (RvdConfig) xstream.fromXML( input );
+            RvdConfig rvdConfig = (RvdConfig) xstream.fromXML(input);
             // read some more configuration options that xstream fails to read in a clean way
             XmlParser xml = new XmlParser(pathToXml);
             rvdConfig.setAllowedCorsOrigins(xml.getElementList("/rvd/corsWhitelist/origin"));
             rvdConfig.setUssdSupport(xml.getElementContent("/rvd/ussdSupport"));
             return rvdConfig;
         } catch (FileNotFoundException e) {
-            logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"loadRvdXmlConfig",null,"RVD configuration file not found: " + pathToXml));
+            logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class, "loadRvdXmlConfig", null, "RVD configuration file not found: " + pathToXml));
             return null;
         } catch (XmlParserException e) {
-            logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class,"loadRvdXmlConfig",null,"Error parsing RVD configuration file: " + pathToXml), e);
+            logger.warn(LoggingHelper.buildMessage(RvdConfiguration.class, "loadRvdXmlConfig", null, "Error parsing RVD configuration file: " + pathToXml), e);
             return null;
 
         }
     }
 
     /**
-     * Load configuration options from restcomm.xml that are needed by RVD. Return null in case of failure.
+     * Load configuration options from restcomm.xml that are needed by RVD.
+     * Return null in case of failure.
      *
      * @param pathToXml
      * @return a valid RestcommConfig object or null
@@ -217,14 +239,16 @@ public class FileRvdConfiguration implements RvdConfiguration {
         try {
             XmlParser xml = new XmlParser(pathToXml);
             String value = xml.getElementContent("/whitelabel/welcomeMessage");
-            if (value != null)
+            if (value != null) {
                 welcomeMessage = value;
+            }
             logger.info("Loaded whitelabeling information: " + pathToXml);
         } catch (XmlParserException e) {
-            if ( e.getCause() instanceof FileNotFoundException)
+            if (e.getCause() instanceof FileNotFoundException) {
                 logger.info("No whitelabeling file found (" + pathToXml + "). Hardcoded defaults will be used.");
-            else
-                logger.error(LoggingHelper.buildMessage(RvdConfiguration.class,"loadWhitelabelConfig",null,"Error parsing whitelabeling configuration file: " + pathToXml), e);
+            } else {
+                logger.error(LoggingHelper.buildMessage(RvdConfiguration.class, "loadWhitelabelConfig", null, "Error parsing whitelabeling configuration file: " + pathToXml), e);
+            }
             return;
         }
     }
@@ -250,13 +274,14 @@ public class FileRvdConfiguration implements RvdConfiguration {
     }
 
     private void initExternalServiceTimeout() {
-        if (externalServiceTimeout != null)
+        if (externalServiceTimeout != null) {
             return;
+        }
         if (rvdConfig != null && rvdConfig.getExternalServiceTimeout() != null && rvdConfig.getExternalServiceTimeout().trim().length() > 0) {
             try {
                 this.externalServiceTimeout = Integer.parseInt(rvdConfig.getExternalServiceTimeout());
             } catch (NumberFormatException e) {
-                logger.warn(LoggingHelper.buildMessage(getClass(),"getExternalServiceTimeout",null,"Cannot parse RVD ES timeout configuration setting. Will use default: " + DEFAULT_ES_TIMEOUT + (e.getMessage() != null ? " - " + e.getMessage() : "")));
+                logger.warn(LoggingHelper.buildMessage(getClass(), "getExternalServiceTimeout", null, "Cannot parse RVD ES timeout configuration setting. Will use default: " + DEFAULT_ES_TIMEOUT + (e.getMessage() != null ? " - " + e.getMessage() : "")));
                 this.externalServiceTimeout = DEFAULT_ES_TIMEOUT;
             }
         } else {
@@ -280,12 +305,15 @@ public class FileRvdConfiguration implements RvdConfiguration {
         if (this.restcommBaseUri == null) {
             // check rvd.xml override first
             String rawUrl = rvdConfig.getRestcommBaseUrl();
-            if ( ! RvdUtils.isEmpty(rawUrl) ) {
+            if (!RvdUtils.isEmpty(rawUrl)) {
                 try {
                     URI uri = new URI(rawUrl);
-                    if ( ! RvdUtils.isEmpty(uri.getScheme()) && !RvdUtils.isEmpty(uri.getHost()) )
+                    if (!RvdUtils.isEmpty(uri.getScheme()) && !RvdUtils.isEmpty(uri.getHost())) {
                         this.restcommBaseUri = uri;
-                } catch (URISyntaxException e) { /* do nothing */}
+                    }
+                } catch (URISyntaxException e) {
+                    /* do nothing */
+                }
             }
             // if no override value in rvd.xml use the automatic way
             if (this.restcommBaseUri == null) {
@@ -293,7 +321,8 @@ public class FileRvdConfiguration implements RvdConfiguration {
                 try {
                     URI uri = new URI("/");
                     this.restcommBaseUri = uriUtils.resolve(uri);
-                } catch (URISyntaxException e) { /* we should never reach here */
+                } catch (URISyntaxException e) {
+                    /* we should never reach here */
                     throw new IllegalStateException();
                 }
             }
@@ -383,4 +412,68 @@ public class FileRvdConfiguration implements RvdConfiguration {
     public String getRvdInstanceId() {
         return rvdInstanceId;
     }
+
+    @Override
+    public Integer getExternalServiceMaxConns() {
+        return (rvdConfig != null
+                && rvdConfig.getExternalServiceMaxConns() != null)
+                        ? rvdConfig.getExternalServiceMaxConns() : RvdConfiguration.DEFAULT_ES_MAX_CONNS;
+    }
+
+    @Override
+    public Integer getExternalServiceMaxConnsPerRoute() {
+        return (rvdConfig != null
+                && rvdConfig.getExternalServiceMaxConnsPerRoute() != null)
+                        ? rvdConfig.getExternalServiceMaxConnsPerRoute() : RvdConfiguration.DEFAULT_ES_MAX_CONNS_PER_ROUTE;
+    }
+
+    @Override
+    public Integer getExternalServiceTTL() {
+        return (rvdConfig != null
+                && rvdConfig.getExternalServiceTTL() != null)
+                        ? rvdConfig.getExternalServiceTTL() : RvdConfiguration.DEFAULT_ES_TTL;
+    }
+
+    @Override
+    public Integer getDefaultHttpTimeout() {
+        return (rvdConfig != null
+                && rvdConfig.getDefaultHttpTimeout() != null)
+                        ? rvdConfig.getDefaultHttpTimeout() : RvdConfiguration.DEFAULT_HTTP_TIMEOUT;
+    }
+
+    @Override
+    public Integer getDefaultHttpMaxConns() {
+        return (rvdConfig != null
+                && rvdConfig.getDefaultHttpMaxConns() != null)
+                        ? rvdConfig.getDefaultHttpMaxConns() : RvdConfiguration.DEFAULT_HTTP_MAX_CONNS;
+    }
+
+    @Override
+    public Integer getDefaultHttpMaxConnsPerRoute() {
+        return (rvdConfig != null
+                && rvdConfig.getDefaultHttpMaxConnsPerRoute() != null)
+                        ? rvdConfig.getDefaultHttpMaxConnsPerRoute() : RvdConfiguration.DEFAULT_HTTP_MAX_CONNS_PER_ROUTE;
+    }
+
+    @Override
+    public Integer getDefaultHttpTTL() {
+        return (rvdConfig != null
+                && rvdConfig.getDefaultHttpTTL() != null)
+                        ? rvdConfig.getDefaultHttpTTL() : RvdConfiguration.DEFAULT_HTTP_TTL;
+    }
+
+    @Override
+    public List<RvdMaxPerHost> getExternalServiceMaxPerRoute() {
+        return (rvdConfig != null
+                && rvdConfig.getExternalServicepMaxPerRoute() != null)
+                        ? rvdConfig.getExternalServicepMaxPerRoute() : null;
+    }
+
+    @Override
+    public List<RvdMaxPerHost> getDefaultHttpMaxPerRoute() {
+        return (rvdConfig != null
+                && rvdConfig.getDefaultHttpMaxPerRoute() != null)
+                        ? rvdConfig.getDefaultHttpMaxPerRoute() : null;    }
+
+
 }

@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
+	"$schema": "http://json-schema.org/draft-04/schema#",
 	"title": "RVD project 0.1",
 	"description": "Specification for RVD 7.1.4",
 	"type": "object",
@@ -12,6 +12,10 @@
 		"timeout":{"type": "integer"},
 		"finishOnKey":{	"type": "string", "pattern": "($^)|(^[0-9*#]$)" },
 		"numDigits": {"type": "integer"},
+		"hints": {"type": "string"},
+		"language": {"type": "string"},
+	    "partialResultCallback": {"type": "string"},
+		"partialResultCallbackMethod": {"enum": ["GET","POST"]},
 		"steps": {
 			"type": "array",
 			"items": {
@@ -22,7 +26,8 @@
 				]
 			}
 		},
-		"gatherType": {"enum": ["menu","collectdigits"]},
+		"gatherType": {"enum": ["menu", "collectdigits"]},
+		"inputType": {"enum": ["dtmf", "speech", "dtmf speech"]},
 		"menu": {
 			"type": "object",
 			"properties": {
@@ -37,10 +42,22 @@
 						},
 						"required":["digits","next"]
 					},
-					"minItems": 1
+					"minItems": 0
+				},
+				"speechMappings": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"key": {"type": "string","minLength":1},
+							"next": {"type": "string","minLength":1},
+							"scope": {"type": "string"}
+						},
+						"required":["key","next"]
+					},
+					"minItems": 0
 				}
-			},
-			"required":["mappings"]
+			}
 		},
 		"collectdigits": {
 			"type": "object",

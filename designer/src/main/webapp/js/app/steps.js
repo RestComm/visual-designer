@@ -129,13 +129,19 @@ angular.module('Rvd')
 		this.timeout = undefined;
 		this.finishOnKey = undefined;
 		this.numDigits = undefined;
+		this.language = undefined;
+		this.hints = undefined;
 		this.steps = [];
 		this.validation = {userPattern: "", regexPattern: undefined};
+		this.speechValidation = {userPattern: "", regexPattern: undefined};
 		this.invalidMessage = new sayModel();
+		this.speechInvalidMessage = new sayModel();
 		this.gatherType = "menu";
-		this.menu = {mappings:[] }; //{digits:1, next:"welcome.step1"}
+		this.menu = {mappings:[], speechMappings:[] }; //{value:1, next:"welcome.step1"}
 		this.collectdigits = {collectVariable:'',next:'', scope:"module"};
+		this.collectspeech = {collectVariable:'',next:'', scope:"module"};
 		this.iface = {}	;
+		this.inputType = "dtmf"; // dtmf, speech, dtmf_speech
 	}	
 	GatherModel.prototype = new rvdModel();
 	GatherModel.prototype.constructor = GatherModel;
@@ -156,25 +162,50 @@ angular.module('Rvd')
 	GatherModel.prototype.validate = function() {
 		if (!this.validation || (!this.validation.userPattern && !this.validation.regexPattern))
 			this.validation = {userPattern: "", regexPattern: undefined};
+		if (!this.speechValidation || (!this.speechValidation.userPattern && !this.speechValidation.regexPattern))
+			this.speechValidation = {userPattern: undefined, regexPattern: ""};
 		if (!this.invalidMessage)
 			this.invalidMessage = new sayModel();
+		if (!this.speechInvalidMessage)
+			this.speechInvalidMessage = new sayModel();
 		if (!this.menu)
-			this.menu = {mappings:[] };
+			this.menu = {mappings:[], speechMappings :[] };
+		if (!this.menu.speechMappings)
+		    this.menu.speechMappings = [];
+		if (!this.menu.mappings)
+		    this.menu.mappings = [];
 		if (!this.collectdigits)
 			this.collectdigits = {collectVariable:'',next:'', scope:"module"};
+		if (!this.collectspeech)
+			this.collectspeech = {collectVariable:'',next:'', scope:"module"};
 	}
 	GatherModel.prototype.pack = function () {
 		//console.log("gatherModel:pack() - " + this.name);
 		var clone = angular.copy(this);
-		if (clone.gatherType == "menu")
+
+		if (! (clone.gatherType == "collectdigits" && clone.inputType.indexOf("dtmf") != -1) )
 			delete clone.collectdigits;
-		else
+
+		if (! (clone.gatherType == "collectdigits" && clone.inputType.indexOf("speech") != -1) )
+        	delete clone.collectspeech;
+
 		if (clone.gatherType == "collectdigits")
 			delete clone.menu;
+		else {
+		    if (clone.inputType.indexOf("dtmf") == -1)
+		        delete clone.menu.mappings;
+		    if (clone.inputType.indexOf("speech") == -1)
+		        delete clone.menu.speechMappings;
+		}
+
 		if (!clone.validation.userPattern && !clone.validation.regexPattern)
 			delete clone.validation;
+		if (!clone.speechValidation.userPattern && !clone.speechValidation.regexPattern)
+			delete clone.speechValidation;
 		if (clone.invalidMessage.phrase == "")
 			delete clone.invalidMessage;
+		if (clone.speechInvalidMessage.phrase == "")
+			delete clone.speechInvalidMessage;
 		for (var i=0; i<clone.steps.length; i++) {
 			var step;
 			if (clone.steps[i].kind == 'say')

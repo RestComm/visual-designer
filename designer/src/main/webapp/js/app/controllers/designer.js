@@ -116,9 +116,15 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 	$scope.addGatherMapping = function( gatherStep ) {
 		gatherStep.menu.mappings.push({digits:"", next:""});
 	};
+	$scope.addSpeechGatherMapping = function( gatherStep ) {
+        gatherStep.menu.speechMappings.push({key:"", next:""});
+    };
 	$scope.removeGatherMapping = function (gatherStep, mapping) {
 		gatherStep.menu.mappings.splice( gatherStep.menu.mappings.indexOf(mapping), 1 );
 	}
+	$scope.removeSpeechGatherMapping = function (gatherStep, mapping) {
+        gatherStep.menu.speechMappings.splice( gatherStep.menu.speechMappings.indexOf(mapping), 1 );
+    }
 	// ussd collect handles adding mappings a little differently
 	$scope.addUssdCollectMapping = function (collectStep) {
 		collectStep.menu.mappings.push({digits:"", next:""});
@@ -174,6 +180,15 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 											{name:'th',text: 'Thai'},
 											{name:'tr',text: 'Turkish'}
 										 ];
+	$scope.languagesGather = [
+		{name:'en-GB',text: 'British-English'},
+		{name:'en-US',text:'English'},
+		{name:'es-ES',text: 'Spanish'},
+		{name:'fr-FR',text: 'French'},
+		{name:'it-IT',text: 'Italian'},
+		{name:'pl-PL',text: 'Polish'},
+		{name:'pt-PT',text: 'Portuguese'}
+	];
 	$scope.methods = ['POST', 'GET'];
 
 	$scope.ussdMaxEnglishChars = 182;
@@ -307,6 +322,8 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 			        $scope.drawGraph();
 				if ( reason.exception.className == 'ValidationException' ) {
 					console.log("Validation error");
+					console.log(reason.exception);
+
 					notifications.put({type:"warning", message:"Project saved with validation errors"});
 					var r = /^\/nodes\/([0-9]+)\/steps\/([0-9]+)$/;
 					var errorItems = reason.exception.jsonSchemaReport.errorItems;

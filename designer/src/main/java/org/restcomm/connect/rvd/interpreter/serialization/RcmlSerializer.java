@@ -87,6 +87,13 @@ public class RcmlSerializer {
         xstream.useAttributeFor(RcmlGatherStep.class, "finishOnKey");
         xstream.useAttributeFor(RcmlGatherStep.class, "method");
         xstream.useAttributeFor(RcmlGatherStep.class, "numDigits");
+
+        xstream.useAttributeFor(RcmlGatherStep.class, "input");
+        xstream.useAttributeFor(RcmlGatherStep.class, "language");
+        xstream.useAttributeFor(RcmlGatherStep.class, "hints");
+        xstream.useAttributeFor(RcmlGatherStep.class, "partialResultCallback");
+        xstream.useAttributeFor(RcmlGatherStep.class, "partialResultCallbackMethod");
+
         xstream.useAttributeFor(RcmlSayStep.class, "voice");
         xstream.useAttributeFor(RcmlSayStep.class, "language");
         xstream.useAttributeFor(RcmlSayStep.class, "loop");

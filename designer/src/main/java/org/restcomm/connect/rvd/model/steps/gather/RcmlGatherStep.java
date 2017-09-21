@@ -12,6 +12,12 @@ public class RcmlGatherStep extends RcmlStep {
     private String finishOnKey;
     private Integer numDigits;
 
+    private String input;
+    private String language;
+    private String hints;
+    private String partialResultCallback;
+    private String partialResultCallbackMethod;
+
     private List<RcmlStep> steps = new ArrayList<RcmlStep>();
 
     public String getAction() {
@@ -62,4 +68,43 @@ public class RcmlGatherStep extends RcmlStep {
         this.numDigits = numDigits;
     }
 
+    public String getInput() {
+        return input;
+    }
+
+    public void setInput(String input) {
+        this.input = input;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getHints() {
+        return hints;
+    }
+
+    public void setHints(String hints) {
+        this.hints = hints;
+    }
+
+    public String getPartialResultCallback() {
+        return partialResultCallback;
+    }
+
+    public void setPartialResultCallback(String partialResultCallback) {
+        this.partialResultCallback = partialResultCallback;
+    }
+
+    public String getPartialResultCallbackMethod() {
+        return partialResultCallbackMethod;
+    }
+
+    public void setPartialResultCallbackMethod(String partialResultCallbackMethod) {
+        this.partialResultCallbackMethod = partialResultCallbackMethod;
+    }
 }

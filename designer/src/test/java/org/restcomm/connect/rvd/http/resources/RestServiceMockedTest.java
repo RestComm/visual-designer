@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import org.apache.http.impl.client.CloseableHttpClient;
 
 
 /**
@@ -61,8 +62,12 @@ public class RestServiceMockedTest {
                 .setRestcommConfig(new RestcommConfigBuilder().build())
                 .build(); // point that to wiremock
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(configuration);
-        accountProvider = new AccountProvider(configuration, httpClientBuilder);
-        appContext = new ApplicationContextBuilder().setAccountProvider(accountProvider).setConfiguration(configuration).setHttpClientBuilder(httpClientBuilder).build();
+        CloseableHttpClient buildHttpClient = httpClientBuilder.buildHttpClient();
+        accountProvider = new AccountProvider(configuration, buildHttpClient);
+        appContext = new ApplicationContextBuilder().setAccountProvider(accountProvider).
+                setConfiguration(configuration).
+                setHttpClientBuilder(httpClientBuilder)
+                .setDefaultHttpClient(buildHttpClient).build();
     }
 
     protected void addLegitimateAccount(String email, String accountSid) {
