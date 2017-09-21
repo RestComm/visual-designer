@@ -37,8 +37,15 @@ import org.restcomm.connect.rvd.upgrade.exceptions.UpgradeException;
  */
 public class ProjectUpgraderTest {
 
-     // note that this test fails the second time it is run through intelliJ. Make sure the target/test-classes directory
-     // is removed before running it again !
+    //
+
+    /**
+     * IMPORTANT: This test fails the second time it is run through. Make sure the target/test-classes directory
+     * is removed before running it again. You can do this manually or through 'mvn clean ...'
+     *
+     * @throws StorageException
+     * @throws UpgradeException
+     */
     @Test
     public void testVariousProjectUpgrades() throws StorageException, UpgradeException {
         ModelMarshaler marshaler = new ModelMarshaler();

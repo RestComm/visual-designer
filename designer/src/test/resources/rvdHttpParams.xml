@@ -1,0 +1,115 @@
+<rvd>
+	<!--
+		An optional instance identifier for this RVD runtime. A random value will be assigned if not provided.
+		Note, this value is NOT RELATED to the respective value used by Restcomm Connect.
+	-->
+	<instanceId></instanceId>
+
+	<!--
+		A path to the projects' workspace. Both absolute and relative paths are supported. Relative paths
+		are related RVD web application context. Namely $RESTCOMM_HOME/standalone/deployments/restcomm-rvd.war/.
+
+		Example:
+			Absolute path example:
+				/home/otsakir/Restcomm/standalone/deployments/restcomm-rvd.war/workspace
+
+			Relative path example:
+				workspace
+
+		Required: yes
+	-->
+	<workspaceLocation>workspace</workspaceLocation>
+	
+	<!-- Absolute or relative path on which the workspace backups will be created.
+	The value of the element "workspaceBackupLocation" must be different than the value of the
+	element "workspaceLocation", since the backup will use the directory informed in "workspaceLocation" 
+	as source and the directory informed in "workspaceBackupLocation" as target, to perform the copy operation.
+	If left as blank, rvd's context root path will be used by default.
+	-->
+	<workspaceBackupLocation></workspaceBackupLocation>
+
+	<!--
+		Override automatic restcomm address resolution.
+
+		Example:
+			<restcommBaseUrl>http://192.168.0.2:8080</restcommBaseUrl>
+	-->
+	<restcommBaseUrl></restcommBaseUrl>
+
+	<!--
+		If 'useAbsoluteApplicationUrl' is true application registration to restcomm will use absolute urls instead of relative.
+	    These absolute urls will start with 'baseUrl'
+
+	    Default value for useAbsoluteApplicationUrl is false.
+	-->
+	<useAbsoluteApplicationUrl>false</useAbsoluteApplicationUrl>
+	<baseUrl>/restcomm-rvd</baseUrl>
+
+	<!-- Timeout for external service requests in milliseconds. Defaults to 5000 if not given. Note that custom
+		 overrides from the External Service element timeout setting (UI) will  get ignored if greater that
+		 the value defined here.
+	 	 IMPORTANT: This timeout value is related with the <http-client>/<response-timeout> setting in restcomm.xml
+	 	 		    and should ALWAYS be smaller than that (defaults to 6000). Typically 1000 ms difference is
+	 	 		    ok but it really depends on the roundtrip time when restcomm contacts RVD. 
+	 -->
+	<externalServiceTimeout>1</externalServiceTimeout>
+        <externalServiceMaxConns>1</externalServiceMaxConns>
+        <externalServiceMaxConnsPerRoute>1</externalServiceMaxConnsPerRoute>
+        <externalServiceTTL>1</externalServiceTTL>
+        <externalServicepMaxPerRoute>
+            <rvdMaxPerHost>
+                <url>http://127.0.0.1</url>
+                <maxConnections>1</maxConnections>
+            </rvdMaxPerHost>
+            <rvdMaxPerHost>
+                <url>http://127.0.0.1</url>
+                <maxConnections>2</maxConnections>
+            </rvdMaxPerHost>                        
+        </externalServicepMaxPerRoute>
+        <defaultHttpTimeout>1</defaultHttpTimeout>
+        <defaultHttpMaxConns>1</defaultHttpMaxConns>
+        <defaultHttpMaxConnsPerRoute>1</defaultHttpMaxConnsPerRoute>
+        <defaultHttpTTL>1</defaultHttpTTL>
+        <defaultHttpMaxPerRoute>
+            <rvdMaxPerHost>
+                <url>http://127.0.0.1</url>
+                <maxConnections>1</maxConnections>
+            </rvdMaxPerHost>
+        </defaultHttpMaxPerRoute>
+
+	<!-- Enable Video support in RCML produced and UI. Defaults to 'false'. Requires XMS. -->
+	<videoSupport>false</videoSupport>
+
+	<!-- Maximum media file size allowed when uploading (in bytes). If video is supported make sure you
+	 provide a large enough value -->
+	<maxMediaFileSize>4194304</maxMediaFileSize>
+
+
+	<!-- When RVD is deployed on a different domain than restcomm, cors origin whitelist should be provided
+		 Many, <origin/> elements are allowed. Also, special <origin>*</origin> element will allow access to all cors requests.
+
+		 Example 1
+
+			 <corsWhitelist>
+				<origin>http://allowedhost1:8080</origin>
+				<origin>http://allowedhost2:8080</origin>
+			</corsWhitelist>
+
+		Example 2
+			<corsWhitelist>
+					<origin>*</origin>
+			</corsWhitelist>
+	-->
+	<corsWhitelist>
+		<origin>*</origin>
+	</corsWhitelist>
+
+	<!-- USSD project support in UI. By default it's 'true'.
+
+		To disable:
+
+                        <ussdSupport>false</ussdSupport>
+        -->
+        <ussdSupport>true</ussdSupport>
+
+</rvd>

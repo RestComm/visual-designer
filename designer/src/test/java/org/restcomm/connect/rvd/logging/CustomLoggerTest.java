@@ -91,10 +91,11 @@ public class CustomLoggerTest {
             customLogger.log(i + " - A really loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message").done();
         }
         String content = FileUtils.readFileToString(new File(basepath + ".log"));
+        // Beware of newline characters. It might have different results if two characters are used in the system.
         Assert.assertTrue(content.contains("9999 - A really"));
-        Assert.assertTrue(content.contains("6337 - A really"));
+        Assert.assertTrue(content.contains("7000 - A really"));
         content = FileUtils.readFileToString(new File(basepath + "-1.log"));
-        Assert.assertTrue(content.contains("6336 - A really"));
+        Assert.assertTrue(content.contains("6000 - A really"));
         Assert.assertTrue(content.contains("] 0 - A really"));
 
     }
