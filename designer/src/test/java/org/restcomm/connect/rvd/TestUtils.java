@@ -21,6 +21,8 @@
 package org.restcomm.connect.rvd;
 
 import org.apache.commons.io.FileUtils;
+import org.mockito.Mockito;
+import org.restcomm.connect.rvd.configuration.RvdConfig;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 
@@ -28,6 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
+
+import static org.mockito.Mockito.when;
 
 /**
  * Helper class for testing rvd. Contains workspace management functions
@@ -71,14 +75,16 @@ public class TestUtils {
         return projectFile;
     }
 
-    public static RvdConfiguration initRvdConfiguration(String contextToUse) {
-        URL url = TestUtils.class.getResource("/contexts/" + contextToUse + "/restcomm-rvd.war/WEB-INF/rvd.xml");
-        File rvdRoot = null;
-        rvdRoot = new File(url.getFile());
-        return new FileRvdConfiguration("/restcomm-rvd", rvdRoot.getParentFile().getParentFile().getPath());
-    }
-
-    public static RvdConfiguration initRvdConfiguration() {
-        return initRvdConfiguration("default");
+    public static RvdConfiguration defaultRvdConfiguration() {
+        RvdConfiguration configuration = Mockito.mock(RvdConfiguration.class);
+        when(configuration.getDefaultHttpMaxConns()).thenReturn(RvdConfiguration.DEFAULT_HTTP_MAX_CONNS);
+        when(configuration.getDefaultHttpMaxConnsPerRoute()).thenReturn(RvdConfiguration.DEFAULT_HTTP_MAX_CONNS_PER_ROUTE);
+        when(configuration.getDefaultHttpTimeout()).thenReturn(RvdConfiguration.DEFAULT_HTTP_TIMEOUT);
+        when(configuration.getDefaultHttpTTL()).thenReturn(RvdConfiguration.DEFAULT_HTTP_TTL);
+        when(configuration.getExternalServiceMaxConns()).thenReturn(RvdConfiguration.DEFAULT_ES_MAX_CONNS);
+        when(configuration.getExternalServiceMaxConnsPerRoute()).thenReturn(RvdConfiguration.DEFAULT_ES_MAX_CONNS_PER_ROUTE);
+        when(configuration.getExternalServiceTimeout()).thenReturn(RvdConfiguration.DEFAULT_ES_TIMEOUT);
+        when(configuration.getExternalServiceTTL()).thenReturn(RvdConfiguration.DEFAULT_ES_TTL);
+        return configuration;
     }
 }

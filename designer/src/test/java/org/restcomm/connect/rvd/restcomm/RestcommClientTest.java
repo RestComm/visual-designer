@@ -25,18 +25,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.google.gson.Gson;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.restcomm.connect.rvd.RvdConfiguration;
+import org.restcomm.connect.rvd.TestUtils;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import junit.framework.Assert;
 import org.junit.Rule;
 import org.mockito.Mockito;
@@ -49,19 +46,10 @@ import org.restcomm.connect.rvd.exceptions.AccessApiException;
  */
 public class RestcommClientTest {
 
-    private static URI fallbackUri;
-    private static RvdConfiguration configuration;
 
-    @BeforeClass
-    public static void init() {
-        // The following are disabled until the test is fixed
-        //fallbackUri = URI.create("http://123.123.123.123:7070");
-        //configuration = TestUtils.initRvdConfiguration();
-    }
-
-    @Ignore
     @Test(expected = RestcommClient.RestcommClientInitializationException.class)
     public void exceptionThrownWhenNoCredentialsCanBeDetermined() throws RestcommClient.RestcommClientInitializationException, URISyntaxException {
+        RvdConfiguration configuration = TestUtils.defaultRvdConfiguration();
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(configuration);
         RestcommClient client = new RestcommClient(null, null, httpClientBuilder.buildHttpClient());
     }
