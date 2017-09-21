@@ -37,7 +37,7 @@ public class AccountProvider {
      * and UriUtils. Make sure restcommUrl parameter is properly set.
      *
      * @param restcommUrl
-     * @param httpClientBuilder
+     * @param client
      */
     public AccountProvider(String restcommUrl, CloseableHttpClient client) {
         if (restcommUrl == null)
