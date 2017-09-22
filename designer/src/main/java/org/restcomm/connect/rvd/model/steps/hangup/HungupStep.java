@@ -8,7 +8,7 @@ import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 public class HungupStep extends Step {
 
     @Override
-    public RcmlStep render(Interpreter interpreter) throws InterpreterException {
+    public RcmlStep render(Interpreter interpreter, String containerModule) throws InterpreterException {
         return new RcmlHungupStep();
     }
 

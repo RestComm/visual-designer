@@ -184,7 +184,7 @@ public class ExternalServiceStep extends Step {
     }
 
     @Override
-    public RcmlStep render(Interpreter interpreter) throws InterpreterException {
+    public RcmlStep render(Interpreter interpreter, String containerModule) throws InterpreterException {
         // TODO Auto-generated method stub
         return null;
     }

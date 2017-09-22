@@ -11,7 +11,6 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -60,11 +59,11 @@ public class FaxStep extends Step {
         this.statusCallback = statusCallback;
     }
 
-    public RcmlFaxStep render(Interpreter interpreter) {
+    public RcmlFaxStep render(Interpreter interpreter, String containerModule) {
         RcmlFaxStep rcmlStep = new RcmlFaxStep();
 
         if ( ! RvdUtils.isEmpty(getNext()) ) {
-            String newtarget = interpreter.getTarget().getNodename() + "." + getName() + ".actionhandler";
+            String newtarget = containerModule + "." + getName() + ".actionhandler";
             Map<String, String> pairs = new HashMap<String, String>();
             pairs.put("target", newtarget);
             String action = interpreter.buildAction(pairs);
@@ -81,7 +80,7 @@ public class FaxStep extends Step {
     }
 
     @Override
-    public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
+    public void handleAction(Interpreter interpreter, String handlerModule) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling fax action"));
@@ -97,6 +96,6 @@ public class FaxStep extends Step {
         if (FaxStatus != null )
             interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "FaxStatus", FaxStatus);
 
-        interpreter.interpret( getNext(), null, null, originTarget );
+        interpreter.interpret( getNext(), null, null, handlerModule);
     }
 }

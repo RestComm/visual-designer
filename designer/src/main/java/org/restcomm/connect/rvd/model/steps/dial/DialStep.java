@@ -13,7 +13,6 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -28,7 +27,7 @@ public class DialStep extends Step {
     private String nextModule;
     private Boolean record;
 
-    public RcmlDialStep render(Interpreter interpreter) throws InterpreterException {
+    public RcmlDialStep render(Interpreter interpreter, String containerModule) throws InterpreterException {
         RcmlDialStep rcmlStep = new RcmlDialStep();
 
         for ( DialNoun noun: dialNouns ) {
@@ -36,7 +35,7 @@ public class DialStep extends Step {
         }
 
         if ( ! RvdUtils.isEmpty(nextModule) ) {
-            String newtarget = interpreter.getTarget().getNodename() + "." + getName() + ".actionhandler";
+            String newtarget = containerModule + "." + getName() + ".actionhandler";
             Map<String, String> pairs = new HashMap<String, String>();
             pairs.put("target", newtarget);
             String action = interpreter.buildAction(pairs);
@@ -53,7 +52,7 @@ public class DialStep extends Step {
     }
 
     @Override
-    public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
+    public void handleAction(Interpreter interpreter, String handlerModule) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling dial action"));
@@ -91,7 +90,7 @@ public class DialStep extends Step {
         if ( DialRingDuration != null )
             interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "DialRingDuration", DialRingDuration);
 
-        interpreter.interpret( nextModule, null, null, originTarget );
+        interpreter.interpret( nextModule, null, null, handlerModule);
     }
 
 }

@@ -44,7 +44,6 @@ import org.restcomm.connect.rvd.model.steps.hangup.RcmlHungupStep;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
-import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -72,6 +71,7 @@ public class Interpreter {
 
     private Map<String, String> variables = new HashMap<String, String>();
     private List<NodeName> nodeNames;
+    private RcmlResponse rcmlResult;
 
     public static RcmlResponse rcmlOnException() {
         RcmlResponse response = new RcmlResponse();
@@ -132,20 +132,7 @@ public class Interpreter {
         this.variables = variables;
     }
 
-
-    public Target getTarget() {
-        return target;
-    }
-
-
-    public void setTarget(Target target) {
-        this.target = target;
-    }
-
-
     public RcmlResponse interpret() throws RvdException {
-        RcmlResponse response = null;
-
         ProjectOptions projectOptions = FsProjectStorage.loadProjectOptions(appName, workspaceStorage); //rvdContext.getRuntimeProjectOptions();
         nodeNames = projectOptions.getNodeNames();
 
@@ -163,10 +150,9 @@ public class Interpreter {
         //processRequestHeaders(httpRequest);
         //handleStickyParameters(); // create local copies of sticky_* parameters
 
-        response = interpret(targetParam, null, null, null);
-        return response;
+        dispatch(targetParam);
+        return rcmlResult;
     }
-
 
     public MultivaluedMap<String, String> getRequestParams() {
         return requestParams;
@@ -176,71 +162,78 @@ public class Interpreter {
         return contextPath;
     }
 
-    public RcmlResponse interpret(String targetParam, RcmlResponse rcmlModel, Step prependStep, Target originTarget ) throws InterpreterException, StorageException {
+    public void dispatch(String targetParam) throws StorageException, InterpreterException {
         if (RvdLoggers.local.isTraceEnabled())
             RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"interpret", loggingContext.getPrefix(), "starting interpeter for " + targetParam));
         if ( projectSettings.getLogging() )
             projectLogger.log("Running target: " + targetParam).tag("app",appName).done();
 
-        target = Interpreter.parseTarget(targetParam);
-        // if we are switching modules, remove module-scoped variables
-        if ( originTarget != null  &&  ! RvdUtils.safeEquals(target.getNodename(), originTarget.getNodename() ) ) {
-            clearModuleVariables();
-        }
-
-
-        // TODO make sure all the required components of the target are available here
-
+        target = Interpreter.parseTarget(targetParam); // TODO - target can be made local variable (?)
         if (target.action != null) {
             // Event handling
-            loadStep(target.stepname).handleAction(this, target);
+            loadStep(target.stepname, target.getNodename()).handleAction(this, target.getNodename());
         } else {
-            // RCML Generation
-            if (rcmlModel == null )
-                rcmlModel = new RcmlResponse();
-            List<String> nodeStepnames = FsProjectStorage.loadNodeStepnames(appName, target.getNodename(), workspaceStorage);
-
-            // if no starting step has been specified in the target, use the first step of the node as default
-            if (target.getStepname() == null && !nodeStepnames.isEmpty())
-                target.setStepname(nodeStepnames.get(0));
-
-            // Prepend step if required. Usually used for error messages
-            if ( prependStep != null ) {
-                RcmlStep rcmlStep = prependStep.render(this);
-                if(RvdLoggers.local.isTraceEnabled())
-                    RvdLoggers.local.log(Level.TRACE,LoggingHelper.buildMessage(getClass(),"interpret", "Prepending say step: " + rcmlStep ));
-                rcmlModel.steps.add( rcmlStep );
-            }
-
-            boolean startstep_found = false;
-            for (String stepname : nodeStepnames) {
-
-                if (stepname.equals(target.getStepname()))
-                    startstep_found = true;
-
-                if (startstep_found) {
-                    // we found our starting step. Let's start processing
-                    Step step = loadStep(stepname);
-                    String rerouteTo = step.process(this, httpRequest); // is meaningful only for some of the steps like ExternalService steps
-                    // check if we have to break the currently rendered module
-                    if ( rerouteTo != null )
-                        return interpret(rerouteTo, rcmlModel, null, target);
-                    // otherwise continue rendering the current module
-                    RcmlStep rcmlStep = step.render(this);
-                    if ( rcmlStep != null)
-                        rcmlModel.steps.add(rcmlStep);
-                }
-            }
-
-            //rcmlResult = xstream.toXML(rcmlModel);
+            interpret(target.getNodename(),null,null,null);
         }
-
-        //return rcmlResult; // this is in case of an error
-        return rcmlModel;
     }
 
-    private Step loadStep(String stepname) throws StorageException  {
-        String stepfile_json = FsProjectStorage.loadStep(appName, target.getNodename(), stepname, workspaceStorage);
+    /**
+     * Interprets module moduleName. If startingStepName is provided, interpretation will start from there. In case there is a 'prependStep'
+     * it will render it first. originModuleName is the invoking module.
+     *
+     * @param moduleName - not null
+     * @param startingStepName
+     * @param prependStep
+     * @param originModuleName - can be null
+     * @throws StorageException
+     * @throws InterpreterException
+     */
+    public void interpret(String moduleName, String startingStepName, Step prependStep, String originModuleName) throws StorageException, InterpreterException {
+        // make sure there is a valid RcmlResponse object. We will definitely return an <RcmlResponse></RcmlResponse> block.
+        if ( this.rcmlResult == null )
+            this.rcmlResult = new RcmlResponse();
+        // if we are switching modules, remove module-scoped variables
+        if (originModuleName != null && ! originModuleName.equals(moduleName) )
+            clearModuleVariables();
+        // load steps for this module
+        List<String> nodeStepnames = FsProjectStorage.loadNodeStepnames(appName, moduleName, workspaceStorage);
+        // if no starting step has been specified in the target, use the first step of the node as default
+        if (startingStepName == null && !nodeStepnames.isEmpty())
+            startingStepName = nodeStepnames.get(0);
+        // Prepend step if required. Usually used for error messages
+        if ( prependStep != null ) {
+            RcmlStep rcmlStep = prependStep.render(this, moduleName );
+            if(RvdLoggers.local.isTraceEnabled())
+                RvdLoggers.local.log(Level.TRACE,LoggingHelper.buildMessage(getClass(),"interpret", "Prepending say step: " + rcmlStep ));
+            this.rcmlResult.steps.add( rcmlStep );
+        }
+
+        boolean startstep_found = false;
+        for (String stepname : nodeStepnames) {
+
+            if (stepname.equals(startingStepName))
+                startstep_found = true;
+
+            if (startstep_found) {
+                // we found our starting step. Let's start processing
+                Step step = loadStep(stepname, moduleName);
+                String rerouteTo = step.process(this, httpRequest); // is meaningful only for some of the steps like ExternalService steps
+                // check if we have to break the currently rendered module
+                if ( rerouteTo != null ) {
+                    interpret(rerouteTo, null, null, moduleName);
+                    return;
+                }
+                // otherwise continue rendering the current module
+                RcmlStep rcmlStep = step.render(this, moduleName);
+                if ( rcmlStep != null)
+                    this.rcmlResult.steps.add(rcmlStep);
+            }
+        }
+    }
+
+
+    private Step loadStep(String stepname, String moduleName) throws StorageException  {
+        String stepfile_json = FsProjectStorage.loadStep(appName, moduleName, stepname, workspaceStorage);
         Step step = gson.fromJson(stepfile_json, Step.class);
 
         return step;

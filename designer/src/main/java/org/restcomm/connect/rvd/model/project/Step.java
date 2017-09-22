@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.interpreter.exceptions.RVDUnsupportedHandlerVerb;
 import org.restcomm.connect.rvd.jsonvalidation.ValidationErrorItem;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
@@ -51,9 +50,9 @@ public abstract class Step {
         this.name = name;
     }
 
-    public abstract RcmlStep render(Interpreter interpreter) throws InterpreterException;
+    public abstract RcmlStep render(Interpreter interpreter, String containerModule) throws InterpreterException;
 
-    public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
+    public void handleAction(Interpreter interpreter, String handlerModule) throws InterpreterException, StorageException {
         throw new RVDUnsupportedHandlerVerb();
     }
 

@@ -122,6 +122,9 @@ public class RcmlSerializer {
     }
 
     public String serialize(RcmlResponse rcmlResponse) {
-        return xstream.toXML(rcmlResponse);
+        if (rcmlResponse == null)
+            return null;
+        else
+            return xstream.toXML(rcmlResponse);
     }
 }

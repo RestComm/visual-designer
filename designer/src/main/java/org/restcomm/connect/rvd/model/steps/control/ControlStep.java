@@ -46,7 +46,7 @@ public class ControlStep extends Step {
 
 
     @Override
-    public RcmlStep render(Interpreter interpreter) throws InterpreterException {
+    public RcmlStep render(Interpreter interpreter, String containerModule) throws InterpreterException {
         return null;
     }
 

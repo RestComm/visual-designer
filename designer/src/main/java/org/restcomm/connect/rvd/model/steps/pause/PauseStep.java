@@ -13,7 +13,7 @@ public class PauseStep extends Step {
     public void setLength(Integer length) {
         this.length = length;
     }
-    public RcmlPauseStep render(Interpreter interpreter) {
+    public RcmlPauseStep render(Interpreter interpreter, String containerModule) {
         RcmlPauseStep rcmlStep = new RcmlPauseStep();
         if ( getLength() != null )
             rcmlStep.setLength(getLength());

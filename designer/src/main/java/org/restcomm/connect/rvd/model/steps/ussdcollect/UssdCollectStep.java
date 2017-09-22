@@ -27,7 +27,6 @@ import org.apache.log4j.Level;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
@@ -65,23 +64,23 @@ public class UssdCollectStep extends Step {
     }
 
     @Override
-    public UssdCollectRcml render(Interpreter interpreter) throws InterpreterException {
+    public UssdCollectRcml render(Interpreter interpreter, String containerModule) throws InterpreterException {
         // TODO Auto-generated method stub
         UssdCollectRcml rcml = new UssdCollectRcml();
-        String newtarget = interpreter.getTarget().getNodename() + "." + getName() + ".handle";
+        String newtarget = containerModule + "." + getName() + ".handle";
         Map<String, String> pairs = new HashMap<String, String>();
         pairs.put("target", newtarget);
 
         rcml.action = interpreter.buildAction(pairs);
         for ( UssdSayStep message : messages ) {
-            rcml.messages.add(message.render(interpreter));
+            rcml.messages.add(message.render(interpreter, containerModule ));
         }
 
         return rcml;
     }
 
     @Override
-    public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
+    public void handleAction(Interpreter interpreter, String handlerModule) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling UssdCollect action"));
@@ -100,12 +99,12 @@ public class UssdCollectStep extends Step {
                     // seems we found out menu selection
                     if (RvdLoggers.local.isTraceEnabled())
                         RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"handleAction","{0} seems we found our menu selection", new Object[] {logging.getPrefix(), digits}));
-                    interpreter.interpret(mapping.next,null,null, originTarget);
+                    interpreter.interpret(mapping.next,null,null, handlerModule);
                     handled = true;
                 }
             }
             if (!handled) {
-                interpreter.interpret(interpreter.getTarget().getNodename() + "." + interpreter.getTarget().getStepname(),null,null, originTarget);
+                interpreter.interpret(handlerModule,this.getName(),null, handlerModule);
             }
         }
         if ("collectdigits".equals(gatherType)) {
@@ -124,7 +123,7 @@ public class UssdCollectStep extends Step {
             // in any case initialize the module-scoped variable
             interpreter.getVariables().put(variableName, variableValue);
 
-            interpreter.interpret(collectdigits.next,null,null, originTarget);
+            interpreter.interpret(collectdigits.next,null,null, handlerModule);
         }
     }
 }

@@ -35,7 +35,7 @@ public class UssdLanguageStep extends Step {
     }
 
     @Override
-    public UssdLanguageRcml render(Interpreter interpreter) throws InterpreterException {
+    public UssdLanguageRcml render(Interpreter interpreter, String containerModule) throws InterpreterException {
         UssdLanguageRcml rcml = new UssdLanguageRcml();
         rcml.language = language;
         return rcml;

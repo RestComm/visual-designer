@@ -24,7 +24,6 @@ import org.apache.log4j.Level;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
@@ -133,10 +132,10 @@ public class GatherStep extends Step {
         private String regexPattern;
     }
 
-    public RcmlGatherStep render(Interpreter interpreter) throws InterpreterException {
+    public RcmlGatherStep render(Interpreter interpreter, String containerModule) throws InterpreterException {
 
         RcmlGatherStep rcmlStep = new RcmlGatherStep();
-        String newtarget = interpreter.getTarget().getNodename() + "." + getName() + ".handle";
+        String newtarget = containerModule + "." + getName() + ".handle";
         Map<String, String> pairs = new HashMap<String, String>();
         pairs.put("target", newtarget);
         String action = interpreter.buildAction(pairs);
@@ -158,12 +157,12 @@ public class GatherStep extends Step {
         }
 
         for (Step nestedStep : steps)
-            rcmlStep.getSteps().add(nestedStep.render(interpreter));
+            rcmlStep.getSteps().add(nestedStep.render(interpreter, containerModule));
 
         return rcmlStep;
     }
 
-    private boolean handleMapping(Interpreter interpreter, Target originTarget, String key, List<? extends Mapping> mappings, boolean isPattern) throws StorageException, InterpreterException {
+    private boolean handleMapping(Interpreter interpreter, String originModule, String key, List<? extends Mapping> mappings, boolean isPattern) throws StorageException, InterpreterException {
         LoggingContext logging = interpreter.getLoggingContext();
         if (mappings != null) {
             for (Mapping mapping : mappings) {
@@ -177,7 +176,7 @@ public class GatherStep extends Step {
                         // seems we found out menu selection
                         if (RvdLoggers.local.isTraceEnabled())
                             RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), " seems we found our menu selection: " + key));
-                        interpreter.interpret(mapping.getNext(), null, null, originTarget);
+                        interpreter.interpret(mapping.getNext(), null, null, originModule);
                         return true;
                     }
                 }
@@ -229,7 +228,7 @@ public class GatherStep extends Step {
         return !StringUtils.isEmpty(value) && value.matches(pattern);
     }
 
-    private boolean handleCollect(final Interpreter interpreter, Target originTarget, final Collectdigits collect, String newValue, Validation validation) throws StorageException, InterpreterException {
+    private boolean handleCollect(final Interpreter interpreter, String originModule, final Collectdigits collect, String newValue, Validation validation) throws StorageException, InterpreterException {
         LoggingContext logging = interpreter.getLoggingContext();
         String effectivePattern = getPattern(interpreter, validation);
         String variableName = collect.collectVariable;
@@ -242,7 +241,7 @@ public class GatherStep extends Step {
         // validation
         if (effectivePattern == null || isMatchesPattern(effectivePattern, variableValue, logging)) {
             putVariable(interpreter, collect, variableName, variableValue);
-            interpreter.interpret(collect.next, null, null, originTarget);
+            interpreter.interpret(collect.next, null, null, originModule);
             return true;
         } else {
             if (RvdLoggers.local.isTraceEnabled())
@@ -251,7 +250,7 @@ public class GatherStep extends Step {
         }
     }
 
-    public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
+    public void handleAction(Interpreter interpreter, String handlerModule) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), "handling gather action"));
@@ -273,7 +272,7 @@ public class GatherStep extends Step {
         if ("menu".equals(gatherType)) {
             switch (inputTypeE) {
                 case DTMF:
-                    isValid = handleMapping(interpreter, originTarget, digitsString, menu.mappings, false);
+                    isValid = handleMapping(interpreter, handlerModule, digitsString, menu.mappings, false);
                     actualInputType = InputType.DTMF;
                     break;
                 case SPEECH:
@@ -282,19 +281,19 @@ public class GatherStep extends Step {
                         return;
                     }
                     if (!StringUtils.isEmpty(speechResultString)) {
-                        isValid = handleMapping(interpreter, originTarget, speechResultString, menu.speechMappings, true);
+                        isValid = handleMapping(interpreter, handlerModule, speechResultString, menu.speechMappings, true);
                     }
                     actualInputType = InputType.SPEECH;
                     break;
                 case DTMF_SPEECH:
                     if (!StringUtils.isEmpty(digitsString)) {
-                        isValid = handleMapping(interpreter, originTarget, digitsString, menu.mappings, false);
+                        isValid = handleMapping(interpreter, handlerModule, digitsString, menu.mappings, false);
                         actualInputType = InputType.DTMF;
                     } else if (!StringUtils.isEmpty(unstableSpeechString)) {
                         //UnstableSpeechResult is not used for now
                         return;
                     }else if (!StringUtils.isEmpty(speechResultString)) {
-                        isValid = handleMapping(interpreter, originTarget, speechResultString, menu.speechMappings, true);
+                        isValid = handleMapping(interpreter, handlerModule, speechResultString, menu.speechMappings, true);
                         actualInputType = InputType.SPEECH;
                     } else {
                         actualInputType = InputType.DTMF; // use this by default
@@ -305,7 +304,7 @@ public class GatherStep extends Step {
         } else if ("collectdigits".equals(gatherType)) {
             switch (inputTypeE) {
                 case DTMF:
-                    isValid = handleCollect(interpreter, originTarget, collectdigits, digitsString, validation);
+                    isValid = handleCollect(interpreter, handlerModule, collectdigits, digitsString, validation);
                     actualInputType = InputType.DTMF;
                     break;
                 case SPEECH:
@@ -314,19 +313,19 @@ public class GatherStep extends Step {
                         return;
                     }
                     if (!StringUtils.isEmpty(speechResultString)) {
-                        isValid = handleCollect(interpreter, originTarget, collectspeech, speechResultString, speechValidation);
+                        isValid = handleCollect(interpreter, handlerModule, collectspeech, speechResultString, speechValidation);
                     }
                     actualInputType = InputType.SPEECH;
                     break;
                 case DTMF_SPEECH:
                     if (!StringUtils.isEmpty(digitsString)) {
-                        isValid = handleCollect(interpreter, originTarget, collectdigits, digitsString, validation);
+                        isValid = handleCollect(interpreter, handlerModule, collectdigits, digitsString, validation);
                         actualInputType = InputType.DTMF;
                     } else if (!StringUtils.isEmpty(unstableSpeechString)) {
                         //UnstableSpeechResult is not used for now
                         return;
                     } else if (!StringUtils.isEmpty(speechResultString)) {
-                        isValid = handleCollect(interpreter, originTarget, collectspeech, speechResultString, speechValidation);
+                        isValid = handleCollect(interpreter, handlerModule, collectspeech, speechResultString, speechValidation);
                         actualInputType = InputType.SPEECH;
                     } else {
                         actualInputType = InputType.DTMF; // use this by default
@@ -338,7 +337,7 @@ public class GatherStep extends Step {
 
         if (!isValid) { // this should always be true
             Step invalidMessage = getInvalidMessage(actualInputType);
-            interpreter.interpret(interpreter.getTarget().getNodename() + "." + interpreter.getTarget().getStepname(), null, (invalidMessage != null) ? invalidMessage : null, originTarget);
+            interpreter.interpret(handlerModule, this.getName(), (invalidMessage != null) ? invalidMessage : null, handlerModule);
         }
     }
 

@@ -31,7 +31,7 @@ public class LogStep extends Step {
     private String message;
 
     @Override
-    public RcmlStep render(Interpreter interpreter) throws InterpreterException {
+    public RcmlStep render(Interpreter interpreter, String containerModule) throws InterpreterException {
         // TODO Auto-generated method stub
         return null;
     }

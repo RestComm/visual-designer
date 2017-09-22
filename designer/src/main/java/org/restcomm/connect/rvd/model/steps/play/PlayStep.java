@@ -45,7 +45,7 @@ public class PlayStep extends Step {
 
 
     @Override
-    public RcmlStep render(Interpreter interpreter) {
+    public RcmlStep render(Interpreter interpreter, String containerModule) {
         LoggingContext logging = interpreter.getLoggingContext();
         RcmlPlayStep playStep = new RcmlPlayStep();
         String url = "";
