@@ -21,7 +21,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -49,6 +48,10 @@ import org.restcomm.connect.rvd.utils.RvdUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 
 
 public class ExternalServiceStep extends Step {
@@ -181,7 +184,7 @@ public class ExternalServiceStep extends Step {
     }
 
     @Override
-    public RcmlStep render(Interpreter interpreter) throws InterpreterException {
+    public RcmlStep render(Interpreter interpreter, String containerModule) throws InterpreterException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -237,7 +240,12 @@ public class ExternalServiceStep extends Step {
             // if the effective timeout is greater than the one specified in configuration, truncate it to that value.
             if (requestTimeout > configTimeout)
                 requestTimeout = configTimeout;
-            CloseableHttpClient client = interpreter.getApplicationContext().getHttpClientBuilder().buildHttpClient(requestTimeout);
+            HttpContext httpContext = new BasicHttpContext();
+            httpContext.setAttribute(HttpClientContext.REQUEST_CONFIG, RequestConfig.custom().
+                    setConnectTimeout(requestTimeout).
+                    setSocketTimeout(requestTimeout).
+                    setConnectionRequestTimeout(requestTimeout).build());
+            CloseableHttpClient client = (CloseableHttpClient) interpreter.getApplicationContext().getExternaltHttpClient();
             CloseableHttpResponse response;
             int statusCode;
             JsonElement response_element = null;
@@ -298,7 +306,7 @@ public class ExternalServiceStep extends Step {
                     // mark ES call as pending
                     StatsHelper.countEsCallPending(projectInfo.stats,1);
                     StatsHelper.countEsCallPending(globalStats, 1);
-                    response = client.execute(request);
+                    response = client.execute(request, httpContext);
                 } finally {
                     // 'mark' as not pending when thread is unblocked
                     StatsHelper.countEsCallPending(projectInfo.stats, -1); // decrease pending ES counter
@@ -372,7 +380,6 @@ public class ExternalServiceStep extends Step {
             } finally {
                 if (response != null) {
                     response.close();
-                    HttpClientUtils.closeQuietly(client);
                     client = null;
                 }
             }

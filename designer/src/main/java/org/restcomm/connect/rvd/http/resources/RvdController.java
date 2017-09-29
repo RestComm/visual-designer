@@ -46,7 +46,7 @@ import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.interpreter.exceptions.BadExternalServiceResponse;
 import org.restcomm.connect.rvd.interpreter.exceptions.ESProcessFailed;
 import org.restcomm.connect.rvd.interpreter.exceptions.RemoteServiceError;
-import org.restcomm.connect.rvd.interpreter.serialization.RcmlSeriallizer;
+import org.restcomm.connect.rvd.interpreter.serialization.RcmlSerializer;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
@@ -114,7 +114,7 @@ public class RvdController extends SecuredRestService {
     // handle both GET and POST request in a single place
     private Response runInterpreter(String appname, HttpServletRequest httpRequest,
                                     MultivaluedMap<String, String> requestParams) {
-        RcmlSeriallizer serializer = new RcmlSeriallizer();
+        RcmlSerializer serializer = new RcmlSerializer();
         String rcmlResponse;
         try {
             if (!FsProjectStorage.projectExists(appname, workspaceStorage))
@@ -276,7 +276,7 @@ public class RvdController extends SecuredRestService {
         // initialize a restcomm client object using various information sources
         RestcommClient restcommClient;
         try {
-            restcommClient = new RestcommClient(restcommBaseUri, effectiveAuthHeader,applicationContext.getHttpClientBuilder());
+            restcommClient = new RestcommClient(restcommBaseUri, effectiveAuthHeader,applicationContext.getDefaultHttpClient());
         } catch (RestcommClient.RestcommClientInitializationException e) {
             throw new CallControlException("WebTrigger",e);
         }

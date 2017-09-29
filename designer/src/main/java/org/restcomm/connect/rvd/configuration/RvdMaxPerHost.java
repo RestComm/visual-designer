@@ -16,29 +16,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+package org.restcomm.connect.rvd.configuration;
 
-package org.restcomm.connect.rvd.model.steps.ussdlanguage;
+public class RvdMaxPerHost {
 
-import org.restcomm.connect.rvd.exceptions.InterpreterException;
-import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.model.project.Step;
+    private String url;
+    private Integer maxConnections;
 
-/**
- * @author otsakir@gmail.com - Orestis Tsakiridis
- */
-public class UssdLanguageStep extends Step {
-
-    String language;
-
-    public UssdLanguageStep() {
-        // TODO Auto-generated constructor stub
+    public RvdMaxPerHost(String url, Integer maxConnections) {
+        this.url = url;
+        this.maxConnections = maxConnections;
     }
 
-    @Override
-    public UssdLanguageRcml render(Interpreter interpreter, String containerModule) throws InterpreterException {
-        UssdLanguageRcml rcml = new UssdLanguageRcml();
-        rcml.language = language;
-        return rcml;
+    public RvdMaxPerHost() {
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Integer getMaxConnections() {
+        return maxConnections;
+    }
+
+    public void setMaxConnections(Integer maxConnections) {
+        this.maxConnections = maxConnections;
     }
 
 }

@@ -20,6 +20,7 @@
 
 package org.restcomm.connect.rvd;
 
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.identity.AccountProvider;
@@ -36,6 +37,8 @@ import org.restcomm.connect.rvd.stats.AggregateStats;
 public class ApplicationContext {
     RvdConfiguration configuration;
     CustomHttpClientBuilder httpClientBuilder;
+    CloseableHttpClient defaultHttpClient;
+    CloseableHttpClient externaltHttpClient;
     AccountProvider accountProvider;
     ProjectRegistry projectRegistry;
     AggregateStats globalStats;
@@ -66,5 +69,13 @@ public class ApplicationContext {
 
     public void setGlobalStats(AggregateStats globalStats) {
         this.globalStats = globalStats;
+    }
+
+    public CloseableHttpClient getDefaultHttpClient() {
+        return defaultHttpClient;
+    }
+
+    public CloseableHttpClient getExternaltHttpClient() {
+        return externaltHttpClient;
     }
 }

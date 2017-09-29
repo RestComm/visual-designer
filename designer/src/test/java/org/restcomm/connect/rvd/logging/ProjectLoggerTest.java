@@ -25,6 +25,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.TestUtils;
 import org.restcomm.connect.rvd.concurrency.LogRotationSemaphore;
@@ -51,7 +52,8 @@ public class ProjectLoggerTest {
     public void before() throws IOException {
         workspaceDir = TestUtils.createTempWorkspace();
         ModelMarshaler marshaller = new ModelMarshaler();
-        configuration = TestUtils.initRvdConfiguration();
+        RvdConfiguration configuration = Mockito.mock(RvdConfiguration.class);
+        Mockito.when(configuration.getWelcomeMessage()).thenReturn(RvdConfiguration.DEFAULT_WELCOME_MESSAGE); // used when creating a new project
         projectDir = TestUtils.createDefaultProject("AP123", "owner@telestax.com", workspaceDir, marshaller, configuration);
         LogRotationSemaphore semaphore = new LogRotationSemaphore();
         logger = new ProjectLogger(projectDir.getPath() + "/rvd",marshaller, semaphore); // .../rvd.log

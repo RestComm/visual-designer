@@ -54,7 +54,7 @@ public class SayStep extends Step {
         this.loop = loop;
     }
 
-    public RcmlStep render(Interpreter interpreter) {
+    public RcmlStep render(Interpreter interpreter, String containerModule) {
 
         RcmlSayStep sayStep = new RcmlSayStep();
         sayStep.setPhrase(interpreter.populateVariables(getPhrase()));

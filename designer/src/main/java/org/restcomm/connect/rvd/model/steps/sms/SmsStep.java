@@ -30,7 +30,6 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -92,11 +91,11 @@ public class SmsStep extends Step {
     public void setStatusCallback(String statusCallback) {
         this.statusCallback = statusCallback;
     }
-    public RcmlSmsStep render(Interpreter interpreter) {
+    public RcmlSmsStep render(Interpreter interpreter, String containerModule) {
         RcmlSmsStep rcmlStep = new RcmlSmsStep();
 
         if ( ! RvdUtils.isEmpty(getNext()) ) {
-            String newtarget = interpreter.getTarget().getNodename() + "." + getName() + ".actionhandler";
+            String newtarget = containerModule + "." + getName() + ".actionhandler";
             Map<String, String> pairs = new HashMap<String, String>();
             pairs.put("target", newtarget);
             String action = interpreter.buildAction(pairs);
@@ -113,7 +112,7 @@ public class SmsStep extends Step {
     }
 
     @Override
-    public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
+    public void handleAction(Interpreter interpreter, String handlerModule) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling sms action"));
@@ -129,6 +128,6 @@ public class SmsStep extends Step {
         if (SmsStatus != null )
             interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "SmsStatus", SmsStatus);
 
-        interpreter.interpret( getNext(), null, null, originTarget );
+        interpreter.interpret( getNext(), null, null, handlerModule);
     }
 }

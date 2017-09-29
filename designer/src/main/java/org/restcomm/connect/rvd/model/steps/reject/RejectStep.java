@@ -13,7 +13,7 @@ public class RejectStep extends Step {
     public void setReason(String reason) {
         this.reason = reason;
     }
-    public RcmlRejectStep render(Interpreter interpreter) {
+    public RcmlRejectStep render(Interpreter interpreter, String containerModule) {
         RcmlRejectStep rcmlStep = new RcmlRejectStep();
         if ( getReason() != null && !"".equals(getReason()))
             rcmlStep.setReason(getReason());

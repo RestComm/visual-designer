@@ -31,7 +31,6 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
-import org.restcomm.connect.rvd.interpreter.Target;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -103,11 +102,11 @@ public class RecordStep extends Step {
         return media;
     }
 
-    public RcmlRecordStep render(Interpreter interpreter) {
+    public RcmlRecordStep render(Interpreter interpreter, String containerModule) {
         RcmlRecordStep rcmlStep = new RcmlRecordStep();
 
         if ( ! RvdUtils.isEmpty(getNext()) ) {
-            String newtarget = interpreter.getTarget().getNodename() + "." + getName() + ".actionhandler";
+            String newtarget = containerModule + "." + getName() + ".actionhandler";
             Map<String, String> pairs = new HashMap<String, String>();
             pairs.put("target", newtarget);
             String action = interpreter.buildAction(pairs);
@@ -129,7 +128,7 @@ public class RecordStep extends Step {
     }
 
     @Override
-    public void handleAction(Interpreter interpreter, Target originTarget) throws InterpreterException, StorageException {
+    public void handleAction(Interpreter interpreter, String handlerModule) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling record action"));
@@ -161,6 +160,6 @@ public class RecordStep extends Step {
         if (Digits != null )
             interpreter.getVariables().put(RvdConfiguration.CORE_VARIABLE_PREFIX + "Digits", Digits);
 
-        interpreter.interpret( getNext(), null, null, originTarget );
+        interpreter.interpret( getNext(), null, null, handlerModule);
     }
 }
