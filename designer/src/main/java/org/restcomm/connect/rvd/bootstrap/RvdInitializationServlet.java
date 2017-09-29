@@ -14,6 +14,7 @@ import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.identity.AccountProvider;
+import org.restcomm.connect.rvd.identity.DefaultAccountProvider;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
@@ -47,7 +48,7 @@ public class RvdInitializationServlet extends HttpServlet {
         }
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(rvdConfiguration);
         CloseableHttpClient buildHttpClient = httpClientBuilder.buildHttpClient();
-        AccountProvider accountProvider = new AccountProvider(rvdConfiguration, buildHttpClient);
+        AccountProvider accountProvider = new DefaultAccountProvider(rvdConfiguration, buildHttpClient);
         ApplicationContext appContext = new ApplicationContextBuilder()
                 .setConfiguration(rvdConfiguration)
                 .setHttpClientBuilder(httpClientBuilder)

@@ -31,6 +31,7 @@ import org.restcomm.connect.rvd.RvdConfigurationBuilder;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.configuration.RestcommConfigBuilder;
 import org.restcomm.connect.rvd.identity.AccountProvider;
+import org.restcomm.connect.rvd.identity.DefaultAccountProvider;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.project.ProjectState;
@@ -63,7 +64,7 @@ public class RestServiceMockedTest {
                 .build(); // point that to wiremock
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(configuration);
         CloseableHttpClient buildHttpClient = httpClientBuilder.buildHttpClient();
-        accountProvider = new AccountProvider(configuration, buildHttpClient);
+        accountProvider = new DefaultAccountProvider(configuration, buildHttpClient);
         appContext = new ApplicationContextBuilder().setAccountProvider(accountProvider).
                 setConfiguration(configuration).
                 setHttpClientBuilder(httpClientBuilder)
