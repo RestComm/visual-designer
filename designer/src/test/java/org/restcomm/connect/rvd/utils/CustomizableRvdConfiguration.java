@@ -3,9 +3,11 @@ package org.restcomm.connect.rvd.utils;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.commons.http.SslMode;
 import org.restcomm.connect.rvd.configuration.RvdConfig;
+import org.restcomm.connect.rvd.configuration.RvdMaxPerHost;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -30,6 +32,51 @@ public class CustomizableRvdConfiguration implements RvdConfiguration {
     @Override
     public Integer getExternalServiceTimeout() {
         return RvdConfiguration.DEFAULT_ES_TIMEOUT;
+    }
+
+    @Override
+    public Integer getExternalServiceMaxConns() {
+        return null;
+    }
+
+    @Override
+    public Integer getExternalServiceMaxConnsPerRoute() {
+        return null;
+    }
+
+    @Override
+    public Integer getExternalServiceTTL() {
+        return null;
+    }
+
+    @Override
+    public List<RvdMaxPerHost> getExternalServiceMaxPerRoute() {
+        return null;
+    }
+
+    @Override
+    public Integer getDefaultHttpTimeout() {
+        return null;
+    }
+
+    @Override
+    public Integer getDefaultHttpMaxConns() {
+        return null;
+    }
+
+    @Override
+    public Integer getDefaultHttpMaxConnsPerRoute() {
+        return null;
+    }
+
+    @Override
+    public Integer getDefaultHttpTTL() {
+        return null;
+    }
+
+    @Override
+    public List<RvdMaxPerHost> getDefaultHttpMaxPerRoute() {
+        return null;
     }
 
     @Override

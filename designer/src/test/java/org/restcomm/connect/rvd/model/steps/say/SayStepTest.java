@@ -14,7 +14,7 @@ public class SayStepTest {
     public SayStepTest() {
         ApplicationContext appContext = new ApplicationContext();
 
-        //interpreter = new Interpreter();
+        //Interpreter interpreter = new Interpreter();
     }
 
     @Test
