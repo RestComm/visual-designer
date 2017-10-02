@@ -37,6 +37,14 @@ public class RestcommAccountInfo {
         // TODO Auto-generated constructor stub
     }
 
+    public RestcommAccountInfo(String sid, String friendly_name, String email_address, String status, String role) {
+        this.sid = sid;
+        this.friendly_name = friendly_name;
+        this.email_address = email_address;
+        this.status = status;
+        this.role = role;
+    }
+
     public String getSid() {
         return sid;
     }

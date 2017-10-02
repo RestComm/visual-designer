@@ -254,7 +254,7 @@ public class RvdController extends SecuredRestService {
                 if (profile == null || (RvdUtils.isEmpty(profile.getUsername()) || RvdUtils.isEmpty(profile.getToken())) )
                     throw new UnauthorizedCallControlAccess("Profile missing creds or no profile at all for user '" + owner + "'. Web trigger cannot be used for project belonging to this user.");
                 effectiveAuthHeader = RvdUtils.isEmpty(profile.getUsername()) ? null : ("Basic "  + RvdUtils.buildHttpAuthorizationToken(profile.getUsername(), profile.getToken()));
-                RestcommAccountInfo accountInfo = accountProvider.getActiveAccount(profile.getUsername(), effectiveAuthHeader).get();
+                RestcommAccountInfo accountInfo = accountProvider.getActiveAccount(profile.getUsername(), effectiveAuthHeader);
                 if (accountInfo == null)
                     throw new UnauthorizedCallControlAccess("WebTrigger authorization error");
                 accountSid = accountInfo.getSid();
