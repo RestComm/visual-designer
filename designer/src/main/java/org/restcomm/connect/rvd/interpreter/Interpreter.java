@@ -32,6 +32,7 @@ import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.StepJsonDeserializer;
+import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.rcml.RcmlResponse;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
@@ -169,11 +170,14 @@ public class Interpreter {
             projectLogger.log("Running target: " + targetParam).tag("app",appName).done();
 
         target = Interpreter.parseTarget(targetParam); // TODO - target can be made local variable (?)
+        // load targetted module
+        Node targetModule = loadNode(target.getNodename());
         if (target.action != null) {
             // Event handling
-            loadStep(target.stepname, target.getNodename()).handleAction(this, target.getNodename());
+            targetModule.getStepByName(target.stepname).handleAction(this, targetModule);
+            //loadStep(target.stepname, target.getNodename()).handleAction(this, target.getNodename());
         } else {
-            interpret(target.getNodename(),null,null,null);
+            interpret(targetModule,null,null,null);
         }
     }
 
@@ -181,22 +185,25 @@ public class Interpreter {
      * Interprets module moduleName. If startingStepName is provided, interpretation will start from there. In case there is a 'prependStep'
      * it will render it first. originModuleName is the invoking module.
      *
-     * @param moduleName - not null
+     * @param module - not null
      * @param startingStepName
      * @param prependStep
-     * @param originModuleName - can be null
+     * @param originModule - can be null
      * @throws StorageException
      * @throws InterpreterException
      */
-    public void interpret(String moduleName, String startingStepName, Step prependStep, String originModuleName) throws StorageException, InterpreterException {
+    public void interpret(Node module, String startingStepName, Step prependStep, Node originModule) throws StorageException, InterpreterException {
         // make sure there is a valid RcmlResponse object. We will definitely return an <RcmlResponse></RcmlResponse> block.
+        String moduleName = null;
+        if (module != null)
+            moduleName = module.getName();
         if ( this.rcmlResult == null )
             this.rcmlResult = new RcmlResponse();
         // if we are switching modules, remove module-scoped variables
-        if (originModuleName != null && ! originModuleName.equals(moduleName) )
+        if (originModule != null && ! originModule.getName().equals(moduleName) )
             clearModuleVariables();
         // load steps for this module
-        List<String> nodeStepnames = FsProjectStorage.loadNodeStepnames(appName, moduleName, workspaceStorage);
+        List<String> nodeStepnames = module.getStepNames();
         // if no starting step has been specified in the target, use the first step of the node as default
         if (startingStepName == null && !nodeStepnames.isEmpty())
             startingStepName = nodeStepnames.get(0);
@@ -216,11 +223,12 @@ public class Interpreter {
 
             if (startstep_found) {
                 // we found our starting step. Let's start processing
-                Step step = loadStep(stepname, moduleName);
+                Step step = module.getStepByName(stepname); //loadStep(stepname, moduleName);
                 String rerouteTo = step.process(this, httpRequest); // is meaningful only for some of the steps like ExternalService steps
                 // check if we have to break the currently rendered module
                 if ( rerouteTo != null ) {
-                    interpret(rerouteTo, null, null, moduleName);
+                    Node reroutedModule = loadNode(rerouteTo);
+                    interpret(reroutedModule, null, null, module);
                     return;
                 }
                 // otherwise continue rendering the current module
@@ -231,12 +239,24 @@ public class Interpreter {
         }
     }
 
+    /**
+     * Loads and interprets module names moduleName. Use it only in case the module has not already been loaded
+     * to save some cycles.
+     *
+     * @param moduleName
+     * @param startingStepName
+     * @param prependStep
+     * @param originModule
+     * @throws StorageException
+     * @throws InterpreterException
+     */
+    public void interpret(String moduleName, String startingStepName, Step prependStep, Node originModule) throws StorageException, InterpreterException {
+        Node module = loadNode(moduleName);
+        interpret(module, startingStepName, prependStep, originModule);
+    }
 
-    private Step loadStep(String stepname, String moduleName) throws StorageException  {
-        String stepfile_json = FsProjectStorage.loadStep(appName, moduleName, stepname, workspaceStorage);
-        Step step = gson.fromJson(stepfile_json, Step.class);
-
-        return step;
+    Node loadNode(String moduleName) throws StorageException {
+         return FsProjectStorage.loadNode(appName, moduleName, workspaceStorage);
     }
 
 

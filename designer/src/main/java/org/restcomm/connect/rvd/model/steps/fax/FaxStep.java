@@ -8,6 +8,7 @@ import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
+import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
@@ -80,7 +81,7 @@ public class FaxStep extends Step {
     }
 
     @Override
-    public void handleAction(Interpreter interpreter, String handlerModule) throws InterpreterException, StorageException {
+    public void handleAction(Interpreter interpreter, Node handlerModule) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling fax action"));

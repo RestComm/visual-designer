@@ -1,6 +1,7 @@
 package org.restcomm.connect.rvd.model.project;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Node {
@@ -59,5 +60,35 @@ public class Node {
     public Node setSteps(List<Step> steps) {
         this.steps = steps;
         return this;
+    }
+
+    /**
+     * Returns a step named stepName or null if nothing is matched
+     *
+     * @param stepName
+     * @return step or null
+     */
+    public Step getStepByName(String stepName) {
+        if (stepName == null)
+            throw new IllegalArgumentException("stepName shouldn't be null");
+        Iterator<Step> i = steps.iterator();
+        Step step;
+        while ( i.hasNext() ) {
+            step = i.next();
+            if (stepName.equals(step.getName()) ) {
+                return step;
+            }
+        }
+        return null;
+
+    }
+
+    public List<String> getStepNames() {
+        List<String> names = new ArrayList<String>();
+        Iterator<Step> i = steps.iterator();
+        while (i.hasNext()) {
+            names.add(i.next().getName());
+        }
+        return names;
     }
 }

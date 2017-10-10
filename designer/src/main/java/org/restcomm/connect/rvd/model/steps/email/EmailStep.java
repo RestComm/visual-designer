@@ -6,6 +6,7 @@ import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
+import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.utils.RvdUtils;
@@ -108,7 +109,7 @@ public class EmailStep extends Step {
     }
 
     @Override
-    public void handleAction(Interpreter interpreter, String handlerModule) throws InterpreterException, StorageException {
+    public void handleAction(Interpreter interpreter, Node handlerModule) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"handleAction", logging.getPrefix(), "handling email action"));

@@ -162,7 +162,7 @@ public class GatherStep extends Step {
         return rcmlStep;
     }
 
-    private boolean handleMapping(Interpreter interpreter, String originModule, String key, List<? extends Mapping> mappings, boolean isPattern) throws StorageException, InterpreterException {
+    private boolean handleMapping(Interpreter interpreter, Node originModule, String key, List<? extends Mapping> mappings, boolean isPattern) throws StorageException, InterpreterException {
         LoggingContext logging = interpreter.getLoggingContext();
         if (mappings != null) {
             for (Mapping mapping : mappings) {
@@ -228,7 +228,7 @@ public class GatherStep extends Step {
         return !StringUtils.isEmpty(value) && value.matches(pattern);
     }
 
-    private boolean handleCollect(final Interpreter interpreter, String originModule, final Collectdigits collect, String newValue, Validation validation) throws StorageException, InterpreterException {
+    private boolean handleCollect(final Interpreter interpreter, Node originModule, final Collectdigits collect, String newValue, Validation validation) throws StorageException, InterpreterException {
         LoggingContext logging = interpreter.getLoggingContext();
         String effectivePattern = getPattern(interpreter, validation);
         String variableName = collect.collectVariable;
@@ -250,7 +250,7 @@ public class GatherStep extends Step {
         }
     }
 
-    public void handleAction(Interpreter interpreter, String handlerModule) throws InterpreterException, StorageException {
+    public void handleAction(Interpreter interpreter, Node handlerModule) throws InterpreterException, StorageException {
         LoggingContext logging = interpreter.getLoggingContext();
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "handleAction", logging.getPrefix(), "handling gather action"));

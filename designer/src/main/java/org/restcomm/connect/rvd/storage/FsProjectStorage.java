@@ -62,11 +62,9 @@ import org.restcomm.connect.rvd.storage.exceptions.WavItemDoesNotExist;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.utils.Zipper;
 import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
-import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.packaging.Rapp;
 import org.restcomm.connect.rvd.model.server.ProjectOptions;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -215,14 +213,6 @@ public class FsProjectStorage {
         workspaceStorage.storeEntity(projectOptions, ProjectOptions.class, "project", projectName+"/data");
     }
 
-    public static void storeNodeStepnames(Node node, String projectName, WorkspaceStorage storage) throws StorageException {
-        List<String> stepnames = new ArrayList<String>();
-        for ( Step step : node.getSteps() ) {
-            stepnames.add(step.getName());
-        }
-        storage.storeEntity(stepnames, node.getName()+".node", projectName+"/data");
-    }
-
     /**
      * Stores a full-fledged rvd module (.mod file) to the filesystem. Note that this is different from older practice
      * of storing only the step names in a .node file that was done by storeNodeStepnames().
@@ -245,17 +235,8 @@ public class FsProjectStorage {
      * @param storage
      * @throws StorageException
      */
-    public static void loadNode(String projectName, String nodeName, WorkspaceStorage storage ) throws StorageException {
-        Node node = storage.loadEntity(nodeName+".mod", projectName + "/data", Node.class);
-    }
-
-    public static List<String> loadNodeStepnames(String projectName, String nodeName, WorkspaceStorage storage) throws StorageException {
-        List<String> stepnames = storage.loadEntity(nodeName+".node", projectName+"/data", new TypeToken<List<String>>(){}.getType());
-        return stepnames;
-    }
-
-    public static void storeNodeStep(Step step, Node node, String projectName, WorkspaceStorage storage) throws StorageException {
-        storage.storeEntity(step, node.getName()+"."+step.getName(), projectName+"/data/");
+    public static Node loadNode(String projectName, String nodeName, WorkspaceStorage storage ) throws StorageException {
+        return storage.loadEntity(nodeName+".mod", projectName + "/data", Node.class);
     }
 
     public static ProjectSettings loadProjectSettings(String projectName, WorkspaceStorage storage) throws StorageException {
