@@ -223,6 +223,32 @@ public class FsProjectStorage {
         storage.storeEntity(stepnames, node.getName()+".node", projectName+"/data");
     }
 
+    /**
+     * Stores a full-fledged rvd module (.mod file) to the filesystem. Note that this is different from older practice
+     * of storing only the step names in a .node file that was done by storeNodeStepnames().
+     *
+     * @param node
+     * @param projectName
+     * @param storage
+     * @throws StorageException
+     */
+    public static void storeNode(Node node, String projectName, WorkspaceStorage storage) throws StorageException {
+        storage.storeEntity(node, node.getName()+".mod", projectName+"/data");
+    }
+
+    /**
+     * Loads a full-fledged rvd module (.mod file) from the filesystem. ote that this is different from older practice
+     * of storing only the step names in a .node file that was done by loadNodeStepnames().
+     *
+     * @param projectName
+     * @param nodeName
+     * @param storage
+     * @throws StorageException
+     */
+    public static void loadNode(String projectName, String nodeName, WorkspaceStorage storage ) throws StorageException {
+        Node node = storage.loadEntity(nodeName+".mod", projectName + "/data", Node.class);
+    }
+
     public static List<String> loadNodeStepnames(String projectName, String nodeName, WorkspaceStorage storage) throws StorageException {
         List<String> stepnames = storage.loadEntity(nodeName+".node", projectName+"/data", new TypeToken<List<String>>(){}.getType());
         return stepnames;

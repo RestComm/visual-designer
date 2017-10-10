@@ -88,11 +88,11 @@ public class BuildService {
 
     private void buildNode(Node node, String projectName) throws StorageException {
         // TODO sanitize node name!
-
-        FsProjectStorage.storeNodeStepnames(node, projectName, workspaceStorage);
-        // process the steps one-by-one
-        for (Step step : node.getSteps()) {
-            FsProjectStorage.storeNodeStep(step, node, projectName, workspaceStorage);
-        }
+        FsProjectStorage.storeNode(node,projectName,workspaceStorage);
+//        FsProjectStorage.storeNodeStepnames(node, projectName, workspaceStorage);
+//        // process the steps one-by-one
+//        for (Step step : node.getSteps()) {
+//            FsProjectStorage.storeNodeStep(step, node, projectName, workspaceStorage);
+//        }
     }
 }
