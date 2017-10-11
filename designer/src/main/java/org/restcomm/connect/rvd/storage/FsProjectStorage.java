@@ -330,6 +330,15 @@ public class FsProjectStorage {
         }
     }
 
+    public static void deleteBuiltProjectResources(String projectName, WorkspaceStorage storage) throws StorageException {
+        try {
+            File projectDir = new File(storage.rootPath  + File.separator + projectName + File.separator + "data");
+            FileUtils.deleteDirectory(projectDir);
+        } catch (IOException e) {
+            throw new StorageException("Error removing /data directory for project '" + projectName + "'", e);
+        }
+    }
+
     public static InputStream archiveProject(String projectName, WorkspaceStorage storage) throws StorageException {
         String path = storage.rootPath + File.separator + projectName; //storageBase.getProjectBasePath(projectName);
         File tempFile;
