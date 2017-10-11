@@ -71,7 +71,7 @@ public class UpgradeService {
      */
     public static boolean checkBackwardCompatible(String checkedProjectVesion, String referenceProjectVersion) throws InvalidProjectVersion {
         if ( "1.13".equals(referenceProjectVersion)) {
-            if ( "1.13".equals(checkedProjectVesion) || "1.12".equals(checkedProjectVesion) || "1.11".equals(checkedProjectVesion) || "1.10".equals(checkedProjectVesion) || "1.9".equals(checkedProjectVesion) || "1.8".equals(checkedProjectVesion) || "1.7".equals(checkedProjectVesion) || "1.6".equals(checkedProjectVesion) )
+            if ( "1.13".equals(checkedProjectVesion) )
                 return true;
             return false;
         } else
