@@ -28,4 +28,5 @@ public class ClientConfiguration {
     public Boolean videoSupport;
     public String restcommBaseUrl;
     public Boolean ussdSupport;
+    public String projectVersion;
 }
