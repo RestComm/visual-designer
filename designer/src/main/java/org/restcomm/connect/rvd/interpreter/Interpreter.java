@@ -42,7 +42,7 @@ import org.restcomm.connect.rvd.model.steps.es.AccessOperation;
 import org.restcomm.connect.rvd.model.steps.es.ExternalServiceStep;
 import org.restcomm.connect.rvd.model.steps.es.ValueExtractor;
 import org.restcomm.connect.rvd.model.steps.hangup.RcmlHungupStep;
-import org.restcomm.connect.rvd.storage.FsProjectStorage;
+import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -60,7 +60,7 @@ public class Interpreter {
     private ProjectLogger projectLogger;
     private LoggingContext loggingContext;
     private ProjectSettings projectSettings;
-    private WorkspaceStorage workspaceStorage;
+    private ProjectDao projectDao;
 
     private Gson gson;
     private String targetParam;
@@ -81,16 +81,16 @@ public class Interpreter {
     }
 
 
-    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, WorkspaceStorage workspaceStorage, ApplicationContext applicationContext, LoggingContext loggingContext, ProjectLogger projectLogger, ProjectSettings projectSettings) {
+    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, WorkspaceStorage workspaceStorage, ApplicationContext applicationContext, LoggingContext loggingContext, ProjectLogger projectLogger, ProjectSettings projectSettings, ProjectDao projectDao) {
         this.httpRequest = httpRequest;
         this.targetParam = requestParams.getFirst("target");
         this.appName = appName;
         this.requestParams = requestParams;
-        this.workspaceStorage = workspaceStorage;
         this.projectLogger = projectLogger;
         this.applicationContext = applicationContext;
         this.loggingContext = loggingContext;
         this.projectSettings = projectSettings;
+        this.projectDao = projectDao;
 
         this.contextPath = httpRequest.getContextPath();
         init();
@@ -134,7 +134,7 @@ public class Interpreter {
     }
 
     public RcmlResponse interpret() throws RvdException {
-        ProjectOptions projectOptions = FsProjectStorage.loadProjectOptions(appName, workspaceStorage); //rvdContext.getRuntimeProjectOptions();
+        ProjectOptions projectOptions = projectDao.loadProjectOptions(); //rvdContext.getRuntimeProjectOptions();
         nodeNames = projectOptions.getNodeNames();
 
         if (targetParam == null || "".equals(targetParam)) {
@@ -256,7 +256,7 @@ public class Interpreter {
     }
 
     Node loadNode(String moduleName) throws StorageException {
-         return FsProjectStorage.loadNode(appName, moduleName, workspaceStorage);
+         return projectDao.loadNode(moduleName);
     }
 
 
@@ -642,10 +642,10 @@ public class Interpreter {
      */
     private void processBootstrapParameters() throws StorageException {
 
-        if ( ! FsProjectStorage.hasBootstrapInfo(appName, workspaceStorage) )
+        if ( ! projectDao.hasBootstrapInfo() )
             return; // nothing to do
 
-         String data = FsProjectStorage.loadBootstrapInfo(appName,workspaceStorage);
+         String data = projectDao.loadBootstrapInfo();
          JsonParser parser = new JsonParser();
          JsonElement rootElement = parser.parse(data);
 
