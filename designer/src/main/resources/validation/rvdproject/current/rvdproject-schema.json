@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-	"title": "RVD project 1.12",
-	"description": "ASR additions to Gather and timeout for externalService",
+	"title": "RVD project 1.13",
+	"description": "Dummy version to trigger build and update project /data directory ",
 	"rvdproject": {
 		"type": "object",
 		"properties": {

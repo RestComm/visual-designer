@@ -830,3 +830,31 @@ angular.module('Rvd').factory('urlStateTracker', function () {
 
     return urlStateTracker;
 });
+
+angular.module('Rvd').factory('versionChecker', function () {
+    return {
+        status: function(rvdVersion, projectVersion) {
+            if (!!projectVersion) {
+                if (projectVersion == rvdVersion )
+                    return "CURRENT";
+                var r = new RegExp("^([0-9]+)\\.([0-9]+)");
+                var matchesRvd = r.exec(rvdVersion);
+                var matchesProject = r.exec(projectVersion);
+                //  match[1] is major version, match[2] is minor version
+                if (!!matchesProject && matchesProject.length >= 2) {
+                    // projectVersion seems properly formated. Let's check major/minor
+                    if (matchesProject[1] == matchesRvd[1] && matchesProject[2] > matchesRvd[2])
+                        return "FUTURE"; // this looks like a future project maybe created from a newer binary
+                    if (matchesProject[1] == matchesRvd[1] && matchesProject[2] < matchesRvd[2])
+                        return "OLD"; // this looks like an old project
+                    if (matchesProject[1] == matchesRvd[1] && matchesProject[2] == matchesRvd[2])
+                        return "CURRENT"; // we don't check for second minorer version
+                    if (matchesProject[1] != matchesRvd[1])
+                        return "INCOMPATIBLE"; // major versions differ. This project is probably broken
+                }
+            }
+            return "UNKNOWN";
+
+        }
+    }
+});

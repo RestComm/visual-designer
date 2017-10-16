@@ -52,7 +52,7 @@ public abstract class Step {
 
     public abstract RcmlStep render(Interpreter interpreter, String containerModule) throws InterpreterException;
 
-    public void handleAction(Interpreter interpreter, String handlerModule) throws InterpreterException, StorageException {
+    public void handleAction(Interpreter interpreter, Node handlerModule) throws InterpreterException, StorageException {
         throw new RVDUnsupportedHandlerVerb();
     }
 

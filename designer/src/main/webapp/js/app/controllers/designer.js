@@ -1,4 +1,4 @@
-var designerCtrl = App.controller('designerCtrl', function($scope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration ) {
+var designerCtrl = App.controller('designerCtrl', function($scope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration, versionChecker ) {
 
 	$scope.project = project;
 	$scope.visibleNodes = editedNodes.getEditedNodes();
@@ -212,6 +212,20 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 	$scope.rejectOptions = [{caption:"busy", value:"busy"}, {caption:"rejected", value:"rejected"}];
 
 	projectSettingsService.refresh($scope.applicationSid);
+
+	// check project version
+    var versionStatus = versionChecker.status(RvdConfiguration.projectVersion, project.version); // one of CURRENT|FUTURE|OLD|INCOMPATIBLE|UNKNOWN
+	switch(versionStatus) {
+	    case "FUTURE":
+	        notifications.put({type:"warning", message:"This looks like a project from a newer RVD version. It may not function properly. Please save it to return to current version.", timeout: 0});
+	    break;
+	    case "INCOMPATIBLE":
+	        notifications.put({type:"danger", message:"This is an incompatible project. You might get away with saving it...or not", timeout: 0});
+	    break;
+	    case "UNKNOWN":
+	        notifications.put({type:"danger", message:"This is an unknown type of project. You might get away with saving it...or not", timeout: 0});
+	    break;
+	}
 
 	/*
 	 * When targets change, broadcast an events so that all <select syncModel/>

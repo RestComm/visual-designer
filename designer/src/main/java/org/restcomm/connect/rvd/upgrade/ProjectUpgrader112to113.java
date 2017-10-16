@@ -15,18 +15,24 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ *
  */
 
-package org.restcomm.connect.rvd.model;
+package org.restcomm.connect.rvd.upgrade;
+
+import com.google.gson.JsonElement;
 
 /**
- * DTO class to transfer configuration information to the client (UI)
- *
- * @author otsakir@gmail.com - Orestis Tsakiridis
+ * @author Orestis Tsakiridis
  */
-public class ClientConfiguration {
-    public Boolean videoSupport;
-    public String restcommBaseUrl;
-    public Boolean ussdSupport;
-    public String projectVersion;
+public class ProjectUpgrader112to113 implements ProjectUpgrader {
+    @Override
+    public JsonElement upgrade(JsonElement sourceElement) {
+        return ProjectUpgrader10to11.setVersion(sourceElement, getResultingVersion());
+    }
+
+    @Override
+    public String getResultingVersion() {
+        return "1.13";
+    }
 }

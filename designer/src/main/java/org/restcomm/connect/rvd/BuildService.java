@@ -60,6 +60,8 @@ public class BuildService {
      * @throws StorageException
      */
     public void buildProject(String projectName, ProjectState projectState) throws StorageException {
+        // TODO enable deletion after all cloud projects have been upgraded to 1.13
+        //FsProjectStorage.deleteBuiltProjectResources(projectName, workspaceStorage);
         ProjectOptions projectOptions = new ProjectOptions();
 
         // Save general purpose project information
@@ -88,11 +90,11 @@ public class BuildService {
 
     private void buildNode(Node node, String projectName) throws StorageException {
         // TODO sanitize node name!
-
-        FsProjectStorage.storeNodeStepnames(node, projectName, workspaceStorage);
-        // process the steps one-by-one
-        for (Step step : node.getSteps()) {
-            FsProjectStorage.storeNodeStep(step, node, projectName, workspaceStorage);
-        }
+        FsProjectStorage.storeNode(node,projectName,workspaceStorage);
+//        FsProjectStorage.storeNodeStepnames(node, projectName, workspaceStorage);
+//        // process the steps one-by-one
+//        for (Step step : node.getSteps()) {
+//            FsProjectStorage.storeNodeStep(step, node, projectName, workspaceStorage);
+//        }
     }
 }

@@ -330,7 +330,7 @@ public class ExternalServiceStep extends Step {
                     // mark ES call as pending
                     StatsHelper.countEsCallPending(projectInfo.stats, 1);
                     StatsHelper.countEsCallPending(globalStats, 1);
-                    response = client.execute(request);
+                    response = client.execute(request, httpContext);
                 } finally {
                     StatsHelper.countEsCallPending(projectInfo.stats, -1); // decrease pending ES counter
                     StatsHelper.countEsCallPending(globalStats, -1);
