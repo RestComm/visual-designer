@@ -58,7 +58,7 @@ public class CustomLoggerTest {
 
     @Test
     public void testBasicLogging() throws IOException {
-        customLogger.log("hello world").done();
+        customLogger.log().message("hello world").done();
         String content = FileUtils.readFileToString(new File(basepath + ".log"));
         Assert.assertTrue(content.endsWith("hello world\n"));
     }
@@ -66,7 +66,7 @@ public class CustomLoggerTest {
     @Test
     public void testRotation() throws IOException {
         for (int i=0; i < 40; i ++) {
-            customLogger.log(i + " - A really loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message").done();
+            customLogger.log().message(i + " - A really loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message").done();
         }
         String content = FileUtils.readFileToString(new File(basepath + ".log"));
         Assert.assertTrue(content.contains("39 - A really"));
@@ -88,7 +88,7 @@ public class CustomLoggerTest {
         LogRotationSemaphore semaphore = new LogRotationSemaphore();
         customLogger = new CustomLogger(logDir.getPath() + "/rvd", 1000000, 3, semaphore );
         for (int i=0; i < 10000; i ++) {
-            customLogger.log(i + " - A really loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message").done();
+            customLogger.log().message(i + " - A really loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message").done();
         }
         String content = FileUtils.readFileToString(new File(basepath + ".log"));
         // Beware of newline characters. It might have different results if two characters are used in the system.

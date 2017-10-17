@@ -12,6 +12,11 @@ public class FsProjectDao implements ProjectDao {
     String applicationName;
     WorkspaceStorage workspaceStorage;
 
+    public FsProjectDao(String applicationName, WorkspaceStorage workspaceStorage) {
+        this.applicationName = applicationName;
+        this.workspaceStorage = workspaceStorage;
+    }
+
     @Override
     public ProjectOptions loadProjectOptions() throws StorageException {
         return FsProjectStorage.loadProjectOptions(applicationName, workspaceStorage);

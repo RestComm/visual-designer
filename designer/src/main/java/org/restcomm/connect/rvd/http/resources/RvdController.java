@@ -64,8 +64,10 @@ import org.restcomm.connect.rvd.restcomm.RestcommCallArray;
 import org.restcomm.connect.rvd.stats.AggregateStats;
 import org.restcomm.connect.rvd.stats.StatsHelper;
 import org.restcomm.connect.rvd.storage.FsProfileDao;
+import org.restcomm.connect.rvd.storage.FsProjectDao;
 import org.restcomm.connect.rvd.storage.ProfileDao;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
+import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.FsCallControlInfoStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
@@ -120,8 +122,9 @@ public class RvdController extends SecuredRestService {
             if (!FsProjectStorage.projectExists(appname, workspaceStorage))
                 return Response.status(Status.NOT_FOUND).build();
 
+            ProjectDao projectDao = new FsProjectDao(appname, workspaceStorage);
             Interpreter interpreter = new Interpreter(appname, httpRequest, requestParams,
-                    workspaceStorage,applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings() );
+                    workspaceStorage,applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings(), projectDao );
             RcmlResponse steplist = interpreter.interpret();
             rcmlResponse = serializer.serialize(steplist);
 

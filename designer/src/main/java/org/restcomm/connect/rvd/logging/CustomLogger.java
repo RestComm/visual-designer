@@ -28,7 +28,6 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Date;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.model.ModelMarshaler;

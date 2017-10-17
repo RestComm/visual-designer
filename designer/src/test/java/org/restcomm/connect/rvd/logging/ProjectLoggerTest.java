@@ -67,19 +67,19 @@ public class ProjectLoggerTest {
 
     @Test
     public void testMessageMarshalling() throws IOException {
-        logger.log("hello world").done();
+        logger.log().message("hello world").done();
         File logfile = new File(logger.getLogFilePath());
         String content = FileUtils.readFileToString(logfile);
         Assert.assertTrue(content.contains("\"hello world\""));
         logfile.delete();
 
         // do not marshall message ('false' parameter)
-        logger.log("http://test.com/script.php?a=1&b=2", false).done();
+        logger.log().messageNoMarshalling("http://test.com/script.php?a=1&b=2").done();
         content = FileUtils.readFileToString(logfile);
         Assert.assertTrue(content.contains("http://test.com/script.php?a=1&b=2"));
         logfile.delete();
         // DO marshal message
-        logger.log("http://test.com/script.php?a=1&b=2").done();
+        logger.log().message("http://test.com/script.php?a=1&b=2").done();
         content = FileUtils.readFileToString(logfile);
         Assert.assertTrue(content.contains("http://test.com/script.php?a\\u003d1\\u0026b\\u003d2"));
         logfile.delete();
