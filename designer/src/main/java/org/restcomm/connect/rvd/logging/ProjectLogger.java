@@ -34,9 +34,6 @@ import org.restcomm.connect.rvd.model.ModelMarshaler;
  */
 public class ProjectLogger extends CustomLogger {
 
-    private ModelMarshaler marshaler;
-    private boolean useMarshaler;
-
     public ProjectLogger(String projectName, RvdConfiguration settings, ModelMarshaler marshaler, LogRotationSemaphore semaphore) {
         this(settings.getProjectBasePath(projectName) + File.separator + RvdConfiguration.PROJECT_LOG_FILENAME, marshaler, semaphore);
     }
@@ -44,46 +41,6 @@ public class ProjectLogger extends CustomLogger {
     public ProjectLogger(String logFilenameBase, ModelMarshaler marshaler, LogRotationSemaphore semaphore) {
         super(logFilenameBase, semaphore);
         this.marshaler = marshaler;
-        this.useMarshaler = true;
-    }
-
-    /**
-     * Set message/payload for logging. This method allows skipping marshalling of data (marchaling enabled by default).
-     * To do that, set useMarshaler to false.
-     *
-     * @param payload
-     * @param useMarshaler
-     *
-     * @return The current instance of {@link ProjectLogger}.
-     */
-    public ProjectLogger log(Object payload, boolean useMarshaler){
-        this.useMarshaler = useMarshaler;
-        super.log(payload);
-        return this;
-    }
-
-    public ProjectLogger log(Object payload) {
-        this.useMarshaler = true; // default
-        super.log(payload);
-        return this;
-    }
-
-    public ProjectLogger tag(String name, String value) {
-        super.tag(name, value);
-        return this;
-    }
-
-    public ProjectLogger tag(String name) {
-        return tag(name, null);
-    }
-
-    @Override
-    protected void append(StringBuffer buffer) {
-        if(useMarshaler){
-            buffer.append(marshaler.toData(payload));
-        } else {
-            buffer.append(String.valueOf(payload));
-        }
     }
 
 }

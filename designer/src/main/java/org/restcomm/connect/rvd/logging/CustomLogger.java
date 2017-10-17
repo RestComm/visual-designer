@@ -31,6 +31,7 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.restcomm.connect.rvd.model.ModelMarshaler;
 
 /**
  * A logger service for an RVD project. It is supposed to help the designer of an application for easy testing debugging without the need
@@ -49,18 +50,15 @@ public class CustomLogger {
     File mainLogFile;
 
     LogRotationSemaphore semaphore;
+    ModelMarshaler marshaler;
 
-    protected Object payload;
-    protected String[] tags;
-    protected int tagCount = 0;
-
-    public CustomLogger(String logFilenameBase, LogRotationSemaphore semaphore ) {
+    protected CustomLogger(String logFilenameBase, LogRotationSemaphore semaphore ) {
         this.logFilenameBase = logFilenameBase;
         mainLogFile = new File(logFilenameBase + ".log");
         this.semaphore = semaphore;
     }
 
-    public CustomLogger(String logFilenameBase, int maxSize,  int backlogCount, LogRotationSemaphore semaphore) {
+    protected CustomLogger(String logFilenameBase, int maxSize,  int backlogCount, LogRotationSemaphore semaphore) {
         this(logFilenameBase, semaphore);
         if (maxSize <= 0 || backlogCount <= 0)
             throw new IllegalArgumentException("Cannot initialize CustomLogger");
@@ -69,47 +67,16 @@ public class CustomLogger {
         this.backlogCount = backlogCount;
     }
 
-    public CustomLogger log(Object payload) {
-        tags = new String[MAX_TAGS];
-        tagCount = 0;
-        this.payload = payload;
-        return this;
+    public LoggerItem log() {
+        return new LoggerItem(this);
     }
 
-    public CustomLogger tag(String name, String value) {
-        if ( tagCount < MAX_TAGS ) {
-            if ( value == null )
-                tags[tagCount] = "[" + name + "]";
-            else
-                tags[tagCount] = "[" + name + " " + value +"]";
-            tagCount ++;
-        } else {
-            logger.warn("cannot add any more tags to the log entry" );
-        }
-        return this;
-    }
-
-    public CustomLogger tag(String name) {
-        return tag(name, null);
-    }
-
-    public void done() {
-        Date date = new Date();
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("[" + date.toString() + "]");
-        for ( String tag : tags ) {
-            if (tag == null)
-                break;
-            buffer.append( tag);
-        }
-        if ( buffer.length() > 0 )
-            buffer.append(" ");
-        append(buffer);
-        buffer.append(System.getProperty("line.separator"));  //add a newline
+    public void done(LoggerItem item) {
+        item.getBuffer().append(System.getProperty("line.separator"));  //add a newline
         // data is ready for writing. Make sure no newlines are there
 
         try {
-            FileUtils.writeStringToFile(mainLogFile, buffer.toString(), Charset.forName("UTF-8"), true);
+            FileUtils.writeStringToFile(mainLogFile, item.getBuffer().toString(), Charset.forName("UTF-8"), true);
         } catch (IOException e) {
             logger.log(Level.WARN, "error writing to application log to " + logFilenameBase, e);
         }
@@ -117,10 +84,6 @@ public class CustomLogger {
         // check for log retation
         if (needsRotate())
             rotate();
-    }
-
-    protected void append(StringBuffer buffer) {
-        buffer.append(String.valueOf(payload));
     }
 
     public String getLogFilePath() {

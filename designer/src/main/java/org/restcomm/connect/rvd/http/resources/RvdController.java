@@ -129,18 +129,18 @@ public class RvdController extends SecuredRestService {
             // make sure logging is enabled before allowing access to sensitive log information
             ProjectSettings projectSettings = rvdContext.getProjectSettings();
             if (projectSettings.getLogging() == true && (projectSettings.getLoggingRCML() != null && projectSettings.getLoggingRCML() == true) ){
-                interpreter.getProjectLogger().log( rcmlResponse, false).tag("app", appname).tag("RCML").done();
+                interpreter.getProjectLogger().log().messageNoMarshalling(rcmlResponse).tag("app", appname).tag("RCML").done();
             }
 
         } catch (RemoteServiceError | ESProcessFailed | BadExternalServiceResponse |ESRequestException e){
             RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"runInterpreter","{0}{1}{2}", new Object[] {logging.getPrefix(),"[app-error] ", e.getMessage()}));
             if (rvdContext.getProjectSettings().getLogging())
-                rvdContext.getProjectLogger().log(e.getMessage()).tag("app", appname).tag("EXCEPTION").done();
+                rvdContext.getProjectLogger().log().message(e.getMessage()).tag("app", appname).tag("EXCEPTION").done();
             rcmlResponse = serializer.serialize(Interpreter.rcmlOnException());
         } catch (Exception e) {
             RvdLoggers.local.log(Level.ERROR, logging.getPrefix(), e);
             if (rvdContext.getProjectSettings().getLogging())
-                rvdContext.getProjectLogger().log(e.getMessage()).tag("app", appname).tag("EXCEPTION").done();
+                rvdContext.getProjectLogger().log().message(e.getMessage()).tag("app", appname).tag("EXCEPTION").done();
             rcmlResponse = serializer.serialize(Interpreter.rcmlOnException());
         }
         if (RvdLoggers.local.isDebugEnabled())
@@ -219,7 +219,7 @@ public class RvdController extends SecuredRestService {
         if (RvdLoggers.global.isEnabledFor(Level.INFO))
             RvdLoggers.global.log(Level.INFO, logging.getPrefix() + "incoming triggering request " + ui.getRequestUri().toString());
         if (rvdContext.getProjectSettings().getLogging())
-            rvdContext.getProjectLogger().log("WebTrigger incoming request: " + ui.getRequestUri().toString(),false).tag("app", projectName).tag("WebTrigger").done();
+            rvdContext.getProjectLogger().log().messageNoMarshalling("WebTrigger incoming request: " + ui.getRequestUri().toString()).tag("app", projectName).tag("WebTrigger").done();
 
         // load project header
         StateHeader projectHeader = FsProjectStorage.loadStateHeader(projectName,workspaceStorage);
