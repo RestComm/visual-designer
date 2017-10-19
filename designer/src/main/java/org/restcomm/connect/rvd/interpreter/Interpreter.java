@@ -134,7 +134,7 @@ public class Interpreter {
     }
 
     public RcmlResponse interpret() throws RvdException {
-        ProjectOptions projectOptions = projectDao.loadProjectOptions(); //rvdContext.getRuntimeProjectOptions();
+        ProjectOptions projectOptions = projectDao.loadProjectOptions();
         nodeNames = projectOptions.getNodeNames();
 
         if (targetParam == null || "".equals(targetParam)) {
@@ -167,7 +167,7 @@ public class Interpreter {
         if (RvdLoggers.local.isTraceEnabled())
             RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"interpret", loggingContext.getPrefix(), "starting interpeter for " + targetParam));
         if ( projectSettings.getLogging() )
-            projectLogger.log().message("Running target: " + targetParam).tag("app",appName).done();
+            projectLogger.log().message("Running target: " + targetParam).done();
 
         target = Interpreter.parseTarget(targetParam); // TODO - target can be made local variable (?)
         // load targetted module

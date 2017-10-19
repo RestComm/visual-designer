@@ -402,7 +402,14 @@ angular.module('Rvd').service('projectLogService', ['$http','$q','$stateParams',
 	var service = {};
 	service.retrieve = function () {
 		var deferred = $q.defer();
-		$http({method:'GET', url:'services/apps/'+$stateParams.applicationSid+'/log'})
+		$http({
+		    method:'GET',
+		    url:'services/apps/'+$stateParams.applicationSid+'/log',
+		    transformResponse: [function (data) {
+                  // avoid using default JSON parser for response
+                  return data;
+            }]
+		})
 		.success(function (data,status) {
 			console.log('retrieved log data');
 			deferred.resolve(data);

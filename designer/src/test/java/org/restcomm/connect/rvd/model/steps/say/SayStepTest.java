@@ -13,14 +13,13 @@ public class SayStepTest {
 
     public SayStepTest() {
         ApplicationContext appContext = new ApplicationContext();
-
         //Interpreter interpreter = new Interpreter();
+        //...
     }
 
     @Test
     public void defaultRendering() {
         SayStep step = new SayStep();
-
-
+        //...
     }
 }

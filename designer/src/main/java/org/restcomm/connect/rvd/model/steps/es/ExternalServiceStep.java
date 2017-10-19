@@ -253,7 +253,7 @@ public class ExternalServiceStep extends Step {
             if (RvdLoggers.local.isDebugEnabled())
                 RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"process",logging.getPrefix(), "requesting from url: " + url));
             if ( interpreter.getProjectSettings().getLogging() )
-                interpreter.getProjectLogger().log().message("Requesting from url: " + url).tag("app",interpreter.getAppName()).tag("ES").tag("REQUEST").done();
+                interpreter.getProjectLogger().log().tag("ES").tag("REQUEST").message("Requesting from url: " + url).done();
 
             if ( "POST".equals(getMethod()) || "PUT".equals(getMethod()) ) {
 
@@ -367,7 +367,7 @@ public class ExternalServiceStep extends Step {
                         //logger.info("ES: Received " + entity_string.length() + " bytes");
                         //logger.debug("ES Response: " + entity_string);
                         if (interpreter.getProjectSettings().getLogging())
-                            interpreter.getProjectLogger().log().message(entity_string).tag("app", interpreter.getAppName()).tag("ES").tag("RESPONSE").done();
+                            interpreter.getProjectLogger().log().tag("ES").tag("RESPONSE").message(entity_string).done();
                         response_element = parser.parse(entity_string);
                     }
                 } else {
@@ -475,7 +475,7 @@ public class ExternalServiceStep extends Step {
                 String message = LoggingHelper.buildMessage(getClass(), "process", "[notify] {0} request to {1} timed out. Effective timeout was {2} ms.", new Object[]{logging.getPrefix(), getUrl(), requestTimeout});
                 RvdLoggers.local.log(Level.WARN, message);
                 if ( interpreter.getProjectSettings().getLogging() )
-                    interpreter.getProjectLogger().log().message("Request timed out. Timeout set to " + requestTimeout).tag("app",interpreter.getAppName()).tag("ES").done();
+                    interpreter.getProjectLogger().log().tag("ES").message("Request timed out. Timeout set to " + requestTimeout).done();
                 // invoce onTimeout handler
                 if ( !RvdUtils.isEmpty(this.onTimeout) )
                     next = this.onTimeout;
