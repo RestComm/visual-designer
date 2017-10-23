@@ -21,7 +21,7 @@ import java.net.URLEncoder;
 import org.apache.http.client.utils.URIBuilder;
 import org.restcomm.connect.rvd.ApplicationContext;
 import org.restcomm.connect.rvd.RvdConfiguration;
-import org.restcomm.connect.rvd.logging.ProjectLogger;
+import org.restcomm.connect.rvd.logging.CustomLogger;
 import org.restcomm.connect.rvd.exceptions.InterpreterException;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.UndefinedTarget;
@@ -43,7 +43,6 @@ import org.restcomm.connect.rvd.model.steps.es.ExternalServiceStep;
 import org.restcomm.connect.rvd.model.steps.es.ValueExtractor;
 import org.restcomm.connect.rvd.model.steps.hangup.RcmlHungupStep;
 import org.restcomm.connect.rvd.storage.ProjectDao;
-import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 import com.google.gson.Gson;
@@ -57,7 +56,7 @@ public class Interpreter {
 
     private ApplicationContext applicationContext;
     private HttpServletRequest httpRequest;
-    private ProjectLogger projectLogger;
+    private CustomLogger projectLogger;
     private LoggingContext loggingContext;
     private ProjectSettings projectSettings;
     private ProjectDao projectDao;
@@ -81,7 +80,7 @@ public class Interpreter {
     }
 
 
-    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, WorkspaceStorage workspaceStorage, ApplicationContext applicationContext, LoggingContext loggingContext, ProjectLogger projectLogger, ProjectSettings projectSettings, ProjectDao projectDao) {
+    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, ApplicationContext applicationContext, LoggingContext loggingContext, CustomLogger projectLogger, ProjectSettings projectSettings, ProjectDao projectDao) {
         this.httpRequest = httpRequest;
         this.targetParam = requestParams.getFirst("target");
         this.appName = appName;
@@ -100,7 +99,7 @@ public class Interpreter {
         gson = new GsonBuilder().registerTypeAdapter(Step.class, new StepJsonDeserializer()).create();
     }
 
-    public ProjectLogger getProjectLogger() {
+    public CustomLogger getProjectLogger() {
         return projectLogger;
     }
 
