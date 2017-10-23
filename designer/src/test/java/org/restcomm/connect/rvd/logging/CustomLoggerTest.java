@@ -47,7 +47,7 @@ public class CustomLoggerTest {
         logDir = TestUtils.createRandomDir("logtest");
         LogRotationSemaphore semaphore = new LogRotationSemaphore();
         basepath = logDir.getPath() + "/rvd";
-        customLogger = new CustomLogger(logDir.getPath() + "/rvd", 1000, 3, semaphore );
+        customLogger = new CustomLoggerImpl(logDir.getPath() + "/rvd", 1000, 3, semaphore );
     }
 
     @After
@@ -86,7 +86,7 @@ public class CustomLoggerTest {
     @Test
     public void test1MBSize() throws IOException {
         LogRotationSemaphore semaphore = new LogRotationSemaphore();
-        customLogger = new CustomLogger(logDir.getPath() + "/rvd", 1000000, 3, semaphore );
+        customLogger = new CustomLoggerImpl(logDir.getPath() + "/rvd", 1000000, 3, semaphore );
         for (int i=0; i < 10000; i ++) {
             customLogger.log().message(i + " - A really loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message").done();
         }

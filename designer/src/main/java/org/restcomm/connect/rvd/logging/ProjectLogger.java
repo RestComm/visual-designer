@@ -32,7 +32,7 @@ import org.restcomm.connect.rvd.model.ModelMarshaler;
  * @author "Tsakiridis Orestis"
  *
  */
-public class ProjectLogger extends CustomLogger {
+public class ProjectLogger extends CustomLoggerImpl {
 
     public ProjectLogger(String projectName, RvdConfiguration settings, ModelMarshaler marshaler, LogRotationSemaphore semaphore) {
         this(settings.getProjectBasePath(projectName) + File.separator + RvdConfiguration.PROJECT_LOG_FILENAME, marshaler, semaphore);
