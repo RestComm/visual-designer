@@ -283,3 +283,7 @@ angular.module('Rvd').controller('playStepController', function ($scope) {
 angular.module('Rvd').controller('homeCtrl', function ($scope, RvdConfiguration) {
     $scope.ussdSupport = RvdConfiguration.ussdSupport;
 });
+
+angular.module('Rvd').controller('noAppCtrl', function () {
+    console.log("IN npAppCtrl");
+});

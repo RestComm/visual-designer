@@ -133,8 +133,6 @@
 	"downloadContinueLabel1": "Puede continuar",
 	"downloadContinueLabel2": "editando esta app en el Visual Designer",
 	"downloadContinueLabel3": "trate de enpaquetar de nuevo",
-	"downloadContinueLabel4": "o",
-	"downloadContinueLabel5": "abra otro.",
 
 	"exceptionConfigModalExceptionsLabel": "Excepciones",
 	"exceptionConfigModalAddHandlerLabel": "Añada módulos controladores para varias excepciones. Indique el nombre de la excepción a la izquierda y el módulo que se encargará del error a la derecha.",

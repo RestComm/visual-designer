@@ -63,15 +63,10 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
             }
         }
     });
-    $stateProvider.state('root.rvd.home',{
-        url:"/home",
-        templateUrl: 'templates/home.html',
-        controller: 'homeCtrl'
-    });
-    $stateProvider.state('root.rvd.projectManager',{
-        url: '/project-manager/:projectKind',
-        templateUrl: 'templates/projectManager.html',
-        controller: 'projectManagerCtrl'
+    $stateProvider.state('root.rvd.noapp', {
+        url: '/noapp',
+    	templateUrl : 'templates/noApp.html',
+    	controller : 'noAppCtrl'
     });
     $stateProvider.state('root.rvd.designer', {
         url: '/designer/:applicationSid=:projectName',
@@ -118,15 +113,8 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
    			binaryInfo: function (RappService,$stateParams,authorize) { return RappService.getBinaryInfo($stateParams)}
    		}
     });
-    // not sure what this state does. It should probably be removed
-    $stateProvider.state('root.rvd.upgrade', {
-        url: '/upgrade/:projectName',
-        templateUrl : 'templates/upgrade.html',
-        controller : 'upgradeCtrl'
-    });
 
-    //$stateProvider.state('root.rvd.designer',{});
-    $urlRouterProvider.otherwise('/home');
+    $urlRouterProvider.otherwise('/noapp');
 
     $translateProvider.useStaticFilesLoader({
         prefix: '/restcomm-rvd/languages/',
@@ -135,15 +123,6 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     $translateProvider.useCookieStorage();
     $translateProvider.preferredLanguage('en-US');
 }]);
-
-// Rvd module and
-
-var keycloakAuth = {};
-var keycloakLogout = function(){
-    keycloakAuth.loggedIn = false;
-    keycloakAuth.authz = null;
-    window.location = keycloakAuth.logoutUrl;
-};
 
 angular.element(document).ready(['$http',function ($http) {
   // manually inject $q since it's not available

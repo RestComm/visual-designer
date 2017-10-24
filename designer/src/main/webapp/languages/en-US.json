@@ -131,9 +131,7 @@
 	"downloadIsAvailableLabel3": "to download.",
 	"downloadContinueLabel1": "You can continue with",
 	"downloadContinueLabel2": "editing this app in Visual Designer",
-	"downloadContinueLabel3": "try packaging again",
-	"downloadContinueLabel4": "or",
-	"downloadContinueLabel5": "open another.",
+	"downloadContinueLabel3": "or try packaging again",
 
 	"exceptionConfigModalExceptionsLabel": "Exceptions",
 	"exceptionConfigModalAddHandlerLabel": "Add handler modules for various exceptions. Type the exception name to the left and the module that will handle the error to the right.",

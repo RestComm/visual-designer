@@ -125,8 +125,6 @@
 	"downloadContinueLabel1": "Você pode continuar",
 	"downloadContinueLabel2": "editando este aplicativo no Editor Visual",
 	"downloadContinueLabel3": "tentar empacotar novamente",
-	"downloadContinueLabel4": "ou",
-	"downloadContinueLabel5": "abrir outro.",
 
 	"exceptionConfigModalExceptionsLabel": "Exceções",
 	"exceptionConfigModalAddHandlerLabel": "Adicionar módulos de manipulação para exceções diversas. Escreva o nome da exceção à esquerda e o nome do móludo que irá manipular o erro à direita.",
