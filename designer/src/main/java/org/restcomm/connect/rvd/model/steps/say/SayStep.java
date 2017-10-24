@@ -22,6 +22,16 @@ public class SayStep extends Step {
         return step;
     }
 
+    public SayStep() {
+    }
+
+    public SayStep(String phrase, String voice, String language, Integer loop) {
+        this.phrase = phrase;
+        this.voice = voice;
+        this.language = language;
+        this.loop = loop;
+    }
+
     public String getPhrase() {
         return phrase;
     }

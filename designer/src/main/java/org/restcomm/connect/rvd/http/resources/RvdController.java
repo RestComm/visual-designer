@@ -123,8 +123,7 @@ public class RvdController extends SecuredRestService {
                 return Response.status(Status.NOT_FOUND).build();
 
             ProjectDao projectDao = new FsProjectDao(appname, workspaceStorage);
-            Interpreter interpreter = new Interpreter(appname, httpRequest, requestParams,
-                    workspaceStorage,applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings(), projectDao );
+            Interpreter interpreter = new Interpreter(appname, httpRequest, requestParams, applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings(), projectDao );
             RcmlResponse steplist = interpreter.interpret();
             rcmlResponse = serializer.serialize(steplist);
 
