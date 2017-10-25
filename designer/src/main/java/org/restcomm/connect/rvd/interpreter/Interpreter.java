@@ -80,7 +80,7 @@ public class Interpreter {
     }
 
 
-    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, ApplicationContext applicationContext, LoggingContext loggingContext, CustomLogger projectLogger, ProjectSettings projectSettings, ProjectDao projectDao) {
+    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, ApplicationContext applicationContext, LoggingContext loggingContext, CustomLogger projectLogger, ProjectSettings projectSettings, ProjectDao projectDao) throws StorageException {
         this.httpRequest = httpRequest;
         this.targetParam = requestParams.getFirst("target");
         this.appName = appName;
@@ -95,8 +95,13 @@ public class Interpreter {
         init();
     }
 
-    private void init() {
+    private void init() throws StorageException {
         gson = new GsonBuilder().registerTypeAdapter(Step.class, new StepJsonDeserializer()).create();
+
+        processBootstrapParameters();
+        processRequestParameters();
+        //processRequestHeaders(httpRequest);
+        //handleStickyParameters(); // create local copies of sticky_* parameters
     }
 
     public CustomLogger getProjectLogger() {
@@ -132,6 +137,14 @@ public class Interpreter {
         this.variables = variables;
     }
 
+    ProjectDao getProjectDao() {
+        return projectDao;
+    }
+
+    void setProjectDao(ProjectDao projectDao) {
+        this.projectDao = projectDao;
+    }
+
     public RcmlResponse interpret() throws RvdException {
         ProjectOptions projectOptions = projectDao.loadProjectOptions();
         nodeNames = projectOptions.getNodeNames();
@@ -144,11 +157,6 @@ public class Interpreter {
             if (RvdLoggers.local.isTraceEnabled())
                 RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"interpret", loggingContext.getPrefix(), "override default target to " + targetParam));
         }
-
-        processBootstrapParameters();
-        processRequestParameters();
-        //processRequestHeaders(httpRequest);
-        //handleStickyParameters(); // create local copies of sticky_* parameters
 
         dispatch(targetParam);
         return rcmlResult;
@@ -641,26 +649,27 @@ public class Interpreter {
      */
     private void processBootstrapParameters() throws StorageException {
 
-        if ( ! projectDao.hasBootstrapInfo() )
-            return; // nothing to do
+        if (projectDao != null) {
+            String data = projectDao.loadBootstrapInfo();
+            if (data != null) {
+                JsonParser parser = new JsonParser();
+                JsonElement rootElement = parser.parse(data);
 
-         String data = projectDao.loadBootstrapInfo();
-         JsonParser parser = new JsonParser();
-         JsonElement rootElement = parser.parse(data);
-
-        if ( rootElement.isJsonObject() ) {
-            JsonObject rootObject = rootElement.getAsJsonObject();
-            for ( Entry<String, JsonElement> entry : rootObject.entrySet() ) {
-                String name = entry.getKey();
-                JsonElement valueElement = entry.getValue();
-                String value;
-                if ( valueElement.isJsonPrimitive() && valueElement.getAsJsonPrimitive().isString() ) {
-                    value = valueElement.getAsJsonPrimitive().getAsString();
-                    getVariables().put(name, value);
-                    if (RvdLoggers.local.isTraceEnabled())
-                        RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"processBootstrapParameters", loggingContext.getPrefix(),"loaded bootstrap parameter: " + name + " - " + value));
-                } else
-                    RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"processBootstrapParameters", loggingContext.getPrefix(), "warning. Not-string bootstrap value found for parameter: " + name));
+                if ( rootElement.isJsonObject() ) {
+                    JsonObject rootObject = rootElement.getAsJsonObject();
+                    for ( Entry<String, JsonElement> entry : rootObject.entrySet() ) {
+                        String name = entry.getKey();
+                        JsonElement valueElement = entry.getValue();
+                        String value;
+                        if ( valueElement.isJsonPrimitive() && valueElement.getAsJsonPrimitive().isString() ) {
+                            value = valueElement.getAsJsonPrimitive().getAsString();
+                            getVariables().put(name, value);
+                            if (RvdLoggers.local.isTraceEnabled())
+                                RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"processBootstrapParameters", loggingContext.getPrefix(),"loaded bootstrap parameter: " + name + " - " + value));
+                        } else
+                            RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"processBootstrapParameters", loggingContext.getPrefix(), "warning. Not-string bootstrap value found for parameter: " + name));
+                    }
+                }
             }
         }
     }
