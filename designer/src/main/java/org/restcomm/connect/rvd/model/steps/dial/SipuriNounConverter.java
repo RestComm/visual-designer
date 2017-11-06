@@ -28,6 +28,8 @@ public class SipuriNounConverter implements Converter {
             writer.startNode("Video");
             if (step.video.enable != null)
                 writer.addAttribute("enable", step.video.enable.toString());
+            if (step.video.resolution != null)
+                writer.addAttribute("resolution", step.video.resolution);
             if (step.video.overlay != null)
                 writer.addAttribute("overlay", step.video.overlay);
             writer.endNode();

@@ -50,7 +50,8 @@
 				"statusCallback": {"type": "string"},
 				"statusCallbackModule": {"type":"string","minLength": 1},
 				"enableVideo": {"type": "boolean"},
-				"videoOverlay": {"type": "string"}
+				"videoOverlay": {"type": "string"},
+				"videoResolution": {"type": "string"}
 			},
 			"required": ["dialType","destination"]
 		},	
@@ -86,7 +87,8 @@
 				"statusCallback": {"type": "string"},
 				"statusCallbackModule": {"type":"string","minLength": 1},
 				"enableVideo": {"type": "boolean"},
-				"videoOverlay": {"type": "string"}
+				"videoOverlay": {"type": "string"},
+				"videoResolution": {"type": "string"}
 			},
 			"required": ["dialType","destination"]
 		}	

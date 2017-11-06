@@ -16,6 +16,7 @@ public class SipuriDialNoun extends DialNoun {
     private String statusCallbackModule;
     private Boolean enableVideo;
     private String videoOverlay;
+    private String videoResolution;
 
     public String getDestination() {
         return destination;
@@ -42,7 +43,9 @@ public class SipuriDialNoun extends DialNoun {
             rcmlNoun.video = new RcmlSipuriNoun.Video();
             rcmlNoun.video.enable = this.enableVideo;
             rcmlNoun.video.overlay = this.videoOverlay;
+            rcmlNoun.video.resolution = this.videoResolution;
         }
         return rcmlNoun;
     }
+
 }

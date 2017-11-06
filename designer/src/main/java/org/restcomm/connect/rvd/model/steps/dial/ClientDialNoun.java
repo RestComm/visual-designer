@@ -17,6 +17,7 @@ public class ClientDialNoun extends DialNoun {
     private String statusCallbackModule;
     private Boolean enableVideo;
     private String videoOverlay;
+    private String videoResolution;
 
 
     public String getDestination() {
@@ -53,6 +54,7 @@ public class ClientDialNoun extends DialNoun {
             rcmlNoun.video = new RcmlClientNoun.Video();
             rcmlNoun.video.enable = this.enableVideo;
             rcmlNoun.video.overlay = this.videoOverlay;
+            rcmlNoun.video.resolution = this.videoResolution;
         }
 
         return rcmlNoun;
@@ -64,5 +66,13 @@ public class ClientDialNoun extends DialNoun {
 
     public String getVideoOverlay() {
         return videoOverlay;
+    }
+
+    public String getVideoResolution() {
+        return videoResolution;
+    }
+
+    public void setVideoResolution(String videoResolution) {
+        this.videoResolution = videoResolution;
     }
 }

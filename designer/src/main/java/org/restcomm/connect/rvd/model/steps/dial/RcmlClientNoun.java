@@ -6,6 +6,7 @@ public class RcmlClientNoun extends RcmlNoun {
     public static class Video {
         public Boolean enable;
         public String overlay;
+        public String resolution;
     }
 
     String destination;
