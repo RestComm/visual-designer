@@ -1,6 +1,7 @@
 package org.restcomm.connect.rvd.model.steps.dial;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 public class DialStep extends Step {
 
-    private List<DialNoun> dialNouns;
+    List<DialNoun> dialNouns = new ArrayList<DialNoun>();
     private String action;
     private String method;
     private Integer timeout;

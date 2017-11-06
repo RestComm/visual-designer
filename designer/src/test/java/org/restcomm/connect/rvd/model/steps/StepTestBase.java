@@ -3,12 +3,15 @@ package org.restcomm.connect.rvd.model.steps;
 import com.sun.jersey.core.util.StringKeyIgnoreCaseMultivaluedMap;
 import org.mockito.Mockito;
 import org.restcomm.connect.rvd.ApplicationContext;
+import org.restcomm.connect.rvd.ApplicationContextBuilder;
+import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.logging.MockedCustomLogger;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
+import org.restcomm.connect.rvd.utils.CustomizableRvdConfiguration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
@@ -20,6 +23,8 @@ import java.util.Arrays;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class StepTestBase {
+
+    protected ApplicationContext appContext;
 
     protected HttpServletRequest mockHttpServletRequest(String requestUrl) {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
@@ -53,8 +58,12 @@ public class StepTestBase {
         return map;
     }
 
+    protected void buildApplicationContext() {
+        RvdConfiguration config = new CustomizableRvdConfiguration();
+        appContext = new ApplicationContextBuilder().setConfiguration(config).build();
+    }
+
     protected Interpreter buildInterpreter(MultivaluedMap<String,String> params, ProjectDao dao) throws StorageException {
-        ApplicationContext appContext = new ApplicationContext();
         // TODO init appContext ??
         Interpreter interpreter = new Interpreter(
                 "testapp",

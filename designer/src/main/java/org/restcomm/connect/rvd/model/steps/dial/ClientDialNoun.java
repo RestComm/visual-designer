@@ -15,10 +15,17 @@ public class ClientDialNoun extends DialNoun {
     private String beforeConnectModule;
     private String statusCallback;
     private String statusCallbackModule;
-    private Boolean enableVideo;
-    private String videoOverlay;
-    private String videoResolution;
+    Boolean enableVideo;
+    String videoOverlay;
+    String videoResolution;
 
+
+    public ClientDialNoun() {
+    }
+
+    public ClientDialNoun(String destination) {
+        this.destination = destination;
+    }
 
     public String getDestination() {
         return destination;

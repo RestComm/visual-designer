@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class CustomizableRvdConfiguration implements RvdConfiguration {
 
+    Boolean videoSupport;
+
     @Override
     public String getWorkspaceBasePath() {
         return "";
@@ -106,7 +108,7 @@ public class CustomizableRvdConfiguration implements RvdConfiguration {
 
     @Override
     public Boolean getVideoSupport() {
-        return null;
+        return videoSupport;
     }
 
     @Override
@@ -143,4 +145,10 @@ public class CustomizableRvdConfiguration implements RvdConfiguration {
     public String getRvdInstanceId() {
         return null;
     }
+
+    public void setVideoSupport(Boolean videoSupport) {
+        this.videoSupport = videoSupport;
+    }
+
+
 }

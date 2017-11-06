@@ -17,6 +17,7 @@ public class VariablesAndParametersTest extends StepTestBase {
     @Test
     public void rcommFromParamResolving() throws StorageException {
         MultivaluedMap<String,String> params = appendMultivaluedMap(null, "From", "1234");
+        buildApplicationContext();
         Interpreter interpreter = buildInterpreter(params, null);
         Assert.assertEquals("1234", interpreter.populateVariables("$core_From"));
     }
