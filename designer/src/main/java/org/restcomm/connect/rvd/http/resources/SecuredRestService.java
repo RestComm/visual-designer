@@ -1,10 +1,10 @@
 package org.restcomm.connect.rvd.http.resources;
 
 import org.restcomm.connect.rvd.ApplicationContext;
-import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.AuthorizationException;
 import org.restcomm.connect.rvd.http.RestService;
 import org.restcomm.connect.rvd.identity.AccountProvider;
+import org.restcomm.connect.rvd.identity.DefaultAccountProvider;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.restcomm.RestcommAccountInfo;
 
@@ -13,11 +13,11 @@ import org.restcomm.connect.rvd.restcomm.RestcommAccountInfo;
  */
 public class SecuredRestService extends RestService {
     private UserIdentityContext userIdentityContext;
+    protected AccountProvider accountProvider;
 
     public void init() {
         super.init();
-        RvdConfiguration config = applicationContext.getConfiguration();
-        AccountProvider accountProvider = applicationContext.getAccountProvider();
+        accountProvider = new DefaultAccountProvider(restcommBaseUrl,applicationContext.getDefaultHttpClient());
         String authorizationHeader = request.getHeader("Authorization");
         userIdentityContext = new UserIdentityContext(authorizationHeader, accountProvider);
     }

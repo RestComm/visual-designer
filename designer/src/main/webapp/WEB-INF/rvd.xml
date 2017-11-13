@@ -37,6 +37,17 @@
 	<restcommBaseUrl></restcommBaseUrl>
 
 	<!--
+		Should restcomm be resolved dynamically based on incoming request scheme/domain/port ?
+		If enabled, each request will provide the origin where restcomm will be contacted back to.
+		Otherwise, restcommBaseUrl will be used if defined or the algorithm will fall further back
+		to using connector information.
+
+		Example:
+			<dynamicRestcommResolving>true</dynamicRestcommResolving>
+	-->
+	<dynamicRestcommResolving>false</dynamicRestcommResolving>
+
+	<!--
 		If 'useAbsoluteApplicationUrl' is true application registration to restcomm will use absolute urls instead of relative.
 	    These absolute urls will start with 'baseUrl'
 

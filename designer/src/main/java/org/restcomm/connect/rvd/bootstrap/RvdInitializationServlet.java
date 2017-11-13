@@ -13,8 +13,7 @@ import org.restcomm.connect.rvd.FileRvdConfiguration;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
-import org.restcomm.connect.rvd.identity.AccountProvider;
-import org.restcomm.connect.rvd.identity.DefaultAccountProvider;
+import org.restcomm.connect.rvd.configuration.RestcommLocationResolver;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
@@ -48,15 +47,16 @@ public class RvdInitializationServlet extends HttpServlet {
         }
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(rvdConfiguration);
         CloseableHttpClient buildHttpClient = httpClientBuilder.buildHttpClient();
-        AccountProvider accountProvider = new DefaultAccountProvider(rvdConfiguration, buildHttpClient);
+        RestcommLocationResolver restcommResolver = new RestcommLocationResolver(rvdConfiguration);
         ApplicationContext appContext = new ApplicationContextBuilder()
                 .setConfiguration(rvdConfiguration)
                 .setHttpClientBuilder(httpClientBuilder)
                 .setDefaultHttpClient(buildHttpClient)
                 .setExternalHttpClient(httpClientBuilder.buildExternalHttpClient())
-                .setAccountProvider(accountProvider)
-                .setProjectRegistry(new ProjectRegistry()).build();
+                .setProjectRegistry(new ProjectRegistry())
+                .setRestcommResolver(restcommResolver).build();
         servletContext.setAttribute(ApplicationContext.class.getName(), appContext);
+
 
         WorkspaceBootstrapper workspaceBootstrapper = new WorkspaceBootstrapper(rvdConfiguration.getWorkspaceBasePath());
         workspaceBootstrapper.run();

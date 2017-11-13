@@ -171,7 +171,7 @@ public class ProjectRestService extends SecuredRestService {
         if (RvdLoggers.local.isTraceEnabled())
             RvdLoggers.local.log(Level.TRACE, logging.getPrefix() + " Will create project labeled " + name );
         try {
-            applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext);
+            applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext,restcommBaseUrl);
             applicationSid = applicationsApi.createApplication(name, kind);
             ProjectState projectState = projectService.createProject(applicationSid, kind, getLoggedUsername());
             BuildService buildService = new BuildService(workspaceStorage);
@@ -326,7 +326,7 @@ public class ProjectRestService extends SecuredRestService {
         if (!RvdUtils.isEmpty(applicationSid) && !RvdUtils.isEmpty(projectNewName)) {
             assertProjectAvailable(applicationSid);
             try {
-                ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext);
+                ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext, restcommBaseUrl);
                 try {
                     applicationsApi.renameApplication(applicationSid, projectNewName);
                 } catch (ApplicationApiNotSynchedException e) {
@@ -383,7 +383,7 @@ public class ProjectRestService extends SecuredRestService {
         if (!RvdUtils.isEmpty(applicationSid)) {
             try {
                 try {
-                    ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(), applicationContext);
+                    ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(), applicationContext, restcommBaseUrl);
                     applicationsApi.removeApplication(applicationSid);
                     projectService.deleteProject(applicationSid);
                     if (RvdLoggers.local.isEnabledFor(Level.INFO))
@@ -458,7 +458,7 @@ public class ProjectRestService extends SecuredRestService {
                         filesCounted ++;
                         // Create application
                         String tempName = "RvdImport-" + UUID.randomUUID().toString().replace("-", "");
-                        applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext);
+                        applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext, restcommBaseUrl);
                         applicationSid = applicationsApi.createApplication(tempName, "");
 
                         String effectiveProjectName = null;
