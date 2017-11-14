@@ -150,6 +150,7 @@ public class RvdUtils {
 
     /**
      * Extracts the origin i.e. scheme://host:port section, from an http request object.
+     * Note, there is no trailing slash in the resulting string.
      *
      * @param request
      * @return
@@ -157,7 +158,7 @@ public class RvdUtils {
     public static String getOriginFromRequest(HttpServletRequest request) {
         if (request != null) {
             String origin = request.getScheme() + "://" + request.getServerName();
-            int port = request.getRemotePort();
+            int port = request.getServerPort();
             if (port != -1 && port != 80 && port != 443)
                 origin += ":" +  port;
             return origin;

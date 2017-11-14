@@ -39,7 +39,7 @@ public class RestService {
 
     protected void init() {
         this.applicationContext = (ApplicationContext) servletContext.getAttribute(ApplicationContext.class.getName());
-        restcommBaseUrl = applicationContext.getRestcommResolver().resolveRestcommBaseUrl(request);
+         restcommBaseUrl = applicationContext.getRestcommResolver().resolveRestcommBaseUrl(request);
     }
 
     protected Response buildErrorResponse(Response.Status httpStatus, RvdResponse.Status rvdStatus, RvdException exception) {

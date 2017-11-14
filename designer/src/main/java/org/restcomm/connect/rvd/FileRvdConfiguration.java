@@ -330,8 +330,9 @@ public class FileRvdConfiguration implements RvdConfiguration {
         buffer.append("\n userAbsoluteApplicationUrl:\t").append(useAbsoluteApplicationUrl());
         buffer.append("\n ussdSupport:\t").append(isUssdSupport());
         buffer.append("\n welcomeMessage:\t").append(getWelcomeMessage());
-        buffer.append("\n restcommBaseUri:\t").append(restcommBaseUri);
-        buffer.append("\n\nNote, some null properties like restcommBaseUri are lazily initialized. ");
+        buffer.append("\n restcommBaseUri:\t").append(getRestcommBaseUri());
+        buffer.append("\n dynamicRestcommResoloving:\t").append(getDynamicRestcommResolving());
+        buffer.append("\n\nNote, restcommBaseUri is the configured value in rvd.xml. Actual value may vary. ");
 
         return buffer.toString();
     }

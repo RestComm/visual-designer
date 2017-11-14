@@ -67,7 +67,7 @@ public class RestcommLocationResolver {
                 if (resultUri == null) {
                     UriUtils uriUtils = new UriUtils(config);
                     try {
-                        URI uri = new URI("/");
+                        URI uri = new URI("");
                         resultUri = uriUtils.resolve(uri);
                     } catch (URISyntaxException e) {
                         /* we should never reach here */
