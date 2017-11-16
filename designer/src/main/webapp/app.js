@@ -95,6 +95,7 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     	templateUrl : 'templates/projectLog.html',
     	controller : 'projectLogCtrl'
     });
+    /*
     $stateProvider.state('root.rvd.packaging',{template:'<ui-view/>'}); // does nothing for now
     $stateProvider.state('root.rvd.packaging.details',{
         url: '/packaging/:applicationSid=:projectName',
@@ -113,6 +114,7 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
    			binaryInfo: function (RappService,$stateParams,authorize) { return RappService.getBinaryInfo($stateParams)}
    		}
     });
+    */
 
     $urlRouterProvider.otherwise('/noapp');
 
