@@ -2,17 +2,17 @@ package org.restcomm.connect.rvd.utils;
 
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.commons.http.SslMode;
-import org.restcomm.connect.rvd.configuration.RvdConfig;
 import org.restcomm.connect.rvd.configuration.RvdMaxPerHost;
 
 import java.io.File;
-import java.net.URI;
 import java.util.List;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class CustomizableRvdConfiguration implements RvdConfiguration {
+
+    Boolean videoSupport;
 
     @Override
     public String getWorkspaceBasePath() {
@@ -90,8 +90,13 @@ public class CustomizableRvdConfiguration implements RvdConfiguration {
     }
 
     @Override
-    public URI getRestcommBaseUri() {
+    public String getRestcommBaseUri() {
         return null;
+    }
+
+    @Override
+    public Boolean getDynamicRestcommResolving() {
+        return RvdConfiguration.DEFAULT_DYNAMIC_RESTCOMM_RESOLVING;
     }
 
     @Override
@@ -106,12 +111,7 @@ public class CustomizableRvdConfiguration implements RvdConfiguration {
 
     @Override
     public Boolean getVideoSupport() {
-        return null;
-    }
-
-    @Override
-    public RvdConfig getRawRvdConfig() {
-        return null;
+        return videoSupport;
     }
 
     @Override
@@ -143,4 +143,10 @@ public class CustomizableRvdConfiguration implements RvdConfiguration {
     public String getRvdInstanceId() {
         return null;
     }
+
+    public void setVideoSupport(Boolean videoSupport) {
+        this.videoSupport = videoSupport;
+    }
+
+
 }

@@ -3,24 +3,28 @@ package org.restcomm.connect.rvd.model.steps;
 import com.sun.jersey.core.util.StringKeyIgnoreCaseMultivaluedMap;
 import org.mockito.Mockito;
 import org.restcomm.connect.rvd.ApplicationContext;
+import org.restcomm.connect.rvd.ApplicationContextBuilder;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.logging.MockedCustomLogger;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.ProjectSettings;
+import org.restcomm.connect.rvd.storage.ProjectDao;
+import org.restcomm.connect.rvd.storage.exceptions.StorageException;
+import org.restcomm.connect.rvd.utils.CustomizableRvdConfiguration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class StepTestBase {
+
+    protected ApplicationContext appContext;
 
     protected HttpServletRequest mockHttpServletRequest(String requestUrl) {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
@@ -54,8 +58,12 @@ public class StepTestBase {
         return map;
     }
 
-    protected Interpreter buildInterpreter(MultivaluedMap<String,String> params) {
-        ApplicationContext appContext = new ApplicationContext();
+    protected void buildApplicationContext() {
+        RvdConfiguration config = new CustomizableRvdConfiguration();
+        appContext = new ApplicationContextBuilder().setConfiguration(config).build();
+    }
+
+    protected Interpreter buildInterpreter(MultivaluedMap<String,String> params, ProjectDao dao) throws StorageException {
         // TODO init appContext ??
         Interpreter interpreter = new Interpreter(
                 "testapp",
@@ -65,11 +73,20 @@ public class StepTestBase {
                 new LoggingContext("log-prefix"),
                 new MockedCustomLogger(),
                 ProjectSettings.createDefault(),
-                null // should not need ProjectDao just for rendering a Say
+                dao
         );
         return interpreter;
 
     }
+
+    /*
+    protected ProjectDao buildEmptyProjectDao() throws StorageException {
+        ProjectDao dao = Mockito.mock(ProjectDao.class);
+        Mockito.when(dao.loadBootstrapInfo()).thenReturn(null);
+        Mockito.when(dao.loadNode(Mockito.anyString())).thenThrow(new StorageException("Empty ProjectDao is not supposed to return modules"));
+        return dao;
+    }
+    */
 
 
 }

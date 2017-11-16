@@ -65,9 +65,11 @@ public class RestServiceTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8089);
+
     protected Client getClient(String username, String password) {
         Client jersey = Client.create();
-        jersey.addFilter(new HTTPBasicAuthFilter(username, password));
+        if (username != null)
+            jersey.addFilter(new HTTPBasicAuthFilter(username, password));
         return jersey;
     }
 

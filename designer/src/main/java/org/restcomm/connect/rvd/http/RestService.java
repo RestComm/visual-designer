@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ public class RestService {
     @Context
     protected ServletContext servletContext;
     protected ApplicationContext applicationContext;
+    protected URI restcommBaseUrl; // resolved restcomm base url
 
     public RestService() {
     }
@@ -37,6 +39,7 @@ public class RestService {
 
     protected void init() {
         this.applicationContext = (ApplicationContext) servletContext.getAttribute(ApplicationContext.class.getName());
+         restcommBaseUrl = applicationContext.getRestcommResolver().resolveRestcommBaseUrl(request);
     }
 
     protected Response buildErrorResponse(Response.Status httpStatus, RvdResponse.Status rvdStatus, RvdException exception) {

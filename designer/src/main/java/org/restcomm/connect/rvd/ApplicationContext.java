@@ -23,13 +23,12 @@ package org.restcomm.connect.rvd;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
-import org.restcomm.connect.rvd.identity.AccountProvider;
+import org.restcomm.connect.rvd.configuration.RestcommLocationResolver;
 import org.restcomm.connect.rvd.stats.AggregateStats;
 
 /**
  * This class holds all objects whose lifecycle follows the rvd application.
  * For example, RvdConfiguration, CustomHttpClient builder etc.
- * Typically, such objects used the singleton approach.
  *
  *
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -39,9 +38,9 @@ public class ApplicationContext {
     CustomHttpClientBuilder httpClientBuilder;
     CloseableHttpClient defaultHttpClient;
     CloseableHttpClient externaltHttpClient;
-    AccountProvider accountProvider;
     ProjectRegistry projectRegistry;
     AggregateStats globalStats;
+    RestcommLocationResolver restcommResolver;
 
     public ApplicationContext() {
         globalStats = new AggregateStats();
@@ -53,10 +52,6 @@ public class ApplicationContext {
 
     public CustomHttpClientBuilder getHttpClientBuilder() {
         return httpClientBuilder;
-    }
-
-    public AccountProvider getAccountProvider() {
-        return accountProvider;
     }
 
     public ProjectRegistry getProjectRegistry() {
@@ -77,5 +72,9 @@ public class ApplicationContext {
 
     public CloseableHttpClient getExternaltHttpClient() {
         return externaltHttpClient;
+    }
+
+    public RestcommLocationResolver getRestcommResolver() {
+        return restcommResolver;
     }
 }

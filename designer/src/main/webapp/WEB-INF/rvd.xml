@@ -37,6 +37,17 @@
 	<restcommBaseUrl></restcommBaseUrl>
 
 	<!--
+		Should restcomm be resolved dynamically based on incoming request scheme/domain/port ?
+		If enabled, each request will provide the origin where restcomm will be contacted back to.
+		Otherwise, restcommBaseUrl will be used if defined or the algorithm will fall further back
+		to using connector information.
+
+		Example:
+			<dynamicRestcommResolving>true</dynamicRestcommResolving>
+	-->
+	<dynamicRestcommResolving>false</dynamicRestcommResolving>
+
+	<!--
 		If 'useAbsoluteApplicationUrl' is true application registration to restcomm will use absolute urls instead of relative.
 	    These absolute urls will start with 'baseUrl'
 
@@ -53,6 +64,38 @@
 	 	 		    ok but it really depends on the roundtrip time when restcomm contacts RVD. 
 	 -->
 	<externalServiceTimeout></externalServiceTimeout>
+	<!--
+        Connection pooling configuration parameters are left commented for now, thus default values will be taken.
+        Default values equal the ones set here (commented). Timeout and TTL values are in milliseconds.
+        Note that custom values overrides the default ones, so be careful when taking a decision on this regard.
+        Likewise, take into account rvdMaxPerHost parameter doesn't have a default value thus far, so that must be
+        always left commented for now.
+        -->
+	<!--
+	<externalServiceMaxConns>2000</externalServiceMaxConns>
+   	<externalServiceMaxConnsPerRoute>10</externalServiceMaxConnsPerRoute>
+   	<externalServiceTTL>30000</externalServiceTTL>
+   	<externalServicepMaxPerRoute>
+    	<rvdMaxPerHost>
+        	<url>http://127.0.0.1</url>
+        	<maxConnections>1</maxConnections>
+       </rvdMaxPerHost>
+		<rvdMaxPerHost>
+        	<url>http://127.0.0.1</url>
+        	<maxConnections>2</maxConnections>
+    	</rvdMaxPerHost>
+	</externalServicepMaxPerRoute>
+	<defaultHttpTimeout>1000</defaultHttpTimeout>
+	<defaultHttpMaxConns>200</defaultHttpMaxConns>
+	<defaultHttpMaxConnsPerRoute>100</defaultHttpMaxConnsPerRoute>
+	<defaultHttpTTL>300000</defaultHttpTTL>
+	<defaultHttpMaxPerRoute>
+        <rvdMaxPerHost>
+         	<url>http://127.0.0.1</url>
+            <maxConnections>1</maxConnections>
+        </rvdMaxPerHost>
+	</defaultHttpMaxPerRoute>
+ 	-->
 
 	<!-- Enable Video support in RCML produced and UI. Defaults to 'false'. Requires XMS. -->
 	<videoSupport>false</videoSupport>

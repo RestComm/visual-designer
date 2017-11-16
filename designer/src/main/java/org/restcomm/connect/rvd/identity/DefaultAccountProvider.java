@@ -7,7 +7,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.restcomm.RestcommAccountInfo;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
@@ -16,20 +15,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Provides accounts by either quereing Restcomm or accessing cache. It follows the application lifecycle (not creatd per-request)
- * Future support for account caching will be added.
- *
- * The class has been implemented as a singleton and is lazily created because it's not possible to initialize it
- * in RvdInitializationServlet (restcommBaseUrl is not available at that time) :-(.
+ * Provides accounts by querying Restcomm. It follows the request lifecycle since it depends on
+ * restcommUrl that may change per request.
  *
  * @author Orestis Tsakiridis
  */
 public class DefaultAccountProvider implements AccountProvider {
 
-    String restcommUrl = null; // this is initialized lazily. Access it through its private getter.
-    private boolean restcommUrlInitialized = false;
+    URI restcommUrl = null;
     CloseableHttpClient client;
-    RvdConfiguration configuration;
 
     /**
      * This constructor directly initializes restcommUrl without going through RvdConfiguration
@@ -38,44 +32,24 @@ public class DefaultAccountProvider implements AccountProvider {
      * @param restcommUrl
      * @param client
      */
-    public DefaultAccountProvider(String restcommUrl, CloseableHttpClient client) {
+    public DefaultAccountProvider(URI restcommUrl, CloseableHttpClient client) {
         if (restcommUrl == null)
             throw new IllegalStateException("restcommUrl cannot be null");
-        this.restcommUrl = sanitizeRestcommUrl(restcommUrl);
-        this.restcommUrlInitialized = true;
+        this.restcommUrl = restcommUrl;
         this.client = client;
     }
 
-
-    public DefaultAccountProvider(RvdConfiguration configuration, CloseableHttpClient client) {
-        this.configuration = configuration;
-        this.client = client;
-    }
-
-
-    private String getRestcommUrl() {
-        if (!restcommUrlInitialized) {
-            URI uriFromConfig = configuration.getRestcommBaseUri();
-            if (uriFromConfig == null)
-                throw new IllegalStateException("restcommUrl cannot be null");
-            String url = uriFromConfig.toString();
-            this.restcommUrl = sanitizeRestcommUrl(url);
-            restcommUrlInitialized = true;
-        }
-        return restcommUrl;
-    }
-
-    private String sanitizeRestcommUrl(String restcommUrl) {
-        restcommUrl = restcommUrl.trim();
-        if (restcommUrl.endsWith("/"))
-            return restcommUrl.substring(0,restcommUrl.length()-1);
-        return restcommUrl;
-    }
+//    private String sanitizeRestcommUrl(String restcommUrl) {
+//        restcommUrl = restcommUrl.trim();
+//        if (restcommUrl.endsWith("/"))
+//            return restcommUrl.substring(0,restcommUrl.length()-1);
+//        return restcommUrl;
+//    }
 
     private URI buildAccountQueryUrl(String usernameOrSid) {
         try {
             // TODO url-encode the username
-            URI uri = new URIBuilder(getRestcommUrl()).setPath("/restcomm/2012-04-24/Accounts.json/" + usernameOrSid).build();
+            URI uri = new URIBuilder(this.restcommUrl.toString()).setPath("/restcomm/2012-04-24/Accounts.json/" + usernameOrSid).build();
             return uri;
         } catch (URISyntaxException e) {
             // something really wrong has happened

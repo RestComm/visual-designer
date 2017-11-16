@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.IOUtils;
-import org.restcomm.connect.rvd.identity.AccountProvider;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.model.LoginForm;
 import org.restcomm.connect.rvd.restcomm.RestcommAccountInfo;
@@ -54,9 +53,8 @@ public class LoginRestService extends SecuredRestService {
         Gson gson = new Gson();
         LoginForm form = gson.fromJson(data,LoginForm.class);
 
-        AccountProvider accounts = applicationContext.getAccountProvider();
         BasicAuthCredentials creds = new BasicAuthCredentials(form.getUsername(),form.getPassword());
-        RestcommAccountInfo accountInfo = accounts.getActiveAccount(creds);
+        RestcommAccountInfo accountInfo = accountProvider.getActiveAccount(creds);
         if (accountInfo != null)
             return Response.ok().build();
         else

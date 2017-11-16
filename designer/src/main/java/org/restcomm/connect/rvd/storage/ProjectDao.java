@@ -10,8 +10,6 @@ import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 public interface ProjectDao {
     ProjectOptions loadProjectOptions() throws StorageException;
 
-    boolean hasBootstrapInfo();
-
     Node loadNode(String moduleName) throws StorageException;
 
     String loadBootstrapInfo() throws StorageException;

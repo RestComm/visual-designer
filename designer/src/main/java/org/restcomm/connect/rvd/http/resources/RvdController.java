@@ -3,7 +3,6 @@ package org.restcomm.connect.rvd.http.resources;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
 import org.apache.log4j.Level;
@@ -273,22 +272,20 @@ public class RvdController extends SecuredRestService {
         if ( effectiveAuthHeader == null)
             throw new UnauthorizedCallControlAccess("WebTrigger authorization error");
 
-        // guess restcomm location
-        URI restcommBaseUri = applicationContext.getConfiguration().getRestcommBaseUri();
         // initialize a restcomm client object using various information sources
         RestcommClient restcommClient;
         try {
-            restcommClient = new RestcommClient(restcommBaseUri, effectiveAuthHeader,applicationContext.getDefaultHttpClient());
+            restcommClient = new RestcommClient(restcommBaseUrl, effectiveAuthHeader,applicationContext.getDefaultHttpClient());
         } catch (RestcommClient.RestcommClientInitializationException e) {
             throw new CallControlException("WebTrigger",e);
         }
         if (RvdLoggers.local.isDebugEnabled())
-            RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"executeAction", logging.getPrefix(), "reaching restcomm at '" + restcommBaseUri + "'" ));
+            RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"executeAction", logging.getPrefix(), "reaching restcomm at '" + restcommBaseUrl + "'" ));
 
         String rcmlUrl = info.lanes.get(0).startPoint.rcmlUrl;
         // use the existing application for RCML if none has been given
         if (RvdUtils.isEmpty(rcmlUrl)) {
-            URIBuilder uriBuilder = new URIBuilder(restcommBaseUri);
+            URIBuilder uriBuilder = new URIBuilder(restcommBaseUrl);
             uriBuilder.setPath("/restcomm-rvd/services/apps/" + projectName + "/controller");
             try {
                 rcmlUrl = uriBuilder.build().toString();
@@ -378,7 +375,6 @@ public class RvdController extends SecuredRestService {
             @Context UriInfo ui) {
         String selectedMediaType = MediaType.TEXT_HTML;
         try {
-            AccountProvider accountProvider = applicationContext.getAccountProvider();
             RestcommCallArray calls = executeAction(applicationId, request, toParam, fromParam, accessToken, ui, accountProvider);
             // build call-sid part of message
             StringBuffer messageBuffer = new StringBuffer("[");
@@ -422,7 +418,6 @@ public class RvdController extends SecuredRestService {
             @Context UriInfo ui) {
         String selectedMediaType = MediaType.APPLICATION_JSON;
         try {
-            AccountProvider accountProvider = applicationContext.getAccountProvider();
             RestcommCallArray calls = executeAction(applicationId, request, toParam, fromParam, accessToken, ui, accountProvider);
             return buildWebTriggerJsonResponse(CallControlAction.createCall, CallControlStatus.success, 200, calls);
         } catch (UnauthorizedCallControlAccess e) {

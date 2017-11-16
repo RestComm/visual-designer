@@ -49,6 +49,7 @@ public class RvdConfig {
     private Boolean useAbsoluteApplicationUrl;
     private String ussdSupport;
     private String instanceId;
+    private Boolean dynamicRestcommResolving;
 
     private List<String> allowedCorsOrigins;
 
@@ -204,5 +205,9 @@ public class RvdConfig {
 
     public void setDefaultHttpMaxPerRoute(List<RvdMaxPerHost> defaultHttpMaxPerRoute) {
         this.defaultHttpMaxPerRoute = defaultHttpMaxPerRoute;
+    }
+
+    public Boolean getDynamicRestcommResolving() {
+        return dynamicRestcommResolving;
     }
 }

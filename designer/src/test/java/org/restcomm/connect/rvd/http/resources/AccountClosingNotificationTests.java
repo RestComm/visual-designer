@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static org.mockito.Mockito.when;
 
@@ -47,7 +48,7 @@ public class AccountClosingNotificationTests extends RestServiceMockedTest {
     WorkspaceStorage storage;
 
     @Before
-    public void before() throws IOException {
+    public void before() throws IOException, URISyntaxException {
         addLegitimateAccount("administrator@company.com", "ACA1000000000000000000000000000000");
         setupMocks();
         workspaceDir = TestUtils.createTempWorkspace();

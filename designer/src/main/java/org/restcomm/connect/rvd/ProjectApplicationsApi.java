@@ -44,15 +44,18 @@ public class ProjectApplicationsApi {
 
     private UserIdentityContext identity;
     private ApplicationContext appContext;
+    private URI restcommBaseUri;
     private Gson gson;
+
 
     private enum AccessApiAction {
         CREATE, DELETE, RENAME, UPDATE
     }
 
-    public ProjectApplicationsApi(UserIdentityContext identity, ApplicationContext appContext) {
+    public ProjectApplicationsApi(UserIdentityContext identity, ApplicationContext appContext, URI restcommBaseUri) {
         this.identity = identity;
         this.appContext = appContext;
+        this.restcommBaseUri = restcommBaseUri;
         this.gson = new Gson();
     }
 
@@ -114,7 +117,6 @@ public class ProjectApplicationsApi {
     private String accessApi(final HashMap<String, String> params, final AccessApiAction action)
             throws ApplicationsApiSyncException {
         try {
-            URI restcommBaseUri = appContext.getConfiguration().getRestcommBaseUri();
             if (RvdUtils.isEmpty(identity.getEffectiveAuthorizationHeader()))
                 throw new ApplicationsApiSyncException("Could not determine credentials to access API.");
             // create the client

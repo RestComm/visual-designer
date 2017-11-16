@@ -23,7 +23,7 @@ package org.restcomm.connect.rvd;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
-import org.restcomm.connect.rvd.identity.AccountProvider;
+import org.restcomm.connect.rvd.configuration.RestcommLocationResolver;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -33,8 +33,8 @@ public class ApplicationContextBuilder {
     CustomHttpClientBuilder httpClientBuilder;
     CloseableHttpClient defaultHttpClient;
     CloseableHttpClient externaltHttpClient;
-    AccountProvider accountProvider;
     ProjectRegistry projectRegistry;
+    RestcommLocationResolver restcommResolver;
 
     public ApplicationContextBuilder setConfiguration(RvdConfiguration configuration) {
         this.configuration = configuration;
@@ -43,11 +43,6 @@ public class ApplicationContextBuilder {
 
     public ApplicationContextBuilder setHttpClientBuilder(CustomHttpClientBuilder httpClientBuilder) {
         this.httpClientBuilder = httpClientBuilder;
-        return this;
-    }
-
-    public ApplicationContextBuilder setAccountProvider(AccountProvider accountProvider) {
-        this.accountProvider = accountProvider;
         return this;
     }
 
@@ -65,14 +60,19 @@ public class ApplicationContextBuilder {
         return this;
     }
 
+    public ApplicationContextBuilder setRestcommResolver(RestcommLocationResolver restcommResolver) {
+        this.restcommResolver = restcommResolver;
+        return this;
+    }
+
     public ApplicationContext build() {
         ApplicationContext instance = new ApplicationContext();
         instance.configuration = this.configuration;
         instance.httpClientBuilder = this.httpClientBuilder;
-        instance.accountProvider = this.accountProvider;
         instance.projectRegistry = this.projectRegistry;
         instance.defaultHttpClient = this.defaultHttpClient;
         instance.externaltHttpClient = this.externaltHttpClient;
+        instance.restcommResolver = this.restcommResolver;
         return instance;
     }
 }

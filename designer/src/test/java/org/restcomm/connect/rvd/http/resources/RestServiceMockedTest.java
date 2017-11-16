@@ -40,6 +40,8 @@ import javax.servlet.ServletContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -57,17 +59,17 @@ public class RestServiceMockedTest {
     ModelMarshaler marshaler;
     ApplicationContext appContext;
 
-    public void setupMocks() {
+    public void setupMocks() throws URISyntaxException {
         configuration = new RvdConfigurationBuilder()
                 .setRestcommBaseUri("http://127.0.0.1:8099")
                 .setRestcommConfig(new RestcommConfigBuilder().build())
                 .build(); // point that to wiremock
         CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(configuration);
         CloseableHttpClient buildHttpClient = httpClientBuilder.buildHttpClient();
-        accountProvider = new DefaultAccountProvider(configuration, buildHttpClient);
-        appContext = new ApplicationContextBuilder().setAccountProvider(accountProvider).
-                setConfiguration(configuration).
-                setHttpClientBuilder(httpClientBuilder)
+        accountProvider = new DefaultAccountProvider(new URI(configuration.getRestcommBaseUri()), buildHttpClient);
+        appContext = new ApplicationContextBuilder()
+                .setConfiguration(configuration)
+                .setHttpClientBuilder(httpClientBuilder)
                 .setDefaultHttpClient(buildHttpClient).build();
     }
 

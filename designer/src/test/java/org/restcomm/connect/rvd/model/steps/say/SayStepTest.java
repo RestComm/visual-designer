@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.model.steps.StepTestBase;
+import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -35,8 +36,8 @@ public class SayStepTest extends StepTestBase {
      * Check if all properties of a Say step get rendered
      */
     @Test
-    public void defaultRendering() {
-        Interpreter interpreter = buildInterpreter(appendMultivaluedMap(null,null,null));
+    public void defaultRendering() throws StorageException {
+        Interpreter interpreter = buildInterpreter(appendMultivaluedMap(null,null,null), null);
         SayStep step = new SayStep("hello world", "man", "en", 1);
         RcmlSayStep rcmlStep = (RcmlSayStep)step.render(interpreter, null);
         Assert.assertEquals("hello world", rcmlStep.getPhrase());
@@ -48,8 +49,8 @@ public class SayStepTest extends StepTestBase {
      * Checks if a phrase of a Say step supports variables.
      */
     @Test
-    public void phraseWithModuleVariable() {
-        Interpreter interpreter = buildInterpreter(appendMultivaluedMap(null,null,null));
+    public void phraseWithModuleVariable() throws StorageException {
+        Interpreter interpreter = buildInterpreter(appendMultivaluedMap(null,null,null),null);
         interpreter.getVariables().put(RvdConfiguration.MODULE_PREFIX + "name", "alice");
         SayStep step = new SayStep("hello $name", null, null, null);
         RcmlSayStep rcmlStep = (RcmlSayStep)step.render(interpreter, null);

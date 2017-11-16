@@ -1,9 +1,7 @@
 package org.restcomm.connect.rvd;
 
 import org.restcomm.connect.rvd.commons.http.SslMode;
-import org.restcomm.connect.rvd.configuration.RvdConfig;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +18,7 @@ public interface RvdConfiguration {
     boolean DEFAULT_USE_ABSOLUTE_APPLICATION_URL = false;
     boolean DEFAULT_USSD_SUPPORT = true;
     String DEFAULT_WELCOME_MESSAGE = "Welcome to Telestax Restcom Visual Designer Demo";
+    boolean DEFAULT_DYNAMIC_RESTCOMM_RESOLVING = false;
 
     String WORKSPACE_DIRECTORY_NAME = "workspace";
     String PROTO_DIRECTORY_PREFIX = "_proto";
@@ -84,15 +83,15 @@ public interface RvdConfiguration {
 
     String getHostnameOverride();
 
-    URI getRestcommBaseUri();
+    String getRestcommBaseUri();
+
+    Boolean getDynamicRestcommResolving();
 
     String getApplicationsRelativeUrl();
 
     Integer getMaxMediaFileSize();
 
     Boolean getVideoSupport();
-
-    RvdConfig getRawRvdConfig();
 
     String getBaseUrl();
 

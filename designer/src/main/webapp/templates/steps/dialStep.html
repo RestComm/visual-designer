@@ -50,6 +50,7 @@
 							</div>
 						</div>
 
+						<!-- Client noun -->
 						<div ng-if="dialnoun.dialType=='client'" class="form-group client-noun">
 							<div lookup-context class="input-group input-group-sm">
 								<span class="input-group-addon rvd-handle"><i class='fa fa-user'></i></span>
@@ -72,6 +73,18 @@
 								<select ng-model="dialnoun.enableVideo" auto-clear ng-options='pair.value as pair.caption for pair in yesNoBooleanOptions' class="form-control mask-invalid">
 									<option value=""></option>
 								</select>
+
+								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoResolutionHint' | translate}}">{{'Resolution' | translate}}</span>
+								<select ng-model="dialnoun.videoResolution" ng-show="dialnoun.enableVideo" auto-clear class="mask-invalid form-control">
+									<option value=""></option>
+									<option value="CIF">CIF</option>
+									<option value="4CIF">4CIF</option>
+									<option value="16CIF">16CIF</option>
+									<option value="QCIF">QCIF</option>
+									<option value="VGA">VGA</option>
+									<option value="720p">720p</option>
+								</select>
+
 								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoOverlayHint' | translate}}">{{'Overlay' | translate}}</span>
 								<input ng-model="dialnoun.videoOverlay" ng-show="dialnoun.enableVideo" auto-clear class="mask-invalid form-control">
 							</div>
@@ -83,6 +96,7 @@
 
 						</div>
 
+						<!-- Conference noun -->
 						<div ng-if="dialnoun.dialType=='conference'" conference-dial-noun class='form-group conference-noun'>
 							<div lookup-context class="input-group input-group-sm">
 								<span class="input-group-addon rvd-handle"><i class='fa fa-group'></i></span>
@@ -183,6 +197,7 @@
 
 						</div>
 
+						<!-- SipURI noun -->
 						<div ng-if="dialnoun.dialType=='sipuri'" class="sipuri-noun form-group">
 							<div lookup-context class="input-group input-group-sm">
 								<span class="input-group-addon rvd-handle">{{'dialStepSipUriInputLabel' | translate}}</span>
@@ -197,6 +212,18 @@
 								<select ng-model="dialnoun.enableVideo" auto-clear ng-options='pair.value as pair.caption for pair in yesNoBooleanOptions' class="form-control mask-invalid">
 									<option value=""></option>
 								</select>
+
+								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoResolutionHint' | translate}}">{{'Resolution' | translate}}</span>
+								<select ng-model="dialnoun.videoResolution" ng-show="dialnoun.enableVideo" auto-clear class="mask-invalid form-control">
+									<option value=""></option>
+									<option value="CIF">CIF</option>
+									<option value="4CIF">4CIF</option>
+									<option value="16CIF">16CIF</option>
+									<option value="QCIF">QCIF</option>
+									<option value="VGA">VGA</option>
+									<option value="720p">720p</option>
+								</select>
+
 								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoOverlayHint' | translate}}">{{'Overlay' | translate}}</span>
 								<input ng-model="dialnoun.videoOverlay" ng-show="dialnoun.enableVideo" auto-clear class="mask-invalid form-control">
 							</div>

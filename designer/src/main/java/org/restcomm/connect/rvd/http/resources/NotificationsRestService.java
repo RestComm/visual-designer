@@ -165,7 +165,7 @@ public class NotificationsRestService extends SecuredRestService {
 
     void processAccountRemovalNotification(String removedAccountSid) throws RvdException {
         // retrieve the applications belonging to the removed account
-        RestcommClient client = new RestcommClient(applicationContext.getConfiguration().getRestcommBaseUri(), getUserIdentityContext().getEffectiveAuthorizationHeader(), applicationContext.getDefaultHttpClient());
+        RestcommClient client = new RestcommClient(restcommBaseUrl, getUserIdentityContext().getEffectiveAuthorizationHeader(), applicationContext.getDefaultHttpClient());
         RestcommApplicationsResponse applications = null;
         try {
             applications = client.get("/restcomm/2012-04-24/Accounts/" + removedAccountSid + "/Applications.json").done(new Gson(), RestcommApplicationsResponse.class);

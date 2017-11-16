@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 import com.google.gson.Gson;
@@ -18,7 +17,6 @@ import org.restcomm.connect.rvd.configuration.RestcommConfig;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigNotFound;
 import org.restcomm.connect.rvd.exceptions.RestcommConfigurationException;
 import org.restcomm.connect.rvd.exceptions.XmlParserException;
-import org.restcomm.connect.rvd.http.utils.UriUtils;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.configuration.RvdConfig;
@@ -71,6 +69,7 @@ public class FileRvdConfiguration implements RvdConfiguration {
     // whitelabeling configuration
     private String welcomeMessage;
     private String rvdInstanceId;
+    private Boolean dynamicRestcommResolving;
 
     public FileRvdConfiguration(ServletContext servletContext) {
         this(servletContext.getContextPath(), servletContext.getRealPath("/"));
@@ -178,6 +177,12 @@ public class FileRvdConfiguration implements RvdConfiguration {
             rvdInstanceId = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
         } else {
             rvdInstanceId = rvdConfig.getInstanceId();
+        }
+        // Dynamic restcomm resolving
+        if (!RvdUtils.isEmpty(rvdConfig.getDynamicRestcommResolving())) {
+            dynamicRestcommResolving = rvdConfig.getDynamicRestcommResolving();
+        } else {
+            dynamicRestcommResolving = DEFAULT_DYNAMIC_RESTCOMM_RESOLVING;
         }
 
         // load whitelabeling configuration
@@ -301,34 +306,8 @@ public class FileRvdConfiguration implements RvdConfiguration {
 
     // this is lazy loaded because HttpConnector enumeration (done in resolve()) fails otherwise
     @Override
-    public URI getRestcommBaseUri() {
-        if (this.restcommBaseUri == null) {
-            // check rvd.xml override first
-            String rawUrl = rvdConfig.getRestcommBaseUrl();
-            if (!RvdUtils.isEmpty(rawUrl)) {
-                try {
-                    URI uri = new URI(rawUrl);
-                    if (!RvdUtils.isEmpty(uri.getScheme()) && !RvdUtils.isEmpty(uri.getHost())) {
-                        this.restcommBaseUri = uri;
-                    }
-                } catch (URISyntaxException e) {
-                    /* do nothing */
-                }
-            }
-            // if no override value in rvd.xml use the automatic way
-            if (this.restcommBaseUri == null) {
-                UriUtils uriUtils = new UriUtils(this);
-                try {
-                    URI uri = new URI("/");
-                    this.restcommBaseUri = uriUtils.resolve(uri);
-                } catch (URISyntaxException e) {
-                    /* we should never reach here */
-                    throw new IllegalStateException();
-                }
-            }
-            logger.info("using restcomm server at " + this.restcommBaseUri.toString());
-        }
-        return restcommBaseUri;
+    public String getRestcommBaseUri() {
+        return rvdConfig.getRestcommBaseUrl();
     }
 
     @Override
@@ -351,8 +330,9 @@ public class FileRvdConfiguration implements RvdConfiguration {
         buffer.append("\n userAbsoluteApplicationUrl:\t").append(useAbsoluteApplicationUrl());
         buffer.append("\n ussdSupport:\t").append(isUssdSupport());
         buffer.append("\n welcomeMessage:\t").append(getWelcomeMessage());
-        buffer.append("\n restcommBaseUri:\t").append(restcommBaseUri);
-        buffer.append("\n\nNote, some null properties like restcommBaseUri are lazily initialized. ");
+        buffer.append("\n restcommBaseUri:\t").append(getRestcommBaseUri());
+        buffer.append("\n dynamicRestcommResoloving:\t").append(getDynamicRestcommResolving());
+        buffer.append("\n\nNote, restcommBaseUri is the configured value in rvd.xml. Actual value may vary. ");
 
         return buffer.toString();
     }
@@ -376,11 +356,6 @@ public class FileRvdConfiguration implements RvdConfiguration {
     @Override
     public Boolean getVideoSupport() {
         return RvdUtils.isTrue(videoSupport);
-    }
-
-    @Override
-    public RvdConfig getRawRvdConfig() {
-        return rvdConfig;
     }
 
     @Override
@@ -475,5 +450,11 @@ public class FileRvdConfiguration implements RvdConfiguration {
                 && rvdConfig.getDefaultHttpMaxPerRoute() != null)
                         ? rvdConfig.getDefaultHttpMaxPerRoute() : null;    }
 
+
+
+    @Override
+    public Boolean getDynamicRestcommResolving() {
+        return dynamicRestcommResolving;
+    }
 
 }

@@ -314,7 +314,7 @@ public class RasRestService extends SecuredRestService {
                         //projectService.addWavToProject(projectName, item.getName(), item.openStream());
                         // Create application
                         String tempName = "RasImport-" + UUID.randomUUID().toString().replace("-", "");
-                        applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext);
+                        applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext, restcommBaseUrl);
                         applicationSid = applicationsApi.createApplication(tempName, "");
 
                         String effectiveProjectName = null;

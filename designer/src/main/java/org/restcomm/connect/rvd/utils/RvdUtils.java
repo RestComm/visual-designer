@@ -16,6 +16,8 @@ import org.apache.commons.io.FileUtils;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 public class RvdUtils {
 
@@ -144,5 +146,23 @@ public class RvdUtils {
         if (urlOrPath != null && ! urlOrPath.endsWith("/"))
             urlOrPath += "/";
         return urlOrPath;
+    }
+
+    /**
+     * Extracts the origin i.e. scheme://host:port section, from an http request object.
+     * Note, there is no trailing slash in the resulting string.
+     *
+     * @param request
+     * @return
+     */
+    public static String getOriginFromRequest(HttpServletRequest request) {
+        if (request != null) {
+            String origin = request.getScheme() + "://" + request.getServerName();
+            int port = request.getServerPort();
+            if (port != -1 && port != 80 && port != 443)
+                origin += ":" +  port;
+            return origin;
+        }
+        return null;
     }
 }

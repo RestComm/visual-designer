@@ -171,7 +171,7 @@ public class ProjectRestService extends SecuredRestService {
         if (RvdLoggers.local.isTraceEnabled())
             RvdLoggers.local.log(Level.TRACE, logging.getPrefix() + " Will create project labeled " + name );
         try {
-            applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext);
+            applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext,restcommBaseUrl);
             applicationSid = applicationsApi.createApplication(name, kind);
             ProjectState projectState = projectService.createProject(applicationSid, kind, getLoggedUsername());
             BuildService buildService = new BuildService(workspaceStorage);
@@ -326,7 +326,7 @@ public class ProjectRestService extends SecuredRestService {
         if (!RvdUtils.isEmpty(applicationSid) && !RvdUtils.isEmpty(projectNewName)) {
             assertProjectAvailable(applicationSid);
             try {
-                ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext);
+                ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext, restcommBaseUrl);
                 try {
                     applicationsApi.renameApplication(applicationSid, projectNewName);
                 } catch (ApplicationApiNotSynchedException e) {
@@ -383,7 +383,7 @@ public class ProjectRestService extends SecuredRestService {
         if (!RvdUtils.isEmpty(applicationSid)) {
             try {
                 try {
-                    ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(), applicationContext);
+                    ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(), applicationContext, restcommBaseUrl);
                     applicationsApi.removeApplication(applicationSid);
                     projectService.deleteProject(applicationSid);
                     if (RvdLoggers.local.isEnabledFor(Level.INFO))
@@ -430,7 +430,7 @@ public class ProjectRestService extends SecuredRestService {
 
     @POST
     // @Path("{name}/archive")
-    public Response importProjectArchive(@Context HttpServletRequest request, @QueryParam("ticket") String ticket) {
+    public Response importProjectArchive(@Context HttpServletRequest request, @QueryParam("name") String nameOverride) {
         secure();
         if (RvdLoggers.local.isTraceEnabled())
             RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"importProjectArchive", logging.getPrefix(), "importing project from raw archive"));
@@ -446,6 +446,7 @@ public class ProjectRestService extends SecuredRestService {
 
                 JsonArray fileinfos = new JsonArray();
 
+                int filesCounted = 0;
                 while (iterator.hasNext()) {
                     FileItemStream item = iterator.next();
                     JsonObject fileinfo = new JsonObject();
@@ -454,9 +455,10 @@ public class ProjectRestService extends SecuredRestService {
                     // is this a file part (talking about multipart requests, there might be parts that are not actual files).
                     // They will be ignored
                     if (item.getName() != null) {
+                        filesCounted ++;
                         // Create application
                         String tempName = "RvdImport-" + UUID.randomUUID().toString().replace("-", "");
-                        applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext);
+                        applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext, restcommBaseUrl);
                         applicationSid = applicationsApi.createApplication(tempName, "");
 
                         String effectiveProjectName = null;
@@ -465,6 +467,10 @@ public class ProjectRestService extends SecuredRestService {
                             // Import application
                             projectService.importProjectFromRawArchive(item.openStream(), applicationSid, getLoggedUsername());
                             effectiveProjectName = FilenameUtils.getBaseName(item.getName());
+                            // For the first uploaded file, override the project name in case 'nameOverride' query parameter is set
+                            if (filesCounted == 1 && nameOverride != null) {
+                                effectiveProjectName = nameOverride;
+                            }
                             // buildService.buildProject(effectiveProjectName);
 
                             // Load project kind
