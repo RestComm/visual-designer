@@ -95,9 +95,6 @@ angular.module('Rvd').controller('designerMainmenuCtrl', function ($scope, $stat
 	    $rootScope.$broadcast("show-graph",{status: $scope.showGraph});
 	}
 
-    $scope.signalSavePressed = function() {
-        $rootScope.$broadcast("save-project-clicked");
-    }
     $scope.signalDownloadZip = function () {
         $rootScope.$broadcast("download-project-clicked");
     }

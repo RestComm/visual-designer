@@ -1,4 +1,4 @@
-var designerCtrl = App.controller('designerCtrl', function($scope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration, versionChecker ) {
+var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration, versionChecker ) {
 
 	$scope.project = project;
 	$scope.visibleNodes = editedNodes.getEditedNodes();
@@ -315,7 +315,9 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $q, $statePar
 		container.splice( container.indexOf(step), 1);
 	}
 
-
+    $scope.signalSavePressed = function() {
+        $rootScope.$broadcast("save-project-clicked");
+    }
 
 	function onSavePressed() {
 		var nodes = nodeRegistry.getNodes();

@@ -159,7 +159,7 @@
 							<div class="col-md-4 text-right">
 								<div class="form-group">
 									<label class="project-name" title="{{applicationSid}}">{{projectName}}</label>
-									<!-- <a href="#/project-manager/{{project.projectKind ? project.projectKind : 'voice'}}"><button class="btn btn-primary" title="{{'designerCloseTitle' | translate}} {{projectName}}"><i class='fa fa-power-off'></i></button></a> -->
+									<button ng-click="signalSavePressed()" class="btn btn-primary rvd-clickable-text"><i ng-hide="saveSpinnerShown" class='fa fa-save'></i><i ng-show="saveSpinnerShown" class="fa fa-spinner fa-spin"></i></button>
 								</div>
 							</div>
 
