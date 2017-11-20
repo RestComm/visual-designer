@@ -16,4 +16,6 @@ public interface ProjectDao {
     String loadBootstrapInfo() throws StorageException;
 
     ProjectSettings getSettings() throws StorageException;
+
+    String loadProjectStateRaw() throws StorageException;
 }

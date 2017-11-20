@@ -46,7 +46,16 @@ public class FsProjectDao implements ProjectDao {
 
     @Override
     public ProjectSettings getSettings() throws StorageException {
-        return FsProjectStorage.loadProjectSettings(applicationName, workspaceStorage);
+        try {
+            return FsProjectStorage.loadProjectSettings(applicationName, workspaceStorage);
+        }   catch (StorageEntityNotFound e) {
+            return null;
+        }
+    }
+
+    @Override
+    public String loadProjectStateRaw() throws StorageException {
+        return FsProjectStorage.loadProjectString(applicationName, workspaceStorage);
     }
 
 

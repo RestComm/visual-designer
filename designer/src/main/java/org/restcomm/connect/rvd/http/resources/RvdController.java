@@ -28,6 +28,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.restcomm.connect.rvd.ProjectAwareRvdContext;
+import org.restcomm.connect.rvd.ProjectService;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.AccessApiException;
 import org.restcomm.connect.rvd.exceptions.ESRequestException;
@@ -84,6 +85,7 @@ public class RvdController extends SecuredRestService {
 
     private WorkspaceStorage workspaceStorage;
     private ModelMarshaler marshaler;
+    private ProjectDao projectDao;
     @Context
     UriInfo uriInfo;
     String applicationId; // contains a valid applicationId
@@ -100,7 +102,7 @@ public class RvdController extends SecuredRestService {
             logging.appendApplicationSid(applicationId);
             marshaler = new ModelMarshaler();
             WorkspaceStorage workspaceStorage = new WorkspaceStorage(applicationContext.getConfiguration().getWorkspaceBasePath(), marshaler);
-            ProjectDao projectDao = new FsProjectDao(applicationId, workspaceStorage );
+            this.projectDao = new FsProjectDao(applicationId, workspaceStorage );
 
             rvdContext = new ProjectAwareRvdContext(applicationId, applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId),request, servletContext, applicationContext.getConfiguration(), logging, projectDao );
         } catch (ProjectDoesNotExist projectDoesNotExist) {
@@ -122,9 +124,6 @@ public class RvdController extends SecuredRestService {
         RcmlSerializer serializer = new RcmlSerializer();
         String rcmlResponse;
         try {
-            if (!FsProjectStorage.projectExists(appname, workspaceStorage))
-                return Response.status(Status.NOT_FOUND).build();
-
             ProjectDao projectDao = new FsProjectDao(appname, workspaceStorage);
             Interpreter interpreter = new Interpreter(appname, httpRequest, requestParams, applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings(), rvdContext.getProjectOptions(), projectDao );
             RcmlResponse steplist = interpreter.interpret();
@@ -227,7 +226,8 @@ public class RvdController extends SecuredRestService {
             rvdContext.getProjectLogger().log().tag("WebTrigger").messageNoMarshalling("WebTrigger incoming request: " + ui.getRequestUri().toString()).done();
 
         // load project header
-        StateHeader projectHeader = FsProjectStorage.loadStateHeader(projectName,workspaceStorage);
+        String rawState = projectDao.loadProjectStateRaw();
+        StateHeader projectHeader = ProjectService.parseHeader(rawState, projectName);
 
         // load CC/WebTrigger project info
         CallControlInfo info;
@@ -450,29 +450,22 @@ public class RvdController extends SecuredRestService {
     public Response appLog() {
         secure();
         logging.appendAccountSid(getUserIdentityContext().getAccountSid());
-        try {
-            // make sure logging is enabled before allowing access to sensitive log information
-            ProjectSettings projectSettings = FsProjectStorage.loadProjectSettings(applicationId, workspaceStorage);
-            if (projectSettings == null || projectSettings.getLogging() == false)
-                return Response.status(Status.NOT_FOUND).build();
-            InputStream logStream;
-            try {
-                // TODO make sure getLogFilePath() returns the right value here
-                logStream = new FileInputStream(rvdContext.getProjectLogger().getLogFilePath());
-                return Response.ok(logStream, "text/plain").header("Cache-Control", "no-cache, no-store, must-revalidate")
-                        .header("Pragma", "no-cache").build();
-
-                // response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-                // response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-                // response.setDateHeader("Expires", 0);
-            } catch (FileNotFoundException e) {
-                return Response.status(Status.NOT_FOUND).build(); // nothing to return. There is no log file
-            }
-        } catch (StorageEntityNotFound e) {
+        // make sure logging is enabled before allowing access to sensitive log information
+        ProjectSettings projectSettings = rvdContext.getProjectSettings();
+        if (projectSettings == null || projectSettings.getLogging() == false)
             return Response.status(Status.NOT_FOUND).build();
-        } catch (StorageException e1) {
-            RvdLoggers.global.log(Level.ERROR, logging.getPrefix(), e1);
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        InputStream logStream;
+        try {
+            // TODO make sure getLogFilePath() returns the right value here
+            logStream = new FileInputStream(rvdContext.getProjectLogger().getLogFilePath());
+            return Response.ok(logStream, "text/plain").header("Cache-Control", "no-cache, no-store, must-revalidate")
+                    .header("Pragma", "no-cache").build();
+
+            // response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+            // response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+            // response.setDateHeader("Expires", 0);
+        } catch (FileNotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build(); // nothing to return. There is no log file
         }
     }
 
@@ -481,20 +474,15 @@ public class RvdController extends SecuredRestService {
     public Response resetAppLog() {
         secure();
         logging.appendAccountSid(getUserIdentityContext().getAccountSid());
-        try {
-            // make sure logging is enabled before allowing access to sensitive log information
-            ProjectSettings projectSettings = FsProjectStorage.loadProjectSettings(applicationId, workspaceStorage);
-            if (projectSettings == null || projectSettings.getLogging() == false)
-                return Response.status(Status.NOT_FOUND).build();
+        // make sure logging is enabled before allowing access to sensitive log information
+        ProjectSettings projectSettings = rvdContext.getProjectSettings();
+        if (projectSettings == null || projectSettings.getLogging() == false)
+            return Response.status(Status.NOT_FOUND).build();
 
-            rvdContext.getProjectLogger().reset();
-            if (RvdLoggers.local.isDebugEnabled())
-                RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"resetAppLog", logging.getPrefix(), "application log was reset"));
-            return Response.ok().build();
-        } catch (StorageException e) {
-            RvdLoggers.global.log(Level.ERROR, logging.getPrefix(), e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-        }
+        rvdContext.getProjectLogger().reset();
+        if (RvdLoggers.local.isDebugEnabled())
+            RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"resetAppLog", logging.getPrefix(), "application log was reset"));
+        return Response.ok().build();
     }
 
     /**
