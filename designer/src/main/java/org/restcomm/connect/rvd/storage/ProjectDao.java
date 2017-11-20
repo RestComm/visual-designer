@@ -1,5 +1,6 @@
 package org.restcomm.connect.rvd.storage;
 
+import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.server.ProjectOptions;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -13,4 +14,6 @@ public interface ProjectDao {
     Node loadNode(String moduleName) throws StorageException;
 
     String loadBootstrapInfo() throws StorageException;
+
+    ProjectSettings getSettings() throws StorageException;
 }

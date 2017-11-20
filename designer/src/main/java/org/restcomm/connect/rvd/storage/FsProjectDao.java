@@ -1,5 +1,6 @@
 package org.restcomm.connect.rvd.storage;
 
+import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.server.ProjectOptions;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
@@ -41,6 +42,11 @@ public class FsProjectDao implements ProjectDao {
         } catch (StorageEntityNotFound e) {
             return null;
         }
+    }
+
+    @Override
+    public ProjectSettings getSettings() throws StorageException {
+        return FsProjectStorage.loadProjectSettings(applicationName, workspaceStorage);
     }
 
 

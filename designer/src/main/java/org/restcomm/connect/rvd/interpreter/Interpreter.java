@@ -59,6 +59,7 @@ public class Interpreter {
     private CustomLogger projectLogger;
     private LoggingContext loggingContext;
     private ProjectSettings projectSettings;
+    private ProjectOptions projectOptions;
     private ProjectDao projectDao;
 
     private Gson gson;
@@ -80,7 +81,7 @@ public class Interpreter {
     }
 
 
-    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, ApplicationContext applicationContext, LoggingContext loggingContext, CustomLogger projectLogger, ProjectSettings projectSettings, ProjectDao projectDao) throws StorageException {
+    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, ApplicationContext applicationContext, LoggingContext loggingContext, CustomLogger projectLogger, ProjectSettings projectSettings, ProjectOptions projectOptions, ProjectDao projectDao) throws StorageException {
         this.httpRequest = httpRequest;
         this.targetParam = requestParams.getFirst("target");
         this.appName = appName;
@@ -89,6 +90,7 @@ public class Interpreter {
         this.applicationContext = applicationContext;
         this.loggingContext = loggingContext;
         this.projectSettings = projectSettings;
+        this.projectOptions = projectOptions;
         this.projectDao = projectDao;
 
         this.contextPath = httpRequest.getContextPath();
@@ -146,7 +148,6 @@ public class Interpreter {
     }
 
     public RcmlResponse interpret() throws RvdException {
-        ProjectOptions projectOptions = projectDao.loadProjectOptions();
         nodeNames = projectOptions.getNodeNames();
 
         if (targetParam == null || "".equals(targetParam)) {

@@ -98,7 +98,11 @@ public class RvdController extends SecuredRestService {
         try {
             logging = new LoggingContext(); // TODO put call ID information here
             logging.appendApplicationSid(applicationId);
-            rvdContext = new ProjectAwareRvdContext(applicationId, applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId),request, servletContext, applicationContext.getConfiguration(), logging);
+            marshaler = new ModelMarshaler();
+            WorkspaceStorage workspaceStorage = new WorkspaceStorage(applicationContext.getConfiguration().getWorkspaceBasePath(), marshaler);
+            ProjectDao projectDao = new FsProjectDao(applicationId, workspaceStorage );
+
+            rvdContext = new ProjectAwareRvdContext(applicationId, applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId),request, servletContext, applicationContext.getConfiguration(), logging, projectDao );
         } catch (ProjectDoesNotExist projectDoesNotExist) {
             throw new ResponseWrapperException( Response.status(Status.NOT_FOUND).build() );
         }
@@ -122,7 +126,7 @@ public class RvdController extends SecuredRestService {
                 return Response.status(Status.NOT_FOUND).build();
 
             ProjectDao projectDao = new FsProjectDao(appname, workspaceStorage);
-            Interpreter interpreter = new Interpreter(appname, httpRequest, requestParams, applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings(), projectDao );
+            Interpreter interpreter = new Interpreter(appname, httpRequest, requestParams, applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings(), rvdContext.getProjectOptions(), projectDao );
             RcmlResponse steplist = interpreter.interpret();
             rcmlResponse = serializer.serialize(steplist);
 
