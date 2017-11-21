@@ -33,7 +33,7 @@ public class ProjectAwareRvdContext extends RvdContext {
         this.projectLogger = new ProjectLogger(projectName, getConfiguration(), getMarshaler(), residentInfo.logRotationSemaphore);
         // initialize project settings and options (i.e. /data/project file)
         try {
-            this.projectSettings = projectDao.getSettings();
+            this.projectSettings = projectDao.loadSettings();
             if (this.projectSettings == null) { // if there are no settings yet, create default settings
                 this.projectSettings = ProjectSettings.createDefault();
             }
