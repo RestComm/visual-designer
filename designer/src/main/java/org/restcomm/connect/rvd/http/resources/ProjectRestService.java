@@ -733,7 +733,11 @@ public class ProjectRestService extends SecuredRestService {
         try {
             ProjectDao dao = buildProjectDao(applicationSid, workspaceStorage);
             ProjectSettings projectSettings = dao.loadSettings();
-            return Response.ok(marshaler.toData(projectSettings)).build();
+            if (projectSettings == null) {
+                // in case there are no settings at all, return an empty json object {}, it looks better
+                return Response.ok(marshaler.toData(new Object())).build();
+            } else
+                return Response.ok(marshaler.toData(projectSettings)).build();
         } catch (StorageEntityNotFound e) {
             return Response.ok().build();
         } catch (StorageException e) {

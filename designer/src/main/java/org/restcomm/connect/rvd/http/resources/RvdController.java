@@ -227,7 +227,7 @@ public class RvdController extends SecuredRestService {
 
         // load project header
         String rawState = projectDao.loadProjectStateRaw();
-        StateHeader projectHeader = ProjectService.parseHeader(rawState, projectName);
+        StateHeader projectHeader = ProjectService.parseHeader(projectName, rawState);
 
         // load CC/WebTrigger project info
         CallControlInfo info;
