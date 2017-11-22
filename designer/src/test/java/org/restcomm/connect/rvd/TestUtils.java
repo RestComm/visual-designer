@@ -66,7 +66,17 @@ public class TestUtils {
         return usersDir;
     }
 
-    // TODO hasen't been tested or used.
+    /**
+     * Creates a project with minimal content and returnes the project directory
+     *
+     * @param projectName
+     * @param owner
+     * @param workspaceDir
+     * @param marshaler
+     * @param configuration
+     * @return
+     * @throws IOException
+     */
     public static File createDefaultProject(String projectName, String owner, File workspaceDir, ModelMarshaler marshaler, RvdConfiguration configuration) throws IOException {
         File projectFile = new File(workspaceDir.getPath() + "/" + projectName);
         projectFile.mkdir();

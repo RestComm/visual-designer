@@ -73,6 +73,7 @@ public class StepTestBase {
                 new LoggingContext("log-prefix"),
                 new MockedCustomLogger(),
                 ProjectSettings.createDefault(),
+                null,
                 dao
         );
         return interpreter;

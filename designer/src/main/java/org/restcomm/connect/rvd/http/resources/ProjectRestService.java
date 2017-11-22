@@ -62,7 +62,9 @@ import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.storage.FsCallControlInfoStorage;
+import org.restcomm.connect.rvd.storage.FsProjectDao;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
+import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.BadWorkspaceDirectoryStructure;
 import org.restcomm.connect.rvd.storage.exceptions.ProjectAlreadyExists;
@@ -122,10 +124,10 @@ public class ProjectRestService extends SecuredRestService {
      * @throws StorageException, WebApplicationException/unauthorized
      * @throws ProjectDoesNotExist
      */
-    void assertProjectAvailable(String projectName) throws StorageException, ProjectDoesNotExist {
-        if (!FsProjectStorage.projectExists(projectName, workspaceStorage))
+    void assertProjectStateAvailable(String projectName, ProjectDao projectDao) throws StorageException, ProjectDoesNotExist {
+        ProjectState project = projectDao.loadProject();
+        if (project == null)
             throw new ProjectDoesNotExist("Project " + projectName + " does not exist");
-        ProjectState project = FsProjectStorage.loadProject(projectName, workspaceStorage);
         if (project.getHeader().getOwner() != null) {
             // needs further checking
             String loggedUser = getUserIdentityContext().getAccountUsername();
@@ -224,7 +226,8 @@ public class ProjectRestService extends SecuredRestService {
     @Path("{applicationSid}/info")
     public Response projectInfo(@PathParam("applicationSid") String applicationSid) throws StorageException, ProjectDoesNotExist {
         secure();
-        assertProjectAvailable(applicationSid);
+        ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
+        assertProjectStateAvailable(applicationSid, projectDao);
 
         StateHeader header = activeProject.getHeader();
         return Response.status(Status.OK).entity(marshaler.getGson().toJson(header)).type(MediaType.APPLICATION_JSON).build();
@@ -237,7 +240,11 @@ public class ProjectRestService extends SecuredRestService {
         logging.appendApplicationSid(applicationSid);
         if (applicationSid != null && !applicationSid.equals("")) {
             try {
-                ProjectState existingProject = FsProjectStorage.loadProject(applicationSid, workspaceStorage);
+                ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
+                ProjectState existingProject = projectDao.loadProject();
+                if (existingProject == null) {
+                    throw new ProjectDoesNotExist("project '" + applicationSid + "' does not exist (state data not found).");
+                }
 
                 if (getLoggedUsername().equals(existingProject.getHeader().getOwner())
                         || existingProject.getHeader().getOwner() == null) {
@@ -324,7 +331,8 @@ public class ProjectRestService extends SecuredRestService {
             @QueryParam("ticket") String ticket) throws StorageException, ProjectDoesNotExist {
         secure();
         if (!RvdUtils.isEmpty(applicationSid) && !RvdUtils.isEmpty(projectNewName)) {
-            assertProjectAvailable(applicationSid);
+            ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
+            assertProjectStateAvailable(applicationSid, projectDao);
             try {
                 ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext, restcommBaseUrl);
                 try {
@@ -415,7 +423,8 @@ public class ProjectRestService extends SecuredRestService {
         logging.appendApplicationSid(applicationSid);
         if (RvdLoggers.local.isDebugEnabled())
             RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(),"downloadArchive", logging.getPrefix() + "downloading raw archive for project " + applicationSid));
-        assertProjectAvailable(applicationSid);
+        ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
+        assertProjectStateAvailable(applicationSid, projectDao);
 
         InputStream archiveStream;
         try {
@@ -474,7 +483,8 @@ public class ProjectRestService extends SecuredRestService {
                             // buildService.buildProject(effectiveProjectName);
 
                             // Load project kind
-                            String projectString = FsProjectStorage.loadProjectString(applicationSid, workspaceStorage);
+                            ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
+                            String projectString = projectDao.loadProjectStateRaw();
                             ProjectState state = marshaler.toModel(projectString, ProjectState.class);
                             String projectKind = state.getHeader().getProjectKind();
 
@@ -530,8 +540,9 @@ public class ProjectRestService extends SecuredRestService {
             ProjectDoesNotExist {
         secure();
         logging.appendApplicationSid(applicationSid);
+        ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
         try {
-            assertProjectAvailable(applicationSid);
+            assertProjectStateAvailable(applicationSid, projectDao);
         } catch (RvdException e) {
             // inject account and application information
             e.setAccountSid(getUserIdentityContext().getAccountSid());
@@ -546,7 +557,8 @@ public class ProjectRestService extends SecuredRestService {
     public Response uploadWavFile(@PathParam("applicationSid") String applicationSid, @Context HttpServletRequest request)
             throws StorageException, ProjectDoesNotExist {
         secure();
-        assertProjectAvailable(applicationSid);
+        ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
+        assertProjectStateAvailable(applicationSid, projectDao);
         logging.appendPrefix(applicationSid);
         try {
             if (request.getHeader("Content-Type") != null
@@ -611,7 +623,8 @@ public class ProjectRestService extends SecuredRestService {
     public Response removeWavFile(@PathParam("applicationSid") String applicationSid, @QueryParam("filename") String wavname,
             @Context HttpServletRequest request) throws StorageException, ProjectDoesNotExist {
         secure();
-        assertProjectAvailable(applicationSid);
+        ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
+        assertProjectStateAvailable(applicationSid, projectDao);
         try {
             projectService.removeWavFromProject(applicationSid, wavname);
             return Response.ok().build();
@@ -627,7 +640,8 @@ public class ProjectRestService extends SecuredRestService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listWavs(@PathParam("applicationSid") String applicationSid) throws StorageException, ProjectDoesNotExist {
         secure();
-        assertProjectAvailable(applicationSid);
+        ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
+        assertProjectStateAvailable(applicationSid, projectDao);
         List<WavItem> items;
         try {
 
@@ -676,7 +690,8 @@ public class ProjectRestService extends SecuredRestService {
     public Response buildProject(@PathParam("applicationSid") String applicationSid) throws StorageException,
             ProjectDoesNotExist {
         secure();
-        assertProjectAvailable(applicationSid);
+        ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
+        assertProjectStateAvailable(applicationSid, projectDao);
         BuildService buildService = new BuildService(workspaceStorage);
         try {
             buildService.buildProject(applicationSid, activeProject);
@@ -696,7 +711,8 @@ public class ProjectRestService extends SecuredRestService {
         try {
             data = IOUtils.toString(request.getInputStream(), Charset.forName("UTF-8"));
             ProjectSettings projectSettings = marshaler.toModel(data, ProjectSettings.class);
-            FsProjectStorage.storeProjectSettings(projectSettings, applicationSid, workspaceStorage);
+            ProjectDao projectDao = new FsProjectDao(applicationSid, workspaceStorage);
+            projectDao.storeSettings(projectSettings);
             if (RvdLoggers.local.isDebugEnabled())
                 RvdLoggers.local.log(Level.DEBUG, logging.getPrefix() + " saved settings for project " + applicationSid);
             return Response.ok().build();
@@ -715,13 +731,23 @@ public class ProjectRestService extends SecuredRestService {
     public Response getProjectSettings(@PathParam("applicationSid") String applicationSid) {
         secure();
         try {
-            ProjectSettings projectSettings = FsProjectStorage.loadProjectSettings(applicationSid, workspaceStorage);
-            return Response.ok(marshaler.toData(projectSettings)).build();
+            ProjectDao dao = buildProjectDao(applicationSid, workspaceStorage);
+            ProjectSettings projectSettings = dao.loadSettings();
+            if (projectSettings == null) {
+                // in case there are no settings at all, return an empty json object {}, it looks better
+                return Response.ok(marshaler.toData(new Object())).build();
+            } else
+                return Response.ok(marshaler.toData(projectSettings)).build();
         } catch (StorageEntityNotFound e) {
             return Response.ok().build();
         } catch (StorageException e) {
             RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    private ProjectDao buildProjectDao(String applicationName, WorkspaceStorage storage) {
+        ProjectDao dao = new FsProjectDao(applicationName, storage);
+        return dao;
     }
 }

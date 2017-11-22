@@ -1,9 +1,12 @@
 package org.restcomm.connect.rvd.storage;
 
+import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.project.Node;
+import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.server.ProjectOptions;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
+import org.restcomm.connect.rvd.utils.RvdUtils;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -14,8 +17,25 @@ public class FsProjectDao implements ProjectDao {
     WorkspaceStorage workspaceStorage;
 
     public FsProjectDao(String applicationName, WorkspaceStorage workspaceStorage) {
+        if (RvdUtils.isEmpty(applicationName)) {
+            throw new IllegalStateException("Application name is null. Cannot create FsProjectDao");
+        }
         this.applicationName = applicationName;
         this.workspaceStorage = workspaceStorage;
+    }
+
+    @Override
+    public String getName() {
+        return applicationName;
+    }
+
+    @Override
+    public ProjectState loadProject() throws StorageException {
+        try {
+            return FsProjectStorage.loadProject(applicationName, workspaceStorage);
+        } catch (StorageEntityNotFound e) {
+            return null;
+        }
     }
 
     @Override
@@ -28,12 +48,6 @@ public class FsProjectDao implements ProjectDao {
         return FsProjectStorage.loadNode(applicationName,moduleName,workspaceStorage);
     }
 
-    /**
-     * Returns current project's bootstrap information as a JSON string. If it does not exist it returns null.
-     *
-     * @return a JSON block as a string of null
-     * @throws StorageException
-     */
     @Override
     public String loadBootstrapInfo() throws StorageException {
         try {
@@ -41,6 +55,25 @@ public class FsProjectDao implements ProjectDao {
         } catch (StorageEntityNotFound e) {
             return null;
         }
+    }
+
+    @Override
+    public ProjectSettings loadSettings() throws StorageException {
+        try {
+            return FsProjectStorage.loadProjectSettings(applicationName, workspaceStorage);
+        }   catch (StorageEntityNotFound e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void storeSettings(ProjectSettings projectSettings) throws StorageException {
+        FsProjectStorage.storeProjectSettings(projectSettings, applicationName, workspaceStorage);
+    }
+
+    @Override
+    public String loadProjectStateRaw() throws StorageException {
+        return FsProjectStorage.loadProjectString(applicationName, workspaceStorage);
     }
 
 

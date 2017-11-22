@@ -12,6 +12,11 @@ public class ProjectSettings {
         return instance;
     }
 
+    public ProjectSettings(Boolean logging, Boolean loggingRCML) {
+        this.logging = logging;
+        this.loggingRCML = loggingRCML;
+    }
+
     public ProjectSettings() {
         // TODO Auto-generated constructor stub
     }
@@ -23,6 +28,5 @@ public class ProjectSettings {
     public Boolean getLoggingRCML() {
         return loggingRCML;
     }
-
 
 }

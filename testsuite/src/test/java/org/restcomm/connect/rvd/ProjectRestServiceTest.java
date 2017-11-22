@@ -97,6 +97,19 @@ public class ProjectRestServiceTest extends RestServiceTest {
         Assert.assertEquals("Invalid project kind", "voice", object.get("kind").getAsString());
     }
 
+    @Test
+    public void settingsGetting() {
+        Client jersey = getClient(username, password);
+        WebResource resource = jersey.resource( getResourceUrl("/services/projects/AP81cf45088cba4abcac1261385916d582/settings") );
+        // getting settings should return {} if they are not set
+        ClientResponse response = resource.get(ClientResponse.class);
+        Assert.assertEquals(200, response.getStatus());
+
+        String json = response.getEntity(String.class);
+        JsonParser parser = new JsonParser();
+        Assert.assertTrue("should get an empty object {} when retrieving non-defined settings", parser.parse(json).isJsonObject());
+    }
+
     /*
     @Test
     public void canDeleteProjects() {

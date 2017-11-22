@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import org.apache.commons.io.FileUtils;
 import org.restcomm.connect.rvd.exceptions.InvalidServiceParameters;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
@@ -436,6 +438,36 @@ public class ProjectService {
         }
         RvdProject project = RvdProject.fromJson(projectName, projectJson);
         return project;
+    }
+
+    /**
+     * Parse the state data of a project and tries to extract and return the header. It uses low level
+     * json operations instead of models. Use it when you want to avoid processing the whole json structure
+     * for big projects while only interested for the header of the project. It's also more fault tolerant
+     * to old/future kinds of projects.
+     *
+     * TODO investigate whether using JsonParse indeed saves any cycles compared to using json models.
+     *
+     * @param projectName
+     * @param rawState
+     * @return
+     * @throws StorageException
+     */
+    public static StateHeader parseHeader(String projectName, String rawState) throws StorageException {
+        JsonParser parser = new JsonParser();
+        JsonElement header_element = null;
+        try {
+            header_element = parser.parse(rawState).getAsJsonObject().get("header");
+        } catch (JsonSyntaxException e) {
+            throw new StorageException("Error loading header for project '" + projectName +"'",e);
+        }
+        if ( header_element == null )
+            throw new BadProjectHeader("No header found. This is probably an old project");
+
+        Gson gson = new Gson();
+        StateHeader header = gson.fromJson(header_element, StateHeader.class);
+
+        return header;
     }
 
 
