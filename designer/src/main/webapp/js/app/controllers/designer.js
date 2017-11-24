@@ -742,8 +742,9 @@ angular.module('Rvd').service('designerService', ['stepRegistry', '$q', '$http',
 		 }).error(function (data, status, headers, config) {
 		    if (status == 404) {
 		      deferred.reject("ProjectNotFound");
-		    } else {
-			  deferred.reject("GenericServerError");
+		    } else
+		    if (status == 403) {
+			  deferred.reject("UNAUTHORIZED_ACCESS");
 			}
 			 //if ( data.serverError && (data.serverError.className == 'IncompatibleProjectVersion') )
 			//	 $location.path("/upgrade/" + name)

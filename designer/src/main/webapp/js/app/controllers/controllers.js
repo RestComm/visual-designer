@@ -38,6 +38,9 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
 	    if (error == "IncompatibleProjectVersion") {
 	        notifications.put({type:'warning', message:'Incompatible project version'});
 	    } else
+	    if (error == "UNAUTHORIZED_ACCESS") { // user has been authenticated but is not allowed to access a specific resource
+	        $state.go('root.rvd.forbidden');
+	    } else
 	    if (error == "GenericServerError") {
 	         notifications.put({type:'danger', message:'Unknown error occured'});
 	    }
@@ -282,5 +285,7 @@ angular.module('Rvd').controller('homeCtrl', function ($scope, RvdConfiguration)
 });
 
 angular.module('Rvd').controller('noAppCtrl', function () {
-    console.log("IN npAppCtrl");
+});
+
+angular.module('Rvd').controller('forbiddenCtrl', function () {
 });

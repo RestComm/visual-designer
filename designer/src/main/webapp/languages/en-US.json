@@ -578,5 +578,8 @@
     "partialResultCallback": "Partial Result URL",
 	"Method" : "Method",
 
-    "hintsLimitExceeded" : "Hot words limit is up to 100 characters in each list of words or phrases. Up to 50 may be provided"
+    "hintsLimitExceeded" : "Hot words limit is up to 100 characters in each list of words or phrases. Up to 50 may be provided",
+
+	"Unauthorized": "Unauthorized",
+	"unauthorized_text": "You're not authorized to access this resource"
 }

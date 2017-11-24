@@ -40,6 +40,8 @@ import org.restcomm.connect.rvd.RvdContext;
 import org.restcomm.connect.rvd.exceptions.ApplicationAlreadyExists;
 import org.restcomm.connect.rvd.exceptions.ApplicationApiNotSynchedException;
 import org.restcomm.connect.rvd.exceptions.ApplicationsApiSyncException;
+import org.restcomm.connect.rvd.exceptions.AuthorizationException;
+import org.restcomm.connect.rvd.exceptions.ForbiddenResourceException;
 import org.restcomm.connect.rvd.exceptions.IncompatibleProjectVersion;
 import org.restcomm.connect.rvd.exceptions.InvalidServiceParameters;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
@@ -131,11 +133,16 @@ public class ProjectRestService extends SecuredRestService {
         if (project.getHeader().getOwner() != null) {
             // needs further checking
             String loggedUser = getUserIdentityContext().getAccountUsername();
-            if (loggedUser != null && loggedUser.equals(project.getHeader().getOwner()) ) {
-                this.activeProject = project;
-                return;
+            if (loggedUser != null) {
+                 if (loggedUser.equals(project.getHeader().getOwner()) ) {
+                     this.activeProject = project;
+                     return;
+                 } else {
+                     throw  new ForbiddenResourceException();
+                 }
+            } else {
+                throw new AuthorizationException();
             }
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
         activeProject = project;
     }

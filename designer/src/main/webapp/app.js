@@ -68,6 +68,11 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     	templateUrl : 'templates/noApp.html',
     	controller : 'noAppCtrl'
     });
+    $stateProvider.state('root.rvd.forbidden', {
+        url: '/forbidden',
+    	templateUrl : 'templates/forbidden.html',
+    	controller : 'forbiddenCtrl'
+    });
     $stateProvider.state('root.rvd.designer', {
         url: '/designer/:applicationSid=:projectName',
         views: {
