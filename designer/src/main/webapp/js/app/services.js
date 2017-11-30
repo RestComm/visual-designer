@@ -32,15 +32,25 @@ angular.module('Rvd')
 
 angular.module('Rvd').service('storage',function ($sessionStorage) {
     function getCredentials() {
-        return $sessionStorage.rvdCredentials;
+      var creds = {};
+      creds.sid = sessionStorage.sid;
+      creds.auth_token = sessionStorage.auth_token;
+      creds.username = sessionStorage.username;
+      return creds;
     }
 
     function setCredentials(username, token, sid) {
-        $sessionStorage.rvdCredentials = {username: username, token: token, sid: sid};
+      sessionStorage.sid = sid;
+      sessionStorage.auth_token = token;
+      sessionStorage.username = username;
+      //$sessionStorage.rvdCredentials = {username: username, token: token, sid: sid};
     }
 
     function clearCredentials() {
-        $sessionStorage.rvdCredentials = null;
+      sessionStorage.removeItem('sid');
+      sessionStorage.removeItem('auth_token');
+      sessionStorage.removeItem('username');
+      //$sessionStorage.rvdCredentials = null;
     }
 
     // public interface
@@ -149,8 +159,8 @@ angular.module('Rvd').service('authentication', function ($http, $q, storage, $s
         if (!account) {
             // There is no account set. If there are credentials in the storage we will try logging in using them
             var creds = storage.getCredentials();
-            if (creds) {
-                return restcommLogin(creds.sid, null, creds.token); // a chained promise is returned
+            if (creds.sid) {
+                return restcommLogin(creds.sid, null, creds.auth_token); // a chained promise is returned
             } else
                 throw 'NEED_LOGIN';
         } else {
