@@ -1,5 +1,6 @@
 package org.restcomm.connect.rvd.utils;
 
+import org.restcomm.connect.rvd.BaseRvdConfiguration;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.commons.http.SslMode;
 import org.restcomm.connect.rvd.configuration.RvdMaxPerHost;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class CustomizableRvdConfiguration implements RvdConfiguration {
+public class CustomizableRvdConfiguration extends BaseRvdConfiguration {
 
     Boolean videoSupport;
 

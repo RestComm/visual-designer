@@ -1,12 +1,18 @@
 package org.restcomm.connect.rvd.storage;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import com.google.gson.JsonSyntaxException;
 import org.apache.commons.io.FileUtils;
@@ -31,6 +37,40 @@ public class WorkspaceStorage {
         String pathname = rootPath + relativePath + File.separator + entityName;
         File file = new File(pathname);
         return file.exists();
+    }
+
+
+    public List<String> listIds(String path, String regexNameFilter) throws StorageException {
+        File parentDir;
+        if ( path.startsWith( "/") )
+            parentDir = new File(path);
+        else
+            parentDir = new File(rootPath + path);
+
+        final Pattern pattern = Pattern.compile(regexNameFilter);
+        if (parentDir.exists()) {
+            File[] entries = parentDir.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File anyfile) {
+                    if (pattern.matcher(anyfile.getName()).matches())
+                        return true;
+                    return false;
+                }
+            });
+            // sort results by modification date
+            Arrays.sort(entries, new Comparator<File>() {
+                public int compare(File f1, File f2) {
+                    return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
+                }
+            });
+
+            List<String> items = new ArrayList<String>();
+            for (File entry : entries)
+                items.add(entry.getName());
+
+            return items;
+        } else
+            throw new StorageException("No parent directory found to list its contents");
     }
 
     public <T> T loadEntity(String entityName, String relativePath, Class<T> entityClass) throws StorageException {

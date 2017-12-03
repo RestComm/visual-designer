@@ -45,7 +45,7 @@ import org.restcomm.connect.rvd.utils.XmlParser;
  *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class FileRvdConfiguration implements RvdConfiguration {
+public class FileRvdConfiguration extends BaseRvdConfiguration {
 
     static Logger logger = RvdLoggers.local;
     // these defaults are used when there are no values defined in the configuration files
