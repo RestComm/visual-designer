@@ -110,7 +110,9 @@ public interface RvdConfiguration {
     /**
      * Path for templates directory (without trailing '/')
      *
-     * If this is relative, it's assummed that this is placed under workspace.
+     * If this is relative, it's assummed that this is placed under workspace. If it's absolute, it starts
+     * from the filesystem root.
+     *
      * If templates are not supported null is returned.
      *
      * @return Returns the path string of null

@@ -25,8 +25,10 @@ package org.restcomm.connect.rvd;
  */
 public abstract class BaseRvdConfiguration implements RvdConfiguration {
 
+    protected String projectTemplatesWorkspacePath = DEFAULT_TEMPLATES_WORKSPACE_DIR;
+
     @Override
     public String getProjectTemplatesWorkspacePath() {
-        return DEFAULT_TEMPLATES_WORKSPACE_DIR;
+        return projectTemplatesWorkspacePath;
     }
 }

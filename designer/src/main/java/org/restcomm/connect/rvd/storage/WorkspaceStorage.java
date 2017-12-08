@@ -73,12 +73,12 @@ public class WorkspaceStorage {
             throw new StorageException("No parent directory found to list its contents");
     }
 
-    public <T> T loadEntity(String entityName, String relativePath, Class<T> entityClass) throws StorageException {
-        // make sure relativePaths (path within the workspace) start with "/"
-        if ( !relativePath.startsWith( "/") )
-            relativePath = File.separator + relativePath;
+    public <T> T loadEntity(String entityName, String entityPath, Class<T> entityClass) throws StorageException {
+        // convert relative paths to absolute
+        if ( ! entityPath.startsWith( "/") )
+            entityPath = rootPath + File.separator + entityPath;
 
-        String pathname = rootPath + relativePath + File.separator + entityName;
+        String pathname = entityPath + File.separator + entityName;
 
         File file = new File(pathname);
         if ( !file.exists() )
@@ -94,31 +94,12 @@ public class WorkspaceStorage {
         }
     }
 
-    public <T> T loadEntity(String entityName, String relativePath, Type gsonType) throws StorageException {
-        // make sure relativePaths (path within the workspace) start with "/"
-        if ( !relativePath.startsWith( "/") )
-            relativePath = File.separator + relativePath;
+    public InputStream loadStream(String entityName, String entityPath) throws StorageException {
+        // convert relative paths to absolute
+        if ( ! entityPath.startsWith( "/") )
+            entityPath = rootPath + File.separator + entityPath;
 
-        String pathname = rootPath + relativePath + File.separator + entityName;
-
-        File file = new File(pathname);
-        if ( !file.exists() )
-            throw new StorageEntityNotFound("File " + file.getPath() + " does not exist");
-
-        String data;
-        try {
-            data = FileUtils.readFileToString(file, Charset.forName("UTF-8"));
-            T instance = marshaler.toModel(data, gsonType);
-            return instance;
-        } catch (IOException e) {
-            throw new StorageException("Error loading file " + file.getPath(), e);
-        }
-    }
-
-    public InputStream loadStream(String entityName, String relativePath) throws StorageException {
-        if ( !relativePath.startsWith( "/") )
-            relativePath = File.separator + relativePath;
-        String pathname = rootPath + relativePath + File.separator + entityName;
+        String pathname = entityPath + File.separator + entityName;
 
         File file = new File(pathname);
         try {
@@ -130,11 +111,12 @@ public class WorkspaceStorage {
 
 
 
-    public void storeEntity(Object entity, Class<?> entityClass, String entityName, String relativePath ) throws StorageException {
-        if ( !relativePath.startsWith("/") )
-            relativePath = "/" + relativePath;
+    public void storeEntity(Object entity, Class<?> entityClass, String entityName, String entityPath ) throws StorageException {
+        // convert relative paths to absolute
+        if ( ! entityPath.startsWith( "/") )
+            entityPath = rootPath + File.separator + entityPath;
+        String pathname = entityPath + File.separator + entityName;
 
-        String pathname = rootPath + relativePath + File.separator + entityName;
         File file = new File(pathname);
         String data = marshaler.getGson().toJson(entity, entityClass);
         try {
@@ -144,11 +126,12 @@ public class WorkspaceStorage {
         }
     }
 
-    public void storeEntity(Object entity, String entityName, String relativePath ) throws StorageException {
-        if ( !relativePath.startsWith("/") )
-            relativePath = "/" + relativePath;
+    public void storeEntity(Object entity, String entityName, String entityPath ) throws StorageException {
+        // convert relative paths to absolute
+        if ( ! entityPath.startsWith( "/") )
+            entityPath = rootPath + File.separator + entityPath;
+        String pathname = entityPath + File.separator + entityName;
 
-        String pathname = rootPath + relativePath + File.separator + entityName;
         File file = new File(pathname);
         String data = marshaler.getGson().toJson(entity);
         try {
@@ -158,10 +141,12 @@ public class WorkspaceStorage {
         }
     }
 
-    public void removeEntity(String entityName, String relativePath) {
-        if ( !relativePath.startsWith("/") )
-            relativePath = "/" + relativePath;
-        String pathname = rootPath + relativePath + File.separator + entityName;
+    public void removeEntity(String entityName, String entityPath) {
+        // convert relative paths to absolute
+        if ( ! entityPath.startsWith( "/") )
+            entityPath = rootPath + File.separator + entityPath;
+        String pathname = entityPath + File.separator + entityName;
+
         File file = new File(pathname);
         FileUtils.deleteQuietly(file);
     }
@@ -178,11 +163,11 @@ public class WorkspaceStorage {
         }
     }
 
-    public String loadEntityString(String entityName, String relativePath) throws StorageException {
-        if ( !relativePath.startsWith( "/") )
-            relativePath = File.separator + relativePath;
-
-        String pathname = rootPath + relativePath + File.separator + entityName;
+    public String loadEntityString(String entityName, String entityPath) throws StorageException {
+        // convert relative paths to absolute
+        if ( ! entityPath.startsWith( "/") )
+            entityPath = rootPath + File.separator + entityPath;
+        String pathname = entityPath + File.separator + entityName;
 
         File file = new File(pathname);
         if ( !file.exists() )
@@ -197,11 +182,12 @@ public class WorkspaceStorage {
         }
     }
 
-    public void storeEntityString(String entityString, String entityName, String relativePath) throws StorageException {
-        if ( !relativePath.startsWith("/") )
-            relativePath = "/" + relativePath;
+    public void storeEntityString(String entityString, String entityName, String entityPath) throws StorageException {
+        // convert relative paths to absolute
+        if ( ! entityPath.startsWith( "/") )
+            entityPath = rootPath + File.separator + entityPath;
+        String pathname = entityPath + File.separator + entityName;
 
-        String pathname = rootPath + relativePath + File.separator + entityName;
         File file = new File(pathname);
         try {
             FileUtils.writeStringToFile(file, entityString, "UTF-8");
@@ -210,11 +196,12 @@ public class WorkspaceStorage {
         }
     }
 
-    public void storeBinaryFile(File sourceFile, String entityName, String relativePath) throws StorageException {
-        if ( !relativePath.startsWith("/") )
-            relativePath = "/" + relativePath;
+    public void storeBinaryFile(File sourceFile, String entityName, String entityPath) throws StorageException {
+        // convert relative paths to absolute
+        if ( ! entityPath.startsWith( "/") )
+            entityPath = rootPath + File.separator + entityPath;
+        String pathname = entityPath + File.separator + entityName;
 
-        String pathname = rootPath + relativePath + File.separator + entityName;
         //File destFile = new File(getProjectBasePath(projectName) + File.separator + RvdConfiguration.PACKAGING_DIRECTORY_NAME + File.separator + "app.zip");
         File destFile = new File( pathname );
         try {
@@ -225,10 +212,11 @@ public class WorkspaceStorage {
         }
     }
 
-    public InputStream loadBinaryFile(String projectName, String entityName, String relativePath) throws FileNotFoundException {
-        if ( !relativePath.startsWith("/") )
-            relativePath = "/" + relativePath;
-        String pathname = rootPath + relativePath + File.separator + entityName;
+    public InputStream loadBinaryFile(String projectName, String entityName, String entityPath) throws FileNotFoundException {
+        // convert relative paths to absolute
+        if ( ! entityPath.startsWith( "/") )
+            entityPath = rootPath + File.separator + entityPath;
+        String pathname = entityPath + File.separator + entityName;
 
         File packageFile = new File( pathname );
         return new FileInputStream(packageFile);

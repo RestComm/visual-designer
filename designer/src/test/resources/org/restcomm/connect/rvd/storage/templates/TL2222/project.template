@@ -1,0 +1,10 @@
+{
+  "id": "TL2222",
+  "name": "Template 2",
+  "description": "Description of template 2",
+  "imageUrl": "resources/voice-icon.png",
+  "infoUrl": "http://documentation.telestax.com/",
+  "tags": [
+    "voice"
+  ]
+}

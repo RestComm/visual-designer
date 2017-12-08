@@ -21,27 +21,14 @@ import java.nio.charset.Charset;
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class FsProjectDaoTest {
+public class FsProjectDaoTest extends FsDaoTestBase {
 
-    File workspaceDir;
-    WorkspaceStorage workspaceStorage;
     File defaultProjectDir;
-
 
     @Before
     public void before() throws IOException {
-            workspaceDir = TestUtils.createTempWorkspace();
-            ModelMarshaler marshaler = new ModelMarshaler();
-            RvdConfiguration configuration = new CustomizableRvdConfiguration();
-            defaultProjectDir = TestUtils.createDefaultProject("project1", "orestis", workspaceDir, marshaler, configuration);
-            workspaceStorage = new WorkspaceStorage(workspaceDir.getPath(), marshaler);
-    }
-
-    @After
-    public void after() {
-        if (workspaceDir != null) {
-            TestUtils.removeTempWorkspace(workspaceDir.getPath());
-        }
+        RvdConfiguration configuration = new CustomizableRvdConfiguration();
+        defaultProjectDir = TestUtils.createDefaultProject("project1", "orestis", workspaceDir, marshaler, configuration);
     }
 
     @Test

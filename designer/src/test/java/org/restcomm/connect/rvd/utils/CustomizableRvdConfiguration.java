@@ -149,5 +149,9 @@ public class CustomizableRvdConfiguration extends BaseRvdConfiguration {
         this.videoSupport = videoSupport;
     }
 
+    public void setProjectTemplatesWorkspacePath(String projectTemplatesWorkspacePath) {
+        this.projectTemplatesWorkspacePath = projectTemplatesWorkspacePath;
+    }
+
 
 }

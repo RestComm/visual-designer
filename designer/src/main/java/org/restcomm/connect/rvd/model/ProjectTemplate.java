@@ -42,4 +42,28 @@ public class ProjectTemplate {
     String imageUrl;
     String infoUrl;
     List<String> tags;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public String getInfoUrl() {
+        return infoUrl;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
 }
