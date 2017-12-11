@@ -102,7 +102,7 @@ public class RvdController extends SecuredRestService {
             logging.appendApplicationSid(applicationId);
             marshaler = new ModelMarshaler();
             WorkspaceStorage workspaceStorage = new WorkspaceStorage(applicationContext.getConfiguration().getWorkspaceBasePath(), marshaler);
-            this.projectDao = new FsProjectDao(applicationId, workspaceStorage );
+            this.projectDao = new FsProjectDao(workspaceStorage );
 
             rvdContext = new ProjectAwareRvdContext(applicationId, applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId),request, servletContext, applicationContext.getConfiguration(), logging, projectDao );
         } catch (ProjectDoesNotExist projectDoesNotExist) {
@@ -124,7 +124,7 @@ public class RvdController extends SecuredRestService {
         RcmlSerializer serializer = new RcmlSerializer();
         String rcmlResponse;
         try {
-            ProjectDao projectDao = new FsProjectDao(appname, workspaceStorage);
+            ProjectDao projectDao = new FsProjectDao(workspaceStorage);
             Interpreter interpreter = new Interpreter(appname, httpRequest, requestParams, applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings(), rvdContext.getProjectOptions(), projectDao );
             RcmlResponse steplist = interpreter.interpret();
             rcmlResponse = serializer.serialize(steplist);
@@ -226,7 +226,7 @@ public class RvdController extends SecuredRestService {
             rvdContext.getProjectLogger().log().tag("WebTrigger").messageNoMarshalling("WebTrigger incoming request: " + ui.getRequestUri().toString()).done();
 
         // load project header
-        String rawState = projectDao.loadProjectStateRaw();
+        String rawState = projectDao.loadProjectStateRaw(projectName);
         StateHeader projectHeader = ProjectService.parseHeader(projectName, rawState);
 
         // load CC/WebTrigger project info

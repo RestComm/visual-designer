@@ -6,74 +6,67 @@ import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.server.ProjectOptions;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
-import org.restcomm.connect.rvd.utils.RvdUtils;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class FsProjectDao implements ProjectDao {
 
-    String applicationName;
     WorkspaceStorage workspaceStorage;
 
-    public FsProjectDao(String applicationName, WorkspaceStorage workspaceStorage) {
-        if (RvdUtils.isEmpty(applicationName)) {
-            throw new IllegalStateException("Application name is null. Cannot create FsProjectDao");
-        }
-        this.applicationName = applicationName;
+    public FsProjectDao(WorkspaceStorage workspaceStorage) {
+//        if (RvdUtils.isEmpty(applicationName)) {
+//            throw new IllegalStateException("Application name is null. Cannot create FsProjectDao");
+//        }
+//        this.applicationName = applicationName;
         this.workspaceStorage = workspaceStorage;
     }
 
     @Override
-    public String getName() {
-        return applicationName;
-    }
-
-    @Override
-    public ProjectState loadProject() throws StorageException {
+    public ProjectState loadProject(String applicationId) throws StorageException {
         try {
-            return FsProjectStorage.loadProject(applicationName, workspaceStorage);
+            return FsProjectStorage.loadProject(applicationId, workspaceStorage);
         } catch (StorageEntityNotFound e) {
             return null;
         }
     }
 
     @Override
-    public ProjectOptions loadProjectOptions() throws StorageException {
-        return FsProjectStorage.loadProjectOptions(applicationName, workspaceStorage);
+    public ProjectOptions loadProjectOptions(String applicationId) throws StorageException {
+        return FsProjectStorage.loadProjectOptions(applicationId, workspaceStorage);
     }
 
     @Override
-    public Node loadNode(String moduleName) throws StorageException {
-        return FsProjectStorage.loadNode(applicationName,moduleName,workspaceStorage);
+    public Node loadNode(String moduleName, String applicationId) throws StorageException {
+        return FsProjectStorage.loadNode(applicationId,moduleName,workspaceStorage);
     }
 
     @Override
-    public String loadBootstrapInfo() throws StorageException {
+    public String loadBootstrapInfo(String applicationId) throws StorageException {
         try {
-            return FsProjectStorage.loadBootstrapInfo(applicationName, workspaceStorage);
+            return FsProjectStorage.loadBootstrapInfo(applicationId, workspaceStorage);
         } catch (StorageEntityNotFound e) {
             return null;
         }
     }
 
     @Override
-    public ProjectSettings loadSettings() throws StorageException {
+    public ProjectSettings loadSettings(String applicationId) throws StorageException {
         try {
-            return FsProjectStorage.loadProjectSettings(applicationName, workspaceStorage);
+            return FsProjectStorage.loadProjectSettings(applicationId, workspaceStorage);
         }   catch (StorageEntityNotFound e) {
             return null;
         }
     }
 
     @Override
-    public void storeSettings(ProjectSettings projectSettings) throws StorageException {
-        FsProjectStorage.storeProjectSettings(projectSettings, applicationName, workspaceStorage);
+    public void storeSettings(ProjectSettings projectSettings, String applicationId) throws StorageException {
+        FsProjectStorage.storeProjectSettings(projectSettings, applicationId, workspaceStorage);
     }
 
     @Override
-    public String loadProjectStateRaw() throws StorageException {
-        return FsProjectStorage.loadProjectString(applicationName, workspaceStorage);
+    public String loadProjectStateRaw(String applicationId) throws StorageException {
+        return FsProjectStorage.loadProjectString(applicationId, workspaceStorage);
     }
 
 

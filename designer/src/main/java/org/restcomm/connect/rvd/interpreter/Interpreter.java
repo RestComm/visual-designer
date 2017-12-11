@@ -264,7 +264,7 @@ public class Interpreter {
     }
 
     Node loadNode(String moduleName) throws StorageException {
-         return projectDao.loadNode(moduleName);
+         return projectDao.loadNode(moduleName, appName );
     }
 
 
@@ -651,7 +651,7 @@ public class Interpreter {
     private void processBootstrapParameters() throws StorageException {
 
         if (projectDao != null) {
-            String data = projectDao.loadBootstrapInfo();
+            String data = projectDao.loadBootstrapInfo(appName);
             if (data != null) {
                 JsonParser parser = new JsonParser();
                 JsonElement rootElement = parser.parse(data);

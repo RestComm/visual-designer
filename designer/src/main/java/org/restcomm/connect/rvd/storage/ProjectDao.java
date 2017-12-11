@@ -12,32 +12,28 @@ import org.restcomm.connect.rvd.storage.exceptions.StorageException;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public interface ProjectDao {
-    /**
-     * Returns the underlying project name
-     *
-     * @return the project name as String. Does not return null or ""
-     */
-    String getName();
 
     /**
      * Loads and parses the project state data. Returns the parsed ProjectState object or null if the project is not found.
      *
      * @return ProjectState object or null
      * @throws StorageException
+     * @param applicationId
      */
-    ProjectState loadProject() throws StorageException;
+    ProjectState loadProject(String applicationId) throws StorageException;
 
-    ProjectOptions loadProjectOptions() throws StorageException;
+    ProjectOptions loadProjectOptions(String applicationId) throws StorageException;
 
-    Node loadNode(String moduleName) throws StorageException;
+    Node loadNode(String moduleName, String applicationId) throws StorageException;
 
     /**
      * Returns current project's bootstrap information as a JSON string. If it does not exist it returns null.
      *
      * @return a JSON block as a string of null
      * @throws StorageException
+     * @param applicationId
      */
-    String loadBootstrapInfo() throws StorageException;
+    String loadBootstrapInfo(String applicationId) throws StorageException;
 
     /**
      * Loads and returns project 'settings' asset or null if this is not found.
@@ -45,10 +41,11 @@ public interface ProjectDao {
      * @return a ProjectSettings object or null
      *
      * @throws StorageException on serious storage errors
+     * @param applicationId
      */
-    ProjectSettings loadSettings() throws StorageException;
+    ProjectSettings loadSettings(String applicationId) throws StorageException;
 
-    void storeSettings(ProjectSettings projectSettings) throws StorageException;
+    void storeSettings(ProjectSettings projectSettings, String applicationId) throws StorageException;
 
-    String loadProjectStateRaw() throws StorageException;
+    String loadProjectStateRaw(String applicationId) throws StorageException;
 }
