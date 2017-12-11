@@ -20,10 +20,10 @@
 
 package org.restcomm.connect.rvd.storage;
 
+import org.restcomm.connect.rvd.http.PaginatedResults;
 import org.restcomm.connect.rvd.model.ProjectTemplate;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
-import java.util.List;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -45,6 +45,7 @@ public interface ProjectTemplateDao {
      * @param pageIndex
      * @param pageSize
      * @param sortingCriteria
+     * @param results
      */
-    List<ProjectTemplate> loadProjectTemplates(Integer pageIndex, Integer pageSize, String sortingCriteria) throws StorageException;
+    void loadProjectTemplates(Integer pageIndex, Integer pageSize, String sortingCriteria, PaginatedResults<ProjectTemplate> results) throws StorageException;
 }

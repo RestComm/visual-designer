@@ -23,7 +23,7 @@ import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 public class WorkspaceStorage {
 
-    String rootPath;
+    String rootPath; // path of the .../workspace directory (trailing slash NOT included
     ModelMarshaler marshaler;
 
     public WorkspaceStorage(String rootPath, ModelMarshaler marshaler ) {
@@ -45,7 +45,7 @@ public class WorkspaceStorage {
         if ( path.startsWith( "/") )
             parentDir = new File(path);
         else
-            parentDir = new File(rootPath + path);
+            parentDir = new File(rootPath + File.separator + path);
 
         final Pattern pattern = Pattern.compile(regexNameFilter);
         if (parentDir.exists()) {
@@ -60,6 +60,8 @@ public class WorkspaceStorage {
             // sort results by modification date
             Arrays.sort(entries, new Comparator<File>() {
                 public int compare(File f1, File f2) {
+                    long f1_modified = f1.lastModified();
+                    long f2_modified = f2.lastModified();
                     return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
                 }
             });

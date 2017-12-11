@@ -18,6 +18,7 @@ import org.restcomm.connect.rvd.http.resources.RasRestService;
 import org.restcomm.connect.rvd.http.resources.RvdController;
 import org.restcomm.connect.rvd.http.resources.SettingsRestService;
 import org.restcomm.connect.rvd.http.resources.StatsRestService;
+import org.restcomm.connect.rvd.http.resources.TemplatesRestService;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,6 +42,7 @@ public class RvdRestApplication extends Application {
         classes.add(NotificationsRestService.class);
         classes.add(ConfigurationRestService.class);
         classes.add(StatsRestService.class);
+        classes.add(TemplatesRestService.class);
         // and exception mappers
         classes.add(ProjectDoesNotExistMapper.class);
         classes.add(StorageExceptionMapper.class);

@@ -2,6 +2,7 @@ package org.restcomm.connect.rvd.storage;
 
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.NotSupportedFeature;
+import org.restcomm.connect.rvd.http.PaginatedResults;
 import org.restcomm.connect.rvd.model.ProjectTemplate;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -51,11 +52,12 @@ public class FsProjectTemplateDao implements ProjectTemplateDao {
      * @param pageIndex
      * @param pageSize How many items should be returned per page.
      * @param sortingCriteria not implemented yet
+     * @param results
      * @return a list of ProjectTemplate items (possibly empty)
      * @throws {@link StorageException}, {@link IllegalArgumentException}
      */
     @Override
-    public List<ProjectTemplate> loadProjectTemplates(Integer pageIndex, Integer pageSize, String sortingCriteria) throws StorageException {
+    public void loadProjectTemplates(Integer pageIndex, Integer pageSize, String sortingCriteria, PaginatedResults<ProjectTemplate> results) throws StorageException {
         if (! RvdConfiguration.DEFAULT_TEMPLATES_SUPPORT ) {
             throw new NotSupportedFeature();
         }
@@ -77,6 +79,8 @@ public class FsProjectTemplateDao implements ProjectTemplateDao {
         } else {
             start = pageSize * pageIndex;
             count = pageSize;
+            results.setCurrentPage(pageIndex);
+            results.setPageSize( pageSize );
         }
         // keep only items in the page
         int counted = 0;
@@ -86,7 +90,6 @@ public class FsProjectTemplateDao implements ProjectTemplateDao {
             templates.add( loadProjectTemplate(id) );
             counted ++;
         }
-
-        return templates;
+        results.setResults(templates);
     }
 }
