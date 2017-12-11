@@ -39,7 +39,14 @@ public class WorkspaceStorage {
         return file.exists();
     }
 
-
+    /**
+     * Returns all directory entries under 'path' with names matching regexNameFilter
+     *
+     * @param path
+     * @param regexNameFilter
+     * @return
+     * @throws StorageException
+     */
     public List<String> listIds(String path, String regexNameFilter) throws StorageException {
         File parentDir;
         if ( path.startsWith( "/") )
@@ -52,7 +59,7 @@ public class WorkspaceStorage {
             File[] entries = parentDir.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File anyfile) {
-                    if (pattern.matcher(anyfile.getName()).matches())
+                    if ( anyfile.isDirectory() && pattern.matcher(anyfile.getName()).matches())
                         return true;
                     return false;
                 }
