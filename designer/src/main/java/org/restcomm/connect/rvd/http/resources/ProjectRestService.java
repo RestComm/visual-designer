@@ -170,18 +170,45 @@ public class ProjectRestService extends SecuredRestService {
         return Response.ok(gson.toJson(items), MediaType.APPLICATION_JSON).build();
     }
 
-    @PUT
-    @Path("{name}")
-    public Response createProject(@PathParam("name") String name, @QueryParam("kind") String kind,
-            @QueryParam("ticket") String ticket) {
+
+    /**
+     * Creates a new project. Three ways are possible:
+     *
+     * 1. Create from scratch
+     * 2. Create from template
+     * 3. Import
+     *
+     * @param request
+     * @param projectName
+     * @return
+     */
+    @POST
+    public Response createProject(@Context HttpServletRequest request, @QueryParam("name") String projectName, @QueryParam("template") String template, @QueryParam("kind") String kind) {
+        secure();
+        // if this is a multipart request we're importing a project from archive (case 3)
+        if (request.getHeader("Content-Type") != null && request.getHeader("Content-Type").startsWith("multipart/form-data")) {
+            return createProjectFromArchive(request, projectName);
+        } else
+        if (template != null) {
+            return createProjectFromTemplate(template, projectName);
+        } else {
+            return createProjectFromScratch(projectName, kind);
+        }
+    }
+
+    Response createProjectFromTemplate(String templateId, String projectName) {
+
+    }
+
+    Response createProjectFromScratch(String projectName, String kind) {
         secure();
         ProjectApplicationsApi applicationsApi = null;
         String applicationSid = null;
         if (RvdLoggers.local.isTraceEnabled())
-            RvdLoggers.local.log(Level.TRACE, logging.getPrefix() + " Will create project labeled " + name );
+            RvdLoggers.local.log(Level.TRACE, logging.getPrefix() + " Will create project labeled " + projectName );
         try {
             applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext,restcommBaseUrl);
-            applicationSid = applicationsApi.createApplication(name, kind);
+            applicationSid = applicationsApi.createApplication(projectName, kind);
             ProjectState projectState = projectService.createProject(applicationSid, kind, getLoggedUsername());
             BuildService buildService = new BuildService(workspaceStorage);
             buildService.buildProject(applicationSid, projectState);
@@ -213,12 +240,99 @@ public class ProjectRestService extends SecuredRestService {
         }
         Gson gson = new Gson();
         JsonObject projectInfo = new JsonObject();
-        projectInfo.addProperty("name", name);
+        projectInfo.addProperty("name", projectName);
         projectInfo.addProperty("sid", applicationSid);
         projectInfo.addProperty("kind", kind);
         if (RvdLoggers.local.isEnabledFor(Level.INFO))
-            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "createProject","{0}created {1} project {2} ({3})", new Object[] {logging.getPrefix(), kind, name, applicationSid} ) );
+            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "createProject","{0}created {1} project {2} ({3})", new Object[] {logging.getPrefix(), kind, projectName, applicationSid} ) );
         return Response.ok(gson.toJson(projectInfo), MediaType.APPLICATION_JSON).build();
+    }
+
+    Response createProjectFromArchive(HttpServletRequest request, String projectName) {
+        if (RvdLoggers.local.isTraceEnabled())
+            RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"importProjectArchive", logging.getPrefix(), "importing project from raw archive"));
+        ProjectApplicationsApi applicationsApi = null;
+        String applicationSid = null;
+
+        try {
+            Gson gson = new Gson();
+            ServletFileUpload upload = new ServletFileUpload();
+            FileItemIterator iterator = upload.getItemIterator(request);
+
+            JsonArray fileinfos = new JsonArray();
+
+            int filesCounted = 0;
+            while (iterator.hasNext()) {
+                FileItemStream item = iterator.next();
+                JsonObject fileinfo = new JsonObject();
+                fileinfo.addProperty("field", item.getFieldName());
+
+                // is this a file part (talking about multipart requests, there might be parts that are not actual files).
+                // They will be ignored
+                if (item.getName() != null) {
+                    filesCounted ++;
+                    // Create application
+                    String tempName = "RvdImport-" + UUID.randomUUID().toString().replace("-", "");
+                    applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext, restcommBaseUrl);
+                    applicationSid = applicationsApi.createApplication(tempName, "");
+
+                    String effectiveProjectName = null;
+
+                    try {
+                        // Import application
+                        projectService.importProjectFromRawArchive(item.openStream(), applicationSid, getLoggedUsername());
+                        effectiveProjectName = FilenameUtils.getBaseName(item.getName());
+                        // For the first uploaded file, override the project name in case 'nameOverride' query parameter is set
+                        if (filesCounted == 1 && projectName != null) {
+                            effectiveProjectName = projectName;
+                        }
+                        // buildService.buildProject(effectiveProjectName);
+
+                        // Load project kind
+                        ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
+                        String projectString = projectDao.loadProjectStateRaw();
+                        ProjectState state = marshaler.toModel(projectString, ProjectState.class);
+                        String projectKind = state.getHeader().getProjectKind();
+
+                        // Update application
+                        applicationsApi.updateApplication(applicationSid, effectiveProjectName, null, projectKind);
+                        if (RvdLoggers.local.isEnabledFor(Level.INFO))
+                            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"importProjectArchive", "{0}imported project {1} from raw archive ''{2}''", new Object[] {logging.getPrefix(), applicationSid, item.getName()}));
+                    } catch (Exception e) {
+                        applicationsApi.rollbackCreateApplication(applicationSid);
+                        throw e;
+                    }
+
+                    //fileinfo.addProperty("name", item.getName());
+                    fileinfo.addProperty("name", effectiveProjectName);
+                    fileinfo.addProperty("id", applicationSid);
+
+                }
+                if (item.getName() == null) {
+                    RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"importProjectArchive", logging.getPrefix(), "non-file part found in upload"));
+                    fileinfo.addProperty("value", read(item.openStream()));
+                }
+                fileinfos.add(fileinfo);
+            }
+            return Response.ok(gson.toJson(fileinfos), MediaType.APPLICATION_JSON).build();
+        } catch (StorageException | UnsupportedProjectVersion e) {
+
+            RvdLoggers.local.log(Level.WARN, logging.getPrefix(), e);
+            return buildErrorResponse(Status.BAD_REQUEST, RvdResponse.Status.ERROR, e);
+        } catch (ApplicationAlreadyExists e) {
+
+            RvdLoggers.local.log(Level.WARN, logging.getPrefix(), e);
+            try {
+                applicationsApi.rollbackCreateApplication(applicationSid);
+            } catch (ApplicationsApiSyncException e1) {
+                RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
+                return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
+            }
+            return buildErrorResponse(Status.CONFLICT, RvdResponse.Status.ERROR, e);
+        } catch (Exception e /* TODO - use a more specific type !!! */) {
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
+            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     /**
@@ -444,100 +558,7 @@ public class ProjectRestService extends SecuredRestService {
         }
     }
 
-    @POST
-    // @Path("{name}/archive")
-    public Response importProjectArchive(@Context HttpServletRequest request, @QueryParam("name") String nameOverride) {
-        secure();
-        if (RvdLoggers.local.isTraceEnabled())
-            RvdLoggers.local.log(Level.TRACE, LoggingHelper.buildMessage(getClass(),"importProjectArchive", logging.getPrefix(), "importing project from raw archive"));
-        ProjectApplicationsApi applicationsApi = null;
-        String applicationSid = null;
 
-        try {
-            if (request.getHeader("Content-Type") != null
-                    && request.getHeader("Content-Type").startsWith("multipart/form-data")) {
-                Gson gson = new Gson();
-                ServletFileUpload upload = new ServletFileUpload();
-                FileItemIterator iterator = upload.getItemIterator(request);
-
-                JsonArray fileinfos = new JsonArray();
-
-                int filesCounted = 0;
-                while (iterator.hasNext()) {
-                    FileItemStream item = iterator.next();
-                    JsonObject fileinfo = new JsonObject();
-                    fileinfo.addProperty("field", item.getFieldName());
-
-                    // is this a file part (talking about multipart requests, there might be parts that are not actual files).
-                    // They will be ignored
-                    if (item.getName() != null) {
-                        filesCounted ++;
-                        // Create application
-                        String tempName = "RvdImport-" + UUID.randomUUID().toString().replace("-", "");
-                        applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext, restcommBaseUrl);
-                        applicationSid = applicationsApi.createApplication(tempName, "");
-
-                        String effectiveProjectName = null;
-
-                        try {
-                            // Import application
-                            projectService.importProjectFromRawArchive(item.openStream(), applicationSid, getLoggedUsername());
-                            effectiveProjectName = FilenameUtils.getBaseName(item.getName());
-                            // For the first uploaded file, override the project name in case 'nameOverride' query parameter is set
-                            if (filesCounted == 1 && nameOverride != null) {
-                                effectiveProjectName = nameOverride;
-                            }
-                            // buildService.buildProject(effectiveProjectName);
-
-                            // Load project kind
-                            ProjectDao projectDao = buildProjectDao(applicationSid, workspaceStorage);
-                            String projectString = projectDao.loadProjectStateRaw();
-                            ProjectState state = marshaler.toModel(projectString, ProjectState.class);
-                            String projectKind = state.getHeader().getProjectKind();
-
-                            // Update application
-                            applicationsApi.updateApplication(applicationSid, effectiveProjectName, null, projectKind);
-                            if (RvdLoggers.local.isEnabledFor(Level.INFO))
-                                RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"importProjectArchive", "{0}imported project {1} from raw archive ''{2}''", new Object[] {logging.getPrefix(), applicationSid, item.getName()}));
-                        } catch (Exception e) {
-                            applicationsApi.rollbackCreateApplication(applicationSid);
-                            throw e;
-                        }
-
-                        //fileinfo.addProperty("name", item.getName());
-                        fileinfo.addProperty("name", effectiveProjectName);
-                        fileinfo.addProperty("id", applicationSid);
-
-                    }
-                    if (item.getName() == null) {
-                        RvdLoggers.local.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"importProjectArchive", logging.getPrefix(), "non-file part found in upload"));
-                        fileinfo.addProperty("value", read(item.openStream()));
-                    }
-                    fileinfos.add(fileinfo);
-                }
-                return Response.ok(gson.toJson(fileinfos), MediaType.APPLICATION_JSON).build();
-            } else {
-                return Response.status(Status.BAD_REQUEST).build();
-            }
-        } catch (StorageException | UnsupportedProjectVersion e) {
-
-                RvdLoggers.local.log(Level.WARN, logging.getPrefix(), e);
-            return buildErrorResponse(Status.BAD_REQUEST, RvdResponse.Status.ERROR, e);
-        } catch (ApplicationAlreadyExists e) {
-
-                RvdLoggers.local.log(Level.WARN, logging.getPrefix(), e);
-            try {
-                applicationsApi.rollbackCreateApplication(applicationSid);
-            } catch (ApplicationsApiSyncException e1) {
-                RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
-                return buildErrorResponse(Status.INTERNAL_SERVER_ERROR, RvdResponse.Status.ERROR, e);
-            }
-            return buildErrorResponse(Status.CONFLICT, RvdResponse.Status.ERROR, e);
-        } catch (Exception e /* TODO - use a more specific type !!! */) {
-            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
 
     @GET
     @Path("{applicationSid}")
