@@ -150,7 +150,7 @@ public class ProjectService {
     public List<ProjectItem> getAvailableProjectsByOwner(String ownerFilter) throws StorageException {
 
         List<ProjectItem> items = new ArrayList<ProjectItem>();
-        for (String entry : FsProjectStorage.listProjectNames(workspaceStorage) ) {
+        for (String entry : workspaceStorage.listIds(".", "[^@].+") /*FsProjectStorage.listProjectNames(workspaceStorage)*/ ) {
 
             String kind = "voice";
             String owner = null;

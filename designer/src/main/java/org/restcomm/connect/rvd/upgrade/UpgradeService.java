@@ -249,7 +249,7 @@ public class UpgradeService {
         int uptodateCount = 0;
         int failedCount = 0;
 
-        List<String> projectNames = FsProjectStorage.listProjectNames(workspaceStorage);
+        List<String> projectNames = workspaceStorage.listIds(".", "[^@].+"); //FsProjectStorage.listProjectNames(workspaceStorage);
         for ( String projectName : projectNames ) {
             try {
                 if ( upgradeProject(projectName) != null ) {
