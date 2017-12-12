@@ -210,7 +210,9 @@ public class ProjectRestService extends SecuredRestService {
         try {
             applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext,restcommBaseUrl);
             applicationSid = applicationsApi.createApplication(projectName, kind);
-            ProjectState projectState = projectService.createProject(applicationSid, kind, getLoggedUsername());
+            ProjectState projectState = projectService.createProjectObject(applicationSid, kind, getLoggedUsername());
+            ProjectDao projectDao = buildProjectDao(workspaceStorage);
+            projectDao.createProject(applicationSid, projectState);
             BuildService buildService = new BuildService(workspaceStorage);
             buildService.buildProject(applicationSid, projectState);
 

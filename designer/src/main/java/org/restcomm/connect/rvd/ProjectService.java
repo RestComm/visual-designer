@@ -257,7 +257,17 @@ public class ProjectService {
         }
     }
 
-    public ProjectState createProject(String projectName, String kind, String owner) throws StorageException, InvalidServiceParameters {
+    /**
+     * Creates a project state object
+     *
+     * @param projectName
+     * @param kind
+     * @param owner
+     * @return
+     * @throws StorageException
+     * @throws InvalidServiceParameters
+     */
+    public ProjectState createProjectObject(String projectName, String kind, String owner) throws StorageException, InvalidServiceParameters {
         if ( !"voice".equals(kind) && !"ussd".equals(kind) && !"sms".equals(kind) )
             throw new InvalidServiceParameters("Invalid project kind specified - '" + kind + "'");
 
@@ -271,10 +281,6 @@ public class ProjectService {
         if ( "sms".equals(kind) )
             state = ProjectState.createEmptySms(owner, configuration);
 
-        //projectStorage.createProjectSlot(projectName);
-        FsProjectStorage.createProjectSlot(projectName, workspaceStorage);
-
-        FsProjectStorage.storeProject(true, state, projectName, workspaceStorage);
         return state;
     }
 

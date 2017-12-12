@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.TestUtils;
 import org.restcomm.connect.rvd.model.ProjectSettings;
+import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -15,6 +16,7 @@ import org.restcomm.connect.rvd.utils.CustomizableRvdConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -23,10 +25,11 @@ public class FsProjectDaoTest extends FsDaoTestBase {
 
     File defaultProjectDir;
     static final String PROJECT_NAME = "project1";
+    RvdConfiguration configuration;
 
     @Before
     public void before() throws IOException {
-        RvdConfiguration configuration = new CustomizableRvdConfiguration();
+        configuration = new CustomizableRvdConfiguration();
         defaultProjectDir = TestUtils.createDefaultProject(PROJECT_NAME, "orestis", workspaceDir, marshaler, configuration);
     }
 
@@ -78,6 +81,46 @@ public class FsProjectDaoTest extends FsDaoTestBase {
         Assert.assertEquals("module1", node1.getName());
 
     }
+
+    @Test
+    public void checkMediaResources() throws StorageException, IOException {
+        ProjectDao dao = new FsProjectDao(workspaceStorage );
+        // no wavs by default
+        List<WavItem> wavs = dao.listMedia(PROJECT_NAME);
+        Assert.assertEquals(0, wavs.size());
+
+        // create a project with some media
+        String projectName = "APprojectwithmedia";
+        File projectWithWavs = TestUtils.createProjectWithMedia(projectName, "orestis", workspaceDir, marshaler, configuration);
+        wavs = dao.listMedia(projectName);
+        Assert.assertEquals(2, wavs.size());
+        Assert.assertEquals("onhold.wav", wavs.get(1).getFilename());
+        Assert.assertEquals("intro.mp4", wavs.get(0).getFilename());
+
+        // check addRawResource
+        String absoluteResourcePath = projectWithWavs.getPath() + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME;
+        ((FsProjectDao) dao).addRawResource(PROJECT_NAME, RvdConfiguration.WAVS_DIRECTORY_NAME, absoluteResourcePath, "onhold.wav" );
+        File copiedMediaFile = new File(defaultProjectDir.getPath() + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + "onhold.wav");
+        Assert.assertTrue(copiedMediaFile.exists());
+        Assert.assertTrue(FileUtils.readFileToString(copiedMediaFile).contains("dummy contents of a wav file"));
+    }
+
+    @Test
+    public void checkCreateFromLocation() throws IOException, StorageException {
+        ProjectDao dao = new FsProjectDao(workspaceStorage );
+        // create the "remote" project
+        String projectName = "APproject2";
+        File project2 = TestUtils.createProjectWithMedia(projectName, "orestis", workspaceDir, marshaler, configuration);
+
+        String clonedProject = "APclonedProject";
+        dao.createProjectFromLocation(clonedProject, project2.getPath());
+        // check everything is in place in the cloned project
+        ProjectState state = dao.loadProject(clonedProject);
+        Assert.assertNotNull(state);
+        List<WavItem> media = dao.listMedia(clonedProject);
+        Assert.assertEquals(2, media.size());
+    }
+
 
 
 

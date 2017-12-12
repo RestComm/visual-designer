@@ -85,6 +85,16 @@ public class TestUtils {
         return projectFile;
     }
 
+    public static File createProjectWithMedia(String projectName, String owner, File workspaceDir, ModelMarshaler marshaler, RvdConfiguration configuration) throws IOException {
+        File projectFile = createDefaultProject(projectName, owner, workspaceDir, marshaler, configuration);
+        File mediaDir = new File(projectFile.getPath() + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME);
+        mediaDir.mkdir();
+        FileUtils.writeStringToFile(new File(mediaDir + File.separator + "onhold.wav"), "dummy contents of a wav file" );
+        FileUtils.writeStringToFile(new File(mediaDir + File.separator + "intro.mp4"), "dummy contents of a media/mp4 file" );
+        return projectFile;
+    }
+
+
     public static RvdConfiguration defaultRvdConfiguration() {
         RvdConfiguration configuration = Mockito.mock(RvdConfiguration.class);
         when(configuration.getDefaultHttpMaxConns()).thenReturn(RvdConfiguration.DEFAULT_HTTP_MAX_CONNS);

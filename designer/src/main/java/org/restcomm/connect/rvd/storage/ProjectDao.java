@@ -1,10 +1,14 @@
 package org.restcomm.connect.rvd.storage;
 
+import org.restcomm.connect.rvd.model.CallControlInfo;
 import org.restcomm.connect.rvd.model.ProjectSettings;
+import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.server.ProjectOptions;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
+
+import java.util.List;
 
 /**
  * Data operations for a project. While constructing this dao, the referenced project is set.
@@ -45,7 +49,17 @@ public interface ProjectDao {
      */
     ProjectSettings loadSettings(String applicationId) throws StorageException;
 
+    CallControlInfo loadWebTriggerInfo(String applicationId) throws StorageException;
+
+    void storeWebTriggerInfo(CallControlInfo webTriggerInfo, String applicationId) throws StorageException;
+
     void storeSettings(ProjectSettings projectSettings, String applicationId) throws StorageException;
 
     String loadProjectStateRaw(String applicationId) throws StorageException;
+
+    void createProject(String applicationId, ProjectState projectState) throws StorageException;
+
+    void createProjectFromLocation(String applicationId, String sourcePath ) throws StorageException;
+
+    List<WavItem> listMedia(String applicationId) throws StorageException;
 }
