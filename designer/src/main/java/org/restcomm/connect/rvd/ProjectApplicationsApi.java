@@ -21,7 +21,6 @@
 
 package org.restcomm.connect.rvd;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.HashMap;
 
@@ -61,7 +60,7 @@ public class ProjectApplicationsApi {
 
     public String createApplication(final String friendlyName,
             final String projectKind)
-            throws ApplicationsApiSyncException, UnsupportedEncodingException {
+            throws ApplicationsApiSyncException {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("FriendlyName", friendlyName);
         params.put("Kind", projectKind);

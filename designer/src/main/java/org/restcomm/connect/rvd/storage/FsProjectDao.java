@@ -140,6 +140,12 @@ public class FsProjectDao implements ProjectDao {
         }
     }
 
+    @Override
+    public void createProjectFromTemplate(String applicationId, String templateId, String projectAlias, ProjectTemplateDao templateDao) throws StorageException {
+        String sourceProjectPath = ((FsProjectTemplateDao)templateDao).resolveTemplateProjectPath(templateId, projectAlias);
+        createProjectFromLocation(applicationId, sourceProjectPath);
+    }
+
     /**
      * Adds a resource (file) to a project
      *

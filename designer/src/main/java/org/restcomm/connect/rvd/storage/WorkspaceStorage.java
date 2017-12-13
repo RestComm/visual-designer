@@ -274,6 +274,28 @@ public class WorkspaceStorage {
         }
     }
 
+    /**
+     * Resolves a path under the workspace. If absolute it does nothing.
+     *
+     * For example, path "AP123/wavs" will resolve to "/home/.../workspace/AP123/wavs".
+     * Empty ("") path will resolve to workspace root.
+     *
+     * @param path
+     * @return a path string or null
+     */
+    public String resolveWorkspacePath(String path) {
+        if (path == null)
+            return null;
+        // if this is a relative path append workspace root
+        if ( ! path.startsWith( "/") ) {
+            if ( path.isEmpty() )
+                path = rootPath;
+            else
+                path = rootPath + File.separator + path;
+        }
+        return path;
+    }
+
 
 
 }

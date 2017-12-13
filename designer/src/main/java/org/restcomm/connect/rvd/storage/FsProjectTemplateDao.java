@@ -24,15 +24,6 @@ public class FsProjectTemplateDao implements ProjectTemplateDao {
         this.configuration = configuration;
     }
 
-    /**
-     * Retrieves and returns the specified entity
-     *
-     * It will throw a StorageEntityNotFound in case this is not found (wrong id or bad templates path in configuration)
-     *
-     * @param id
-     * @return a ProjectTemplate object
-     * @throws StorageException
-     */
     @Override
     public ProjectTemplate loadProjectTemplate(String id) throws StorageException {
         if (! RvdConfiguration.DEFAULT_TEMPLATES_SUPPORT ) {
@@ -92,4 +83,21 @@ public class FsProjectTemplateDao implements ProjectTemplateDao {
         }
         results.setResults(templates);
     }
+
+    String resolveTemplatePath(String templateId) {
+        return workspaceStorage.resolveWorkspacePath("") + File.separator + templateId;
+    }
+
+    String resolveTemplateProjectPath(String templateId, String projectAlias) {
+        return resolveTemplatePath(templateId) + File.separator + "projects" + File.separator + projectAlias;
+    }
+
+//    String resolveTemplateProjectPath(String templateId, String projectAlias) {
+//        if (! RvdConfiguration.DEFAULT_TEMPLATES_SUPPORT ) {
+//            throw new NotSupportedFeature();
+//        }
+//
+//        ProjectTemplate projectTemplate = workspaceStorage.loadEntity("project.template", configuration.getProjectTemplatesWorkspacePath() + File.separator + id, ProjectTemplate.class );
+//        return projectTemplate;
+//    }
 }

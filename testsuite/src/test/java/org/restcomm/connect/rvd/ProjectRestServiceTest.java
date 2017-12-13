@@ -85,8 +85,8 @@ public class ProjectRestServiceTest extends RestServiceTest {
                         .withBody("{\"sid\":\"AP03d28db981ee4aa0888ebebd35b4dd4f\",\"friendly_name\":\"newapplication\"}")));
 
         Client jersey = getClient(username, password);
-        WebResource resource = jersey.resource( getResourceUrl("/services/projects/newapplication?kind=voice") );
-        ClientResponse response = resource.put(ClientResponse.class);
+        WebResource resource = jersey.resource( getResourceUrl("/services/projects?name=newapplication&kind=voice") );
+        ClientResponse response = resource.post(ClientResponse.class);
         Assert.assertEquals(200, response.getStatus());
 
         String json = response.getEntity(String.class);

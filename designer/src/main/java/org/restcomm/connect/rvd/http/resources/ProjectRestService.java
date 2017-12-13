@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Level;
 
 import javax.annotation.PostConstruct;
@@ -59,15 +58,21 @@ import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.CallControlInfo;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.ProjectCreatedDto;
 import org.restcomm.connect.rvd.model.ProjectSettings;
+import org.restcomm.connect.rvd.model.ProjectTemplate;
 import org.restcomm.connect.rvd.model.client.ProjectItem;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.client.WavItem;
+import org.restcomm.connect.rvd.project.ProjectKind;
+import org.restcomm.connect.rvd.project.ProjectUtils;
 import org.restcomm.connect.rvd.storage.FsCallControlInfoStorage;
 import org.restcomm.connect.rvd.storage.FsProjectDao;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
+import org.restcomm.connect.rvd.storage.FsProjectTemplateDao;
 import org.restcomm.connect.rvd.storage.ProjectDao;
+import org.restcomm.connect.rvd.storage.ProjectTemplateDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.BadWorkspaceDirectoryStructure;
 import org.restcomm.connect.rvd.storage.exceptions.ProjectAlreadyExists;
@@ -82,6 +87,7 @@ import org.restcomm.connect.rvd.utils.RvdUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.restcomm.connect.rvd.utils.ValidationUtils;
 
 @Path("projects")
 public class ProjectRestService extends SecuredRestService {
@@ -184,7 +190,7 @@ public class ProjectRestService extends SecuredRestService {
      * @return
      */
     @POST
-    public Response createProject(@Context HttpServletRequest request, @QueryParam("name") String projectName, @QueryParam("template") String template, @QueryParam("kind") String kind) {
+    public Response createProject(@Context HttpServletRequest request, @QueryParam("name") String projectName, @QueryParam("template") String template, @QueryParam("kind") String kind) throws RvdException {
         secure();
         // if this is a multipart request we're importing a project from archive (case 3)
         if (request.getHeader("Content-Type") != null && request.getHeader("Content-Type").startsWith("multipart/form-data")) {
@@ -197,8 +203,41 @@ public class ProjectRestService extends SecuredRestService {
         }
     }
 
-    Response createProjectFromTemplate(String templateId, String projectName) {
-        throw new NotImplementedException();
+    Response createProjectFromTemplate(String templateId, String projectName) throws RvdException {
+        if ( ! ValidationUtils.validateTemplateId(templateId) )
+            return Response.status(Status.BAD_REQUEST).build();
+
+        ProjectDao projectDao = buildProjectDao(workspaceStorage);
+        ProjectTemplateDao templateDao = new FsProjectTemplateDao(workspaceStorage, configuration);
+        ProjectTemplate template = templateDao.loadProjectTemplate(templateId);
+
+        // determine project kind
+        ProjectKind kind = ProjectUtils.guessProjectKindFromTemplateTags(template.getTags());
+        if (kind == null)
+            return Response.status(Status.BAD_REQUEST).build();
+        // determine name
+        if (projectName != null) {
+            if (!ValidationUtils.validateProjectFriendlyName(projectName)) {
+                // bad project name suggested
+                return Response.status(Status.BAD_REQUEST).build();
+            }
+        } else {
+            // if no name has been suggested use the template name and add a unique identifier
+            projectName = ProjectUtils.generateUniqueFriendlyName(template.getName());
+        }
+        // first create the restcomm application to get an appId
+        ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext,restcommBaseUrl);
+        String applicationId = applicationsApi.createApplication(projectName, kind.toString());
+        projectDao.createProjectFromTemplate(applicationId, template.getId(), "main", templateDao);
+        // build project too
+        ProjectState projectState = projectDao.loadProject(applicationId);
+        BuildService buildService = new BuildService(workspaceStorage);
+        buildService.buildProject(applicationId, projectState);
+        // prepare response
+        ProjectCreatedDto dto = new ProjectCreatedDto(projectName, applicationId, kind);
+        Gson gson = new Gson();
+
+        return Response.ok(gson.toJson(dto), MediaType.APPLICATION_JSON_TYPE).build();
     }
 
     Response createProjectFromScratch(String projectName, String kind) {
@@ -235,9 +274,6 @@ public class ProjectRestService extends SecuredRestService {
             RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.CONFLICT).build();
         } catch (ApplicationsApiSyncException e) {
-            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-        } catch (UnsupportedEncodingException e) {
             RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }

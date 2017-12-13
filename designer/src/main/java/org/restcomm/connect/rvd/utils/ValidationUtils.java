@@ -34,4 +34,11 @@ public class ValidationUtils {
             return false;
         return templateIdPattern.matcher(templateId).matches();
     }
+
+    // TODO add a decent implementation here
+    public static boolean validateProjectFriendlyName(String name) {
+        if ( name != null )
+            return true;
+        return false;
+    }
 }

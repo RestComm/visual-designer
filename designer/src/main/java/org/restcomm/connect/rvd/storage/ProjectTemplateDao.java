@@ -31,10 +31,13 @@ import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 public interface ProjectTemplateDao {
 
     /**
-     * Get a single project template
+     * Loads and returns a project template entity
+     *
+     * It will throw a StorageEntityNotFound in case this is not found (wrong id or bad templates path in configuration)
      *
      * @param id
-     * @return
+     * @return a ProjectTemplate object
+     * @throws StorageException
      */
     ProjectTemplate loadProjectTemplate(String id) throws StorageException;
 
