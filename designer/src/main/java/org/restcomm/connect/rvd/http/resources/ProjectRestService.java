@@ -179,7 +179,9 @@ public class ProjectRestService extends SecuredRestService {
 
 
     /**
-     * Creates a new project. Three ways are possible:
+     * Creates a new project
+     *
+     * Three ways are possible:
      *
      * 1. Create from scratch
      * 2. Create from template
@@ -201,6 +203,25 @@ public class ProjectRestService extends SecuredRestService {
         } else {
             return createProjectFromScratch(projectName, kind);
         }
+    }
+
+    /**
+     * Alias method for creating projects (it uses project name in path instead as a query param).
+     * It allows old console still work.
+     *
+     * TODO Remove this method once console is upgraded too!
+     *
+     * @param request
+     * @param projectName
+     * @param template
+     * @param kind
+     * @return
+     * @throws RvdException
+     */
+    @PUT
+    @Path("{projectName}")
+    public Response createProjectAlias(@Context HttpServletRequest request, @PathParam("projectName") String projectName, @QueryParam("template") String template, @QueryParam("kind") String kind) throws RvdException {
+        return createProject(request, projectName, template, kind);
     }
 
     Response createProjectFromTemplate(String templateId, String projectName) throws RvdException {
@@ -485,6 +506,7 @@ public class ProjectRestService extends SecuredRestService {
         }
     }
 
+    // TODO remove this ? Isn't it handled by restcomm API ?
     @PUT
     @Path("{applicationSid}/rename")
     public Response renameProject(@PathParam("applicationSid") String applicationSid, @QueryParam("newName") String projectNewName,
