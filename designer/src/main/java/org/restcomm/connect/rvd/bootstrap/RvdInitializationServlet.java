@@ -14,6 +14,7 @@ import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.configuration.RestcommLocationResolver;
+import org.restcomm.connect.rvd.exceptions.BootstrappingException;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
@@ -58,8 +59,12 @@ public class RvdInitializationServlet extends HttpServlet {
         servletContext.setAttribute(ApplicationContext.class.getName(), appContext);
 
 
-        WorkspaceBootstrapper workspaceBootstrapper = new WorkspaceBootstrapper(rvdConfiguration.getWorkspaceBasePath());
-        workspaceBootstrapper.run();
+        WorkspaceBootstrapper workspaceBootstrapper = new WorkspaceBootstrapper(rvdConfiguration.getWorkspaceBasePath(), rvdConfiguration.getProjectTemplatesWorkspacePath());
+        try {
+            workspaceBootstrapper.run();
+        } catch (BootstrappingException e) {
+            logger.log(Level.ERROR,"Error bootstrapping workspace at " + rvdConfiguration.getWorkspaceBasePath(), e);
+        }
 
         ModelMarshaler marshaler = new ModelMarshaler();
         WorkspaceStorage workspaceStorage = new WorkspaceStorage(rvdConfiguration.getWorkspaceBasePath(), marshaler);

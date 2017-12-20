@@ -20,15 +20,26 @@
 
 package org.restcomm.connect.rvd;
 
+import java.io.File;
+
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public abstract class BaseRvdConfiguration implements RvdConfiguration {
 
-    protected String projectTemplatesWorkspacePath = DEFAULT_TEMPLATES_WORKSPACE_DIR;
+    protected String projectTemplatesWorkspacePath;
+    protected String workspaceBasePath;
+
+    @Override
+    public String getWorkspaceBasePath() {
+        return this.workspaceBasePath;
+    }
 
     @Override
     public String getProjectTemplatesWorkspacePath() {
-        return projectTemplatesWorkspacePath;
+        if (projectTemplatesWorkspacePath == null)
+            return getWorkspaceBasePath() + File.separator + TEMPLATES_DIRECTORY_NAME;
+        else
+            return projectTemplatesWorkspacePath;
     }
 }

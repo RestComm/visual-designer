@@ -79,7 +79,7 @@ public class WorkspaceStorage {
 
             return items;
         } else
-            throw new StorageException("No parent directory found to list its contents");
+            throw new StorageException("No parent directory found to list its contents: " + path);
     }
 
     public <T> T loadEntity(String entityName, String entityPath, Class<T> entityClass) throws StorageException {

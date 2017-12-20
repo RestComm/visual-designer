@@ -20,7 +20,7 @@ public interface RvdConfiguration {
     String DEFAULT_WELCOME_MESSAGE = "Welcome to Telestax Restcom Visual Designer Demo";
     boolean DEFAULT_DYNAMIC_RESTCOMM_RESOLVING = false;
     boolean DEFAULT_TEMPLATES_SUPPORT = true;
-    String DEFAULT_TEMPLATES_WORKSPACE_DIR = "@templates";
+    String TEMPLATES_DIRECTORY_NAME = "@templates";
 
     String WORKSPACE_DIRECTORY_NAME = "workspace";
     String PROTO_DIRECTORY_PREFIX = "_proto";
@@ -108,14 +108,13 @@ public interface RvdConfiguration {
     String getRvdInstanceId();
 
     /**
-     * Path for templates directory (without trailing '/')
+     * Absolute path of templates directory (without trailing '/')
      *
-     * If this is relative, it's assummed that this is placed under workspace. If it's absolute, it starts
-     * from the filesystem root.
+     * Be default will return @templates under workspace. Otherwise the value explicitly assigned.
      *
-     * If templates are not supported null is returned.
+     * TODO If templates are not supported null is returned
      *
-     * @return Returns the path string of null
+     * @return Returns the path string of null TODO
      */
     String getProjectTemplatesWorkspacePath();
 }

@@ -51,7 +51,6 @@ public class FileRvdConfiguration extends BaseRvdConfiguration {
     // these defaults are used when there are no values defined in the configuration files
     private Integer maxMediaFileSize; // Maximum size allowed for media file uploads (in bytes). If set to null no limit is enforced
 
-    private String workspaceBasePath;
     private RvdConfig rvdConfig;  // the configuration settings from rvd.xml
     private RestcommConfig restcommConfig;
 
@@ -259,11 +258,6 @@ public class FileRvdConfiguration extends BaseRvdConfiguration {
     }
 
     @Override
-    public String getWorkspaceBasePath() {
-        return this.workspaceBasePath;
-    }
-
-    @Override
     public String getProjectBasePath(String projectName) {
         return this.workspaceBasePath + File.separator + projectName;
     }
@@ -318,6 +312,7 @@ public class FileRvdConfiguration extends BaseRvdConfiguration {
         buffer.append("\n instanceId:\t").append(getRvdInstanceId());
         buffer.append("\n maxMediaFileSize:\t").append(getMaxMediaFileSize());
         buffer.append("\n workspaceBasePath (evaluated from rvd.xml/workspaceLocation):\t").append(getWorkspaceBasePath());
+        buffer.append("\n projectTemplatesWorkspacePath:\t").append(getProjectTemplatesWorkspacePath());
         //buffer.append("\n rvdConfig (private):\t").append( gson.toJson(rvdConfig, RvdConfig.class));
         //buffer.append("\n restcommConfig (private):\t").append( gson.toJson(restcommConfig, RestcommConfig.class));
         buffer.append("\n contextRootPath:\t").append(contextRootPath);

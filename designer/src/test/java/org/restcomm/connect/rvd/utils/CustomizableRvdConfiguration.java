@@ -15,9 +15,8 @@ public class CustomizableRvdConfiguration extends BaseRvdConfiguration {
 
     Boolean videoSupport;
 
-    @Override
-    public String getWorkspaceBasePath() {
-        return "";
+    public void setWorkspaceBasePath(String workspaceBasePath) {
+        this.workspaceBasePath = workspaceBasePath;
     }
 
     @Override

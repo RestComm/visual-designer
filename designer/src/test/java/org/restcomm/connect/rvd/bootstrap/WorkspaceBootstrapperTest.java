@@ -24,6 +24,9 @@ import org.junit.Test;
 import org.junit.Assert;
 import org.restcomm.connect.rvd.TestUtils;
 import org.restcomm.connect.rvd.RvdConfiguration;
+import org.restcomm.connect.rvd.configuration.RvdConfig;
+import org.restcomm.connect.rvd.exceptions.BootstrappingException;
+import org.restcomm.connect.rvd.utils.CustomizableRvdConfiguration;
 
 import java.io.File;
 import java.util.Random;
@@ -35,23 +38,29 @@ public class WorkspaceBootstrapperTest {
     private static String tempDirLocation = System.getProperty("java.io.tmpdir");
 
     @Test(expected=RuntimeException.class)
-    public void workspaceBootstrapFailsIfRootDirMissing() {
+    public void workspaceBootstrapFailsIfRootDirMissing() throws BootstrappingException {
         Random ran = new Random();
         String workspaceLocation = tempDirLocation + "/workspace" + ran.nextInt(10000);
-        WorkspaceBootstrapper wb = new WorkspaceBootstrapper(workspaceLocation);
+        WorkspaceBootstrapper wb = new WorkspaceBootstrapper(workspaceLocation, workspaceLocation + "/" + RvdConfiguration.TEMPLATES_DIRECTORY_NAME);
     }
 
     @Test
-    public void userDirIsCreated() {
+    public void userDirIsCreated() throws BootstrappingException {
         // create workspace dir
         File workspaceDir = TestUtils.createTempWorkspace();
+        CustomizableRvdConfiguration config = new CustomizableRvdConfiguration();
+        config.setWorkspaceBasePath(workspaceDir.getPath());
+        config.setProjectTemplatesWorkspacePath(workspaceDir.getPath() + File.separator + RvdConfiguration.TEMPLATES_DIRECTORY_NAME);
+
         String workspaceLocation = workspaceDir.getPath();
         // assert @users dir is created
-        WorkspaceBootstrapper wb = new WorkspaceBootstrapper(workspaceLocation);
+        WorkspaceBootstrapper wb = new WorkspaceBootstrapper(config);
         wb.run();
         String userDirLocation = workspaceLocation + "/" + RvdConfiguration.USERS_DIRECTORY_NAME;
         File usersDir = new File(userDirLocation);
         Assert.assertTrue("Users directory '" + userDirLocation + "' was not created on workspace bootstrapping.", usersDir.exists() );
+        File templatesDir = new File(config.getProjectTemplatesWorkspacePath());
+        Assert.assertTrue("Templates directory '" + templatesDir + "' was not created on workspace bootstrapping", templatesDir.exists());
 
         TestUtils.removeTempWorkspace(workspaceLocation);
     }
