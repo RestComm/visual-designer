@@ -19,7 +19,7 @@ public class DialStepTest extends StepTestBase {
      */
     @Test
     public void defaultRendering() throws StorageException, InterpreterException {
-        buildApplicationContext();
+        buildApplicationContext(new CustomizableRvdConfiguration());
         ((CustomizableRvdConfiguration)appContext.getConfiguration()).setVideoSupport(true);
         Interpreter interpreter = buildInterpreter(appendMultivaluedMap(null,null,null), null);
         DialStep step = new DialStep();

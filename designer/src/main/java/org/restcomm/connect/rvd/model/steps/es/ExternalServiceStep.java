@@ -61,6 +61,11 @@ public class ExternalServiceStep extends Step {
     public static final class HttpHeader {
         String name;
         String value;
+
+        public HttpHeader(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
     }
 
     private String url; // supports RVD variable expansion when executing the HTTP request
@@ -68,7 +73,7 @@ public class ExternalServiceStep extends Step {
     private String username;
     private String password;
     private List<UrlParam> urlParams;
-    private List<HttpHeader> httpHeaders;
+    List<HttpHeader> httpHeaders;
     private String contentType;
     private String requestBody;
     private Boolean populatePostBodyFromParams;
@@ -195,6 +200,16 @@ public class ExternalServiceStep extends Step {
         return null;
     }
 
+    /**
+     * Makes an http request to a url, parses results, performs assignments and re-routes flow.
+     *
+     * Returns the name of the module to continue to or null
+     *
+     * @param interpreter
+     * @param httpRequest Current incoming request (typically originating from restcomm) only used when 'url' is relative to extract the origin
+     * @return the name of the module to continue to or null
+     * @throws InterpreterException
+     */
     @Override
     public String process(Interpreter interpreter, HttpServletRequest httpRequest ) throws InterpreterException {
         // cache this for easier access
@@ -225,9 +240,12 @@ public class ExternalServiceStep extends Step {
                 }
 
                 // for GET requests add  url parameters
-                if ( getMethod() == null || "GET".equals(getMethod()) || "DELETE".equals(getMethod()) )
-                    for ( UrlParam urlParam : getUrlParams() )
-                        uri_builder.addParameter(urlParam.getName(), interpreter.populateVariables(urlParam.getValue()) );
+                if ( getMethod() == null || "GET".equals(getMethod()) || "DELETE".equals(getMethod()) ) {
+                    if (urlParams != null) {
+                        for (UrlParam urlParam : urlParams)
+                            uri_builder.addParameter(urlParam.getName(), interpreter.populateVariables(urlParam.getValue()));
+                    }
+                }
 
                 url = uri_builder.build();
             } catch (URISyntaxException e) {
@@ -277,8 +295,10 @@ public class ExternalServiceStep extends Step {
                     // use www-form url-encoded content type
                     if ( !RvdUtils.isEmpty(this.populatePostBodyFromParams) && this.populatePostBodyFromParams ) {
                         List <NameValuePair> values = new ArrayList <NameValuePair>();
-                        for ( UrlParam urlParam : getUrlParams() )
-                            values.add(new BasicNameValuePair(urlParam.getName(), interpreter.populateVariables(urlParam.getValue()) ));
+                        if (urlParams != null) {
+                            for (UrlParam urlParam : urlParams)
+                                values.add(new BasicNameValuePair(urlParam.getName(), interpreter.populateVariables(urlParam.getValue())));
+                        }
                         request.setEntity(new UrlEncodedFormEntity(values));
                     } else {
                         request.addHeader("Content-Type","application/x-www-form-urlencoded");
@@ -377,7 +397,7 @@ public class ExternalServiceStep extends Step {
                 }
                 // Parse the response if (a) there are assignments or (b) there is dynamic or mapped routing
                 if (getAssignments() != null && getAssignments().size() > 0
-                        || getDoRouting() && ("responseBased".equals(getNextType()) || "mapped".equals(getNextType()))) {
+                        || RvdUtils.isTrue(doRouting) && ("responseBased".equals(getNextType()) || "mapped".equals(getNextType()))) {
                     HttpEntity entity = response.getEntity();
                     if (entity != null) {
                         JsonParser parser = new JsonParser();
@@ -404,7 +424,7 @@ public class ExternalServiceStep extends Step {
 
             // *** Determine what to do next. Find the next module name or whether to continue in the current module ***
 
-            if (getDoRouting()) {
+            if (RvdUtils.isTrue(doRouting)) {
                 if ("fixed".equals(getNextType()))
                     next = getNext();
                 else if ("responseBased".equals(getNextType()) || "mapped".equals(getNextType())) {
@@ -434,7 +454,7 @@ public class ExternalServiceStep extends Step {
             // *** Perform the assignments ***
 
             try {
-                if ( getDoRouting() && ("responseBased".equals(getNextType()) || "mapped".equals(getNextType())) ) {
+                if ( RvdUtils.isTrue(doRouting) && ("responseBased".equals(getNextType()) || "mapped".equals(getNextType())) ) {
                     for ( Assignment assignment : getAssignments() ) {
                         if (RvdLoggers.local.isEnabledFor(Level.ALL))
                             RvdLoggers.local.log(Level.ALL, LoggingHelper.buildMessage(getClass(),"process","{0} working on variable {1}:{2}", new Object[] {logging.getPrefix(), assignment.getModuleNameScope(), assignment.getDestVariable()}));
@@ -455,22 +475,24 @@ public class ExternalServiceStep extends Step {
                         } // else skip assignment
                     }
                 }  else {
-                    for ( Assignment assignment : getAssignments() ) {
-                        if (RvdLoggers.local.isEnabledFor(Level.ALL))
-                            RvdLoggers.local.log(Level.ALL, LoggingHelper.buildMessage(getClass(),"process","{0} working on variable {1}", new Object[] {logging.getPrefix(), assignment.getDestVariable()}));
-                        String value = null;
-                        try {
-                            value = interpreter.evaluateExtractorExpression(assignment.getValueExtractor(), response_element);
-                        } catch ( BadExternalServiceResponse e ) {
-                            throw new ESProcessFailed("Could not parse variable '"  + assignment.getDestVariable() + "'. Variable not found in response" + (e.getMessage() != null ? " - " + e.getMessage() : ""));
+                    if (getAssignments() != null) {
+                        for (Assignment assignment : getAssignments()) {
+                            if (RvdLoggers.local.isEnabledFor(Level.ALL))
+                                RvdLoggers.local.log(Level.ALL, LoggingHelper.buildMessage(getClass(), "process", "{0} working on variable {1}", new Object[]{logging.getPrefix(), assignment.getDestVariable()}));
+                            String value = null;
+                            try {
+                                value = interpreter.evaluateExtractorExpression(assignment.getValueExtractor(), response_element);
+                            } catch (BadExternalServiceResponse e) {
+                                throw new ESProcessFailed("Could not parse variable '" + assignment.getDestVariable() + "'. Variable not found in response" + (e.getMessage() != null ? " - " + e.getMessage() : ""));
+                            }
+
+                            if ("application".equals(assignment.getScope()))
+                                interpreter.putStickyVariable(assignment.getDestVariable(), value);
+                            if ("module".equals(assignment.getScope()))
+                                interpreter.putModuleVariable(assignment.getDestVariable(), value);
+
+                            //interpreter.putVariable(assignment.getDestVariable(), value );
                         }
-
-                        if ( "application".equals(assignment.getScope()) )
-                            interpreter.putStickyVariable(assignment.getDestVariable(), value);
-                        if ( "module".equals(assignment.getScope()) )
-                            interpreter.putModuleVariable(assignment.getDestVariable(), value);
-
-                        //interpreter.putVariable(assignment.getDestVariable(), value );
                     }
                 }
                 if (RvdLoggers.local.isTraceEnabled())
