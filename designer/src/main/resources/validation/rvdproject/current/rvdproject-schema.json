@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-	"title": "RVD project 1.13",
-	"description": "Dummy version to trigger build and update project /data directory and Video client/resolution and sipuri/resolution",
+	"title": "RVD project 1.14",
+	"description": "Addition of ES custom http headers",
 	"rvdproject": {
 		"type": "object",
 		"properties": {

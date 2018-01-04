@@ -26,7 +26,7 @@ public interface RvdConfiguration {
     String USERS_DIRECTORY_NAME = "@users";
 
     String WAVS_DIRECTORY_NAME = "wavs";
-    String RVD_PROJECT_VERSION = "1.13"; // version for rvd project syntax
+    String RVD_PROJECT_VERSION = "1.14"; // version for rvd project syntax
     String PACKAGING_VERSION = "1.0";
     String RAS_APPLICATION_VERSION = "2"; // version of the RAS application specification
     String STICKY_PREFIX = "sticky_"; // a  prefix for rvd sticky variable names

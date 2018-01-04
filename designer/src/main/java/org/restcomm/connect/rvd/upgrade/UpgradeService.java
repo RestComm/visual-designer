@@ -52,7 +52,7 @@ public class UpgradeService {
     }
 
     // valid project versions. If a version is not here it can either considered 'future' version or garbage.
-    static final String[] versionPath = new String[] {"rvd714","1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8","1.9", "1.10", "1.11","1.12", "1.13"};
+    static final String[] versionPath = new String[] {"rvd714","1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8","1.9", "1.10", "1.11","1.12", "1.13", "1.14"};
     // project versions where the project state .json file should be upgraded OR a build triggered
     static final List<String> upgradesPath = Arrays.asList(new String [] {"1.0","1.6","1.13"});
 
@@ -70,6 +70,11 @@ public class UpgradeService {
      * @throws InvalidProjectVersion
      */
     public static boolean checkBackwardCompatible(String checkedProjectVesion, String referenceProjectVersion) throws InvalidProjectVersion {
+        if ( "1.14".equals(referenceProjectVersion)) {
+            if ( "1.14".equals(checkedProjectVesion) || "1.13".equals(checkedProjectVesion) )
+                return true;
+            return false;
+        } else
         if ( "1.13".equals(referenceProjectVersion)) {
             if ( "1.13".equals(checkedProjectVesion) )
                 return true;
