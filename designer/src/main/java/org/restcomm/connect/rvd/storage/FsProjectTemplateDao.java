@@ -85,7 +85,8 @@ public class FsProjectTemplateDao implements ProjectTemplateDao {
     }
 
     String resolveTemplatePath(String templateId) {
-        return workspaceStorage.resolveWorkspacePath("") + File.separator + templateId;
+        // return workspaceStorage.resolveWorkspacePath("") + File.separator + templateId;
+        return configuration.getProjectTemplatesWorkspacePath() + File.separator + templateId;
     }
 
     String resolveTemplateProjectPath(String templateId, String projectAlias) {

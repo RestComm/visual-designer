@@ -2,8 +2,6 @@
   "id": "TL1234",
   "name": "Menu application",
   "description": "Forward your calls to sales and support teams using a menu.",
-  "imageUrl": "resources/voice-icon.png",
-  "infoUrl": "http://documentation.telestax.com/",
   "tags": [
     "voice"
   ]
