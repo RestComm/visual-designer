@@ -265,7 +265,7 @@ public class ExternalServiceStep extends Step {
 
                 // Setup request object
                 HttpEntityEnclosingRequestBase request;
-                
+
                 if ( "POST".equals(getMethod()) )
                     request = new HttpPost(url);
                 else
@@ -307,6 +307,12 @@ public class ExternalServiceStep extends Step {
                 // inject the Call ID as an HTTP header to help tracking calls
                 if (!RvdUtils.isEmpty(interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid")))
                     request.addHeader("X-RestComm-CallSid", interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid"));
+                // add other custom headers if any
+                if (httpHeaders != null) {
+                    for (HttpHeader header: httpHeaders) {
+                        request.addHeader(header.name, interpreter.populateVariables(header.value));
+                    }
+                }
 
                 String appName = interpreter.getAppName(); // TODO remove me!!
                 try {
@@ -331,7 +337,12 @@ public class ExternalServiceStep extends Step {
                     request.addHeader("Authorization", "Basic " + RvdUtils.buildHttpAuthorizationToken(getUsername(), getPassword()));
                 if (!RvdUtils.isEmpty(interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid")))
                     request.addHeader("X-RestComm-CallSid", interpreter.getVariables().get(RvdConfiguration.CORE_VARIABLE_PREFIX + "CallSid"));
-
+                // add custom headers if any
+                if (httpHeaders != null) {
+                    for (HttpHeader header: httpHeaders) {
+                        request.addHeader(header.name, interpreter.populateVariables(header.value));
+                    }
+                }
 
                 try {
                     // mark ES call as pending
