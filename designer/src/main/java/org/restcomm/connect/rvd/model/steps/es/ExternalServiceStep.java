@@ -58,11 +58,17 @@ public class ExternalServiceStep extends Step {
     public static final String CONTENT_TYPE_WWWFORM = "application/x-www-form-urlencoded";
     public static final String CONTENT_TYPE_JSON = "application/json";
 
+    public static final class HttpHeader {
+        String name;
+        String value;
+    }
+
     private String url; // supports RVD variable expansion when executing the HTTP request
     private String method;
     private String username;
     private String password;
     private List<UrlParam> urlParams;
+    private List<HttpHeader> httpHeaders;
     private String contentType;
     private String requestBody;
     private Boolean populatePostBodyFromParams;
@@ -259,6 +265,7 @@ public class ExternalServiceStep extends Step {
 
                 // Setup request object
                 HttpEntityEnclosingRequestBase request;
+                
                 if ( "POST".equals(getMethod()) )
                     request = new HttpPost(url);
                 else

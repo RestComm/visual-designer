@@ -18,6 +18,10 @@
 			"type": "array",
 			"items": { "$ref": "#/definitions/urlParam"}
 		},
+		"httpHeaders": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/httpHeader"}
+		},
 		"assignments": {
 			"type": "array",
 			"items": {
@@ -53,6 +57,15 @@
 	
 	"definitions":{
 		"urlParam": {
+			"type": "object",
+			"properties": {
+				"name": {"type":"string", "minLength": 1},
+				"value": {"type":"string", "minLength": 1}
+			},
+			"required": ["name","value"],
+			"additionalProperties": false
+		},
+		"httpHeader": {
 			"type": "object",
 			"properties": {
 				"name": {"type":"string", "minLength": 1},

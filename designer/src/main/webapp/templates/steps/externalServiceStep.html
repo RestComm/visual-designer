@@ -18,8 +18,11 @@
 			                    </div>
 			                </form>
 			            </div>
-			            
-                        <div class='row'>
+			            <!-- url params -->
+                        <div ng-show="step.urlParams && step.urlParams.length > 0" class='row'>
+							<div class="md-col-12">
+								<h4 class="col-md-12" >Url parameters</h4>
+							</div>
                             <div ng-repeat='urlParam in step.urlParams' class="col-md-6">
                                 <div lookup-context class="input-group input-group-sm form-group">
                                     <span class="input-group-addon">{{'externalServiceStepUrlParamNameLabel' | translate}}</span>
@@ -31,14 +34,28 @@
                                 </div>
                             </div>
                         </div>
+						<!-- http headers -->
+						<div ng-show="step.httpHeaders && step.httpHeaders.length > 0" class='row'>
+							<div class="md-col-12">
+								<h4 class="col-md-12" >Http headers</h4>
+							</div>
+							<div ng-repeat='httpHeader in step.httpHeaders' class="col-md-6">
+								<div lookup-context class="input-group input-group-sm form-group">
+									<span class="input-group-addon">Name</span>
+									<input ng-model='httpHeader.name' class="form-control ng-pristine ng-valid ng-valid-pattern" type="text" required></input>
+									<span class="input-group-addon">Value</span>
+									<input ng-model='httpHeader.value' lookup-target class="form-control ng-pristine ng-valid ng-valid-pattern" type="text" required></input>
+									<variable-lookup variable="httpHeader.value" view="input-group" replace="true"></variable-lookup>
+									<span ng-click='step.removeHttpHeader(httpHeader)' class="input-group-addon fa fa-times rvd-clickable"></span>
+								</div>
+							</div>
+						</div>
                         <div class="validation-warning row col-md-12 form-group" ng-show="step.urlParams.length>0 && (step.method=='POST' || step.method=='PUT') && step.contentType=='application/x-www-form-urlencoded' && !step.populatePostBodyFromParams">{{"externalServiceStepIgnoredParamsWarning" | translate}}</div>
 
                         <div class="form-group">
 							<button ng-click="addUrlParam(step)" type="button" class="btn btn-xs" title="{{'externalServiceStepAddParamButtonPopover' | translate}}"><span>{{'externalServiceStepAddParamButton' | translate}}</span></button>
+							<button ng-click="step.addHttpHeader({name:'', value:''})" type="button" class="btn btn-xs" title="Add name and value for an http header"><span>Add http header</span></button>
 						</div>
-						
-			            
-			            
 			            
 			            <div class="row">
 							<div class="col-md-12">
