@@ -201,15 +201,16 @@
 									<button ng-show="step.nextType=='mapped'" ng-click="step.addRouteMapping()" type="button" class="btn btn-primary btn-sm"><span>{{'externalServiceStepAddMappingButton' | translate}}</span></button>
 								</div>
 								<div ng-repeat="mapping in step.routeMappings" ng-show="step.nextType=='mapped'" class="row route-mapping" >
-									<div class="input-group input-group-sm form-group col-md-11">
-										<span class="input-group-addon">{{'externalServiceStepValueLabel' | translate}}</span>
-										<input ng-model="mapping.value" class="form-control" required>
-										<span class="input-group-addon">{{'externalServiceStepContinueToLabel' | translate}}</span>
-										<!--<select ng-model="mapping.next" sync-modules="" ng-options="target.name as target.label for target in getAllTargets()" class="form-control" style="min-width:140px;"></select>-->
-										<select sync-modules name='next' ng-model='mapping.next' ng-options='target.name as target.label for target in getAllTargets()' class="form-control height-fix" required>
-											<option value=""></option>
-										</select> 										
-										
+									<div class="col-md-11">
+										<div class="input-group input-group-sm form-group">
+											<span class="input-group-addon">{{'externalServiceStepValueLabel' | translate}}</span>
+											<input ng-model="mapping.value" class="form-control" required>
+											<span class="input-group-addon">{{'externalServiceStepContinueToLabel' | translate}}</span>
+											<!--<select ng-model="mapping.next" sync-modules="" ng-options="target.name as target.label for target in getAllTargets()" class="form-control" style="min-width:140px;"></select>-->
+											<select sync-modules name='next' ng-model='mapping.next' ng-options='target.name as target.label for target in getAllTargets()' class="form-control height-fix" required>
+												<option value=""></option>
+											</select>
+										</div>
 									</div>
 									<div class="col-md-1">
 										<span ng-click="step.removeRouteMapping(mapping)" class="fa fa-times text-muted remove-button rvd-clickable"></span>
