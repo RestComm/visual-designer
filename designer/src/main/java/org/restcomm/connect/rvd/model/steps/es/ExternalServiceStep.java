@@ -77,11 +77,11 @@ public class ExternalServiceStep extends Step {
     private String contentType;
     private String requestBody;
     private Boolean populatePostBodyFromParams;
-    private List<Assignment> assignments;
-    private String next;
+    List<Assignment> assignments;
+    String next;
     private String nextVariable;
-    private Boolean doRouting;
-    private String nextType;
+    Boolean doRouting;
+    String nextType;
     private ValueExtractor nextValueExtractor;
     private List<RouteMapping> routeMappings;
     //private String defaultNext;
@@ -455,24 +455,26 @@ public class ExternalServiceStep extends Step {
 
             try {
                 if ( RvdUtils.isTrue(doRouting) && ("responseBased".equals(getNextType()) || "mapped".equals(getNextType())) ) {
-                    for ( Assignment assignment : getAssignments() ) {
-                        if (RvdLoggers.local.isEnabledFor(Level.ALL))
-                            RvdLoggers.local.log(Level.ALL, LoggingHelper.buildMessage(getClass(),"process","{0} working on variable {1}:{2}", new Object[] {logging.getPrefix(), assignment.getModuleNameScope(), assignment.getDestVariable()}));
-                        if ( assignment.getModuleNameScope() == null || assignment.getModuleNameScope().equals(next) ) {
-                            String value = null;
-                            try {
-                                value = interpreter.evaluateExtractorExpression(assignment.getValueExtractor(), response_element);
-                            } catch ( BadExternalServiceResponse e ) {
-                                throw new ESProcessFailed("Could not parse variable '"  + assignment.getDestVariable() + "'. Variable not found in response" + " - " + (e.getMessage() != null ? " - " + e.getMessage() : ""));
-                            }
+                    if (assignments != null) {
+                        for (Assignment assignment : assignments) {
+                            if (RvdLoggers.local.isEnabledFor(Level.ALL))
+                                RvdLoggers.local.log(Level.ALL, LoggingHelper.buildMessage(getClass(), "process", "{0} working on variable {1}:{2}", new Object[]{logging.getPrefix(), assignment.getModuleNameScope(), assignment.getDestVariable()}));
+                            if (assignment.getModuleNameScope() == null || assignment.getModuleNameScope().equals(next)) {
+                                String value = null;
+                                try {
+                                    value = interpreter.evaluateExtractorExpression(assignment.getValueExtractor(), response_element);
+                                } catch (BadExternalServiceResponse e) {
+                                    throw new ESProcessFailed("Could not parse variable '" + assignment.getDestVariable() + "'. Variable not found in response" + " - " + (e.getMessage() != null ? " - " + e.getMessage() : ""));
+                                }
 
-                            if ( "application".equals(assignment.getScope()) )
-                                interpreter.putStickyVariable(assignment.getDestVariable(), value);
-                            if ( "module".equals(assignment.getScope()) )
-                                interpreter.putModuleVariable(assignment.getDestVariable(), value);
+                                if ("application".equals(assignment.getScope()))
+                                    interpreter.putStickyVariable(assignment.getDestVariable(), value);
+                                if ("module".equals(assignment.getScope()))
+                                    interpreter.putModuleVariable(assignment.getDestVariable(), value);
 
-                            //interpreter.putVariable(assignment.getDestVariable(), value );
-                        } // else skip assignment
+                                //interpreter.putVariable(assignment.getDestVariable(), value );
+                            } // else skip assignment
+                        }
                     }
                 }  else {
                     if (getAssignments() != null) {

@@ -9,6 +9,16 @@ public class AccessOperation {
     private String property;  // object,propertyNamed
     private Integer position;  // array,itemAtPosition
 
+    public AccessOperation(String kind, Boolean fixed, Boolean terminal, String expression, String action, String property, Integer position) {
+        this.kind = kind;
+        this.fixed = fixed;
+        this.terminal = terminal;
+        this.expression = expression;
+        this.action = action;
+        this.property = property;
+        this.position = position;
+    }
+
     public String getKind() {
         return kind;
     }

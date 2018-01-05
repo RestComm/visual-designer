@@ -5,6 +5,14 @@ import java.util.List;
 public class ValueExtractor {
     private List<AccessOperation> accessOperations;
     private AccessOperation lastOperation;
+
+    public ValueExtractor() {
+    }
+
+    public ValueExtractor(List<AccessOperation> accessOperations) {
+        this.accessOperations = accessOperations;
+    }
+
     public List<AccessOperation> getAccessOperations() {
         return accessOperations;
     }
