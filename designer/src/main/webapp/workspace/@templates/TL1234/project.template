@@ -1,6 +1,6 @@
 {
   "id": "TL1234",
-  "name": "Menu application",
+  "name": "Simple IVR menu",
   "description": "Forward your calls to sales and support teams using a menu.",
   "tags": [
     "voice"
