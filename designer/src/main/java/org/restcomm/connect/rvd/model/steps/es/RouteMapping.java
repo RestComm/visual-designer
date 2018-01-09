@@ -1,6 +1,11 @@
 package org.restcomm.connect.rvd.model.steps.es;
 
 public class RouteMapping {
+    public RouteMapping(String value, String next) {
+        this.value = value;
+        this.next = next;
+    }
+
     private String value;
     private String next;
     public String getValue() {

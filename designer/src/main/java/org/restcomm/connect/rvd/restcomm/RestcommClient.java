@@ -22,6 +22,7 @@ package org.restcomm.connect.rvd.restcomm;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -44,8 +45,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Level;
 import org.restcomm.connect.rvd.exceptions.AccessApiException;
 import org.restcomm.connect.rvd.exceptions.RvdException;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import com.google.gson.Gson;
@@ -214,10 +218,12 @@ public class RestcommClient {
                 } else
                     throw new UnsupportedOperationException("Only GET, POST and DELETE methods are supported");
 
+            } catch (URISyntaxException | UnsupportedEncodingException e) {
+                throw new RestcommClientException("Error building Rcml URL or POST body to Calls api. Path: " + path, e);
             } catch (IOException e) {
+                // This looks critical. Log it right away.
+                RvdLoggers.local.log(Level.ERROR, LoggingHelper.buildMessage(getClass(), "done", e.getMessage()), e);
                 throw new RestcommClientException("Error contacting: " + path, e);
-            } catch (URISyntaxException e) {
-                throw new RestcommClientException("Error building URL from this path: " + path, e);
             }
 
         }

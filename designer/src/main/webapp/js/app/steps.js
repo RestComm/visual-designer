@@ -444,6 +444,7 @@ angular.module('Rvd')
 		this.username = undefined;
 		this.password = undefined;
 		this.urlParams = [];
+		//this.httpHeaders = []; // no need for this. We initialize on setter below
 		this.assignments = [];
 		this.next = '';
 		this.doRouting = false;
@@ -484,7 +485,17 @@ angular.module('Rvd')
 	}
 	ExternalServiceModel.prototype.removeRouteMapping = function (mapping) {
 		this.routeMappings.splice(this.routeMappings.indexOf(mapping), 1);
-	}	
+	}
+	ExternalServiceModel.prototype.removeHttpHeader = function (httpHeader) {
+	  if (this.httpHeaders)
+	    this.httpHeaders.splice( this.httpHeaders.indexOf(httpHeader), 1);
+	}
+  ExternalServiceModel.prototype.addHttpHeader = function (newHeader) {
+    if (!this.httpHeaders)
+      this.httpHeaders = [];
+    this.httpHeaders.push(newHeader);
+	}
+
 	return ExternalServiceModel;
 }])
 .factory('rejectModel', ['rvdModel', function RejectModelFactory(rvdModel) {

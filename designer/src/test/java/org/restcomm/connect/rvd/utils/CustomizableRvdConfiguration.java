@@ -36,17 +36,17 @@ public class CustomizableRvdConfiguration extends BaseRvdConfiguration {
 
     @Override
     public Integer getExternalServiceMaxConns() {
-        return null;
+        return RvdConfiguration.DEFAULT_ES_MAX_CONNS;
     }
 
     @Override
     public Integer getExternalServiceMaxConnsPerRoute() {
-        return null;
+        return RvdConfiguration.DEFAULT_ES_MAX_CONNS_PER_ROUTE;
     }
 
     @Override
     public Integer getExternalServiceTTL() {
-        return null;
+        return RvdConfiguration.DEFAULT_ES_TTL;
     }
 
     @Override
@@ -56,22 +56,22 @@ public class CustomizableRvdConfiguration extends BaseRvdConfiguration {
 
     @Override
     public Integer getDefaultHttpTimeout() {
-        return null;
+        return RvdConfiguration.DEFAULT_HTTP_TIMEOUT;
     }
 
     @Override
     public Integer getDefaultHttpMaxConns() {
-        return null;
+        return RvdConfiguration.DEFAULT_HTTP_MAX_CONNS;
     }
 
     @Override
     public Integer getDefaultHttpMaxConnsPerRoute() {
-        return null;
+        return RvdConfiguration.DEFAULT_HTTP_MAX_CONNS_PER_ROUTE;
     }
 
     @Override
     public Integer getDefaultHttpTTL() {
-        return null;
+        return RvdConfiguration.DEFAULT_HTTP_TTL;
     }
 
     @Override

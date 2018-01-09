@@ -5,6 +5,8 @@ import org.mockito.Mockito;
 import org.restcomm.connect.rvd.ApplicationContext;
 import org.restcomm.connect.rvd.ApplicationContextBuilder;
 import org.restcomm.connect.rvd.RvdConfiguration;
+import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
+import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.logging.MockedCustomLogger;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
@@ -42,7 +44,7 @@ public class StepTestBase {
     }
 
     /**
-     * Creates or updates a multivalue map with key value pairs. You may chain mail calls together. Set map parameter to
+     * Creates or updates a multivalue map with key value pairs. You may chain many calls together. Set map parameter to
      * null in order to create a new map.
      *
      * @param map
@@ -58,9 +60,17 @@ public class StepTestBase {
         return map;
     }
 
-    protected void buildApplicationContext() {
-        RvdConfiguration config = new CustomizableRvdConfiguration();
-        appContext = new ApplicationContextBuilder().setConfiguration(config).build();
+
+
+    protected void buildApplicationContext(RvdConfiguration config) {
+        //RvdConfiguration config = new CustomizableRvdConfiguration();
+        CustomHttpClientBuilder httpClientBuilder = new CustomHttpClientBuilder(config);
+        appContext = new ApplicationContextBuilder()
+                .setConfiguration(config)
+                .setProjectRegistry(new ProjectRegistry())
+                .setExternalHttpClient( httpClientBuilder.buildExternalHttpClient())
+                .setDefaultHttpClient( httpClientBuilder.buildHttpClient())
+                .build();
     }
 
     protected Interpreter buildInterpreter(MultivaluedMap<String,String> params, ProjectDao dao) throws StorageException {
