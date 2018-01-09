@@ -250,6 +250,9 @@ public class ProjectRestService extends SecuredRestService {
         ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext,restcommBaseUrl);
         String applicationId = applicationsApi.createApplication(projectName, kind.toString());
         projectDao.createProjectFromTemplate(applicationId, template.getId(), "main", templateDao);
+        // upgrade project if needed
+        UpgradeService upgradeService = new UpgradeService(workspaceStorage);
+        upgradeService.upgradeProject(applicationId);
         // build project too
         ProjectState projectState = projectDao.loadProject(applicationId);
         BuildService buildService = new BuildService(workspaceStorage);
