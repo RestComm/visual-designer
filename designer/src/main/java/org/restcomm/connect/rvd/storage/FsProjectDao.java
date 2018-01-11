@@ -7,7 +7,7 @@ import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.ProjectState;
-import org.restcomm.connect.rvd.model.server.ProjectOptions;
+import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -44,8 +44,12 @@ public class FsProjectDao implements ProjectDao {
     }
 
     @Override
-    public ProjectOptions loadProjectOptions(String applicationId) throws StorageException {
-        return FsProjectStorage.loadProjectOptions(applicationId, workspaceStorage);
+    public ProjectIndex loadProjectOptions(String applicationId) throws StorageException {
+        try {
+            return FsProjectStorage.loadProjectOptions(applicationId, workspaceStorage);
+        } catch (StorageEntityNotFound e) {
+            return null;
+        }
     }
 
     @Override

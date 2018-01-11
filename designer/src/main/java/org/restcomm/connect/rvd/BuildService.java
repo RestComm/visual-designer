@@ -25,7 +25,7 @@ import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.server.NodeName;
-import org.restcomm.connect.rvd.model.server.ProjectOptions;
+import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -62,7 +62,7 @@ public class BuildService {
     public void buildProject(String projectName, ProjectState projectState) throws StorageException {
         // TODO enable deletion after all cloud projects have been upgraded to 1.13
         //FsProjectStorage.deleteBuiltProjectResources(projectName, workspaceStorage);
-        ProjectOptions projectOptions = new ProjectOptions();
+        ProjectIndex projectOptions = new ProjectIndex();
 
         // Save general purpose project information
         // Use the start node name as a default target. We could use a more specialized target too here

@@ -53,6 +53,7 @@ import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.client.WavItem;
+import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
 import org.restcomm.connect.rvd.storage.exceptions.BadWorkspaceDirectoryStructure;
 import org.restcomm.connect.rvd.storage.exceptions.ProjectAlreadyExists;
@@ -63,7 +64,6 @@ import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.utils.Zipper;
 import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
 import org.restcomm.connect.rvd.model.packaging.Rapp;
-import org.restcomm.connect.rvd.model.server.ProjectOptions;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -204,13 +204,13 @@ public class FsProjectStorage {
         return rapps;
     }
 
-    public static ProjectOptions loadProjectOptions(String projectName, WorkspaceStorage workspaceStorage) throws StorageException {
-        ProjectOptions projectOptions = workspaceStorage.loadEntity("project", projectName+"/data", ProjectOptions.class);
+    public static ProjectIndex loadProjectOptions(String projectName, WorkspaceStorage workspaceStorage) throws StorageException {
+        ProjectIndex projectOptions = workspaceStorage.loadEntity("project", projectName+"/data", ProjectIndex.class);
         return projectOptions;
     }
 
-    public static void storeProjectOptions(ProjectOptions projectOptions, String projectName, WorkspaceStorage workspaceStorage) throws StorageException {
-        workspaceStorage.storeEntity(projectOptions, ProjectOptions.class, "project", projectName+"/data");
+    public static void storeProjectOptions(ProjectIndex projectOptions, String projectName, WorkspaceStorage workspaceStorage) throws StorageException {
+        workspaceStorage.storeEntity(projectOptions, ProjectIndex.class, "project", projectName+"/data");
     }
 
     /**

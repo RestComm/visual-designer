@@ -8,7 +8,7 @@ import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.logging.ProjectLogger;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.ProjectSettings;
-import org.restcomm.connect.rvd.model.server.ProjectOptions;
+import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -23,7 +23,7 @@ public class ProjectAwareRvdContext extends RvdContext {
     private String projectName;
     private ProjectLogger projectLogger;
     private ProjectSettings projectSettings;
-    private ProjectOptions projectOptions; // project options that is loaded on-demand
+    private ProjectIndex projectOptions; // project options that is loaded on-demand
 
     public ProjectAwareRvdContext(String projectName, ResidentProjectInfo residentInfo, HttpServletRequest request, ServletContext servletContext, RvdConfiguration configuration, LoggingContext loggingPrefix, ProjectDao projectDao) throws ProjectDoesNotExist {
         super(request, servletContext, configuration, loggingPrefix);
@@ -33,13 +33,13 @@ public class ProjectAwareRvdContext extends RvdContext {
         this.projectLogger = new ProjectLogger(projectName, getConfiguration(), getMarshaler(), residentInfo.logRotationSemaphore);
         // initialize project settings and options (i.e. /data/project file)
         try {
+            projectOptions = projectDao.loadProjectOptions(projectName);
+            if (projectOptions == null) // project index file should be there
+                throw new ProjectDoesNotExist("Project '" + projectName + "' does not exist.");
             this.projectSettings = projectDao.loadSettings(projectName);
             if (this.projectSettings == null) { // if there are no settings yet, create default settings
                 this.projectSettings = ProjectSettings.createDefault();
             }
-            projectOptions = projectDao.loadProjectOptions(projectName);
-            if (projectOptions == null)
-                throw new ProjectDoesNotExist("Project '" + projectName + "' does not exist.");
         } catch (StorageException e) {
             throw new RuntimeException(e); // serious error
         }
@@ -58,7 +58,7 @@ public class ProjectAwareRvdContext extends RvdContext {
         return projectSettings;
     }
 
-    public ProjectOptions getProjectOptions() {
+    public ProjectIndex getProjectOptions() {
         return projectOptions;
     }
 }

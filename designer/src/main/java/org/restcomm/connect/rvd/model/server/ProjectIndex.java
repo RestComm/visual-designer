@@ -3,7 +3,7 @@ package org.restcomm.connect.rvd.model.server;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectOptions {
+public class ProjectIndex {
 
     private String defaultTarget;
     private List<NodeName> nodeNames = new ArrayList<NodeName>();

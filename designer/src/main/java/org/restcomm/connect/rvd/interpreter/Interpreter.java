@@ -37,7 +37,7 @@ import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.rcml.RcmlResponse;
 import org.restcomm.connect.rvd.model.rcml.RcmlStep;
 import org.restcomm.connect.rvd.model.server.NodeName;
-import org.restcomm.connect.rvd.model.server.ProjectOptions;
+import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.model.steps.es.AccessOperation;
 import org.restcomm.connect.rvd.model.steps.es.ExternalServiceStep;
 import org.restcomm.connect.rvd.model.steps.es.ValueExtractor;
@@ -59,7 +59,7 @@ public class Interpreter {
     private CustomLogger projectLogger;
     private LoggingContext loggingContext;
     private ProjectSettings projectSettings;
-    private ProjectOptions projectOptions;
+    private ProjectIndex projectOptions;
     private ProjectDao projectDao;
 
     private Gson gson;
@@ -81,7 +81,7 @@ public class Interpreter {
     }
 
 
-    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, ApplicationContext applicationContext, LoggingContext loggingContext, CustomLogger projectLogger, ProjectSettings projectSettings, ProjectOptions projectOptions, ProjectDao projectDao) throws StorageException {
+    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, ApplicationContext applicationContext, LoggingContext loggingContext, CustomLogger projectLogger, ProjectSettings projectSettings, ProjectIndex projectOptions, ProjectDao projectDao) throws StorageException {
         this.httpRequest = httpRequest;
         this.targetParam = requestParams.getFirst("target");
         this.appName = appName;

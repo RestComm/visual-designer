@@ -5,7 +5,7 @@ import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.ProjectState;
-import org.restcomm.connect.rvd.model.server.ProjectOptions;
+import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 import java.util.List;
@@ -26,7 +26,16 @@ public interface ProjectDao {
      */
     ProjectState loadProject(String applicationId) throws StorageException;
 
-    ProjectOptions loadProjectOptions(String applicationId) throws StorageException;
+    /**
+     * Returns project index information (the 'data/project' file in FS implementation).
+     *
+     * Use this method to check if a built project exists. If it returns null it doesn't.
+     *
+     * @param applicationId
+     * @return a ProjectIndex object or null
+     * @throws StorageException
+     */
+    ProjectIndex loadProjectOptions(String applicationId) throws StorageException;
 
     Node loadNode(String moduleName, String applicationId) throws StorageException;
 
