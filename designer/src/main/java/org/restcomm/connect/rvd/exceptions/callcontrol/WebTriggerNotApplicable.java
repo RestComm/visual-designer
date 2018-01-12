@@ -29,4 +29,8 @@ public class WebTriggerNotApplicable extends CallControlException {
     public WebTriggerNotApplicable(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public WebTriggerNotApplicable(String message) {
+        super(message);
+    }
 }

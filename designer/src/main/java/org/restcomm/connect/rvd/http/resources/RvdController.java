@@ -69,8 +69,6 @@ import org.restcomm.connect.rvd.storage.ProfileDao;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
-import org.restcomm.connect.rvd.storage.FsCallControlInfoStorage;
-import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.storage.exceptions.WavItemDoesNotExist;
 import org.restcomm.connect.rvd.utils.RvdUtils;
@@ -230,14 +228,12 @@ public class RvdController extends SecuredRestService {
         StateHeader projectHeader = ProjectService.parseHeader(projectName, rawState);
 
         // load CC/WebTrigger project info
-        CallControlInfo info;
-        try {
-            info = FsCallControlInfoStorage.loadInfo(projectName, workspaceStorage);
-        } catch (StorageEntityNotFound e) {
+        CallControlInfo info = projectDao.loadWebTriggerInfo(projectName);
+        if (info == null) {
             if ( ! "voice".equals(projectHeader.getProjectKind()) )
-                throw new WebTriggerNotApplicable("WebTrigger not applicable to this kind of project: " + projectHeader.getProjectKind(),e);
+                throw new WebTriggerNotApplicable("WebTrigger not applicable to this kind of project: " + projectHeader.getProjectKind());
             else
-                throw new WebTriggerNotAvailable("WebTrigger not available for this project",e);
+                throw new WebTriggerNotAvailable("WebTrigger not available for this project");
         }
         // find the owner of the project
         String owner = projectHeader.getOwner();

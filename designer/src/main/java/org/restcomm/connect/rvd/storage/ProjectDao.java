@@ -62,6 +62,8 @@ public interface ProjectDao {
 
     void storeWebTriggerInfo(CallControlInfo webTriggerInfo, String applicationId) throws StorageException;
 
+    void removeWebTriggerInfo(String applicationId);
+
     void storeSettings(ProjectSettings projectSettings, String applicationId) throws StorageException;
 
     String loadProjectStateRaw(String applicationId) throws StorageException;

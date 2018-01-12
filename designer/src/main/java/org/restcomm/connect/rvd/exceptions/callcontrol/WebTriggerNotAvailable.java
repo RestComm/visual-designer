@@ -26,6 +26,11 @@ package org.restcomm.connect.rvd.exceptions.callcontrol;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class WebTriggerNotAvailable extends CallControlException {
+
+    public WebTriggerNotAvailable(String message) {
+        super(message);
+    }
+
     public WebTriggerNotAvailable(String message, Throwable cause) {
         super(message, cause);
     }

@@ -91,6 +91,11 @@ public class FsProjectDao implements ProjectDao {
     }
 
     @Override
+    public void removeWebTriggerInfo(String applicationId) {
+        workspaceStorage.removeEntity("cc", applicationId);
+    }
+
+    @Override
     public void storeSettings(ProjectSettings projectSettings, String applicationId) throws StorageException {
         FsProjectStorage.storeProjectSettings(projectSettings, applicationId, workspaceStorage);
     }

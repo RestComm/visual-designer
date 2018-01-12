@@ -67,7 +67,6 @@ import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.project.ProjectKind;
 import org.restcomm.connect.rvd.project.ProjectUtils;
-import org.restcomm.connect.rvd.storage.FsCallControlInfoStorage;
 import org.restcomm.connect.rvd.storage.FsProjectDao;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.FsProjectTemplateDao;
@@ -472,13 +471,14 @@ public class ProjectRestService extends SecuredRestService {
         try {
             String data = IOUtils.toString(request.getInputStream(), Charset.forName("UTF-8"));
             CallControlInfo ccInfo = marshaler.toModel(data, CallControlInfo.class);
+            ProjectDao projectDao = buildProjectDao(workspaceStorage);
             if (ccInfo != null) {
-                FsCallControlInfoStorage.storeInfo(ccInfo, applicationSid, workspaceStorage);
+                projectDao.storeWebTriggerInfo(ccInfo, applicationSid);
                 if (RvdLoggers.local.isDebugEnabled())
                     RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage( getClass(), "storeCcInfo", logging.getPrefix(), "updated web trigger settings (enabled)"));
             }
             else {
-                FsCallControlInfoStorage.clearInfo(applicationSid, workspaceStorage);
+                projectDao.removeWebTriggerInfo(applicationSid);
                 if (RvdLoggers.local.isDebugEnabled())
                     RvdLoggers.local.log(Level.DEBUG, LoggingHelper.buildMessage(getClass(), "storeCcInfo", logging.getPrefix(), "updated web trigger settings (disabled)"));
             }
@@ -498,11 +498,11 @@ public class ProjectRestService extends SecuredRestService {
     public Response getCcInfo(@PathParam("applicationSid") String applicationSid) {
         secure();
         try {
-            CallControlInfo ccInfo = FsCallControlInfoStorage.loadInfo(applicationSid, workspaceStorage);
+            ProjectDao projectDao = buildProjectDao(workspaceStorage);
+            CallControlInfo ccInfo = projectDao.loadWebTriggerInfo(applicationSid);
+            if (ccInfo == null)
+                return Response.status(Status.NOT_FOUND).build();
             return Response.ok(marshaler.toData(ccInfo), MediaType.APPLICATION_JSON).build();
-            // return buildOkResponse(ccInfo);
-        } catch (StorageEntityNotFound e) {
-            return Response.status(Status.NOT_FOUND).build();
         } catch (StorageException e) {
             RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
