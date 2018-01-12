@@ -91,7 +91,7 @@ public class DefaultAccountProvider implements AccountProvider {
     public RestcommAccountInfo getActiveAccount(String accountName, String authorizationHeader) {
         RestcommAccountInfo response = getAccount(accountName, authorizationHeader);
         // if the account is not active, we need to set success status to false
-        if ( !"active".equals(response.getStatus()) ) {
+        if ( response == null || (!"active".equals(response.getStatus())) ) {
             return null;
         } else
             return response;
