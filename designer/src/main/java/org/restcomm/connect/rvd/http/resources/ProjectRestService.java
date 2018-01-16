@@ -120,7 +120,7 @@ public class ProjectRestService extends SecuredRestService {
     private ProjectState activeProject;
     private ModelMarshaler marshaler;
     private WorkspaceStorage workspaceStorage;
-    private LoggingContext logging;
+    protected LoggingContext logging;
 
     RvdContext rvdContext;
 
@@ -917,7 +917,7 @@ public class ProjectRestService extends SecuredRestService {
         }
     }
 
-    private ProjectDao buildProjectDao(WorkspaceStorage storage) {
+    protected ProjectDao buildProjectDao(WorkspaceStorage storage) {
         ProjectDao dao = new FsProjectDao(storage);
         return dao;
     }

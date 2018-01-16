@@ -35,6 +35,15 @@ public class ProjectParameters {
         String value;
         String description;
 
+        public Parameter() {
+        }
+
+        public Parameter(String name, String value, String description) {
+            this.name = name;
+            this.value = value;
+            this.description = description;
+        }
+
         public String getName() {
             return name;
         }
@@ -58,6 +67,26 @@ public class ProjectParameters {
         public void setDescription(String description) {
             this.description = description;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Parameter parameter = (Parameter) o;
+
+            if (name != null ? !name.equals(parameter.name) : parameter.name != null) return false;
+            if (value != null ? !value.equals(parameter.value) : parameter.value != null) return false;
+            return description != null ? description.equals(parameter.description) : parameter.description == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = name != null ? name.hashCode() : 0;
+            result = 31 * result + (value != null ? value.hashCode() : 0);
+            result = 31 * result + (description != null ? description.hashCode() : 0);
+            return result;
+        }
     }
 
     List<Parameter> parameters;
@@ -68,5 +97,20 @@ public class ProjectParameters {
 
     public List<Parameter> getParameters() {
         return parameters;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProjectParameters that = (ProjectParameters) o;
+
+        return parameters != null ? parameters.equals(that.parameters) : that.parameters == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return parameters != null ? parameters.hashCode() : 0;
     }
 }
