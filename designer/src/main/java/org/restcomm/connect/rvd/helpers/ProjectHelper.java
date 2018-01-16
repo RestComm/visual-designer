@@ -1,4 +1,24 @@
-package org.restcomm.connect.rvd;
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2011-2014, Telestax Inc and individual contributors
+ * by the @authors tag.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ *
+ */
+
+package org.restcomm.connect.rvd.helpers;
 
 import java.io.File;
 import java.io.FileReader;
@@ -12,6 +32,9 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.apache.commons.io.FileUtils;
+import org.restcomm.connect.rvd.BuildService;
+import org.restcomm.connect.rvd.RvdConfiguration;
+import org.restcomm.connect.rvd.RvdContext;
 import org.restcomm.connect.rvd.exceptions.InvalidServiceParameters;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.exceptions.RvdException;
@@ -54,7 +77,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class ProjectService {
+public class ProjectHelper {
 
     public enum Status {
         OK, UNKNOWN_VERSION, BAD, TOO_OLD, SHOULD_UPGRADE
@@ -65,22 +88,22 @@ public class ProjectService {
     ModelMarshaler marshaler;
     String servletContextPath;
 
-    public ProjectService(RvdContext rvdContext, WorkspaceStorage workspaceStorage) {
+    public ProjectHelper(RvdContext rvdContext, WorkspaceStorage workspaceStorage) {
         this.servletContextPath = rvdContext.getServletContext().getContextPath();
         this.configuration = rvdContext.getConfiguration();
         this.workspaceStorage = workspaceStorage;
         this.marshaler = rvdContext.getMarshaler();
     }
 
-    public ProjectService(RvdConfiguration configuration, WorkspaceStorage workspaceStorage, ModelMarshaler marshaler, String servletContextPath) {
+    public ProjectHelper(RvdConfiguration configuration, WorkspaceStorage workspaceStorage, ModelMarshaler marshaler, String servletContextPath) {
         this.configuration = configuration;
         this.workspaceStorage = workspaceStorage;
         this.marshaler = marshaler;
         this.servletContextPath = servletContextPath;
     }
 
-    // Used for testing. TODO create a ProjectService interface, ProjectServiceBuilder and separate implementation
-    public ProjectService() {
+    // Used for testing. TODO create a ProjectHelper interface, ProjectServiceBuilder and separate implementation
+    public ProjectHelper() {
     }
 
     /**
@@ -158,7 +181,7 @@ public class ProjectService {
             item.setName(entry);
             try {
                 StateHeader header = FsProjectStorage.loadStateHeader(entry, workspaceStorage);
-                item.setStatus(ProjectService.projectStatus(header));
+                item.setStatus(ProjectHelper.projectStatus(header));
                 kind = header.getProjectKind();
                 owner = header.getOwner();
             } catch ( BadProjectHeader e ) {
@@ -205,7 +228,7 @@ public class ProjectService {
             item.setName(entry);
             try {
                 StateHeader header = FsProjectStorage.loadStateHeader(entry, workspaceStorage);
-                item.setStatus(ProjectService.projectStatus(header));
+                item.setStatus(ProjectHelper.projectStatus(header));
                 kind = header.getProjectKind();
                 owner = header.getOwner();
             } catch ( BadProjectHeader e ) {

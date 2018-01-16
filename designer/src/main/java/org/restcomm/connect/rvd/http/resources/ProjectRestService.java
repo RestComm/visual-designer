@@ -1,3 +1,23 @@
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2011-2014, Telestax Inc and individual contributors
+ * by the @authors tag.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ *
+ */
+
 package org.restcomm.connect.rvd.http.resources;
 
 import java.io.IOException;
@@ -34,7 +54,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.ProjectApplicationsApi;
-import org.restcomm.connect.rvd.ProjectService;
+import org.restcomm.connect.rvd.helpers.ProjectHelper;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.RvdContext;
 import org.restcomm.connect.rvd.exceptions.ApplicationAlreadyExists;
@@ -49,6 +69,7 @@ import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.exceptions.project.UnsupportedProjectVersion;
+import org.restcomm.connect.rvd.helpers.ProjectParametersHelper;
 import org.restcomm.connect.rvd.http.RvdResponse;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.jsonvalidation.exceptions.ValidationException;
@@ -59,6 +80,7 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.CallControlInfo;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.ProjectCreatedDto;
+import org.restcomm.connect.rvd.model.ProjectParameters;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.ProjectTemplate;
 import org.restcomm.connect.rvd.model.client.ProjectItem;
@@ -93,7 +115,7 @@ public class ProjectRestService extends SecuredRestService {
     @Context
     HttpServletRequest request;
 
-    private ProjectService projectService;
+    private ProjectHelper projectService;
     private RvdConfiguration configuration;
     private ProjectState activeProject;
     private ModelMarshaler marshaler;
@@ -113,7 +135,7 @@ public class ProjectRestService extends SecuredRestService {
         configuration = rvdContext.getConfiguration();
         marshaler = rvdContext.getMarshaler();
         workspaceStorage = new WorkspaceStorage(configuration.getWorkspaceBasePath(), marshaler);
-        projectService = new ProjectService(rvdContext, workspaceStorage);
+        projectService = new ProjectHelper(rvdContext, workspaceStorage);
     }
 
     public ProjectRestService() {
@@ -833,6 +855,63 @@ public class ProjectRestService extends SecuredRestService {
         } catch (StorageEntityNotFound e) {
             return Response.ok().build();
         } catch (StorageException e) {
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
+            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Returns a ProjectParameters json object (possibly empty)
+     *
+     * @param applicationSid
+     * @return
+     */
+    @GET
+    @Path("{applicationSid}/parameters")
+    public Response getProjectParameters(@PathParam("applicationSid") String applicationSid) {
+        secure();
+        ProjectDao dao = buildProjectDao(workspaceStorage);
+        try {
+            Gson gson = new Gson();
+            ProjectParameters parameters = dao.loadProjectParameters(applicationSid);
+            if (parameters == null) {
+                parameters = new ProjectParameters();
+            }
+            return Response.ok(gson.toJson(parameters)).build();
+        } catch (StorageException e) {
+            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
+            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Receives a json object name/value pairs of project parameters.
+     *
+     * Returns a json object of ProjectParameters. Note, this is different than the name/value pairs.
+     *
+     * @param applicationSid
+     * @return
+     */
+    @PUT
+    @Path("{applicationSid}/parameters")
+    public Response storeProjectParameters(@PathParam("applicationSid") String applicationSid) {
+        secure();
+        try {
+            ProjectDao dao = buildProjectDao(workspaceStorage);
+            ProjectParameters parameters = dao.loadProjectParameters(applicationSid);
+            if (parameters == null) {
+                parameters = new ProjectParameters();
+            }
+            String data = IOUtils.toString(request.getInputStream(), Charset.forName("UTF-8"));
+            Gson gson  = new Gson();
+            ProjectParameters newParameters = gson.fromJson(data, ProjectParameters.class);
+            ProjectParametersHelper helper = new ProjectParametersHelper();
+            helper.mergeParameters(parameters, newParameters);
+            dao.storeProjectParameters(applicationSid, parameters);
+            if (RvdLoggers.local.isDebugEnabled())
+                RvdLoggers.local.log(Level.DEBUG, logging.getPrefix() + " saved parameters for project " + applicationSid);
+            return Response.ok(gson.toJson(parameters)).build();
+        } catch (IOException | StorageException e) {
             RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }

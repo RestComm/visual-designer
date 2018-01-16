@@ -3,6 +3,7 @@ package org.restcomm.connect.rvd.storage;
 import org.apache.commons.io.FileUtils;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.model.CallControlInfo;
+import org.restcomm.connect.rvd.model.ProjectParameters;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.model.project.Node;
@@ -178,6 +179,21 @@ public class FsProjectDao implements ProjectDao {
     public List<WavItem> listMedia(String applicationId) throws StorageException {
         File projectDir = new File(workspaceStorage.rootPath + File.separator + applicationId);
         return listMedia(projectDir);
+    }
+
+    @Override
+    public ProjectParameters loadProjectParameters(String applicationId) throws StorageException {
+        try {
+            ProjectParameters parameters = workspaceStorage.loadEntity("parameters", applicationId, ProjectParameters.class);
+            return parameters;
+        } catch (StorageEntityNotFound e) {
+            return  null;
+        }
+    }
+
+    @Override
+    public void storeProjectParameters(String applicationId, ProjectParameters parameters) throws StorageException {
+        workspaceStorage.storeEntity(parameters, ProjectParameters.class, "parameters", applicationId);
     }
 
     /**

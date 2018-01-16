@@ -42,7 +42,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.restcomm.connect.rvd.ProjectService;
+import org.restcomm.connect.rvd.helpers.ProjectHelper;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 import org.restcomm.connect.rvd.exceptions.project.ProjectException;
@@ -151,7 +151,7 @@ public class FsProjectStorage {
      * @throws StorageException
      * @throws ProjectException
      */
-    public static List<RappItem> listRapps(List<String> projectNames, WorkspaceStorage workspaceStorage, ProjectService projectService) throws StorageException, ProjectException {
+    public static List<RappItem> listRapps(List<String> projectNames, WorkspaceStorage workspaceStorage, ProjectHelper projectService) throws StorageException, ProjectException {
         List<RappItem> rapps = new ArrayList<RappItem>();
         for (String projectName : projectNames) {
             RappItem item = new RappItem();

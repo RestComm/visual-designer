@@ -25,7 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.restcomm.connect.rvd.ProjectService;
+import org.restcomm.connect.rvd.helpers.ProjectHelper;
 import org.restcomm.connect.rvd.TestUtils;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class AccountClosingNotificationTests extends RestServiceMockedTest {
-    ProjectService projectService;
+    ProjectHelper projectService;
     WorkspaceStorage storage;
 
     @Before
@@ -60,7 +60,7 @@ public class AccountClosingNotificationTests extends RestServiceMockedTest {
         createProject("APB0002","sub2@company.com");
         createProject("APB0003","orestis@company.com");
 
-        projectService = new ProjectService(configuration,storage,marshaler,"/restcomm-rvd");
+        projectService = new ProjectHelper(configuration,storage,marshaler,"/restcomm-rvd");
     }
 
     @After

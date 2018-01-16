@@ -25,7 +25,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.restcomm.connect.rvd.ApplicationContext;
-import org.restcomm.connect.rvd.ProjectService;
+import org.restcomm.connect.rvd.helpers.ProjectHelper;
 import org.restcomm.connect.rvd.RvdContext;
 import org.restcomm.connect.rvd.exceptions.AccessApiException;
 import org.restcomm.connect.rvd.exceptions.AuthorizationException;
@@ -69,7 +69,7 @@ public class NotificationsRestService extends SecuredRestService {
         accountClosed
     }
 
-    private ProjectService projectService;
+    private ProjectHelper projectService;
 
     public NotificationsRestService() {
     }
@@ -80,17 +80,17 @@ public class NotificationsRestService extends SecuredRestService {
         logging.appendAccountSid(getUserIdentityContext().getAccountSid());
         RvdContext rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), logging);
         WorkspaceStorage storage = new WorkspaceStorage(applicationContext.getConfiguration().getWorkspaceBasePath(), rvdContext.getMarshaler());
-        projectService = new ProjectService(rvdContext, storage);
+        projectService = new ProjectHelper(rvdContext, storage);
     }
 
     // used for testing
-    NotificationsRestService(UserIdentityContext userIdentityContext, ProjectService projectService) {
+    NotificationsRestService(UserIdentityContext userIdentityContext, ProjectHelper projectService) {
         super(userIdentityContext);
         this.projectService = projectService;
     }
 
     // used for testing
-    public NotificationsRestService(ApplicationContext applicationContext, UserIdentityContext userIdentityContext, ProjectService projectService) {
+    public NotificationsRestService(ApplicationContext applicationContext, UserIdentityContext userIdentityContext, ProjectHelper projectService) {
         super(applicationContext, userIdentityContext);
         this.projectService = projectService;
     }

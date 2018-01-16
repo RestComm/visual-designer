@@ -1,6 +1,7 @@
 package org.restcomm.connect.rvd.storage;
 
 import org.restcomm.connect.rvd.model.CallControlInfo;
+import org.restcomm.connect.rvd.model.ProjectParameters;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.model.project.Node;
@@ -75,4 +76,8 @@ public interface ProjectDao {
     void createProjectFromTemplate(String applicationId, String templateId, String projectAlias, ProjectTemplateDao templateDao) throws StorageException;
 
     List<WavItem> listMedia(String applicationId) throws StorageException;
+
+    ProjectParameters loadProjectParameters(String applicationId) throws StorageException;
+
+    void storeProjectParameters(String applicationId, ProjectParameters parameters) throws StorageException;
 }

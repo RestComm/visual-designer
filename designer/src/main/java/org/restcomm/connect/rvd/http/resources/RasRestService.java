@@ -29,7 +29,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.ProjectApplicationsApi;
-import org.restcomm.connect.rvd.ProjectService;
+import org.restcomm.connect.rvd.helpers.ProjectHelper;
 import org.restcomm.connect.rvd.RasService;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.RvdContext;
@@ -71,7 +71,7 @@ public class RasRestService extends SecuredRestService {
 
     private RvdConfiguration settings;
     private RasService rasService;
-    private ProjectService projectService;
+    private ProjectHelper projectService;
     private RvdContext rvdContext;
     private WorkspaceStorage workspaceStorage;
     private ModelMarshaler marshaler;
@@ -87,7 +87,7 @@ public class RasRestService extends SecuredRestService {
         marshaler = rvdContext.getMarshaler();
         workspaceStorage = new WorkspaceStorage(settings.getWorkspaceBasePath(), marshaler);
         rasService = new RasService(rvdContext, workspaceStorage);
-        projectService = new ProjectService(rvdContext,workspaceStorage);
+        projectService = new ProjectHelper(rvdContext,workspaceStorage);
     }
 
     public RasRestService() {

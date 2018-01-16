@@ -18,33 +18,34 @@
  *
  */
 
-package org.restcomm.connect.rvd;
+package org.restcomm.connect.rvd.helpers;
 
 import junit.framework.Assert;
 import org.junit.Test;
+import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 
 /**
  * @author orestis.tsakiridis@telestax.com - Orestis Tsakiridis
  */
-public class ProjectServiceTest {
+public class ProjectHelperTest {
     @Test
     public void testProjectStatusResolving() {
-        ProjectService projectService = new ProjectService();
+        ProjectHelper projectService = new ProjectHelper();
 
         StateHeader header = new StateHeader("voice","start", RvdConfiguration.RVD_PROJECT_VERSION);
         // latest RVD project version should be ok.
-        Assert.assertEquals(ProjectService.Status.OK ,projectService.projectStatus(header));
+        Assert.assertEquals(ProjectHelper.Status.OK ,projectService.projectStatus(header));
         // null header should return BAD
-        Assert.assertEquals(ProjectService.Status.BAD ,projectService.projectStatus(null));
+        Assert.assertEquals(ProjectHelper.Status.BAD ,projectService.projectStatus(null));
         // null version should return BAD
         header.setVersion(null);
-        Assert.assertEquals(ProjectService.Status.BAD ,projectService.projectStatus(header));
+        Assert.assertEquals(ProjectHelper.Status.BAD ,projectService.projectStatus(header));
         // older project (upgradable) version should return SHOULD_UPGRADE
         header.setVersion("1.5");
-        Assert.assertEquals(ProjectService.Status.SHOULD_UPGRADE ,projectService.projectStatus(header));
+        Assert.assertEquals(ProjectHelper.Status.SHOULD_UPGRADE ,projectService.projectStatus(header));
         // future project version should return  UNKNOWN_VERSION
         header.setVersion("1000");
-        Assert.assertEquals(ProjectService.Status.UNKNOWN_VERSION ,projectService.projectStatus(header));
+        Assert.assertEquals(ProjectHelper.Status.UNKNOWN_VERSION ,projectService.projectStatus(header));
     }
 }

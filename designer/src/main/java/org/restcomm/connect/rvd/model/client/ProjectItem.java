@@ -1,13 +1,13 @@
 package org.restcomm.connect.rvd.model.client;
 
-import org.restcomm.connect.rvd.ProjectService;
+import org.restcomm.connect.rvd.helpers.ProjectHelper;
 
 public class ProjectItem {
 
     private String name;
     private String startUrl;
     private String kind;
-    private ProjectService.Status status;
+    private ProjectHelper.Status status;
 
     public String getKind() {
         return kind;
@@ -33,11 +33,11 @@ public class ProjectItem {
         this.startUrl = startUrl;
     }
 
-    public ProjectService.Status getStatus() {
+    public ProjectHelper.Status getStatus() {
         return status;
     }
 
-    public void setStatus(ProjectService.Status status) {
+    public void setStatus(ProjectHelper.Status status) {
         this.status = status;
     }
 }

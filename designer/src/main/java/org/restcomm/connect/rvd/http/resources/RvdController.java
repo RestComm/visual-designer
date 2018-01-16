@@ -28,7 +28,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.restcomm.connect.rvd.ProjectAwareRvdContext;
-import org.restcomm.connect.rvd.ProjectService;
+import org.restcomm.connect.rvd.helpers.ProjectHelper;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.AccessApiException;
 import org.restcomm.connect.rvd.exceptions.ESRequestException;
@@ -225,7 +225,7 @@ public class RvdController extends SecuredRestService {
 
         // load project header
         String rawState = projectDao.loadProjectStateRaw(projectName);
-        StateHeader projectHeader = ProjectService.parseHeader(projectName, rawState);
+        StateHeader projectHeader = ProjectHelper.parseHeader(projectName, rawState);
 
         // load CC/WebTrigger project info
         CallControlInfo info = projectDao.loadWebTriggerInfo(projectName);

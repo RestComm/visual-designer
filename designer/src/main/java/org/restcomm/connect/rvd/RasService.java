@@ -29,6 +29,7 @@ import org.restcomm.connect.rvd.exceptions.packaging.PackagingException;
 import org.restcomm.connect.rvd.exceptions.project.UnsupportedProjectVersion;
 import org.restcomm.connect.rvd.exceptions.ras.RestcommAppAlreadyExists;
 import org.restcomm.connect.rvd.exceptions.ras.UnsupportedRasApplicationVersion;
+import org.restcomm.connect.rvd.helpers.ProjectHelper;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.RappItem;
 import org.restcomm.connect.rvd.model.client.WavItem;
@@ -141,7 +142,7 @@ public class RasService {
      * @throws RvdException
      */
     public String importAppToWorkspace(String applicationSid, InputStream packageZipStream, String loggedUser,
-            ProjectService projectService) throws RvdException {
+            ProjectHelper projectService) throws RvdException {
         File tempDir = RvdUtils.createTempDir();
         Unzipper unzipper = new Unzipper(tempDir);
         unzipper.unzip(packageZipStream);
