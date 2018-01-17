@@ -39,7 +39,7 @@ angular.module('Rvd').config(['$httpProvider', function($httpProvider) {
 angular.module('Rvd').factory('RestcommAuthenticationInterceptor', function ($injector) {
     function request(config) {
         return $injector.invoke(function ($state, authentication, RvdConfiguration) {
-            if (config.url.startsWith('services/') || config.url.startsWith('/restcomm-rvd/services/')) {
+            if (config.url.startsWith('services/') || config.url.startsWith('/restcomm-rvd/services/') || config.url.startsWith('api/') || config.url.startsWith('/restcomm-rvd/api/')) {
                 if (authentication.getAuthHeader()) {
                     // if the request is targeted towards RVD add authorization header and there is no authorization header already
                     delete config.headers.authorization; // mind the case insensitivity of headers

@@ -986,6 +986,19 @@ textarea.medium {
 	color: #888;
 }
 
+/* ----------------- Parameters modal --------------------- */
+
+.parameters .no-parameters {
+  color: #737373;
+  padding: 25px;
+  text-align: center;
+}
+
+.no-parameters .no-parameters-icon {
+  font-size: 85px;
+  margin-bottom: 20px;
+}
+
 /* ----------------- Web Trigger modal -------------------- */
 
 /* disable red border for 'masked-invalid' inputs. It's handy for some cases */

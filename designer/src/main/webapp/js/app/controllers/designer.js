@@ -1,4 +1,4 @@
-var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration, versionChecker ) {
+var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration, versionChecker) {
 
 	$scope.project = project;
 	$scope.visibleNodes = editedNodes.getEditedNodes();
@@ -388,13 +388,12 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
 	$scope.$on('show-project-settings-clicked', function () {
         projectSettingsService.showModal($scope.applicationSid, $scope.projectName);
 	})
-    $scope.$on('show-web-trigger-clicked', function() {
-   		webTriggerService.showModal($scope.applicationSid);
-    });
-    $scope.$on('show-graph', function (event, data) {
-        $scope.showGraph = data.status;
-    })
-
+  $scope.$on('show-web-trigger-clicked', function() {
+    webTriggerService.showModal($scope.applicationSid);
+  });
+  $scope.$on('show-graph', function (event, data) {
+      $scope.showGraph = data.status;
+  });
 
 
 	/* USSDSay / USSDCollect functions */

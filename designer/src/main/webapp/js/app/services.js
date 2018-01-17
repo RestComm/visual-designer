@@ -407,6 +407,56 @@ angular.module('Rvd').service('webTriggerService', ['$http','$q','$modal', funct
 	return service;
 }]);
 
+angular.module('Rvd').factory('parametersResource', function ($resource) {
+  return $resource('api/projects/:applicationSid/parameters', {}, {
+    update: {
+      method: "PUT"
+    }
+  });
+});
+
+angular.module('Rvd').service('parametersService', function ($q,$modal,parametersResource) {
+	//console.log("Creating webTriggerService");
+	var service = {};
+
+	function parametersModalCtrl ($scope, applicationSid, parameters, $modalInstance, notifications, parametersResource) {
+	  $scope.applicationSid = applicationSid;
+	  $scope.parametersResponse = parameters;
+
+		$scope.save = function (applicationSid ) {
+		  parametersResource.update({applicationSid: applicationSid}, $scope.parametersResponse, function () {
+		    $modalInstance.close();
+		  }, function () {
+		    notifications.put("Error saving project parameters")
+		  });
+		}
+		$scope.cancel = function () {
+			$modalInstance.close();
+		}
+	}
+
+	service.showModal = function(applicationSid) {
+		var modalInstance = $modal.open({
+			  templateUrl: 'templates/parametersModal.html',
+			  controller: parametersModalCtrl,
+			  size: 'lg',
+			  resolve: {
+          parameters: function (parametersResource) {
+            return parametersResource.get({applicationSid: applicationSid});
+          },
+          applicationSid: function () {
+            return applicationSid;
+          }
+			  }
+			});
+
+			modalInstance.result.then(function (ccInfo) {
+			}, function () {});
+	}
+
+	return service;
+});
+
 
 angular.module('Rvd').service('projectLogService', ['$http','$q','$stateParams', 'notifications', function ($http,$q,$stateParams,notifications) {
 	var service = {};
