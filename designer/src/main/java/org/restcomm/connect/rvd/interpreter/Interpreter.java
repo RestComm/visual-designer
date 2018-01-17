@@ -30,6 +30,7 @@ import org.restcomm.connect.rvd.interpreter.exceptions.InvalidAccessOperationAct
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
+import org.restcomm.connect.rvd.model.ProjectParameters;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.StepJsonDeserializer;
 import org.restcomm.connect.rvd.model.project.Node;
@@ -60,6 +61,7 @@ public class Interpreter {
     private LoggingContext loggingContext;
     private ProjectSettings projectSettings;
     private ProjectIndex projectOptions;
+    private ProjectParameters projectParameters;
     private ProjectDao projectDao;
 
     private Gson gson;
@@ -81,7 +83,7 @@ public class Interpreter {
     }
 
 
-    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, ApplicationContext applicationContext, LoggingContext loggingContext, CustomLogger projectLogger, ProjectSettings projectSettings, ProjectIndex projectOptions, ProjectDao projectDao) throws StorageException {
+    public Interpreter(String appName, HttpServletRequest httpRequest, MultivaluedMap<String, String> requestParams, ApplicationContext applicationContext, LoggingContext loggingContext, CustomLogger projectLogger, ProjectSettings projectSettings, ProjectIndex projectOptions, ProjectDao projectDao, ProjectParameters projectParameters) throws StorageException {
         this.httpRequest = httpRequest;
         this.targetParam = requestParams.getFirst("target");
         this.appName = appName;
@@ -91,6 +93,7 @@ public class Interpreter {
         this.loggingContext = loggingContext;
         this.projectSettings = projectSettings;
         this.projectOptions = projectOptions;
+        this.projectParameters = projectParameters;
         this.projectDao = projectDao;
 
         this.contextPath = httpRequest.getContextPath();
@@ -102,6 +105,8 @@ public class Interpreter {
 
         processBootstrapParameters();
         processRequestParameters();
+        // We process project parameters at the end so that their names override any conflicting variable names
+        processProjectParameters();
         //processRequestHeaders(httpRequest);
         //handleStickyParameters(); // create local copies of sticky_* parameters
     }
@@ -578,6 +583,14 @@ public class Interpreter {
                 //for the rest of the parameters simply create a variable with the same name
                 String variableValue = getRequestParams().getFirst(anyVariableName);
                 getVariables().put(anyVariableName, variableValue );
+            }
+        }
+    }
+
+    private void processProjectParameters() {
+        if (projectParameters != null && projectParameters.getParameters() != null) {
+            for (ProjectParameters.Parameter parameter: projectParameters.getParameters()) {
+                getVariables().put(parameter.getName(), parameter.getValue());
             }
         }
     }

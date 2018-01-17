@@ -7,6 +7,7 @@ import org.restcomm.connect.rvd.concurrency.ResidentProjectInfo;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.logging.ProjectLogger;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
+import org.restcomm.connect.rvd.model.ProjectParameters;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.storage.ProjectDao;
@@ -24,6 +25,7 @@ public class ProjectAwareRvdContext extends RvdContext {
     private ProjectLogger projectLogger;
     private ProjectSettings projectSettings;
     private ProjectIndex projectOptions; // project options that is loaded on-demand
+    private ProjectParameters projectParameters;
 
     public ProjectAwareRvdContext(String projectName, ResidentProjectInfo residentInfo, HttpServletRequest request, ServletContext servletContext, RvdConfiguration configuration, LoggingContext loggingPrefix, ProjectDao projectDao) throws ProjectDoesNotExist {
         super(request, servletContext, configuration, loggingPrefix);
@@ -40,6 +42,8 @@ public class ProjectAwareRvdContext extends RvdContext {
             if (this.projectSettings == null) { // if there are no settings yet, create default settings
                 this.projectSettings = ProjectSettings.createDefault();
             }
+            this.projectParameters = projectDao.loadProjectParameters(projectName);
+
         } catch (StorageException e) {
             throw new RuntimeException(e); // serious error
         }
@@ -60,5 +64,9 @@ public class ProjectAwareRvdContext extends RvdContext {
 
     public ProjectIndex getProjectOptions() {
         return projectOptions;
+    }
+
+    public ProjectParameters getProjectParameters() {
+        return projectParameters;
     }
 }

@@ -13,7 +13,6 @@ import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
-import org.restcomm.connect.rvd.utils.CustomizableRvdConfiguration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
@@ -84,7 +83,8 @@ public class StepTestBase {
                 new MockedCustomLogger(),
                 ProjectSettings.createDefault(),
                 null,
-                dao
+                dao,
+                null
         );
         return interpreter;
 
