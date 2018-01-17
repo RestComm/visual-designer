@@ -867,6 +867,7 @@ public class ProjectRestService extends SecuredRestService {
      * @return
      */
     @GET
+    @Produces({"application/json"})
     @Path("{applicationSid}/parameters")
     public Response getProjectParameters(@PathParam("applicationSid") String applicationSid) {
         secure();
@@ -893,6 +894,7 @@ public class ProjectRestService extends SecuredRestService {
      * @return
      */
     @PUT
+    @Produces({"application/json"})
     @Path("{applicationSid}/parameters")
     public Response storeProjectParameters(@PathParam("applicationSid") String applicationSid) {
         secure();
