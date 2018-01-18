@@ -23,7 +23,7 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
 		editedNodes.setActiveNode(nodeName);
 	}
 	$scope.setStartNode = function (name) {
-		console.log( 'set start node to ' + name );
+		//console.log( 'set start node to ' + name );
 		$scope.project.startNodeName = name;
 	}
 	$scope.getEditedNodeNames = function () {
