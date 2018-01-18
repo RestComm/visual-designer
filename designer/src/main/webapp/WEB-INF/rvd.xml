@@ -18,7 +18,7 @@
 
 		Required: yes
 	-->
-	<workspaceLocation>/home/nando/telestax/RVDWorkspace</workspaceLocation>
+	<workspaceLocation>workspace</workspaceLocation>
 	
 	<!-- Absolute or relative path on which the workspace backups will be created.
 	The value of the element "workspaceBackupLocation" must be different than the value of the
