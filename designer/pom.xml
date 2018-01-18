@@ -165,6 +165,54 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<warSourceDirectory>
+						${basedir}/target/dist
+					</warSourceDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>1.6</version>
+
+				<executions>
+					<execution>
+						<id>install node and npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<configuration>
+							<nodeVersion>v4.6.0</nodeVersion>
+							<npmVersion>2.15.9</npmVersion>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>grunt</id>
+						<goals>
+							<goal>grunt</goal>
+						</goals>
+						<configuration>
+							<arguments>--no-color</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- for aruilian -->
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>

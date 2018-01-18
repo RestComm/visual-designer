@@ -1,7 +1,16 @@
 .classpath
 .project
-.idea
-target
-src/test/node_modules
-**/*.iml
 **/*~
+
+
+# IntelliJ Files
+**/*.iml
+.idea
+
+# Output Files
+target
+
+# Node Files
+node
+node_modules
+src/test/node_modules
