@@ -292,7 +292,7 @@ angular.module('Rvd').service('projectSettingsService', ['$http','$q','$modal', 
 
 			modalInstance.result.then(function (projectSettings) {
 				service.refresh(applicationSid);
-				console.log(projectSettings);
+				//console.log(projectSettings);
 			}, function () {});
 	}
 

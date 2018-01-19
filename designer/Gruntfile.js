@@ -30,7 +30,7 @@ module.exports = function(grunt) {
           Rvd: {
             cwd:      'target/dist',
             src:      'templates/**/*.html',
-            dest:     'target/dist/app.js',
+            dest:     'target/dist/js/app/scriptedTemplates.js',
             options:    {
               append: true
             }
