@@ -1,0 +1,1 @@
+{"lastStepId":1,"nodes":[{"name":"start","label":"Welcome","kind":"sms","steps":[{"text":"echo: $core_Body","to":"$core_From","from":"$core_To","kind":"sms","label":"sms","title":"sms","name":"step1"}]}],"lastNodeId":0,"header":{"projectKind":"sms","startNodeName":"start","version":"1.14","owner":"administrator@company.com"}}

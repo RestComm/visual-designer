@@ -1,0 +1,8 @@
+{
+  "id": "TLfa6f0582b7b04930a25a5e763d3e3480",
+  "name": "SMS Echo",
+  "description": "Echoes an SMS message back to its sender (Restcomm SMS support should be enabled)",
+  "tags": [
+    "sms"
+  ]
+}
