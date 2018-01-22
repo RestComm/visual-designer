@@ -1,9 +1,10 @@
-var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration, versionChecker) {
+var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration, versionChecker, projectParameters, parametersService) {
 
 	$scope.project = project;
 	$scope.visibleNodes = editedNodes.getEditedNodes();
 	$scope.showGraph = false;
 	$scope.videoSupport = RvdConfiguration.videoSupport;
+	$scope.firstTime = $stateParams.firstTime && ($stateParams.firstTime.toLowerCase() == "true");
 
 	function download(applicationSid,projectName) {
 	    var downloadUrl =  '/restcomm-rvd/services/projects/' + applicationSid + '/archive?projectName=' + projectName;
@@ -395,6 +396,15 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
       $scope.showGraph = data.status;
   });
 
+  // apply 'firstTime policy
+  if ($scope.firstTime) {
+    $scope.editAllNodes(nodeRegistry.getNodes());
+    $scope.setActiveNode(project.startNodeName);
+    if (projectParameters.parameters.length > 0) { // if there are also parameters available, show popup
+      parametersService.showModal($scope.applicationSid);
+    }
+  }
+
 
 	/* USSDSay / USSDCollect functions */
 
@@ -463,50 +473,6 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
 	$scope.removeNestedMessage = function (step,nested) {
 		step.messages.splice( step.messages.indexOf(nested), 1 );
 	}
-
-
-
-	// Exception controller & functionality
-	/*
-	var exceptionConfigCtrl = function ($scope, $modalInstance, projectModules) {
-		$scope.moduleSummary = projectModules.getModuleSummary();
-		$scope.exceptionMappings = [];
-
-
-		$scope.addExceptionMapping = function() {
-			$scope.exceptionMappings.push({exceptionName:undefined, next:undefined});
-		}
-		$scope.removeExceptionMapping = function (mapping) {
-			$scope.exceptionMappings.splice($scope.exceptionMappings.indexOf(mapping), 1);
-		}
-
-		$scope.ok = function () {
-			$modalInstance.close($scope.exceptionMappings);
-		};
-
-		$scope.cancel = function () {
-		$modalInstance.dismiss('cancel');
-		};
-	};
-	$scope.showExceptionConfig = function () {
-		var modalInstance = $modal.open({
-			templateUrl: 'templates/exceptionConfigModal.html',
-			controller: exceptionConfigCtrl,
-			size: 'lg',
-			// resolve: {
-			// items: function () {
-			// return $scope.items;
-			// }
-			// }
-		});
-
-		modalInstance.result.then(function (exceptionMappings) {
-			console.log(exceptionMappings);
-		}, function () {
-			// $log.info('Modal dismissed at: ' + new Date());
-		});
-	}
-	*/
 
 	// Run the following after all initialization are complete
 

@@ -74,7 +74,8 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     	controller : 'forbiddenCtrl'
     });
     $stateProvider.state('root.rvd.designer', {
-        url: '/designer/:applicationSid=:projectName',
+        // parameters following the '?' are optional (and follow the typical query syntax (beore the fragment) - i.e. #/designer/AP73926e7113fa4d95981aa96b76eca854=rvdCollectVerbDemo?firstTime=true
+        url: '/designer/:applicationSid=:projectName?firstTime',
         views: {
             'container@': {
                 templateUrl : 'templates/designer.html',
@@ -91,7 +92,10 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
                 return designerService.openProject($stateParams.applicationSid);
             },
             bundledWavs: function(designerService,authorize) {
-                return designerService.getBundledWavs()
+                return designerService.getBundledWavs();
+            },
+            projectParameters: function(parametersResource, $stateParams, authorize) {
+                return parametersResource.get({applicationSid: $stateParams.applicationSid});
             }
         }
     });

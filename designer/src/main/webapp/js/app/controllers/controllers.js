@@ -84,7 +84,7 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
     });
 });
 
-angular.module('Rvd').controller('designerMainmenuCtrl', function ($scope, $stateParams, project,$rootScope, designerService, projectSettingsService, parametersService, parametersResource) {
+angular.module('Rvd').controller('designerMainmenuCtrl', function ($scope, $stateParams, project,$rootScope, designerService, projectSettingsService, parametersService, projectParameters) {
 	$scope.projectName = $stateParams.projectName;
 	$scope.applicationSid = $stateParams.applicationSid;
     $scope.project = project;
@@ -97,11 +97,9 @@ angular.module('Rvd').controller('designerMainmenuCtrl', function ($scope, $stat
 	  parametersService.showModal($scope.applicationSid);
 	}
 
-	parametersResource.get({applicationSid: $stateParams.applicationSid},function (data) {
-    if (data.parameters.length > 0) {
-      $scope.showParametersButton = true;
-    }
-  });
+  if (projectParameters.parameters.length > 0) {
+    $scope.showParametersButton = true;
+  }
 
 	$scope.toggleShowGraph = function () {
 	    $scope.showGraph = !$scope.showGraph;
