@@ -78,12 +78,12 @@ public class MemoryProjectDao implements ProjectDao {
     }
 
     @Override
-    public void createProjectFromLocation(String applicationId, String sourcePath) throws StorageException {
+    public void createProjectFromLocation(String applicationId, String sourcePath, String owner) throws StorageException {
 
     }
 
     @Override
-    public void createProjectFromTemplate(String applicationId, String templateId, String projectAlias, ProjectTemplateDao templateDao) throws StorageException {
+    public void createProjectFromTemplate(String applicationId, String templateId, String projectAlias, ProjectTemplateDao templateDao, String owner) throws StorageException {
 
     }
 

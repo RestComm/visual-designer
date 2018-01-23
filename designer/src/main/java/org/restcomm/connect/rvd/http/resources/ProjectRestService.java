@@ -270,7 +270,7 @@ public class ProjectRestService extends SecuredRestService {
         // first create the restcomm application to get an appId
         ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(),applicationContext,restcommBaseUrl);
         String applicationId = applicationsApi.createApplication(projectName, kind.toString());
-        projectDao.createProjectFromTemplate(applicationId, template.getId(), "main", templateDao);
+        projectDao.createProjectFromTemplate(applicationId, template.getId(), "main", templateDao, getLoggedUsername() );
         // upgrade project if needed
         UpgradeService upgradeService = new UpgradeService(workspaceStorage);
         upgradeService.upgradeProject(applicationId);

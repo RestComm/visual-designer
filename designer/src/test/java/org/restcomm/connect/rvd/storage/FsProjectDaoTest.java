@@ -113,9 +113,10 @@ public class FsProjectDaoTest extends FsDaoTestBase {
         File project2 = TestUtils.createProjectWithMedia(projectName, "orestis", workspaceDir, marshaler, configuration);
 
         String clonedProject = "APclonedProject";
-        dao.createProjectFromLocation(clonedProject, project2.getPath());
+        dao.createProjectFromLocation(clonedProject, project2.getPath(), "orestis2" );
         // check everything is in place in the cloned project
         ProjectState state = dao.loadProject(clonedProject);
+        Assert.assertEquals("orestis2", state.getHeader().getOwner());
         Assert.assertNotNull(state);
         List<WavItem> media = dao.listMedia(clonedProject);
         Assert.assertEquals(2, media.size());

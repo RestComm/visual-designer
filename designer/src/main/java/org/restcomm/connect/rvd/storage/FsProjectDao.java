@@ -117,16 +117,20 @@ public class FsProjectDao implements ProjectDao {
      * identifier.
      *
      * Note, source path points at the project directory itself
-     *
-     * @param applicationId
+     *  @param applicationId
      * @param sourcePath
+     * @param owner
      */
     @Override
-    public void createProjectFromLocation(String applicationId, String sourcePath) throws StorageException {
+    public void createProjectFromLocation(String applicationId, String sourcePath, String owner) throws StorageException {
         // create a directory in the filesystem to host the new project
         FsProjectStorage.createProjectSlot(applicationId, workspaceStorage);
         // create state and project structure
         ProjectState projectState = workspaceStorage.loadEntity("state", sourcePath, ProjectState.class);
+        if (owner != null) {
+            projectState.getHeader().setOwner(owner);
+        }
+
         FsProjectStorage.storeProject(true, projectState, applicationId, workspaceStorage);
         // copy project settings
         try {
@@ -151,9 +155,9 @@ public class FsProjectDao implements ProjectDao {
     }
 
     @Override
-    public void createProjectFromTemplate(String applicationId, String templateId, String projectAlias, ProjectTemplateDao templateDao) throws StorageException {
+    public void createProjectFromTemplate(String applicationId, String templateId, String projectAlias, ProjectTemplateDao templateDao, String owner) throws StorageException {
         String sourceProjectPath = ((FsProjectTemplateDao)templateDao).resolveTemplateProjectPath(templateId, projectAlias);
-        createProjectFromLocation(applicationId, sourceProjectPath);
+        createProjectFromLocation(applicationId, sourceProjectPath, owner );
     }
 
     /**

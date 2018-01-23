@@ -71,9 +71,9 @@ public interface ProjectDao {
 
     void createProject(String applicationId, ProjectState projectState) throws StorageException;
 
-    void createProjectFromLocation(String applicationId, String sourcePath ) throws StorageException;
+    void createProjectFromLocation(String applicationId, String sourcePath, String owner) throws StorageException;
 
-    void createProjectFromTemplate(String applicationId, String templateId, String projectAlias, ProjectTemplateDao templateDao) throws StorageException;
+    void createProjectFromTemplate(String applicationId, String templateId, String projectAlias, ProjectTemplateDao templateDao, String owner) throws StorageException;
 
     List<WavItem> listMedia(String applicationId) throws StorageException;
 

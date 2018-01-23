@@ -55,7 +55,7 @@ public class TemplatesRestServiceTest extends RestServiceTest {
         Assert.assertTrue(root.isJsonObject());
         JsonElement results = root.getAsJsonObject().get("results");
         Assert.assertTrue(results.isJsonArray());
-        Assert.assertEquals(1, results.getAsJsonArray().size());
+        Assert.assertEquals(3, results.getAsJsonArray().size());
     }
 
     @Deployment(name = "TemplatesRestServiceTest", managed = true, testable = false)
