@@ -1,7 +1,7 @@
 {
   "id": "TL4d93e3a918ef4f89bbe5ae524c2400e8",
-  "name": "USSD menu",
-  "description": "A minimal USSD menu (Restcomm support for USSD should be enabled)",
+  "name": "USSD friend teller",
+  "description": "A user friendly USSD application (Restcomm support for USSD should be enabled)",
   "tags": [
     "ussd"
   ]
