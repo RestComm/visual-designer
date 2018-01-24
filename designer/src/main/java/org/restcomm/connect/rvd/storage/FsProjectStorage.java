@@ -22,7 +22,6 @@ package org.restcomm.connect.rvd.storage;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -58,8 +57,6 @@ import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.storage.exceptions.WavItemDoesNotExist;
 import org.restcomm.connect.rvd.utils.RvdUtils;
-import org.restcomm.connect.rvd.utils.Zipper;
-import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -148,7 +145,6 @@ public class FsProjectStorage {
         storage.storeEntity(state, "state", projectName);
         if (firstTime)
             buildDirStructure(state, projectName, storage);
-
     }
 
     public static StateHeader loadStateHeader(String projectName, WorkspaceStorage storage) throws StorageException {
@@ -194,90 +190,12 @@ public class FsProjectStorage {
         }
     }
 
-    public static InputStream archiveProject(String projectName, WorkspaceStorage storage) throws StorageException {
-        String path = storage.rootPath + File.separator + projectName; //storageBase.getProjectBasePath(projectName);
-        File tempFile;
-        try {
-            tempFile = File.createTempFile("RVDprojectArchive",".zip");
-        } catch (IOException e1) {
-            throw new StorageException("Error creating temp file for archiving project " + projectName, e1);
-        }
-
-        InputStream archiveStream;
-        try {
-            Zipper zipper = new Zipper(tempFile);
-            zipper.addDirectoryRecursively(path, false);
-            zipper.finish();
-
-            // open a stream on this file
-            archiveStream = new FileInputStream(tempFile);
-            return archiveStream;
-        } catch (ZipperException e) {
-            throw new StorageException( "Error archiving " + projectName, e);
-        } catch (FileNotFoundException e) {
-            throw new StorageException("This is weird. Can't find the temp file i just created for archiving project " + projectName, e);
-        } finally {
-            // Always delete the file. The underlying file content still exists because the archiveStream refers to it (for Linux only). It will be deleted when the stream is closed
-            tempFile.delete();
-        }
-    }
-
-    /**
-     * Returns an non-existing project name based on the given one. Ideally it returns the same name. If null or blank
-     * project name given the 'Untitled' name is tried.
-     * @throws StorageException in case the first 50 project names tried are already occupied
-     */
-    public static String getAvailableProjectName(String projectName, WorkspaceStorage storage) throws StorageException {
-        if ( projectName == null || "".equals(projectName) )
-            projectName = "Unititled";
-
-        String baseProjectName = projectName;
-        int counter = 1;
-        while (true && counter < 50) { // try up to 50 times, no more
-            if ( ! projectExists(projectName,storage) )
-                return projectName;
-            projectName = baseProjectName + " " +  counter;
-            counter ++;
-        }
-
-        throw new StorageException("Can't find an available project name for base name '" + projectName + "'");
-    }
-
-    public static void importProjectFromDirectory(File sourceProjectDirectory, String projectName, boolean overwrite, WorkspaceStorage storage) throws StorageException {
-        try {
-            createProjectSlot(projectName, storage);
-        } catch (ProjectAlreadyExists e) {
-            if ( !overwrite )
-                throw e;
-            else {
-                File destProjectDirectory = new File(storage.rootPath + File.separator + projectName);
-                try {
-                    FileUtils.cleanDirectory(destProjectDirectory);
-                    FileUtils.copyDirectory(sourceProjectDirectory, destProjectDirectory);
-                } catch (IOException e1) {
-                    throw new StorageException("Error importing project '" + projectName + "' from directory: " + sourceProjectDirectory);
-                }
-            }
-        }
-    }
-
     private static String getProjectBasePath(String projectName, WorkspaceStorage storage) {
         return storage.rootPath + File.separator + projectName;
     }
 
     private static String getProjectWavsPath( String projectName, WorkspaceStorage storage ) {
         return getProjectBasePath(projectName,storage) + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME;
-    }
-
-    public static void storeWav(String projectName, String wavname, InputStream wavStream, WorkspaceStorage storage, Integer maxSize) throws StorageException, StreamDoesNotFitInFile {
-        String wavPathname = getProjectWavsPath(projectName, storage) + File.separator + wavname;
-        if(logger.isDebugEnabled())
-            logger.log(Level.DEBUG, LoggingHelper.buildMessage(FsProjectStorage.class,"storeWav", "writing wav file to {0}", wavPathname));
-        try {
-            RvdUtils.streamToFile(wavStream, new File(wavPathname), maxSize);
-        } catch (IOException e) {
-            throw new StorageException("Error writing to " + wavPathname, e);
-        }
     }
 
     public static List<WavItem> listWavs(String projectName, WorkspaceStorage storage) throws StorageException {

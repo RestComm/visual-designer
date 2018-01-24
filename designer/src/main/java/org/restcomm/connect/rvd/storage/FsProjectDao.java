@@ -1,7 +1,13 @@
 package org.restcomm.connect.rvd.storage;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.restcomm.connect.rvd.RvdConfiguration;
+import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
+import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
+import org.restcomm.connect.rvd.logging.system.LoggingHelper;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.CallControlInfo;
 import org.restcomm.connect.rvd.model.ProjectParameters;
 import org.restcomm.connect.rvd.model.ProjectSettings;
@@ -11,10 +17,16 @@ import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
+import org.restcomm.connect.rvd.utils.RvdUtils;
+import org.restcomm.connect.rvd.utils.Zipper;
+import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,6 +37,8 @@ import java.util.List;
  */
 public class FsProjectDao implements ProjectDao {
 
+    static Logger logger = RvdLoggers.local;
+
     WorkspaceStorage workspaceStorage;
 
     public FsProjectDao(WorkspaceStorage workspaceStorage) {
@@ -33,6 +47,11 @@ public class FsProjectDao implements ProjectDao {
 //        }
 //        this.applicationName = applicationName;
         this.workspaceStorage = workspaceStorage;
+    }
+
+    @Override
+    public boolean projectExists(String applicationId) {
+        return workspaceStorage.entityExists(applicationId, "state");
     }
 
     @Override
@@ -198,6 +217,58 @@ public class FsProjectDao implements ProjectDao {
     @Override
     public void storeProjectParameters(String applicationId, ProjectParameters parameters) throws StorageException {
         workspaceStorage.storeEntity(parameters, ProjectParameters.class, "parameters", applicationId);
+    }
+
+    @Override
+    public void removeProject(String applicationId) throws ProjectDoesNotExist, StorageException {
+        FsProjectStorage.deleteProject(applicationId,workspaceStorage);
+    }
+
+    @Override
+    public void updateProjectState(String applicationId, ProjectState state) throws StorageException {
+        workspaceStorage.storeEntity(state, "state", applicationId);
+    }
+
+
+    @Override
+    public InputStream archiveProject(String projectName) throws StorageException {
+        String path = workspaceStorage.resolveWorkspacePath(projectName);
+        File tempFile;
+        try {
+            tempFile = File.createTempFile("RVDprojectArchive",".zip");
+        } catch (IOException e1) {
+            throw new StorageException("Error creating temp file for archiving project " + projectName, e1);
+        }
+
+        InputStream archiveStream;
+        try {
+            Zipper zipper = new Zipper(tempFile);
+            zipper.addDirectoryRecursively(path, false);
+            zipper.finish();
+
+            // open a stream on this file
+            archiveStream = new FileInputStream(tempFile);
+            return archiveStream;
+        } catch (ZipperException e) {
+            throw new StorageException( "Error archiving " + projectName, e);
+        } catch (FileNotFoundException e) {
+            throw new StorageException("This is weird. Can't find the temp file i just created for archiving project " + projectName, e);
+        } finally {
+            // Always delete the file. The underlying file content still exists because the archiveStream refers to it (for Linux only). It will be deleted when the stream is closed
+            tempFile.delete();
+        }
+    }
+
+    @Override
+    public void storeWav(String projectName, String wavname, InputStream wavStream, Integer maxSize) throws StorageException, StreamDoesNotFitInFile {
+        String wavPathname = workspaceStorage.resolveWorkspacePath(projectName + File.separator +  RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + wavname);
+        if(logger.isDebugEnabled())
+            logger.log(Level.DEBUG, LoggingHelper.buildMessage(FsProjectStorage.class,"storeWav", "writing wav file to {0}", wavPathname));
+        try {
+            RvdUtils.streamToFile(wavStream, new File(wavPathname), maxSize);
+        } catch (IOException e) {
+            throw new StorageException("Error writing to " + wavPathname, e);
+        }
     }
 
     /**

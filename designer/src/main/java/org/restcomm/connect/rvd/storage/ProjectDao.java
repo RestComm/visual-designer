@@ -1,5 +1,7 @@
 package org.restcomm.connect.rvd.storage;
 
+import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
+import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 import org.restcomm.connect.rvd.model.CallControlInfo;
 import org.restcomm.connect.rvd.model.ProjectParameters;
 import org.restcomm.connect.rvd.model.ProjectSettings;
@@ -9,6 +11,7 @@ import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -17,6 +20,14 @@ import java.util.List;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public interface ProjectDao {
+
+    /**
+     * Returns true if the project contains a 'state' entity.
+     *
+     * @param applicationId
+     * @return boolean
+     */
+    boolean projectExists(String applicationId);
 
     /**
      * Loads and parses the project state data. Returns the parsed ProjectState object or null if the project is not found.
@@ -80,4 +91,13 @@ public interface ProjectDao {
     ProjectParameters loadProjectParameters(String applicationId) throws StorageException;
 
     void storeProjectParameters(String applicationId, ProjectParameters parameters) throws StorageException;
+
+    void removeProject(String applicationId) throws ProjectDoesNotExist, StorageException;
+
+    void updateProjectState(String applicationId, ProjectState state) throws StorageException;
+
+    InputStream archiveProject(String projectName) throws StorageException;
+
+    void storeWav(String projectName, String wavname, InputStream wavStream, Integer maxSize) throws StorageException, StreamDoesNotFitInFile;
+
 }

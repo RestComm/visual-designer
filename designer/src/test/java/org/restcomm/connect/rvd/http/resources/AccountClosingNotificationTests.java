@@ -60,7 +60,7 @@ public class AccountClosingNotificationTests extends RestServiceMockedTest {
         createProject("APB0002","sub2@company.com");
         createProject("APB0003","orestis@company.com");
 
-        projectService = new ProjectHelper(configuration,storage,marshaler,"/restcomm-rvd");
+        projectService = new ProjectHelper(configuration,storage,marshaler,"/restcomm-rvd", );
     }
 
     @After

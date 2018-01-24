@@ -74,8 +74,7 @@ public abstract class RvdProject {
         return null;
     }
 
-    public static RvdProject fromJson(String name, String projectJson) throws RvdException {
-        ProjectState state = toModel(projectJson);
+    public static RvdProject fromState(String name, ProjectState state) throws RvdException {
         String kind = state.getHeader().getProjectKind();
         RvdProject project = null;
         if ( "voice".equals(kind) ) {

@@ -13,6 +13,7 @@ import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.stats.AppStatsDto;
 import org.restcomm.connect.rvd.stats.AggregateStats;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
+import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -133,7 +134,8 @@ public class StatsRestService extends SecuredRestService {
         secure();
         // make sure the project exists
         WorkspaceStorage workspace = new WorkspaceStorage(config.getWorkspaceBasePath(), null); //  no need for marshaller for checking project existence
-        if (! FsProjectStorage.projectExists(appId, workspace))
+        ProjectDao projectDao = buildProjectDao(workspace);
+        if (projectDao.projectExists(appId))
             throw new ProjectDoesNotExist(appId);
         // get project owner
         StateHeader projectHeader = FsProjectStorage.loadStateHeader(appId, workspace);

@@ -133,7 +133,7 @@ public class ProjectRestService extends SecuredRestService {
         configuration = rvdContext.getConfiguration();
         marshaler = rvdContext.getMarshaler();
         workspaceStorage = new WorkspaceStorage(configuration.getWorkspaceBasePath(), marshaler);
-        projectService = new ProjectHelper(rvdContext, workspaceStorage);
+        projectService = new ProjectHelper(rvdContext, workspaceStorage, buildProjectDao(workspaceStorage)); // TODO this creates duplicate project dao (the other instance is created in each individual method call). We should remove one of them at the end
     }
 
     public ProjectRestService() {
@@ -574,7 +574,8 @@ public class ProjectRestService extends SecuredRestService {
                 try {
                     ProjectApplicationsApi applicationsApi = new ProjectApplicationsApi(getUserIdentityContext(), applicationContext, restcommBaseUrl);
                     applicationsApi.removeApplication(applicationSid);
-                    projectService.deleteProject(applicationSid);
+                    ProjectDao dao = buildProjectDao(workspaceStorage);
+                    dao.removeProject(applicationSid);
                     if (RvdLoggers.local.isEnabledFor(Level.INFO))
                         RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "deleteProject", logging.getPrefix(), "project removed"));
                     return Response.ok().build();
@@ -609,7 +610,7 @@ public class ProjectRestService extends SecuredRestService {
 
         InputStream archiveStream;
         try {
-            archiveStream = projectService.archiveProject(applicationSid);
+            archiveStream = projectDao.archiveProject(applicationSid);
             String dispositionHeader = "attachment; filename*=UTF-8''" + RvdUtils.myUrlEncode(projectName + ".zip");
             return Response.ok(archiveStream, "application/zip").header("Content-Disposition", dispositionHeader).build();
         } catch (StorageException e) {
@@ -672,7 +673,7 @@ public class ProjectRestService extends SecuredRestService {
                             return Response.status(Status.BAD_REQUEST).entity("{\"error\":\"FILE_EXT_NOT_ALLOWED\"}").build();
                         }
                         try {
-                            projectService.addWavToProject(applicationSid, filename, item.openStream());
+                            projectDao.storeWav(applicationSid,filename, item.openStream(),configuration.getMaxMediaFileSize());
                         } catch (StreamDoesNotFitInFile e) {
                             // Oops, the uploaded file is too big. Back off..
                             Integer maxSize = rvdContext.getConfiguration().getMaxMediaFileSize();
@@ -893,8 +894,4 @@ public class ProjectRestService extends SecuredRestService {
         }
     }
 
-    protected ProjectDao buildProjectDao(WorkspaceStorage storage) {
-        ProjectDao dao = new FsProjectDao(storage);
-        return dao;
-    }
 }

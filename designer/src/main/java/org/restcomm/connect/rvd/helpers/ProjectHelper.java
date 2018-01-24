@@ -21,6 +21,8 @@
 package org.restcomm.connect.rvd.helpers;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,10 +53,12 @@ import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.model.project.RvdProject;
+import org.restcomm.connect.rvd.storage.FsProjectDao;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
+import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
-import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
+import org.restcomm.connect.rvd.storage.exceptions.ProjectAlreadyExists;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.storage.exceptions.WavItemDoesNotExist;
 import org.restcomm.connect.rvd.upgrade.UpgradeService;
@@ -70,6 +74,8 @@ import org.apache.commons.io.IOUtils;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import org.restcomm.connect.rvd.utils.Zipper;
+import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
 
 public class ProjectHelper {
 
@@ -81,19 +87,22 @@ public class ProjectHelper {
     WorkspaceStorage workspaceStorage;
     ModelMarshaler marshaler;
     String servletContextPath;
+    ProjectDao projectDao;
 
-    public ProjectHelper(RvdContext rvdContext, WorkspaceStorage workspaceStorage) {
+    public ProjectHelper(RvdContext rvdContext, WorkspaceStorage workspaceStorage, ProjectDao projectDao) {
         this.servletContextPath = rvdContext.getServletContext().getContextPath();
         this.configuration = rvdContext.getConfiguration();
         this.workspaceStorage = workspaceStorage;
         this.marshaler = rvdContext.getMarshaler();
+        this.projectDao = projectDao;
     }
 
-    public ProjectHelper(RvdConfiguration configuration, WorkspaceStorage workspaceStorage, ModelMarshaler marshaler, String servletContextPath) {
+    public ProjectHelper(RvdConfiguration configuration, WorkspaceStorage workspaceStorage, ModelMarshaler marshaler, String servletContextPath, ProjectDao projectDao) {
         this.configuration = configuration;
         this.workspaceStorage = workspaceStorage;
         this.marshaler = marshaler;
         this.servletContextPath = servletContextPath;
+        this.projectDao = projectDao;
     }
 
     // Used for testing. TODO create a ProjectHelper interface, ProjectServiceBuilder and separate implementation
@@ -203,22 +212,11 @@ public class ProjectHelper {
         state.getHeader().setVersion(configuration.RVD_PROJECT_VERSION);
         // preserve project owner
         state.getHeader().setOwner(existingProject.getHeader().getOwner());
-        //projectStorage.storeProject(projectName, state, false);
-        FsProjectStorage.storeProject(false, state, projectName, workspaceStorage);
+        projectDao.updateProjectState(projectName, state);
 
         if ( !validationResult.isSuccess() ) {
             throw new ValidationException(validationResult);
         }
-    }
-
-    public void deleteProject(String projectName) throws ProjectDoesNotExist, StorageException {
-        if (! FsProjectStorage.projectExists(projectName,workspaceStorage))
-            throw new ProjectDoesNotExist();
-        FsProjectStorage.deleteProject(projectName,workspaceStorage);
-    }
-
-    public InputStream archiveProject(String projectName) throws StorageException {
-        return FsProjectStorage.archiveProject(projectName,workspaceStorage);
     }
 
     public void importProjectFromRawArchive(InputStream archiveStream, String applicationSid, String owner) throws RvdException {
@@ -261,17 +259,16 @@ public class ProjectHelper {
                 }
             }
             // project is either compatible or was upgraded
-            ProjectState state = FsProjectStorage.loadProject(tempProjectDir.getName(), tempStorage);
+            ProjectDao tempProjectDao = new FsProjectDao(tempStorage); // this will always happen on the filesystem regardless of implementation of the actual workspace
+            ProjectState state = tempProjectDao.loadProject(tempProjectDir.getName());
             state.getHeader().setOwner(owner);
-            FsProjectStorage.storeProject(false, state, tempProjectDir.getName(), tempStorage);
+            projectDao.updateProjectState(tempProjectDir.getName(), state);
 
-            // TODO Make these an atomic action!
-            suggestedName = FsProjectStorage.getAvailableProjectName(suggestedName, workspaceStorage);
-            FsProjectStorage.createProjectSlot(suggestedName, workspaceStorage);
+            if ( projectDao.projectExists(suggestedName) )
+                throw new ProjectAlreadyExists("Project '" + suggestedName + "' already exists");
+            projectDao.createProjectFromLocation(suggestedName, tempProjectDir.getName(), owner );
 
-            FsProjectStorage.importProjectFromDirectory(tempProjectDir, suggestedName, true, workspaceStorage);
             return suggestedName;
-
         } catch ( UnsupportedProjectVersion e) {
             throw e;
         } catch (Exception e) {
@@ -279,10 +276,6 @@ public class ProjectHelper {
         } finally {
             FileUtils.deleteQuietly(tempProjectDir);
         }
-    }
-
-    public void addWavToProject(String projectName, String wavName, InputStream wavStream) throws StorageException, StreamDoesNotFitInFile {
-        FsProjectStorage.storeWav(projectName, wavName, wavStream, workspaceStorage, configuration.getMaxMediaFileSize());
     }
 
     public List<WavItem> getWavs(String appName) throws StorageException {
@@ -301,13 +294,10 @@ public class ProjectHelper {
      */
 
     public RvdProject load(String projectName) throws RvdException {
-        String projectJson;
-        try {
-            projectJson = FsProjectStorage.loadProjectString(projectName, workspaceStorage);
-        } catch (StorageEntityNotFound e) {
-            throw new ProjectDoesNotExist("Error loading project " + projectName, e);
-        }
-        RvdProject project = RvdProject.fromJson(projectName, projectJson);
+        ProjectState projectState = projectDao.loadProject(projectName);
+        if (projectState == null)
+            throw new ProjectDoesNotExist("Error loading project " + projectName);
+        RvdProject project = RvdProject.fromState(projectName, projectState);
         return project;
     }
 
