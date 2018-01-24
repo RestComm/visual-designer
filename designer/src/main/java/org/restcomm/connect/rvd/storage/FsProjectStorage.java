@@ -42,10 +42,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.restcomm.connect.rvd.helpers.ProjectHelper;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
-import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.RvdContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
@@ -55,7 +53,6 @@ import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
-import org.restcomm.connect.rvd.storage.exceptions.BadWorkspaceDirectoryStructure;
 import org.restcomm.connect.rvd.storage.exceptions.ProjectAlreadyExists;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -63,54 +60,18 @@ import org.restcomm.connect.rvd.storage.exceptions.WavItemDoesNotExist;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.utils.Zipper;
 import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
-import org.restcomm.connect.rvd.model.packaging.Rapp;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import org.restcomm.connect.rvd.model.ProjectSettings;
-import org.restcomm.connect.rvd.model.RappItem;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class FsProjectStorage {
     static Logger logger = RvdLoggers.local;
-
-    public static List<String> listProjectNames(WorkspaceStorage workspaceStorage) throws BadWorkspaceDirectoryStructure {
-        List<String> items = new ArrayList<String>();
-
-        File workspaceDir = new File(workspaceStorage.rootPath );
-        if (workspaceDir.exists()) {
-
-            File[] entries = workspaceDir.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File anyfile) {
-                    if (anyfile.isDirectory() && !anyfile.getName().startsWith(RvdConfiguration.PROTO_DIRECTORY_PREFIX) && !anyfile.getName().equals("@users") )
-                        return true;
-                    return false;
-                }
-            });
-            Arrays.sort(entries, new Comparator<File>() {
-                public int compare(File f1, File f2) {
-                    File statefile1 = new File(f1.getAbsolutePath() + File.separator + "state");
-                    File statefile2 = new File(f2.getAbsolutePath() + File.separator + "state");
-                    if ( statefile1.exists() && statefile2.exists() )
-                        return Long.valueOf(statefile2.lastModified()).compareTo(statefile1.lastModified());
-                    else
-                        return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
-                }
-            });
-
-            for (File entry : entries) {
-                items.add(entry.getName());
-            }
-        } else
-            throw new BadWorkspaceDirectoryStructure();
-
-        return items;
-    }
 
     public static InputStream getWav(String projectName, String filename, WorkspaceStorage workspaceStorage) throws StorageException {
         try {
@@ -124,85 +85,6 @@ public class FsProjectStorage {
         return workspaceStorage.loadEntityString("bootstrap", projectName);
     }
 
-    public static void storeBootstrapInfo(String bootstrapInfo, String projectName, WorkspaceStorage workspaceStorage) throws StorageException {
-        workspaceStorage.storeEntityString(bootstrapInfo, "bootstrap", projectName);
-    }
-
-    public static boolean hasBootstrapInfo(String projectName, WorkspaceStorage workspaceStorage) {
-        return workspaceStorage.entityExists("bootstrap", projectName);
-    }
-
-    public static boolean hasRasInfo(String projectName, WorkspaceStorage workspaceStorage) {
-        return workspaceStorage.entityExists("ras", projectName);
-    }
-
-    public static boolean hasPackagingInfo(String projectName, WorkspaceStorage workspaceStorage) {
-        return workspaceStorage.entityExists("packaging", projectName);
-    }
-
-    public static Rapp loadRappFromPackaging(String projectName, WorkspaceStorage workspaceStorage) throws StorageException {
-        return workspaceStorage.loadEntity("rapp", projectName+"/packaging", Rapp.class);
-    }
-
-    /**
-     * Creates a list of rapp info objects out of a set of projects
-     * @param projectNames
-     * @return
-     * @throws StorageException
-     * @throws ProjectException
-     */
-    public static List<RappItem> listRapps(List<String> projectNames, WorkspaceStorage workspaceStorage, ProjectHelper projectService) throws StorageException, ProjectException {
-        List<RappItem> rapps = new ArrayList<RappItem>();
-        for (String projectName : projectNames) {
-            RappItem item = new RappItem();
-            item.setProjectName(projectName);
-
-            if ( FsProjectStorage.hasRasInfo(projectName, workspaceStorage) ) {
-                item.setWasImported(true);
-
-                // load info from rapp file
-                Rapp rapp = workspaceStorage.loadEntity("rapp", projectName+"/ras", Rapp.class);
-                item.setRappInfo(rapp.getInfo());
-
-                // app status
-                boolean installedStatus = true;
-                boolean configuredStatus = FsProjectStorage.hasBootstrapInfo(projectName, workspaceStorage);
-                boolean activeStatus = installedStatus && configuredStatus;
-                RappItem.RappStatus[] statuses = new RappItem.RappStatus[3];
-                statuses[0] = RappItem.RappStatus.Installed; // always set
-                statuses[1] = configuredStatus ? RappItem.RappStatus.Configured : RappItem.RappStatus.Unconfigured;
-                statuses[2] = activeStatus ? RappItem.RappStatus.Active : RappItem.RappStatus.Inactive;
-                item.setStatus(statuses);
-            } else
-                item.setWasImported(false);
-
-            if ( FsProjectStorage.hasPackagingInfo(projectName, workspaceStorage) ) {
-                item.setHasPackaging(true);
-
-                // load info from rapp file
-                Rapp rapp = workspaceStorage.loadEntity("rapp", projectName+"/packaging", Rapp.class);
-                item.setRappInfo(rapp.getInfo());
-
-                // app status
-                /*boolean installedStatus = true;
-                boolean configuredStatus = FsProjectStorage.hasBootstrapInfo(projectName, workspaceStorage);
-                boolean activeStatus = installedStatus && configuredStatus;
-                RappStatus[] statuses = new RappStatus[3];
-                statuses[0] = RappStatus.Installed; // always set
-                statuses[1] = configuredStatus ? RappStatus.Configured : RappStatus.Unconfigured;
-                statuses[2] = activeStatus ? RappStatus.Active : RappStatus.Inactive;
-                item.setStatus(statuses);
-                */
-            } else
-                item.setHasPackaging(false);
-
-            item.setHasBootstrap(FsProjectStorage.hasBootstrapInfo(projectName, workspaceStorage));
-            item.setStartUrl(projectService.buildStartUrl(projectName));
-
-            rapps.add(item);
-        }
-        return rapps;
-    }
 
     public static ProjectIndex loadProjectOptions(String projectName, WorkspaceStorage workspaceStorage) throws StorageException {
         ProjectIndex projectOptions = workspaceStorage.loadEntity("project", projectName+"/data", ProjectIndex.class);
@@ -247,14 +129,6 @@ public class FsProjectStorage {
         storage.storeEntity(projectSettings, "settings", projectName);
     }
 
-    /*
-    @Override
-    public
-    ProjectState loadProject(String name) throws StorageException {
-        String stateData = storageBase.loadProjectFile(name, ".", "state");
-        return marshaler.toModel(stateData, ProjectState.class);
-    }
-    */
     public static ProjectState loadProject(String projectName, WorkspaceStorage storage) throws StorageException {
         return storage.loadEntity("state", projectName, ProjectState.class);
     }
@@ -311,31 +185,12 @@ public class FsProjectStorage {
 
     }
 
-    public static void renameProject(String projectName, String newProjectName, WorkspaceStorage storage) throws StorageException {
-        try {
-            File sourceDir = new File(storage.rootPath  + File.separator + projectName);
-            File destDir = new File(storage.rootPath  + File.separator + newProjectName);
-            FileUtils.moveDirectory(sourceDir, destDir);
-        } catch (IOException e) {
-            throw new StorageException("Error renaming directory '" + projectName + "' to '" + newProjectName + "'");
-        }
-    }
-
     public static void deleteProject(String projectName, WorkspaceStorage storage) throws StorageException {
         try {
             File projectDir = new File(storage.rootPath  + File.separator + projectName);
             FileUtils.deleteDirectory(projectDir);
         } catch (IOException e) {
             throw new StorageException("Error removing directory '" + projectName + "'", e);
-        }
-    }
-
-    public static void deleteBuiltProjectResources(String projectName, WorkspaceStorage storage) throws StorageException {
-        try {
-            File projectDir = new File(storage.rootPath  + File.separator + projectName + File.separator + "data");
-            FileUtils.deleteDirectory(projectDir);
-        } catch (IOException e) {
-            throw new StorageException("Error removing /data directory for project '" + projectName + "'", e);
         }
     }
 
@@ -412,15 +267,6 @@ public class FsProjectStorage {
 
     private static String getProjectWavsPath( String projectName, WorkspaceStorage storage ) {
         return getProjectBasePath(projectName,storage) + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME;
-    }
-
-    public static void storeWav(String projectName, String wavname, File sourceWavFile, WorkspaceStorage storage) throws StorageException {
-        String destWavPathname = getProjectWavsPath(projectName,storage) + File.separator + wavname;
-        try {
-            FileUtils.copyFile(sourceWavFile, new File(destWavPathname));
-        } catch (IOException e) {
-            throw new StorageException( "Error coping wav file into project " + projectName + ": " + sourceWavFile + " -> " + destWavPathname, e );
-        }
     }
 
     public static void storeWav(String projectName, String wavname, InputStream wavStream, WorkspaceStorage storage, Integer maxSize) throws StorageException, StreamDoesNotFitInFile {
@@ -505,14 +351,6 @@ public class FsProjectStorage {
 
     }
 
-    public static void storeRapp(Rapp rapp, String projectName, WorkspaceStorage storage) throws StorageException {
-        storage.storeEntity(rapp, rapp.getClass(), "rapp", projectName + "/ras");
-    }
-
-    public static Rapp loadRapp(String projectName, WorkspaceStorage storage) throws StorageException {
-        return storage.loadEntity("rapp", projectName+"/ras", Rapp.class);
-    }
-
     public static void backupProjectState(String projectName, WorkspaceStorage storage) throws StorageException {
         File sourceStateFile = new File(storage.rootPath + File.separator + projectName + File.separator + "state");
         File backupStateFile = new File(storage.rootPath + File.separator + projectName + File.separator + "state" + ".old");
@@ -537,10 +375,6 @@ public class FsProjectStorage {
         }
     }
 
-    public static String loadStep(String projectName, String nodeName, String stepName, WorkspaceStorage storage) throws StorageException {
-        //return storageBase.loadProjectFile(projectName, "data", nodeName + "." + stepName);
-        return storage.loadEntityString(nodeName + "." + stepName, projectName+"/data");
-    }
 }
 
 

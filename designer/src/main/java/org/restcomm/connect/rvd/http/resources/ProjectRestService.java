@@ -67,7 +67,6 @@ import org.restcomm.connect.rvd.exceptions.InvalidServiceParameters;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
-import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.exceptions.project.UnsupportedProjectVersion;
 import org.restcomm.connect.rvd.helpers.ProjectParametersHelper;
 import org.restcomm.connect.rvd.http.RvdResponse;
@@ -83,7 +82,6 @@ import org.restcomm.connect.rvd.model.ProjectCreatedDto;
 import org.restcomm.connect.rvd.model.ProjectParameters;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.ProjectTemplate;
-import org.restcomm.connect.rvd.model.client.ProjectItem;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.client.WavItem;
@@ -174,30 +172,6 @@ public class ProjectRestService extends SecuredRestService {
         }
         activeProject = project;
     }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response listProjects(@Context HttpServletRequest request) {
-        secure();
-        List<ProjectItem> items;
-        try {
-            items = projectService.getAvailableProjectsByOwner(getLoggedUsername());
-            projectService.fillStartUrlsForProjects(items, request);
-        } catch (BadWorkspaceDirectoryStructure e) {
-            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-        } catch (StorageException e) {
-            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-        } catch (ProjectException e) {
-            RvdLoggers.local.log(Level.ERROR, logging.getPrefix(),e );
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-        }
-
-        Gson gson = new Gson();
-        return Response.ok(gson.toJson(items), MediaType.APPLICATION_JSON).build();
-    }
-
 
     /**
      * Creates a new project

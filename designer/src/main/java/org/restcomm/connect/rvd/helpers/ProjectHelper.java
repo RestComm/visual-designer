@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +38,6 @@ import org.restcomm.connect.rvd.exceptions.InvalidServiceParameters;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
-import org.restcomm.connect.rvd.exceptions.project.ProjectException;
 import org.restcomm.connect.rvd.exceptions.project.UnsupportedProjectVersion;
 import org.restcomm.connect.rvd.jsonvalidation.ProjectValidator;
 import org.restcomm.connect.rvd.jsonvalidation.ValidationErrorItem;
@@ -48,7 +46,6 @@ import org.restcomm.connect.rvd.jsonvalidation.exceptions.ValidationException;
 import org.restcomm.connect.rvd.jsonvalidation.exceptions.ValidationFrameworkException;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.project.Node;
-import org.restcomm.connect.rvd.model.client.ProjectItem;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.project.Step;
@@ -65,8 +62,6 @@ import org.restcomm.connect.rvd.upgrade.UpgradeService.UpgradabilityStatus;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.utils.Unzipper;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.FilenameUtils;
@@ -74,7 +69,6 @@ import org.apache.commons.io.IOUtils;
 
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class ProjectHelper {
@@ -106,158 +100,6 @@ public class ProjectHelper {
     public ProjectHelper() {
     }
 
-    /**
-     * Builds the startUrl for an application based on the application name and the incoming httpRequest. It is depending on the
-     * initial REST request that called this function. Usually this httpRequest comes either from user's browser when he runs
-     * Admin-UI or RVD. However, this url will be used in Restcomm too. Make sure that Restcomm can access the generated the
-     * same way client's browser does.
-     *
-     * @param projectName
-     * @param httpRequest
-     * @return An absolute url pointing to the starting URL of the application
-     * @throws UnsupportedEncodingException
-     * @throws URISyntaxException
-     */
-    /*
-    public static String getStartUrlForProject(String projectName, HttpServletRequest httpRequest) throws URISyntaxException {
-        URI startURI = new URI(httpRequest.getScheme(), null, httpRequest.getServerName(),
-                (httpRequest.getServerPort() == 80 ? -1 : httpRequest.getServerPort()), httpRequest.getContextPath()
-                        + httpRequest.getServletPath() + "/apps/" + projectName + "/controller", null, null);
-
-        //logger.info("startURI.getPath(): " + startURI.getPath());
-        //logger.info("startURI.getRawPath(): " + startURI.getRawPath());
-        //logger.info("startURI.toASCIIString(): " + startURI.toASCIIString());
-        return startURI.getRawPath();  //toASCIIString();
-    }*/
-
-    /**
-     * Builds the start url for a project
-     * @param projectName
-     * @return
-     * @throws RvdException
-     */
-    public String buildStartUrl(String projectName) throws ProjectException {
-        //servletContext.getS
-        String path = servletContextPath + "/" + RvdConfiguration.REST_SERVICES_PATH + "/apps/" + projectName + "/controller";
-        URI uri;
-        try {
-            uri = new URI(null, null, path, null);
-        } catch (URISyntaxException e) {
-            throw new ProjectException("Error building startUrl for project " + projectName, e);
-        }
-        return uri.getRawPath();
-
-    }
-
-    /**
-     * Populates an application list with startup urls for each application
-     *
-     * @param items
-     * @param httpRequest
-     * @throws URISyntaxException
-     * @throws RvdException
-     */
-    public void fillStartUrlsForProjects(List<ProjectItem> items, HttpServletRequest httpRequest)
-            throws ProjectException {
-        for (ProjectItem item : items) {
-            item.setStartUrl( buildStartUrl(item.getName()));
-        }
-    }
-
-    /**
-     * Returns the projects owned by ownerFilter (in addition to those that belong to none and are freely accessible). If ownerFilter is null only
-     * freely accessible projectds are returned.
-     * @param ownerFilter
-     * @throws StorageException
-     */
-    public List<ProjectItem> getAvailableProjectsByOwner(String ownerFilter) throws StorageException {
-
-        List<ProjectItem> items = new ArrayList<ProjectItem>();
-        for (String entry : workspaceStorage.listIds(".", "[^@].+") /*FsProjectStorage.listProjectNames(workspaceStorage)*/ ) {
-
-            String kind = "voice";
-            String owner = null;
-            ProjectItem item = new ProjectItem();
-            item.setName(entry);
-            try {
-                StateHeader header = FsProjectStorage.loadStateHeader(entry, workspaceStorage);
-                item.setStatus(ProjectHelper.projectStatus(header));
-                kind = header.getProjectKind();
-                owner = header.getOwner();
-            } catch ( BadProjectHeader e ) {
-                // for old projects
-                JsonParser parser = new JsonParser();
-                //JsonObject root_element = parser.parse(projectStorage.loadProjectState(entry)).getAsJsonObject();
-                JsonObject root_element = parser.parse(FsProjectStorage.loadProjectString(entry, workspaceStorage)).getAsJsonObject();
-                JsonElement projectKind_element = root_element.get("projectKind");
-                if ( projectKind_element != null ) {
-                    kind = projectKind_element.getAsString();
-                }
-                item.setStatus(Status.BAD);
-            }
-
-            if ( ownerFilter != null ) {
-                if ( owner == null || owner.equals(ownerFilter) ) {
-                    item.setKind(kind);
-                    items.add(item);
-                }
-            } else {
-                item.setKind(kind);
-                items.add(item);
-            }
-        }
-        return items;
-    }
-
-    /**
-     * Returns summary information for all projects specified as appliationSids. If ownerFilter is specified,
-     * the results are also filtered by owner.
-     *
-     * @param applicationSids
-     * @param ownerFilter
-     * @return
-     * @throws StorageException
-     */
-    public List<ProjectItem> getProjectSummaries(List<String> applicationSids, String ownerFilter) throws StorageException {
-        List<ProjectItem> items = new ArrayList<ProjectItem>();
-        for (String entry : applicationSids ) {
-
-            String kind = "voice";
-            String owner = null;
-            ProjectItem item = new ProjectItem();
-            item.setName(entry);
-            try {
-                StateHeader header = FsProjectStorage.loadStateHeader(entry, workspaceStorage);
-                item.setStatus(ProjectHelper.projectStatus(header));
-                kind = header.getProjectKind();
-                owner = header.getOwner();
-            } catch ( BadProjectHeader e ) {
-                // for old projects
-                JsonParser parser = new JsonParser();
-                //JsonObject root_element = parser.parse(projectStorage.loadProjectState(entry)).getAsJsonObject();
-                JsonObject root_element = parser.parse(FsProjectStorage.loadProjectString(entry, workspaceStorage)).getAsJsonObject();
-                JsonElement projectKind_element = root_element.get("projectKind");
-                if ( projectKind_element != null ) {
-                    kind = projectKind_element.getAsString();
-                }
-                item.setStatus(Status.BAD);
-            } catch ( StorageEntityNotFound e) {
-                // ignore missing projects to handle the case where Restcomm apps is out of sync with RVD
-                continue;
-            }
-
-            if ( ownerFilter != null ) {
-                if ( owner == null || owner.equals(ownerFilter) ) {
-                    item.setKind(kind);
-                    items.add(item);
-                }
-            } else {
-                item.setKind(kind);
-                items.add(item);
-            }
-        }
-        return items;
-    }
 
     static Status projectStatus(StateHeader header) {
         if (header == null || header.getVersion() == null)

@@ -14,7 +14,6 @@ import org.restcomm.connect.rvd.http.StorageExceptionMapper;
 import org.restcomm.connect.rvd.http.resources.DesignerRestService;
 import org.restcomm.connect.rvd.http.resources.LoginRestService;
 import org.restcomm.connect.rvd.http.resources.ProjectRestService;
-import org.restcomm.connect.rvd.http.resources.RasRestService;
 import org.restcomm.connect.rvd.http.resources.RvdController;
 import org.restcomm.connect.rvd.http.resources.SettingsRestService;
 import org.restcomm.connect.rvd.http.resources.StatsRestService;
@@ -35,7 +34,6 @@ public class RvdRestApplication extends Application {
         // register resources
         classes.add(ProjectRestService.class);
         classes.add(RvdController.class);
-        classes.add(RasRestService.class);
         classes.add(LoginRestService.class);
         classes.add(SettingsRestService.class);
         classes.add(DesignerRestService.class);
