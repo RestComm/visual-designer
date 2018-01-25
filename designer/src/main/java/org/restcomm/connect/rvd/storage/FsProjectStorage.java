@@ -21,41 +21,27 @@
 package org.restcomm.connect.rvd.storage;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import com.google.gson.JsonSyntaxException;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.restcomm.connect.rvd.RvdConfiguration;
-import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 import org.restcomm.connect.rvd.RvdContext;
-import org.restcomm.connect.rvd.logging.system.LoggingHelper;
-import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.client.WavItem;
-import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
 import org.restcomm.connect.rvd.storage.exceptions.ProjectAlreadyExists;
-import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
-import org.restcomm.connect.rvd.storage.exceptions.WavItemDoesNotExist;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import com.google.gson.Gson;
@@ -68,54 +54,9 @@ import org.restcomm.connect.rvd.model.ProjectSettings;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class FsProjectStorage {
-    static Logger logger = RvdLoggers.local;
-
-    public static InputStream getWav(String projectName, String filename, WorkspaceStorage workspaceStorage) throws StorageException {
-        try {
-            return workspaceStorage.loadStream(RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + filename, projectName);
-        } catch (StorageEntityNotFound e) {
-            throw new WavItemDoesNotExist("Wav file does not exist - " + filename, e);
-        }
-    }
 
     public static String loadBootstrapInfo(String projectName, WorkspaceStorage workspaceStorage) throws StorageException {
         return workspaceStorage.loadEntityString("bootstrap", projectName);
-    }
-
-
-    public static ProjectIndex loadProjectOptions(String projectName, WorkspaceStorage workspaceStorage) throws StorageException {
-        ProjectIndex projectOptions = workspaceStorage.loadEntity("project", projectName+"/data", ProjectIndex.class);
-        return projectOptions;
-    }
-
-    public static void storeProjectOptions(ProjectIndex projectOptions, String projectName, WorkspaceStorage workspaceStorage) throws StorageException {
-        workspaceStorage.storeEntity(projectOptions, ProjectIndex.class, "project", projectName+"/data");
-    }
-
-    /**
-     * Stores a full-fledged rvd module (.mod file) to the filesystem. Note that this is different from older practice
-     * of storing only the step names in a .node file that was done by storeNodeStepnames().
-     *
-     * @param node
-     * @param projectName
-     * @param storage
-     * @throws StorageException
-     */
-    public static void storeNode(Node node, String projectName, WorkspaceStorage storage) throws StorageException {
-        storage.storeEntity(node, node.getName()+".mod", projectName+"/data");
-    }
-
-    /**
-     * Loads a full-fledged rvd module (.mod file) from the filesystem. ote that this is different from older practice
-     * of storing only the step names in a .node file that was done by loadNodeStepnames().
-     *
-     * @param projectName
-     * @param nodeName
-     * @param storage
-     * @throws StorageException
-     */
-    public static Node loadNode(String projectName, String nodeName, WorkspaceStorage storage ) throws StorageException {
-        return storage.loadEntity(nodeName+".mod", projectName + "/data", Node.class);
     }
 
     public static ProjectSettings loadProjectSettings(String projectName, WorkspaceStorage storage) throws StorageException {
@@ -190,46 +131,6 @@ public class FsProjectStorage {
         }
     }
 
-    private static String getProjectBasePath(String projectName, WorkspaceStorage storage) {
-        return storage.rootPath + File.separator + projectName;
-    }
-
-    private static String getProjectWavsPath( String projectName, WorkspaceStorage storage ) {
-        return getProjectBasePath(projectName,storage) + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME;
-    }
-
-    public static List<WavItem> listWavs(String projectName, WorkspaceStorage storage) throws StorageException {
-        List<WavItem> items = new ArrayList<WavItem>();
-
-        //File workspaceDir = new File(workspaceBasePath + File.separator + appName + File.separator + "wavs");
-        File wavsDir = new File(getProjectWavsPath(projectName,storage));
-        if (wavsDir.exists()) {
-
-            File[] entries = wavsDir.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File anyfile) {
-                    if (anyfile.isFile())
-                        return true;
-                    return false;
-                }
-            });
-            Arrays.sort(entries, new Comparator<File>() {
-                public int compare(File f1, File f2) {
-                    return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified()) ;
-                }
-            });
-
-            for (File entry : entries) {
-                WavItem item = new WavItem();
-                item.setFilename(entry.getName());
-                items.add(item);
-            }
-        }// else
-            //throw new BadWorkspaceDirectoryStructure();
-
-        return items;
-    }
-
     /**
      * Returns a WavItem list for all .wav files insude the /audio RVD directory. No project is involved here.
      * @param rvdContext
@@ -253,20 +154,6 @@ public class FsProjectStorage {
             items.add(item);
         }
         return items;
-    }
-
-    public static void deleteWav(String projectName, String wavname, WorkspaceStorage storage) throws WavItemDoesNotExist {
-        String filepath = getProjectWavsPath(projectName, storage) + File.separator + wavname;
-        File wavfile = new File(filepath);
-        if ( wavfile.delete() ) {
-            if(logger.isDebugEnabled())
-                logger.log(Level.DEBUG, LoggingHelper.buildMessage(FsProjectStorage.class,"deleteWav","deleted {0} from {1} app", new Object[] {wavname, projectName}));
-        }
-        else {
-            //logger.warn( "Cannot delete " + wavname + " from " + projectName + " app" );
-            throw new WavItemDoesNotExist("Wav file does not exist - " + filepath );
-        }
-
     }
 
     public static void backupProjectState(String projectName, WorkspaceStorage storage) throws StorageException {

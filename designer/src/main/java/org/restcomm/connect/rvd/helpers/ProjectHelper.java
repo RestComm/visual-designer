@@ -21,8 +21,6 @@
 package org.restcomm.connect.rvd.helpers;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,13 +31,11 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.apache.commons.io.FileUtils;
-import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.RvdContext;
 import org.restcomm.connect.rvd.exceptions.InvalidServiceParameters;
 import org.restcomm.connect.rvd.exceptions.ProjectDoesNotExist;
 import org.restcomm.connect.rvd.exceptions.RvdException;
-import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
 import org.restcomm.connect.rvd.exceptions.project.UnsupportedProjectVersion;
 import org.restcomm.connect.rvd.jsonvalidation.ProjectValidator;
 import org.restcomm.connect.rvd.jsonvalidation.ValidationErrorItem;
@@ -51,16 +47,12 @@ import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.project.Step;
-import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.model.project.RvdProject;
-import org.restcomm.connect.rvd.storage.FsProjectDao;
-import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
 import org.restcomm.connect.rvd.storage.exceptions.ProjectAlreadyExists;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
-import org.restcomm.connect.rvd.storage.exceptions.WavItemDoesNotExist;
 import org.restcomm.connect.rvd.upgrade.UpgradeService;
 import org.restcomm.connect.rvd.upgrade.UpgradeService.UpgradabilityStatus;
 import org.restcomm.connect.rvd.utils.RvdUtils;
@@ -74,8 +66,6 @@ import org.apache.commons.io.IOUtils;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import org.restcomm.connect.rvd.utils.Zipper;
-import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
 
 public class ProjectHelper {
 
@@ -220,7 +210,7 @@ public class ProjectHelper {
     }
 
     public void importProjectFromRawArchive(InputStream archiveStream, String applicationSid, String owner) throws RvdException {
-        File archiveFile = new File(applicationSid);
+        File archiveFile = new File(applicationSid); // TODO these two lines should probably be removed
         String projectName = FilenameUtils.getBaseName(archiveFile.getName());
 
         // First unzip to temp dir
@@ -251,22 +241,16 @@ public class ProjectHelper {
                 if ( UpgradeService.checkUpgradability(version, RvdConfiguration.RVD_PROJECT_VERSION) == UpgradeService.UpgradabilityStatus.UPGRADABLE ) {
                     UpgradeService upgradeService = new UpgradeService(tempStorage);
                     upgradeService.upgradeProject(tempProjectDir.getName());
-                    BuildService buildService = new BuildService(tempStorage);
-                    buildService.buildProject(tempProjectDir.getName());
                 } else {
                     // project cannot be upgraded
                     throw new UnsupportedProjectVersion("Imported project version (" + version + ") not supported");
                 }
             }
             // project is either compatible or was upgraded
-            ProjectDao tempProjectDao = new FsProjectDao(tempStorage); // this will always happen on the filesystem regardless of implementation of the actual workspace
-            ProjectState state = tempProjectDao.loadProject(tempProjectDir.getName());
-            state.getHeader().setOwner(owner);
-            projectDao.updateProjectState(tempProjectDir.getName(), state);
 
             if ( projectDao.projectExists(suggestedName) )
                 throw new ProjectAlreadyExists("Project '" + suggestedName + "' already exists");
-            projectDao.createProjectFromLocation(suggestedName, tempProjectDir.getName(), owner );
+            projectDao.createProjectFromLocation(suggestedName, tempProjectDir.getPath(), owner );
 
             return suggestedName;
         } catch ( UnsupportedProjectVersion e) {
@@ -276,14 +260,6 @@ public class ProjectHelper {
         } finally {
             FileUtils.deleteQuietly(tempProjectDir);
         }
-    }
-
-    public List<WavItem> getWavs(String appName) throws StorageException {
-        return FsProjectStorage.listWavs(appName, workspaceStorage);
-    }
-
-    public void removeWavFromProject(String projectName, String wavName) throws WavItemDoesNotExist {
-        FsProjectStorage.deleteWav(projectName, wavName,workspaceStorage);
     }
 
     /**

@@ -61,7 +61,7 @@ public class FsProjectTemplateDao implements ProjectTemplateDao {
 
         List<ProjectTemplate> templates = new ArrayList<ProjectTemplate>();
         // get all templates
-        List<String> templateIds = workspaceStorage.listIds(configuration.getProjectTemplatesWorkspacePath(), "TL.*");
+        List<String> templateIds = workspaceStorage.listContents(configuration.getProjectTemplatesWorkspacePath(), "TL.*", true );
         // calculate page information - start, count
         int start, count;
         if (pageIndex == null) {

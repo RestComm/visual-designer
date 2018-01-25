@@ -26,8 +26,7 @@ import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.server.NodeName;
 import org.restcomm.connect.rvd.model.server.ProjectIndex;
-import org.restcomm.connect.rvd.storage.FsProjectStorage;
-import org.restcomm.connect.rvd.storage.WorkspaceStorage;
+import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 import com.google.gson.Gson;
@@ -42,10 +41,10 @@ import com.google.gson.GsonBuilder;
 public class BuildService {
 
     protected Gson gson;
-    private WorkspaceStorage workspaceStorage;
+    private ProjectDao projectDao;
 
-    public BuildService(WorkspaceStorage workspaceStorage) {
-        this.workspaceStorage = workspaceStorage;
+    public BuildService(ProjectDao projectDao) {
+        this.projectDao = projectDao;
         // Parse the big project state object into a nice dto model
         gson = new GsonBuilder()
                 .registerTypeAdapter(Step.class, new StepJsonDeserializer())
@@ -77,24 +76,16 @@ public class BuildService {
         }
 
         projectOptions.setDefaultTarget(projectState.getHeader().getStartNodeName());
-        //if ( projectState.getHeader().getLogging() != null )
-        //    projectOptions.setLogging(true);
-        // Save the nodename-node-label mapping
-        FsProjectStorage.storeProjectOptions(projectOptions, projectName, workspaceStorage);
+        projectDao.storeProjectOptions(projectName, projectOptions);
     }
 
     public void buildProject(String projectName) throws StorageException {
-        ProjectState state = FsProjectStorage.loadProject(projectName, workspaceStorage);
+        ProjectState state = projectDao.loadProject(projectName);
         buildProject(projectName, state);
     }
 
     private void buildNode(Node node, String projectName) throws StorageException {
         // TODO sanitize node name!
-        FsProjectStorage.storeNode(node,projectName,workspaceStorage);
-//        FsProjectStorage.storeNodeStepnames(node, projectName, workspaceStorage);
-//        // process the steps one-by-one
-//        for (Step step : node.getSteps()) {
-//            FsProjectStorage.storeNodeStep(step, node, projectName, workspaceStorage);
-//        }
+        projectDao.storeNode(projectName, node);
     }
 }

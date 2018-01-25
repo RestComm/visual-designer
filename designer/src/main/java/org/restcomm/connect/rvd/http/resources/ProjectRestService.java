@@ -88,7 +88,6 @@ import org.restcomm.connect.rvd.model.client.WavItem;
 import org.restcomm.connect.rvd.project.ProjectKind;
 import org.restcomm.connect.rvd.project.ProjectUtils;
 import org.restcomm.connect.rvd.storage.FsProjectDao;
-import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.FsProjectTemplateDao;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.ProjectTemplateDao;
@@ -250,7 +249,7 @@ public class ProjectRestService extends SecuredRestService {
         upgradeService.upgradeProject(applicationId);
         // build project too
         ProjectState projectState = projectDao.loadProject(applicationId);
-        BuildService buildService = new BuildService(workspaceStorage);
+        BuildService buildService = new BuildService(projectDao);
         buildService.buildProject(applicationId, projectState);
         // prepare response
         ProjectCreatedDto dto = new ProjectCreatedDto(projectName, applicationId, kind);
@@ -271,7 +270,7 @@ public class ProjectRestService extends SecuredRestService {
             ProjectState projectState = projectService.createProjectObject(applicationSid, kind, getLoggedUsername());
             ProjectDao projectDao = buildProjectDao(workspaceStorage);
             projectDao.createProject(applicationSid, projectState);
-            BuildService buildService = new BuildService(workspaceStorage);
+            BuildService buildService = new BuildService(projectDao );
             buildService.buildProject(applicationSid, projectState);
 
         } catch (ProjectAlreadyExists e) {
@@ -344,10 +343,11 @@ public class ProjectRestService extends SecuredRestService {
                         if (filesCounted == 1 && projectName != null) {
                             effectiveProjectName = projectName;
                         }
-                        // buildService.buildProject(effectiveProjectName);
+                        ProjectDao projectDao = buildProjectDao(workspaceStorage);
+                        BuildService buildService = new BuildService(projectDao);
+                        buildService.buildProject(applicationSid);
 
                         // Load project kind
-                        ProjectDao projectDao = buildProjectDao(workspaceStorage);
                         String projectString = projectDao.loadProjectStateRaw(applicationSid);
                         ProjectState state = marshaler.toModel(projectString, ProjectState.class);
                         String projectKind = state.getHeader().getProjectKind();
@@ -541,12 +541,13 @@ public class ProjectRestService extends SecuredRestService {
         // TODO IMPORTANT!!! sanitize the project name!!
         if (!RvdUtils.isEmpty(applicationSid)) {
             try {
+                ProjectDao projectDao = buildProjectDao(workspaceStorage);
                 UpgradeService upgradeService = new UpgradeService(workspaceStorage);
                 upgradeService.upgradeProject(applicationSid);
                 if (RvdLoggers.local.isEnabledFor(Level.INFO))
                     RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "upgradeProject","{0} project {1} upgraded to version {2}", new Object[] {logging.getPrefix(), applicationSid, RvdConfiguration.RVD_PROJECT_VERSION }));
                 // re-build project
-                BuildService buildService = new BuildService(workspaceStorage);
+                BuildService buildService = new BuildService(projectDao);
                 buildService.buildProject(applicationSid, activeProject);
                 if (RvdLoggers.local.isEnabledFor(Level.INFO))
                     RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeProject",logging.getPrefix(), "project " + applicationSid + " built"));
@@ -673,7 +674,7 @@ public class ProjectRestService extends SecuredRestService {
                             return Response.status(Status.BAD_REQUEST).entity("{\"error\":\"FILE_EXT_NOT_ALLOWED\"}").build();
                         }
                         try {
-                            projectDao.storeWav(applicationSid,filename, item.openStream(),configuration.getMaxMediaFileSize());
+                            projectDao.storeMediaFromStream(applicationSid,filename, item.openStream(),configuration.getMaxMediaFileSize());
                         } catch (StreamDoesNotFitInFile e) {
                             // Oops, the uploaded file is too big. Back off..
                             Integer maxSize = rvdContext.getConfiguration().getMaxMediaFileSize();
@@ -715,7 +716,7 @@ public class ProjectRestService extends SecuredRestService {
         ProjectDao projectDao = buildProjectDao(workspaceStorage);
         assertProjectStateAvailable(applicationSid, projectDao);
         try {
-            projectService.removeWavFromProject(applicationSid, wavname);
+            projectDao.removeMedia(applicationSid, wavname);
             return Response.ok().build();
         } catch (WavItemDoesNotExist e) {
             if (RvdLoggers.local.isEnabledFor(Level.INFO))
@@ -733,8 +734,7 @@ public class ProjectRestService extends SecuredRestService {
         assertProjectStateAvailable(applicationSid, projectDao);
         List<WavItem> items;
         try {
-
-            items = projectService.getWavs(applicationSid);
+            items = projectDao.listMedia(applicationSid);
             Gson gson = new Gson();
             return Response.ok(gson.toJson(items), MediaType.APPLICATION_JSON).build();
         } catch (BadWorkspaceDirectoryStructure e) {
@@ -747,7 +747,7 @@ public class ProjectRestService extends SecuredRestService {
     }
 
     /*
-     * Return a media file from the project. It's the same as getWav() but it has the Query parameters converted to Path
+     * Return a media file from the project. It's the same as getMediaAsStream() but it has the Query parameters converted to Path
      * parameters
      */
     @GET
@@ -756,7 +756,8 @@ public class ProjectRestService extends SecuredRestService {
             @PathParam("filename") String filename, @PathParam("ext") String extension) {
         InputStream wavStream;
         try {
-            wavStream = FsProjectStorage.getWav(applicationSid, filename + "." + extension, workspaceStorage);
+            ProjectDao projectDao = buildProjectDao(workspaceStorage);
+            wavStream = projectDao.getMediaAsStream(applicationSid, filename + "." + extension);
             String mediaType;
             if ( "mp4".equals(extension))
                 mediaType = "video/mp4";
@@ -781,7 +782,7 @@ public class ProjectRestService extends SecuredRestService {
         secure();
         ProjectDao projectDao = buildProjectDao(workspaceStorage);
         assertProjectStateAvailable(applicationSid, projectDao);
-        BuildService buildService = new BuildService(workspaceStorage);
+        BuildService buildService = new BuildService(projectDao);
         try {
             buildService.buildProject(applicationSid, activeProject);
             return Response.ok().build();

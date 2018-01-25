@@ -31,7 +31,9 @@ import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
+import org.restcomm.connect.rvd.storage.FsProjectDao;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
+import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -249,12 +251,13 @@ public class UpgradeService {
      * @throws StorageException
      */
     public void upgradeWorkspace() throws StorageException {
-        BuildService buildService = new BuildService(workspaceStorage);
+        ProjectDao projectDao = new FsProjectDao(workspaceStorage);
+        BuildService buildService = new BuildService(projectDao);
         int upgradedCount = 0;
         int uptodateCount = 0;
         int failedCount = 0;
 
-        List<String> projectNames = workspaceStorage.listIds(".", "[^@].+"); //FsProjectStorage.listProjectNames(workspaceStorage);
+        List<String> projectNames = workspaceStorage.listContents(".", "[^@].+", true); //FsProjectStorage.listProjectNames(workspaceStorage);
         for ( String projectName : projectNames ) {
             try {
                 if ( upgradeProject(projectName) != null ) {

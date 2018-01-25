@@ -27,7 +27,9 @@ import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
 import org.restcomm.connect.rvd.model.project.ProjectState;
+import org.restcomm.connect.rvd.storage.FsProjectDao;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
+import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.upgrade.exceptions.UpgradeException;
@@ -51,8 +53,9 @@ public class ProjectUpgraderTest {
         ModelMarshaler marshaler = new ModelMarshaler();
         String workspaceDirName = getClass().getResource("./workspace").getFile();
         WorkspaceStorage workspaceStorage = new WorkspaceStorage(workspaceDirName, marshaler);
+        ProjectDao projectDao = new FsProjectDao(workspaceStorage);
         UpgradeService upgradeService = new UpgradeService(workspaceStorage);
-        BuildService buildService = new BuildService(workspaceStorage);
+        BuildService buildService = new BuildService(projectDao);
 
         // check the version changes
         JsonElement rootElement = upgradeService.upgradeProject("project3");

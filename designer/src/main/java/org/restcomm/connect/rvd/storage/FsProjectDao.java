@@ -17,19 +17,17 @@ import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.server.ProjectIndex;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
+import org.restcomm.connect.rvd.storage.exceptions.WavItemDoesNotExist;
 import org.restcomm.connect.rvd.utils.RvdUtils;
 import org.restcomm.connect.rvd.utils.Zipper;
 import org.restcomm.connect.rvd.utils.exceptions.ZipperException;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -66,15 +64,27 @@ public class FsProjectDao implements ProjectDao {
     @Override
     public ProjectIndex loadProjectOptions(String applicationId) throws StorageException {
         try {
-            return FsProjectStorage.loadProjectOptions(applicationId, workspaceStorage);
+            return workspaceStorage.loadEntity("project", applicationId+"/data", ProjectIndex.class);
         } catch (StorageEntityNotFound e) {
             return null;
         }
     }
 
     @Override
+    public void storeProjectOptions(String applicationId, ProjectIndex projectOptions) throws StorageException {
+        workspaceStorage.storeEntity(projectOptions, ProjectIndex.class, "project", applicationId+"/data");
+    }
+
+
+
+    @Override
     public Node loadNode(String moduleName, String applicationId) throws StorageException {
-        return FsProjectStorage.loadNode(applicationId,moduleName,workspaceStorage);
+        return workspaceStorage.loadEntity(moduleName+".mod", applicationId + "/data", Node.class);
+    }
+
+    @Override
+    public void storeNode(String applicationId, Node node) throws StorageException {
+        workspaceStorage.storeEntity(node, node.getName()+".mod", applicationId+"/data");
     }
 
     @Override
@@ -166,7 +176,7 @@ public class FsProjectDao implements ProjectDao {
             // do nothing if webTrigger info is not there
         }
         // copy .wav/media resources
-        List<WavItem> wavs = listMedia(new File(sourcePath));
+        List<WavItem> wavs = listMedia(new File(sourcePath + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME));
         for (WavItem wav: wavs) {
             String sourceWavPath = sourcePath + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME;
             addRawResource(applicationId, RvdConfiguration.WAVS_DIRECTORY_NAME, sourceWavPath, wav.getFilename());
@@ -199,9 +209,68 @@ public class FsProjectDao implements ProjectDao {
     }
 
     @Override
+    public InputStream getMediaAsStream(String projectName, String filename) throws StorageException {
+        try {
+            return workspaceStorage.loadStream(RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + filename, projectName);
+        } catch (StorageEntityNotFound e) {
+            throw new WavItemDoesNotExist("Wav file does not exist - " + filename, e);
+        }
+    }
+
+    /**
+     * Generates a list of media files for a project
+     *
+     * TODO change WavItem to MediaItem
+     *
+     * @return
+     * @throws StorageException
+     */
+    @Override
     public List<WavItem> listMedia(String applicationId) throws StorageException {
-        File projectDir = new File(workspaceStorage.rootPath + File.separator + applicationId);
-        return listMedia(projectDir);
+        File projectPath = new File(workspaceStorage.rootPath + File.separator + applicationId);
+        List<WavItem> items = new ArrayList<>();
+
+        File wavsDir = new File(projectPath.getPath() + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME);
+        return listMedia(wavsDir);
+    }
+
+    public List<WavItem> listMedia(File wavsDir) throws StorageException {
+        List<WavItem> items = new ArrayList<>();
+        if (wavsDir.exists()) {
+            List<String> filenames = workspaceStorage.listContents(wavsDir.getPath(), ".*", false);
+            for (String filename: filenames) {
+                WavItem item = new WavItem();
+                item.setFilename(filename);
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
+    @Override
+    public void storeMediaFromStream(String projectName, String wavname, InputStream wavStream, Integer maxSize) throws StorageException, StreamDoesNotFitInFile {
+        String wavPathname = workspaceStorage.resolveWorkspacePath(projectName + File.separator +  RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + wavname);
+        if(logger.isDebugEnabled())
+            logger.log(Level.DEBUG, LoggingHelper.buildMessage(FsProjectStorage.class,"storeWav", "writing wav file to {0}", wavPathname));
+        try {
+            RvdUtils.streamToFile(wavStream, new File(wavPathname), maxSize);
+        } catch (IOException e) {
+            throw new StorageException("Error writing to " + wavPathname, e);
+        }
+    }
+
+    @Override
+    public void removeMedia(String applicationId, String mediaName) throws WavItemDoesNotExist {
+        String filepath = workspaceStorage.resolveWorkspacePath(applicationId + File.separator +  RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + mediaName);
+        File wavfile = new File(filepath);
+        if ( wavfile.delete() ) {
+            if(logger.isDebugEnabled())
+                logger.log(Level.DEBUG, LoggingHelper.buildMessage(FsProjectStorage.class,"deleteWav","deleted {0} from {1} app", new Object[] {mediaName, applicationId}));
+        }
+        else {
+            //logger.warn( "Cannot delete " + wavname + " from " + projectName + " app" );
+            throw new WavItemDoesNotExist("Wav file does not exist - " + filepath );
+        }
     }
 
     @Override
@@ -259,54 +328,4 @@ public class FsProjectDao implements ProjectDao {
         }
     }
 
-    @Override
-    public void storeWav(String projectName, String wavname, InputStream wavStream, Integer maxSize) throws StorageException, StreamDoesNotFitInFile {
-        String wavPathname = workspaceStorage.resolveWorkspacePath(projectName + File.separator +  RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + wavname);
-        if(logger.isDebugEnabled())
-            logger.log(Level.DEBUG, LoggingHelper.buildMessage(FsProjectStorage.class,"storeWav", "writing wav file to {0}", wavPathname));
-        try {
-            RvdUtils.streamToFile(wavStream, new File(wavPathname), maxSize);
-        } catch (IOException e) {
-            throw new StorageException("Error writing to " + wavPathname, e);
-        }
-    }
-
-    /**
-     * Generates a list of media files for a project at specific path
-     *
-     * TODO change WavItem to MediaItem
-     *
-     * @param projectPath absolute path of the project
-     * @return
-     * @throws StorageException
-     */
-    List<WavItem> listMedia(File projectPath) throws StorageException {
-        List<WavItem> items = new ArrayList<WavItem>();
-
-        File wavsDir = new File(projectPath.getPath() + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME);
-        if (wavsDir.exists()) {
-
-            File[] entries = wavsDir.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File anyfile) {
-                    if (anyfile.isFile())
-                        return true;
-                    return false;
-                }
-            });
-            Arrays.sort(entries, new Comparator<File>() {
-                public int compare(File f1, File f2) {
-                    return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified()) ;
-                }
-            });
-
-            for (File entry : entries) {
-                WavItem item = new WavItem();
-                item.setFilename(entry.getName());
-                items.add(item);
-            }
-        }
-
-        return items;
-    }
 }

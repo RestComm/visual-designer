@@ -44,10 +44,11 @@ public class WorkspaceStorage {
      *
      * @param path
      * @param regexNameFilter
+     * @param onlyDirectories
      * @return
      * @throws StorageException
      */
-    public List<String> listIds(String path, String regexNameFilter) throws StorageException {
+    public List<String> listContents(String path, String regexNameFilter, final boolean onlyDirectories) throws StorageException {
         File parentDir;
         if ( path.startsWith( "/") )
             parentDir = new File(path);
@@ -59,7 +60,7 @@ public class WorkspaceStorage {
             File[] entries = parentDir.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File anyfile) {
-                    if ( anyfile.isDirectory() && pattern.matcher(anyfile.getName()).matches())
+                    if ( pattern.matcher(anyfile.getName()).matches()  && (!onlyDirectories || (onlyDirectories && anyfile.isDirectory())))
                         return true;
                     return false;
                 }

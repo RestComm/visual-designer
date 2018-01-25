@@ -66,7 +66,6 @@ import org.restcomm.connect.rvd.stats.StatsHelper;
 import org.restcomm.connect.rvd.storage.FsProfileDao;
 import org.restcomm.connect.rvd.storage.FsProjectDao;
 import org.restcomm.connect.rvd.storage.ProfileDao;
-import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -200,13 +199,13 @@ public class RvdController extends SecuredRestService {
     public Response getWav(@PathParam("filename") String filename) {
         InputStream wavStream;
         try {
-            wavStream = FsProjectStorage.getWav(applicationId, filename, workspaceStorage);
+            wavStream = projectDao.getMediaAsStream(applicationId, filename);
             return Response.ok(wavStream, "audio/x-wav")
                     .header("Content-Disposition", "attachment; filename = " + filename).build();
         } catch (WavItemDoesNotExist e) {
             return Response.status(Status.NOT_FOUND).build(); // ordinary error page is returned since this will be consumed             // either from restcomm or directly from user
         } catch (StorageException e) {
-            RvdLoggers.local.log(Level.ERROR, LoggingHelper.buildMessage(getClass(),"getWav", logging.getPrefix(), e.getMessage()), e);
+            RvdLoggers.local.log(Level.ERROR, LoggingHelper.buildMessage(getClass(),"getMediaAsStream", logging.getPrefix(), e.getMessage()), e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build(); // ordinary error page is returned since this will
                                                                           // be consumed either from restcomm or directly
                                                                           // from user

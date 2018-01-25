@@ -29,6 +29,8 @@ import org.restcomm.connect.rvd.helpers.ProjectHelper;
 import org.restcomm.connect.rvd.TestUtils;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.storage.FsProjectDao;
+import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 
 import javax.servlet.ServletInputStream;
@@ -60,7 +62,8 @@ public class AccountClosingNotificationTests extends RestServiceMockedTest {
         createProject("APB0002","sub2@company.com");
         createProject("APB0003","orestis@company.com");
 
-        projectService = new ProjectHelper(configuration,storage,marshaler,"/restcomm-rvd", );
+        ProjectDao projectDao = new FsProjectDao(storage);
+        projectService = new ProjectHelper(configuration,storage,marshaler,"/restcomm-rvd", projectDao);
     }
 
     @After

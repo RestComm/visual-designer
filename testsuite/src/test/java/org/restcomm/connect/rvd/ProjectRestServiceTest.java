@@ -51,6 +51,7 @@ public class ProjectRestServiceTest extends RestServiceTest {
     private String accountAuthToken = "77f8c12cc7b8f8423e5c38b035249166";
 
     @Test
+    @Ignore // retrieving project list is no longer supported
     public void canRetrieveProjects() {
         Client jersey = getClient(username, password);
         WebResource resource = jersey.resource( getResourceUrl("/services/projects") );
