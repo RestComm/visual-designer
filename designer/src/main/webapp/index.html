@@ -11,7 +11,9 @@
 
 	<link rel="icon" type="image/png" href="images/favicon.png">
 
-	<!-- <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"> -->
+	<script src="js/lib/jquery-1.11.0.min.js"></script>
+	<!-- early load of angular for better results with ng-cloak -->
+	<script src="js/lib/angular.min.js"></script>
 
 	<link href="css/lib/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="css/lib/ui-lightness/jquery-ui-1.10.3.custom.css" rel="stylesheet">
@@ -67,7 +69,7 @@
 
 	</div>
 
-	<div class="notifications-wrapper" ng-show="notifications.data.length > 0">
+	<div class="notifications-wrapper" ng-show="notifications.data.length > 0" ng-cloak>
 		<div ng-repeat="notification in notifications.data">
 			<div class="alert alert-{{notification.type}} rvd-notification rvd-clickable-text" style="padding: 9px; margin-bottom: 0;" ng-click="notifications.remove($index)">
 				<span ng-show="notification.type == 'success'"><i class="fa fa-check-circle"></i> </span>
@@ -80,7 +82,7 @@
 	</div>
 
 <div class="main container">
-	<div ng-if="rvdError" class="">
+	<div ng-if="rvdError" class="" ng-cloak>
 		<div class="text-center help-block">
 			{{rvdError.message}}
 		</div>
@@ -113,12 +115,10 @@ https://groups.google.com/forum/#!topic/jointjs/qIKIiJCEClI
 		};
 	</script>
 
-<script src="js/lib/jquery-1.11.0.min.js"></script>
 <script src="js/lib/jquery-ui-1.10.3.custom.js"></script>
 <script src="js/lib/upload/angular-file-upload-shim.min.js"></script>
 <script src="js/lib/filesaver/Blob.js"></script>
 <script src="js/lib/filesaver/FileSaver.min.js"></script>
-<script src="js/lib/angular.min.js"></script>
 <script src="js/lib/angular-ui-router/angular-ui-router.js"></script>
 <script src="js/lib/angular-translate.min.js"></script>
 <script src="js/lib/angular-translate-loader-static-files.min.js"></script>
