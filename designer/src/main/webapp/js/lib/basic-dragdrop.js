@@ -99,7 +99,7 @@ angular.module('basicDragdrop', [])
 				if ( attrs.dragModel ) {
 					//console.log("setting dragModel to " + attrs.dragModel);
 					dragModel = scope.$eval(attrs.dragModel);
-					console.log( dragModel );
+					//console.log( dragModel );
 				}
 				var dragId = dragService.newDrag(dragModel);
 				//console.log( "created new drag: " + dragId );
