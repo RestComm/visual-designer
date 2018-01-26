@@ -184,9 +184,9 @@ var loginCtrl = angular.module('Rvd')
 	}
 });
 
-angular.module('Rvd').controller('projectLogCtrl', ['$scope', '$stateParams', 'projectLogService', 'notifications', function ($scope, $stateParams, projectLogService, notifications) {
+angular.module('Rvd').controller('projectLogCtrl', function ($scope, $stateParams, projectLogService, notifications, applicationsResource, authentication) {
 	//console.log('in projectLogCtrl');
-	$scope.projectName = $stateParams.projectName;
+	$scope.application = applicationsResource.get({applicationId:$stateParams.applicationSid, accountId: authentication.getAccount().sid});
 	$scope.applicationSid = $stateParams.applicationSid;
 	$scope.logData = '';
 
@@ -211,7 +211,7 @@ angular.module('Rvd').controller('projectLogCtrl', ['$scope', '$stateParams', 'p
 	$scope.resetLog = resetLog;
 
 	retrieveLog($scope.applicationSid);
-}]);
+});
 
 App.controller('authMenuCtrl', function ($scope, authentication, $location, $modal, $q, $http, $state) {
 	//$scope.authInfo = authentication.getAuthInfo();

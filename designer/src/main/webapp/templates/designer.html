@@ -3,7 +3,7 @@
 	<nav ng-show='projectError' class="navbar navbar-default" role="navigation">
 		<div ng-switch on="projectError.className" class="collapse navbar-collapse navbar-ex1-collapse">
 			<div ng-switch-when='ProjectDoesNotExist' class='navbar-text navbar-rvd-centered'>
-				{{'designerProjectNotFoudLabel1' | translate}} <em>{{projectName}}</em> {{'designerProjectNotFoudLabel2' | translate}} <a href="#">{{'designerProjectNotFoudLabel3' | translate}}</a>
+				{{'designerProjectNotFoudLabel1' | translate}} <em>{{application.friendly_name}}</em> {{'designerProjectNotFoudLabel2' | translate}} <a href="#">{{'designerProjectNotFoudLabel3' | translate}}</a>
 			</div>
 			<div ng-switch-default class='navbar-text navbar-rvd-centered'>
 				{{'designerUnknownErrorLabel1' | translate}} <a href="#">{{'designerUnknownErrorLabel2' | translate}}</a>
@@ -158,7 +158,7 @@
 
 							<div class="col-md-4 text-right">
 								<div class="form-group">
-									<label class="project-name" title="{{applicationSid}}">{{projectName}}</label>
+									<label class="project-name" title="{{applicationSid}}">{{application.friendly_name}}</label>
 									<button ng-click="signalSavePressed()" class="btn btn-primary rvd-clickable-text"><i ng-hide="saveSpinnerShown" class='fa fa-save'></i><i ng-show="saveSpinnerShown" class="fa fa-spinner fa-spin"></i></button>
 								</div>
 							</div>

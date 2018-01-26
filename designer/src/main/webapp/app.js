@@ -73,9 +73,11 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     	templateUrl : 'templates/forbidden.html',
     	controller : 'forbiddenCtrl'
     });
+    // TODO remove the following redirect when dashboard has been upgraded with proper designer url
+    $urlRouterProvider.when('/designer/:applicationSid=:projectName?firstTime', '/designer/:applicationSid?firstTime'); // dump the projectName part
     $stateProvider.state('root.rvd.designer', {
         // parameters following the '?' are optional (and follow the typical query syntax (beore the fragment) - i.e. #/designer/AP73926e7113fa4d95981aa96b76eca854=rvdCollectVerbDemo?firstTime=true
-        url: '/designer/:applicationSid=:projectName?firstTime',
+        url: '/designer/:applicationSid?firstTime',
         views: {
             'container@': {
                 templateUrl : 'templates/designer.html',
@@ -99,31 +101,13 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
             }
         }
     });
+    // TODO remove this when dashboard has the correct url 
+    $urlRouterProvider.when('/designer/:applicationSid=:projectName/log', '/designer/:applicationSid/log'); // dump projectName
     $stateProvider.state('root.rvd.projectLog', {
-        url: '/designer/:applicationSid=:projectName/log',
+        url: '/designer/:applicationSid/log',
     	templateUrl : 'templates/projectLog.html',
     	controller : 'projectLogCtrl'
     });
-    /*
-    $stateProvider.state('root.rvd.packaging',{template:'<ui-view/>'}); // does nothing for now
-    $stateProvider.state('root.rvd.packaging.details',{
-        url: '/packaging/:applicationSid=:projectName',
-        templateUrl : 'templates/packaging/form.html',
-        controller : 'packagingCtrl',
-        resolve: {
-            rappWrap: function(RappService, $stateParams,authorize) {return RappService.getRapp($stateParams);},
-            rvdSettingsResolver: function (rvdSettings,authorize) {return rvdSettings.refresh();} // not meant to return anything back. Just trigger the fetching of the settings
-        }
-    });
-    $stateProvider.state('root.rvd.packaging.download', {
-        url:'/packaging/:applicationSid=:projectName/download',
-   		templateUrl : 'templates/packaging/download.html',
-   		controller : 'packagingDownloadCtrl',
-   		resolve: {
-   			binaryInfo: function (RappService,$stateParams,authorize) { return RappService.getBinaryInfo($stateParams)}
-   		}
-    });
-    */
 
     $urlRouterProvider.otherwise('/noapp');
 

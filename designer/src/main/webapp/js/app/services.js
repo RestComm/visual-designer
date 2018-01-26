@@ -925,3 +925,7 @@ angular.module('Rvd').factory('versionChecker', function () {
         }
     }
 });
+
+angular.module('Rvd').factory('applicationsResource', function ($resource) {
+  return $resource('/restcomm/2012-04-24/Accounts/:accountId/Applications/:applicationId.json');
+});

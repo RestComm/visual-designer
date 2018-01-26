@@ -21,7 +21,7 @@
             <a href="#" class="dropdown-toggle muted" data-toggle="dropdown" title="{{'Project settings' | translate}}"><i class="fa fa-wrench"></i> {{'Settings' | translate}} <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li><a ng-click="signalShowProjectSettings()" class="rvd-clickable-text">{{'Project settings' | translate}}</a></li>
-                <li ng-show="getProjectSettings().logging"><a href="#/designer/{{applicationSid}}={{projectName}}/log" target="_blank" class="rvd-clickable-text disabled">{{'designerApplicationLogLink' | translate}}</a></li>
+                <li ng-show="getProjectSettings().logging"><a href="#/designer/{{applicationSid}}/log" target="_blank" class="rvd-clickable-text disabled">{{'designerApplicationLogLink' | translate}}</a></li>
                 <li ng-hide="getProjectSettings().logging" class="disabled"><a>{{'designerApplicationLogLink' | translate}}</a></li>
             </ul>
         </li>

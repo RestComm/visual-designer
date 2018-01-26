@@ -1,10 +1,11 @@
-var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration, versionChecker, projectParameters, parametersService) {
+var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration, versionChecker, projectParameters, parametersService, applicationsResource, authentication) {
 
 	$scope.project = project;
 	$scope.visibleNodes = editedNodes.getEditedNodes();
 	$scope.showGraph = false;
 	$scope.videoSupport = RvdConfiguration.videoSupport;
 	$scope.firstTime = $stateParams.firstTime && ($stateParams.firstTime.toLowerCase() == "true");
+
 
 	function download(applicationSid,projectName) {
 	    var downloadUrl =  '/restcomm-rvd/services/projects/' + applicationSid + '/archive?projectName=' + projectName;
@@ -197,7 +198,6 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
 
 	// State variables
 	$scope.projectError = null; // SET when opening a project fails
-	$scope.projectName = $stateParams.projectName;
 	$scope.applicationSid = $stateParams.applicationSid;
 
 	//$scope.nodes = [];
@@ -211,6 +211,8 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
 	$scope.yesNoBooleanOptions = [{caption:"Yes", value:true}, {caption:"No", value:false}];
 	$scope.nullValue = null;
 	$scope.rejectOptions = [{caption:"busy", value:"busy"}, {caption:"rejected", value:"rejected"}];
+
+ 	$scope.application = applicationsResource.get({applicationId:$stateParams.applicationSid, accountId: authentication.getAccount().sid});
 
 	projectSettingsService.refresh($scope.applicationSid);
 
@@ -475,9 +477,6 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
 	}
 
 	// Run the following after all initialization are complete
-
-	//console.log( "opening project " + $scope.projectName);
-	//$scope.openProject( $scope.projectName );
 
 
 		 // UNSORTED
