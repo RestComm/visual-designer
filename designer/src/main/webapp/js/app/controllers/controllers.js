@@ -261,7 +261,7 @@ angular.module('Rvd').controller('wavManagerController', function ($rootScope, $
 		      }).success(function(data, status, headers, config) {
 		        // file is uploaded successfully
 		    	  console.log('file uploaded successfully');
-		    	  $rootScope.$broadcast("mediafile-uploaded");
+		    	  $rootScope.$broadcast("mediafile-uploaded", {filename: data[0].name});
 		      })
 		      .progress(function () {})
 		      .error( function (data,status) {

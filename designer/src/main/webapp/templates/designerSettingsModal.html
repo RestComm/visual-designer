@@ -26,7 +26,7 @@
 	</form>
 </div>
 <div class="modal-footer">
-	<button ng-disabled="preventSubmit" class="btn btn-primary" ng-click="ok()">{{'designerSettingsModalOkButton' | translate}}</button>
+	<button id='idesettings-save-button' ng-disabled="preventSubmit" class="btn btn-primary" ng-click="ok()">{{'designerSettingsModalOkButton' | translate}}</button>
 	<button class="btn btn-default" ng-click="cancel()">{{'designerSettingsModalCancelButton' | translate}}</button>
 	<div ng-show="alertMessage">{{alertMessage}}</div>
 </div>

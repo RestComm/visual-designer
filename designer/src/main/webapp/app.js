@@ -54,7 +54,7 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
             },
             'container@': {
                 template: '<ui-view/>',
-                controller: 'containerCtrl'
+                controller: 'containerCtrl' // TODO check this. It's probably never executed.
             }
         },
         resolve: {

@@ -1,4 +1,4 @@
-<div class='rvd-designer alert-container'>
+<div id='rvd-designer' cly-reporter class='rvd-designer alert-container cly-reporter'>
 	<!-- navigation bar for errors -->
 	<nav ng-show='projectError' class="navbar navbar-default" role="navigation">
 		<div ng-switch on="projectError.className" class="collapse navbar-collapse navbar-ex1-collapse">
@@ -137,7 +137,7 @@
 										</div>
 									</li>
 									<li>
-										<button ng-click="addNodeClicked(project.projectKind)" class="btn btn-primary rvd-clickable-text" title="{{'designerNewModuleLinkTitle' | translate}}"><i class='fa fa-plus'></i></button></li>
+										<button id="designer-module-add" ng-click="addNodeClicked(project.projectKind)" class="btn btn-primary rvd-clickable-text" title="{{'designerNewModuleLinkTitle' | translate}}"><i class='fa fa-plus'></i></button></li>
 									</li>
 									<li class="dropdown startup-module">
 										<button href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" title="{{'designerStartupModuleLinkTitle' | translate}}">{{'designerStartupModuleLink' | translate}} <strong>{{nodeNamed(project.startNodeName).label}}</strong>	 <span class="caret"></span></button>
