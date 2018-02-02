@@ -212,8 +212,7 @@ public class RvdController extends SecuredRestService {
         }
     }
 
-    // Web Trigger -----
-
+    // Web Trigger
     private RestcommCallArray executeAction(String projectName, HttpServletRequest request, String toParam,
                                             String fromParam, String accessToken, UriInfo ui, AccountProvider accountProvider) throws StorageException, CallControlException {
         logging.appendPrefix("[WT] ");
@@ -240,36 +239,43 @@ public class RvdController extends SecuredRestService {
             throw new CallControlException("Project '" + projectName + "' has no owner and can't be started using WebTrigger.");
 
         String effectiveAuthHeader = null;
-        String accountSid = null;
+        RestcommAccountInfo authenticatedAccount = null;
+        // Try token authentication first
         if ( ! RvdUtils.isEmpty(info.accessToken)) {
-            // there is a token in WebTrigger form, let's try token authentication first
             if ( ! RvdUtils.isEmpty(accessToken) ) {
                 // since there is also a token in the request have to authenticate this way
                 if ( !info.accessToken.equals(accessToken) )
-                    throw new UnauthorizedCallControlAccess("WebTrigger authorization error");
+                    throw new UnauthorizedCallControlAccess("WebTrigger authorization error. Application tokens differ.");
                 // load user profile
                 ProfileDao profileDao = new FsProfileDao(workspaceStorage);
                 UserProfile profile = profileDao.loadUserProfile(owner);
                 // if there is no profile at all or if the credentials are missing from it throw an error
                 if (profile == null || (RvdUtils.isEmpty(profile.getUsername()) || RvdUtils.isEmpty(profile.getToken())) )
                     throw new UnauthorizedCallControlAccess("Profile missing creds or no profile at all for user '" + owner + "'. Web trigger cannot be used for project belonging to this user.");
-                effectiveAuthHeader = RvdUtils.isEmpty(profile.getUsername()) ? null : ("Basic "  + RvdUtils.buildHttpAuthorizationToken(profile.getUsername(), profile.getToken()));
-                RestcommAccountInfo accountInfo = accountProvider.getActiveAccount(profile.getUsername(), effectiveAuthHeader);
-                if (accountInfo == null)
-                    throw new UnauthorizedCallControlAccess("WebTrigger authorization error");
-                accountSid = accountInfo.getSid();
+                effectiveAuthHeader = "Basic "  + RvdUtils.buildHttpAuthorizationToken(profile.getUsername(), profile.getToken());
+                authenticatedAccount = accountProvider.getActiveAccount(profile.getUsername(), effectiveAuthHeader);
+                if (authenticatedAccount == null)
+                    throw new UnauthorizedCallControlAccess("WebTrigger authorization error. Token auth failed.");
             }
         }
-        if (effectiveAuthHeader == null) {
+        // Then restcomm account authentication
+        if (authenticatedAccount == null) {
             // looks like token authentication didn't work. Let's try to use credentials from the request
-            if (getUserIdentityContext().getAccountInfo() != null) {
+            if (getUserIdentityContext().isActiveAccount()) {
                 effectiveAuthHeader = getUserIdentityContext().getEffectiveAuthorizationHeader();
-                accountSid = getUserIdentityContext().getAccountInfo().getSid();
+                authenticatedAccount = getUserIdentityContext().getAccountInfo();
+            } else {
+                // if the account is not active, throw auth error
+                throw new UnauthorizedCallControlAccess("WebTrigger authorization error. Account auth failed.");
             }
         }
-        // at this point we should have an authorization header in place
-        if ( effectiveAuthHeader == null)
-            throw new UnauthorizedCallControlAccess("WebTrigger authorization error");
+        // at this point we should have an authorization header in place and a valid active restcomm account
+        if ( effectiveAuthHeader == null || authenticatedAccount == null)
+            throw new UnauthorizedCallControlAccess("WebTrigger authorization error. Should have an authenticated account by now.");
+        // authenticated account should own the project
+        if (!owner.equals(authenticatedAccount.getEmail_address())) {
+            throw new UnauthorizedCallControlAccess("WebTrigger authorization error. Authenticated account does not own the applicaiton.");
+        }
 
         // initialize a restcomm client object using various information sources
         RestcommClient restcommClient;
@@ -345,16 +351,9 @@ public class RvdController extends SecuredRestService {
                     "Either <i>from</i> or <i>to</i> value is missing. Make sure they are both passed as query parameters or are defined in the Web Trigger configuration.")
                     .setStatusCode(400);
 
+        // Create the call
         try {
-
-            // Find the account sid for the apiUsername is not available
-            if (RvdUtils.isEmpty(accountSid)) {
-                RestcommAccountInfo accountResponse = restcommClient.get("/restcomm/2012-04-24/Accounts.json/" + getLoggedUsername()).done(
-                        marshaler.getGson(), RestcommAccountInfo.class);
-                accountSid = accountResponse.getSid();
-            }
-            // Create the call
-            RestcommCallArray response = restcommClient.post("/restcomm/2012-04-24/Accounts/" + accountSid + "/Calls.json")
+            RestcommCallArray response = restcommClient.post("/restcomm/2012-04-24/Accounts/" + authenticatedAccount.getSid() + "/Calls.json")
                     .addParam("From", from).addParam("To", to).addParam("Url", rcmlUrl)
                     .done(marshaler.getGson(), RestcommCallArray.class);
 

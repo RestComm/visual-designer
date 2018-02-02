@@ -78,6 +78,16 @@ public class UserIdentityContext {
         return null;
     }
 
+    /**
+     * If there is an active authenticated account it returnes true. Otherwise false
+     * @return true or false
+     */
+    public boolean isActiveAccount() {
+        if (accountInfo != null) {
+            return "active".equals(accountInfo.getStatus());
+        }
+        return false;
+    }
 
     /**
      * Return a (possibly empty) set of roles of the effective account (accountInfo) or null if no such account in place.
