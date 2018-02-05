@@ -199,25 +199,6 @@ public class ProjectRestService extends SecuredRestService {
         }
     }
 
-    /**
-     * Alias method for creating projects (it uses project name in path instead as a query param).
-     * It allows old console still work.
-     *
-     * TODO Remove this method once console is upgraded too!
-     *
-     * @param request
-     * @param projectName
-     * @param template
-     * @param kind
-     * @return
-     * @throws RvdException
-     */
-    @PUT
-    @Path("{projectName}")
-    public Response createProjectAlias(@Context HttpServletRequest request, @PathParam("projectName") String projectName, @QueryParam("template") String template, @QueryParam("kind") String kind) throws RvdException {
-        return createProject(request, projectName, template, kind);
-    }
-
     Response createProjectFromTemplate(String templateId, String projectName) throws RvdException {
         if ( ! ValidationUtils.validateTemplateId(templateId) )
             return Response.status(Status.BAD_REQUEST).build();
