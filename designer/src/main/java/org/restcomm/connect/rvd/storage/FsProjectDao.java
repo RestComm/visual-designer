@@ -175,6 +175,14 @@ public class FsProjectDao implements ProjectDao {
         } catch (StorageEntityNotFound e) {
             // do nothing if webTrigger info is not there
         }
+        // copy parameters
+        try {
+            ProjectParameters parameters = workspaceStorage.loadEntity("parameters", sourcePath, ProjectParameters.class);
+            storeProjectParameters(applicationId, parameters);
+        } catch (StorageEntityNotFound e) {
+            // do nothing
+        }
+
         // copy .wav/media resources
         List<WavItem> wavs = listMedia(new File(sourcePath + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME));
         for (WavItem wav: wavs) {
