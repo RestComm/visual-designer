@@ -1,16 +1,21 @@
 
 :root {
-  --header-color: #eee;
 
-  --background-color: #eee; /* for various types of backgrounds like header, verb etc.*/
+  --background-color: #f1f1f1; /* for various types of backgrounds like header, verb etc.*/
+  --header-color: var(--background-color);
+
+
   --label-color: #333; /* color for labels */
   --texts-color: #bbb; /* color for text like descriptions etc. */
 
-  --verb-text-color: #727272;
-  --verb-back-color: #d1d1d1;
+  --verb-text-color: white;
+  --verb-back-color: #1ea5db;
   --button-text-color: #bbb;
   --button-back-color: #eee;
   --comment-color: #777;
+
+  --global-font: lato;
+  --heading-font: var(--font-family);
 
 
 }

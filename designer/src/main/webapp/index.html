@@ -31,11 +31,11 @@
 	<div class="rvd-header" ui-view="header"></div>
 	-->
 	<div class="rvd-header">
-		<div ng-controller="headerCtrl" class="navbar" role="navigation">
+		<div ng-controller="headerCtrl" role="navigation">
 			<div class="row">
 				<div class="col-md-3">
 					<div class="logo-area">
-						<a href="#/home"><img class="logo" src="images/restcomm-v-d-logo.png"/></a>
+						<a href="#/home"><img class="logo" src="images/restcomm-v-d-logo.svg"/></a>
 					</div>
 				</div>
 				<div class="col-md-9">
@@ -63,7 +63,7 @@
 		</div>
 	</div>
 
-<div class="main container">
+<div class="main container-fluid">
 	<div ng-if="rvdError" class="" ng-cloak>
 		<div class="text-center help-block">
 			{{rvdError.message}}

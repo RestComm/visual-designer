@@ -1,10 +1,8 @@
-/* -- CSS Variables --------------------------------------------------------- */
-
 body {
-    font-family: lato;
+    font-family: var(--global-font);
 }
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-family: lato;
+    font-family: var(--heading-font);
 }
 .main.container {
     min-height: 500px;
@@ -13,7 +11,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 /*** header ***/
 .rvd-header {
     background-color: var(--header-color);
-    box-shadow: 1px 2px 1px rgba(219,219,219,1);
     position: relative;
 }
 .header-menu {
@@ -182,9 +179,6 @@ img.project-icon:hover {
 .rvd-designer .drop-area .drop-prompt {
     margin: 20px 0;
 }
-.rvd-designer .startup-module {
-    margin-left: 10px;
-}
 .rvd-designer .project-name {
     margin-right: 10px;
     font-size: 110%;
@@ -206,15 +200,9 @@ img.project-icon:hover {
 	margin-left: auto;
 	margin-right: auto;
 }
-.editor .panel-heading {
-	padding: 5px 10px;
-}
+
 .header .cogs {
 	font-size: 41px;
-}
-.editor {
-	min-height: 580px;
-	background-color: rgb(240, 240, 240);
 }
 .toggle_step:hover {
 	opacity:0.6;
@@ -234,13 +222,6 @@ img.project-icon:hover {
 .collapse-button {
 	font-size: 21px;
 	font-weight: bold;
-}
-.editor .nav > li > a {
-	padding: 7px 15px;
-	margin-right:5px;
-}
-.editor .nav .caret {
-	border-top-color: white;
 }
 .rvd-designer .module-filter {
 	width: 200px;
@@ -614,20 +595,6 @@ vardef .assign-arrow {
 	float: right;
 }
 
-.verb-button {
-	z-index: 1;
-}
-
-.label.verb-button {
-	font-size: 100%;
-	font-weight: normal;
-	display: block;
-	margin-bottom: 5px;
-	padding: 8px;
-	text-align: left;
-}
-
-
 .leftmenu > li {
 	width: 100%;
 	margin-bottom: 5px;
@@ -884,10 +851,6 @@ label {
 
 }
 
-.glyphicon {
-	margin-right: 10px;
-}
-
 /* /Bootstrap extension for having a lot of stuff on nav-tabs */
 
 textarea.medium {
@@ -1058,17 +1021,33 @@ step: the panel that contains the verb details
   text-decoration:none
 }
 
+
 /***** Verbs *****/
 
 .verb-button {
   color: var(--verb-text-color);
   background-color: var(--verb-back-color);
+	z-index: 1;
+	margin-bottom: 4px;
+  font-size: 100%;
+  font-weight: normal;
+  display: block;
+  padding: 8px;
+  text-align: left;
+  opacity: 0.9;
 }
+.verb-button:hover {
+  background-color: var(--verb-back-color);
+  color: var(--verb-text-color);
+  opacity: 1.0;
+}
+
 
 .step .panel-heading {
   color: var(--verb-text-color);
   background-color: var(--verb-back-color);
 }
+
 
 
 /***** Menus & Top menu *****/
@@ -1082,8 +1061,38 @@ step: the panel that contains the verb details
 }
 
 .project-menu {
-    margin-top: 26px;
-    font-size: 1.1em;
-    margin-right: 50px;
+  margin-top: 26px;
+  font-size: 1.1em;
+  margin-right: 50px;
 }
 
+/***** Verb toolbox *****/
+.verb-toolbox {
+  background-color: var(--background-color);
+  padding-left: 23px;
+  padding-right: 23px;
+}
+
+
+/***** Step listing view *****/
+.steplisting {
+	min-height: 580px;
+}
+.module-menu-area.row {
+  background-color: var(--background-color);
+  margin-bottom: 16px;
+  padding-bottom:15px;
+}
+.steplisting .panel-heading {
+	padding: 5px 10px;
+}
+.steplisting  .nav > li > a {
+	padding: 7px 15px;
+	margin-right:5px;
+}
+.steplisting .nav .caret {
+	border-top-color: white;
+}
+.save-button.btn {
+  color: var(--verb-back-color);
+}

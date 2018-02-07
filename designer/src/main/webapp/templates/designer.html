@@ -35,10 +35,10 @@
 			</div>
 		</div>
 
-		<div class="rvd-rcmlview row">
+		<div class="row">
 
 			<!-- Left menu -->
-			<div class="col-md-2">
+			<div class="verb-toolbox col-md-2">
 
 				<div ng-show='!project.projectKind || project.projectKind=="voice"' class='form-group'>
 					<div basic-draggable drop-target='.steps' class="verb-button button-play label btn-default rvd-pickable"><i class='fa fa-play-circle'></i> &nbsp;{{'designerVoicePlayLabel' | translate}}</div>
@@ -110,55 +110,31 @@
 
 			<!-- Workspace on the right -->
 			<div class="col-md-10">
-				<div class="editor">
-					<div class="panel-body editor">
-						<div class="row" id="es">
-							<div class="col-md-8 form-group">
-								<ul class="top-menu nav nav-pills">
+				<div class="steplisting">
+						<div class="module-menu-area row" id="es">
+							<div class="col-md-12">
+								<div class="btn-group">
+									<button class="btn btn-link dropdown-toggle" title="Select module to edit">{{'designerModules' | translate}}  <span class="caret"></span></button>
+									<ul class="dropdown-menu">
+										<li class="rvd-clickable-text"><a ng-click="editAllNodes(getAllTargets(), searchToken, moduleFilterEnabled)"><span ng-hide="moduleFilterEnabled">{{'designerEditAll' | translate}}</span><span ng-show="moduleFilterEnabled">{{'designerEditFiltered' | translate}}</span></a></li>
+										<li class="rvd-clickable-text"><a ng-click="hideAllNodes(getAllTargets())"><span>{{'designerHideAllLink' | translate}}</span></a></li>
+										<li class="divider" role="presentation"></li>
+										<li class="rvd-clickable-text" ng-repeat='node in getAllTargets() | filterNodesByLabel:searchToken:moduleFilterEnabled | orderBy:"label"'><a ng-click="editNode(node.name)">{{node.label}}</a></li>
+									</ul>
+								</div>
+								<button id="designer-module-add" ng-click="addNodeClicked(project.projectKind)" class="btn btn-link" title="{{'designerNewModuleLinkTitle' | translate}}">
+									<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+								</button>
+								<div class="btn-group">
+									<button href="#" class="btn btn-link dropdown-toggle" data-toggle="dropdown" title="{{'designerStartupModuleLinkTitle' | translate}}">{{'designerStartupModuleLink' | translate}} <strong>{{nodeNamed(project.startNodeName).label}}</strong>	 <span class="caret"></span></button>
+									<ul class="dropdown-menu">
+										<li class="rvd-clickable-text" ng-repeat='node in getAllTargets() | orderBy:"label"'><a ng-click="setStartNode(node.name)">{{node.label}}</a></li>
+									</ul>
+								</div>
+								<button ng-click="signalSavePressed()" class="save-button btn btn-link"><span ng-hide="saveSpinnerShown">Save</span><i ng-show="saveSpinnerShown" class="fa fa-spinner fa-spin"></i></button>
 
-									<li class="dropdown">
-										<button href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" title="Select module to edit">{{'designerModules' | translate}} <span class="caret"></span></button>
-										<ul class="dropdown-menu">
-											<li class="rvd-clickable-text"><a ng-click="editAllNodes(getAllTargets(), searchToken, moduleFilterEnabled)"><span ng-hide="moduleFilterEnabled">{{'designerEditAll' | translate}}</span><span ng-show="moduleFilterEnabled">{{'designerEditFiltered' | translate}}</span></a></li>
-											<li class="rvd-clickable-text"><a ng-click="hideAllNodes(getAllTargets())"><span>{{'designerHideAllLink' | translate}}</span></a></li>
-											<li class="divider" role="presentation"></li>
-											<li class="rvd-clickable-text" ng-repeat='node in getAllTargets() | filterNodesByLabel:searchToken:moduleFilterEnabled | orderBy:"label"'><a ng-click="editNode(node.name)">{{node.label}}</a></li>
-										</ul>
-									</li>
-									<li style="margin-right: 5px">
-										<button ng-show="!moduleFilterEnabled" ng-click="toggleModuleFilter()" title="{{'designerModulesToggleFilteringTitle' | translate}}" class="btn" type="button"><i class="fa fa-filter"  title="{{'designerInputSearchLabelTitle' | translate}}"></i></button>
-										<div ng-show="moduleFilterEnabled" class="input-group module-filter">
-											<div class="input-group-btn">
-												<button type="button" class="btn btn-default" ng-click="toggleModuleFilter()" title="Toggle filtering in Modules dropdown">
-													<i class="fa fa-filter"  title="{{'designerInputSearchLabelTitle' | translate}}"></i>
-												</button>
-											</div>
-											<input class="form-control" ng-model="searchToken" ng-change="showNodesDropdown=true;" ng-blur="showNodesDropdown=false;" title="{{'designerInputSearchRegexTitle' | translate}}" placeholder="{{'designerInputSearchPlaceholder' | translate}}">
-										</div>
-									</li>
-									<li>
-										<button id="designer-module-add" ng-click="addNodeClicked(project.projectKind)" class="btn btn-primary rvd-clickable-text" title="{{'designerNewModuleLinkTitle' | translate}}"><i class='fa fa-plus'></i></button></li>
-									</li>
-									<li class="dropdown startup-module">
-										<button href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" title="{{'designerStartupModuleLinkTitle' | translate}}">{{'designerStartupModuleLink' | translate}} <strong>{{nodeNamed(project.startNodeName).label}}</strong>	 <span class="caret"></span></button>
-										<ul class="dropdown-menu">
-											<li class="rvd-clickable-text" ng-repeat='node in getAllTargets() | orderBy:"label"'><a ng-click="setStartNode(node.name)">{{node.label}}</a></li>
-										</ul>
-									</li>
-									<!--
-									<li>
-										<a ng-click="showExceptionConfig()" class="rvd-clickable-text">Exceptions</a>
-									</li>
-									-->
-								</ul>
 								<div ng-show="!startupNodeSet()" class='rvd-subheader-message'>
 									<span class="validation-error">{{'designerValidationErrorLabel1' | translate}} <em>{{'designerValidationErrorLabel2' | translate}}</em> {{'designerValidationErrorLabel3' | translate}}</span>
-								</div>
-							</div>
-
-							<div class="col-md-4 text-right">
-								<div class="form-group">
-									<button ng-click="signalSavePressed()" class="btn btn-primary rvd-clickable-text"><i ng-hide="saveSpinnerShown" class='fa fa-save'></i><i ng-show="saveSpinnerShown" class="fa fa-spinner fa-spin"></i></button>
 								</div>
 							</div>
 
@@ -219,7 +195,6 @@
 							</div>
 						</div>
 
-					</div>
 				</div>
 			</div>
 
