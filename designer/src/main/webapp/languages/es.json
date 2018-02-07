@@ -577,5 +577,7 @@
 	"gatherTimeoutTooltip": "Time (in seconds) to wait for the caller to press another digit",
 
 	"partialResultCallback": "Partial Result URL",
-	"Method" : "Method"
+	"Method" : "Method",
+
+	"Account Settings": "Account Settings"
 }

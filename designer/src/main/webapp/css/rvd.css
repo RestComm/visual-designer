@@ -1,3 +1,5 @@
+/* -- CSS Variables --------------------------------------------------------- */
+
 body {
     font-family: lato;
 }
@@ -10,7 +12,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 /*** header ***/
 .rvd-header {
-    background-color: #eee;
+    background-color: var(--header-color);
     box-shadow: 1px 2px 1px rgba(219,219,219,1);
     position: relative;
 }
@@ -316,17 +318,6 @@ a.muted.active {
     background-color: #e5e5e5;
 }
 
-/*
-.rvd-button.btn-primary, .btn.btn-primary {
-    color: #fff;
-    background-color: #45a5ab;
-    border-color: #285e8e;
-    border: 1px solid transparent;
-}
-.btn.btn-primary:hover {
-    background-color: #7fc8cc;
-}
-*/
 label.rvd-label {
     /* font-family: lato; */
     color: #45a5ab;
@@ -634,7 +625,6 @@ vardef .assign-arrow {
 	margin-bottom: 5px;
 	padding: 8px;
 	text-align: left;
-	color: #727272;
 }
 
 
@@ -1036,4 +1026,60 @@ textarea.medium {
 .connection-wrap, .link-tool , .link-tools { display: none; }
 .marker-arrowhead { display: none }
 .marker-vertices { display: none }
+
+
+
+/*
+
+CSS terms
+----------
+
+verb: the draggable button of the toolbox on the left
+step: the panel that contains the verb details
+
+
+
+
+
+
+
+
+*/
+
+
+/***** Common styles *****/
+
+/* links */
+.btn.btn-link {
+  text-decoration:none;
+  color: var(--label-color);
+}
+.btn.btn-link:focus {
+  text-decoration:none
+}
+
+/***** Verbs *****/
+
+.verb-button {
+  color: var(--verb-text-color);
+  background-color: var(--verb-back-color);
+}
+
+.step .panel-heading {
+  color: var(--verb-text-color);
+  background-color: var(--verb-back-color);
+}
+
+
+/***** Menus & Top menu *****/
+
+.dropdown>button {
+  font-size: 1em;
+}
+
+.project-menu {
+    margin-top: 26px;
+    font-size: 1.1em;
+    margin-right: 50px;
+}
 

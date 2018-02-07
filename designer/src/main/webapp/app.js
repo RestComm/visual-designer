@@ -47,11 +47,6 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     });
     $stateProvider.state('root.rvd',{
         views: {
-            'authmenu@': {
-                templateUrl: 'templates/index-authmenu.html',
-                //template: '<div>ROOT.RVD</div>',
-                controller: 'authMenuCtrl'
-            },
             'container@': {
                 template: '<ui-view/>',
                 controller: 'containerCtrl' // TODO check this. It's probably never executed.
@@ -79,14 +74,14 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
         // parameters following the '?' are optional (and follow the typical query syntax (beore the fragment) - i.e. #/designer/AP73926e7113fa4d95981aa96b76eca854=rvdCollectVerbDemo?firstTime=true
         url: '/designer/:applicationSid?firstTime',
         views: {
+            'projectmenu@': {
+                templateUrl: 'templates/project-menu.html',
+                controller: 'projectMenuCtrl'
+            },
             'container@': {
                 templateUrl : 'templates/designer.html',
                 controller : 'designerCtrl'
 
-            },
-            'mainmenu@': {
-                templateUrl: 'templates/designer-mainmenu.html',
-                controller: 'designerMainmenuCtrl'
             }
         },
         resolve: {
@@ -98,6 +93,9 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
             },
             projectParameters: function(parametersResource, $stateParams, authorize) {
                 return parametersResource.get({applicationSid: $stateParams.applicationSid});
+            },
+            application: function (applicationsResource, authentication,$stateParams, authorize) {
+                return applicationsResource.get({applicationId:$stateParams.applicationSid, accountId: authentication.getAccount().sid});
             }
         }
     });

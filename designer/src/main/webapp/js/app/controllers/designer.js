@@ -1,4 +1,4 @@
-var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration, versionChecker, projectParameters, parametersService, applicationsResource, authentication) {
+var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $q, $stateParams, $location, stepService, $http, $timeout, $injector, stepRegistry, stepPacker, $modal, notifications, ModelBuilder, projectSettingsService, webTriggerService, nodeRegistry, editedNodes, project, designerService, $filter, $anchorScroll, bundledWavs, fileRetriever, RvdConfiguration, versionChecker, projectParameters, parametersService, applicationsResource, authentication, application) {
 
 	$scope.project = project;
 	$scope.visibleNodes = editedNodes.getEditedNodes();
@@ -14,15 +14,16 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
 	    });
 	}
 
-    $scope.startupNodeSet = function () {
-        return designerService.startupNodeSet(project);
-    }
+  $scope.startupNodeSet = function () {
+      return designerService.startupNodeSet(project);
+  }
 	$scope.getActiveNodeName = function () {
 		var activeNode = editedNodes.getActiveNode();
 		return activeNode;
 	}
 	$scope.setActiveNode = function (nodeName) {
 		editedNodes.setActiveNode(nodeName);
+		$rootScope.$broadcast('startup-module-changed', {name: nodeName });
 	}
 	$scope.setStartNode = function (name) {
 		//console.log( 'set start node to ' + name );
@@ -212,7 +213,7 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
 	$scope.nullValue = null;
 	$scope.rejectOptions = [{caption:"busy", value:"busy"}, {caption:"rejected", value:"rejected"}];
 
- 	$scope.application = applicationsResource.get({applicationId:$stateParams.applicationSid, accountId: authentication.getAccount().sid});
+ 	$scope.application = application; // TODO we resolve application at state deps level - remove this: applicationsResource.get({applicationId:$stateParams.applicationSid, accountId: authentication.getAccount().sid});
 
 	projectSettingsService.refresh($scope.applicationSid);
 

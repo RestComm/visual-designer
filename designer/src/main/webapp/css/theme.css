@@ -1,0 +1,16 @@
+
+:root {
+  --header-color: #eee;
+
+  --background-color: #eee; /* for various types of backgrounds like header, verb etc.*/
+  --label-color: #333; /* color for labels */
+  --texts-color: #bbb; /* color for text like descriptions etc. */
+
+  --verb-text-color: #727272;
+  --verb-back-color: #d1d1d1;
+  --button-text-color: #bbb;
+  --button-back-color: #eee;
+  --comment-color: #777;
+
+
+}

@@ -84,43 +84,54 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
     });
 });
 
-angular.module('Rvd').controller('designerMainmenuCtrl', function ($scope, $stateParams, project,$rootScope, designerService, projectSettingsService, parametersService, projectParameters) {
-	$scope.projectName = $stateParams.projectName;
-	$scope.applicationSid = $stateParams.applicationSid;
-    $scope.project = project;
-    $scope.showGraph = false;
+App.controller('projectMenuCtrl', function ($rootScope, $scope, authentication, $location, $modal, $q, $http, $state, application, projectParameters, parametersService,project, designerService, $translate) {
 
-	$scope.getProjectSettings = function () {
-		return projectSettingsService.getProjectSettings(); // returns a $resource that will be filled up automatically
-	}
-	$scope.showParameters = function () {
-	  parametersService.showModal($scope.applicationSid);
-	}
-
+  $scope.applicationSid = application.sid;
+  $scope.applicationFriendlyName = application.friendly_name;
+  $scope.projectKind = project.projectKind;
   if (projectParameters.parameters.length > 0) {
     $scope.showParametersButton = true;
   }
+  $scope.showGraph = false;
+  $scope.appStartUrl = designerService.getStartUrl(application.sid);
+  $scope.authInfo = authentication.getAuthInfo();
 
-	$scope.toggleShowGraph = function () {
-	    $scope.showGraph = !$scope.showGraph;
-	    $rootScope.$broadcast("show-graph",{status: $scope.showGraph});
+	$scope.showParameters = function () {
+	  parametersService.showModal(application.sid);
 	}
+  $scope.startupNodeSet = function () {
+      return designerService.startupNodeSet(project);
+  }
 
-    $scope.signalDownloadZip = function () {
-        $rootScope.$broadcast("download-project-clicked");
-    }
-    $scope.signalShowProjectSettings = function () {
-        $rootScope.$broadcast("show-project-settings-clicked");
-    }
-    $scope.signalShowWebTrigger = function  () {
-        $rootScope.$broadcast("show-web-trigger-clicked");
-    }
-    $scope.startupNodeSet = function () {
-        return designerService.startupNodeSet(project);
-    }
-    $scope.getStartUrl = function () {
-        return designerService.getStartUrl($scope.applicationSid);
-    }
+  $scope.toggleShowGraph = function () {
+    $scope.showGraph = !$scope.showGraph;
+    $rootScope.$broadcast("show-graph",{status: $scope.showGraph});
+  }
+  $scope.signalShowWebTrigger = function  () {
+    $rootScope.$broadcast("show-web-trigger-clicked");
+  }
+  $scope.changeLanguage = function (langKey) {
+    $translate.use(langKey);
+  };
+  $scope.getCurrentLanguage = function () {
+    return $translate.use();
+  }
+  $scope.signalShowProjectSettings = function () {
+      $rootScope.$broadcast("show-project-settings-clicked");
+  }
+
+  // event handling
+  $scope.$on("startup-module-changed", function (event,data) {
+    $scope.appStartUrl = data.name;
+  });
+
+
+
+	function logout() {
+		authentication.doLogout();
+		$state.go('root.public.login');
+	}
+	$scope.logout = logout;
 
 });
 
@@ -213,30 +224,11 @@ angular.module('Rvd').controller('projectLogCtrl', function ($scope, $stateParam
 	retrieveLog($scope.applicationSid);
 });
 
-App.controller('authMenuCtrl', function ($scope, authentication, $location, $modal, $q, $http, $state) {
-	//$scope.authInfo = authentication.getAuthInfo();
-	//$scope.username = authentication.getTicket(); //"Testuser@test.com";
-
-	function logout() {
-		authentication.doLogout();
-		$state.go('root.public.login');
-	}
-	$scope.logout = logout;
-
-});
 
 App.controller('containerCtrl', function ($scope, authentication) {
     $scope.authInfo = authentication.getAuthInfo();
 });
 
-App.controller('translateController', function($translate, $scope) {
-  $scope.changeLanguage = function (langKey) {
-    $translate.use(langKey);
-  };
-  $scope.getCurrentLanguage = function () {
-	return $translate.use();
-  }
-});
 
 angular.module('Rvd').controller('wavManagerController', function ($rootScope, $scope, $http, $upload, notifications) {
 	$scope.deleteWav = function (wavItem) {
