@@ -14,7 +14,6 @@
 	"designerCloseTitle": "Cerrar",
 	"Project settings": "Configuración del proyecto",
 	"Settings": "Configuración",
-	"designerApplicationLogLink": "Log de aplicación",
 	"designerVoicePlayLabel": "Play",
 	"designerVoiceSayLabel": "Say",
 	"designerVoiceCollectLabel": "Collect",
@@ -579,5 +578,6 @@
 	"partialResultCallback": "Partial Result URL",
 	"Method" : "Method",
 
-	"Account Settings": "Account Settings"
+	"Account Settings": "Account Settings",
+	"Log": "Log"
 }

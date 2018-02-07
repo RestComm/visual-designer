@@ -1077,6 +1077,10 @@ step: the panel that contains the verb details
   font-size: 1em;
 }
 
+.dropdown .dropdown-menu li a {
+  margin-left: 12px;
+}
+
 .project-menu {
     margin-top: 26px;
     font-size: 1.1em;

@@ -10,6 +10,11 @@
         <li ng-show="projectKind=='voice'"><a id='wt-show-button' ng-click="signalShowWebTrigger()" class="rvd-clickable-text muted">{{'designerWebTriggerLink' | translate}}</a></li>
         <li><a vd-report="click" class="muted" target="_blank" href='{{appStartUrl}}'>{{'designerAppUrlLink' | translate}}</a></li>
         <li><a ng-click="signalShowProjectSettings()" class="rvd-clickable-text">{{'Settings' | translate}}</a></li>
+        <li><a id="log-open-button" href="#/designer/{{applicationSid}}/log" target="_blank" class="rvd-clickable-text disabled">{{'Log' | translate}}</a></li>
+        <!--
+        <li ng-hide="getProjectSettings().logging" class="disabled"><a>{{'Log' | translate}}</a></li>
+        -->
+
         <li class="divider"></li>
         <li class="dropdown-header">{{authInfo.username}}</li>
         <li ng-show="!!authInfo.username"><a class="rvd-clickable-text" ng-click="showSettingsModal()" >{{'Account Settings' | translate}}</a></li>

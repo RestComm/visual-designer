@@ -13,7 +13,6 @@
 	"designerCloseTitle": "Close",
 	"Project settings": "Project Settings",
 	"Settings": "Settings",
-	"designerApplicationLogLink": "Application log",
 	"designerVoicePlayLabel": "Play",
 	"designerVoiceSayLabel": "Say",
 	"designerVoiceCollectLabel": "Collect",
@@ -583,5 +582,6 @@
 	"Unauthorized": "Unauthorized",
 	"unauthorized_text": "You're not authorized to access this resource",
 
-	"Account Settings": "Account Settings"
+	"Account Settings": "Account Settings",
+	"Log": "Log"
 }
