@@ -28,9 +28,7 @@
 								<div class="text-center" id="paper" style="overflow: scroll;" ng-init="drawGraph()"></div>
 							</div>
 						</div>
-
 					</div>
-					<hr>
 				</div>
 			</div>
 		</div>
@@ -109,8 +107,8 @@
 			<!-- /wavManager -->
 
 			<!-- Workspace on the right -->
-			<div class="col-md-10">
-				<div class="steplisting">
+			<div class="col-md-10 steplisting">
+				<div >
 						<div class="module-menu-area row" id="es">
 							<div class="col-md-12">
 								<div class="btn-group dropdown">
@@ -161,7 +159,7 @@
 
 						</div>
 
-						<ul class="nav nav-tabs module-tabs">
+						<ul ng-show="visibleNodes.length != 0" class="nav nav-tabs module-tabs">
 							<!-- tabs -->
 							<li ng-repeat='nodeSummary in getEditedNodeNames()'
 								ng-class="{active:isNodeActive(nodeSummary.name)}" class="module-tab">

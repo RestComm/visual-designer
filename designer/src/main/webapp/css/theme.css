@@ -4,6 +4,8 @@
   --background-color: #f1f1f1; /* for various types of backgrounds like header, verb etc.*/
   --header-color: var(--background-color);
 
+  --secondary-back-color: #ffffff; /* background for steps, graph etc */
+
 
   --label-color: #434A5B; /* color for labels */
   --texts-color: #bbb; /* color for text like descriptions etc. */
@@ -14,6 +16,7 @@
   --step-heading-back-color: #1ea5db;
   --step-border-color: #d0d1d6;
   --step-text-color: #5b6170;
+  --steplisting-back-color: #ffffff;
 
   --button-text-color: #434A5B;
   --button-back-color: #B8BBC1;

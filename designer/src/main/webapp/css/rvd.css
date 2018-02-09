@@ -1,6 +1,7 @@
 body {
     font-family: var(--global-font);
     font-size: 15px;
+    background-color: #F1F1F1;
 }
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: var(--heading-font);
@@ -20,9 +21,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .logo-area {
     float:left;
 }
-img.logo {
-    margin: 10px 10px 10px 10px;
-}
+
 .state-login img.logo {
     margin: 30px 0 30px 50px;
 }
@@ -230,25 +229,6 @@ img.project-icon:hover {
 .rvd-designer .no-modules-warning {
 	text-align: center;
 	padding-top: 100px;
-}
-
-/* Graph */
-.graph {
-	border: 1px solid #D3D3D3;
-	border-radius: 3px;
-}
-#paper {
-	padding: 20px;
-
-	/*display: inline-block;*/
-	overflow: hidden;
-}
-#paperContainer {
-
-}
-.graph .graph-controls {
-	position:absolute;
-	right:20px;
 }
 
 
@@ -973,8 +953,10 @@ step: the panel that contains the verb details
 }
 
 
-
-
+/***** Header *****/
+img.logo {
+    margin: 20px 10px 10px 0px;
+}
 
 /***** Menus & Top menu *****/
 
@@ -992,7 +974,7 @@ step: the panel that contains the verb details
 
 .project-menu {
   margin-top: 26px;
-  margin-right: 50px;
+  margin-right: 30px;
 }
 .project-menu li a {
   margin-left: 12px;
@@ -1010,9 +992,11 @@ step: the panel that contains the verb details
 /***** Verb toolbox *****/
 .verb-toolbox {
   background-color: var(--background-color);
-  padding-left: 23px;
+  /*padding-left: 23px;
   padding-right: 23px;
   padding-top: 20px;
+  padding-bottom: 20px;*/
+  padding: 20px 20px 23px 23px;
 }
 
 .verb-button {
@@ -1039,6 +1023,7 @@ step: the panel that contains the verb details
 /***** Step listing view *****/
 .steplisting {
 	min-height: 580px;
+	background-color: var(--steplisting-back-color);
 }
 .module-tab .navtab {
   color: var(--label-color);
@@ -1142,4 +1127,23 @@ step: the panel that contains the verb details
     padding: 2px 7px;
     transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
     vertical-align: middle;
+}
+
+/***** Graph *****/
+.graph {
+  background-color: var(--secondary-back-color);
+	border: 1px solid #D3D3D3;
+	border-radius: 3px;
+	margin-bottom: 10px;
+}
+#paper {
+	padding: 20px;
+	/*display: inline-block;*/
+	overflow: hidden;
+}
+#paperContainer {
+}
+.graph .graph-controls {
+	position:absolute;
+	right:20px;
 }
