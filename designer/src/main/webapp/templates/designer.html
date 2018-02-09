@@ -113,7 +113,7 @@
 				<div class="steplisting">
 						<div class="module-menu-area row" id="es">
 							<div class="col-md-12">
-								<div class="btn-group">
+								<div class="btn-group dropdown">
 									<button class="btn btn-link dropdown-toggle" title="Select module to edit">{{'designerModules' | translate}}  <span class="caret"></span></button>
 									<ul class="dropdown-menu">
 										<li class="rvd-clickable-text"><a ng-click="editAllNodes(getAllTargets(), searchToken, moduleFilterEnabled)"><span ng-hide="moduleFilterEnabled">{{'designerEditAll' | translate}}</span><span ng-show="moduleFilterEnabled">{{'designerEditFiltered' | translate}}</span></a></li>
@@ -125,7 +125,7 @@
 								<button id="designer-module-add" ng-click="addNodeClicked(project.projectKind)" class="btn btn-link" title="{{'designerNewModuleLinkTitle' | translate}}">
 									<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
 								</button>
-								<div class="btn-group">
+								<div class="btn-group dropdown">
 									<button href="#" class="btn btn-link dropdown-toggle" data-toggle="dropdown" title="{{'designerStartupModuleLinkTitle' | translate}}">{{'designerStartupModuleLink' | translate}} <strong>{{nodeNamed(project.startNodeName).label}}</strong>	 <span class="caret"></span></button>
 									<ul class="dropdown-menu">
 										<li class="rvd-clickable-text" ng-repeat='node in getAllTargets() | orderBy:"label"'><a ng-click="setStartNode(node.name)">{{node.label}}</a></li>
@@ -161,14 +161,14 @@
 
 						</div>
 
-						<ul class="nav nav-tabs">
+						<ul class="nav nav-tabs module-tabs">
 							<!-- tabs -->
 							<li ng-repeat='nodeSummary in getEditedNodeNames()'
-								ng-class="{active:isNodeActive(nodeSummary.name)}">
+								ng-class="{active:isNodeActive(nodeSummary.name)}" class="module-tab">
 								<span ng-click='setActiveNode(nodeSummary.name)' href="#" class='navtab'
 									  title='{{nodeSummary.name}}' ng-init="view={editLabel:false,label:getNodeLabel(nodeSummary.name)}"> <span
 										ng-show='!view.editLabel'> <!-- <a ng-click='node.iface.editLabel=!node.iface.editLabel'>{{node.label}}</a> -->
-										<a ng-click='onEditNodeLabel(view,nodeSummary.name)' class="rvd-clickable-text">{{getNodeLabel(nodeSummary.name)}}</a>
+										<a ng-click='onEditNodeLabel(view,nodeSummary.name)' class="rvd-clickable-text module-tab-label">{{getNodeLabel(nodeSummary.name)}}</a>
 										&nbsp;&nbsp;&nbsp;
 										<i ng-click='removeNode(nodeSummary.name)' ng-show="isNodeActive(nodeSummary.name)" class='fa fa-trash-o rvd-clickable' title="{{'designerTabRemoveModuleTitle' | translate }}"></i>
 										&nbsp;&nbsp;

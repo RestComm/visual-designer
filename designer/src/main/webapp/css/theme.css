@@ -5,17 +5,29 @@
   --header-color: var(--background-color);
 
 
-  --label-color: #333; /* color for labels */
+  --label-color: #434A5B; /* color for labels */
   --texts-color: #bbb; /* color for text like descriptions etc. */
 
-  --verb-text-color: white;
+  --verb-text-color: #ffffff;
   --verb-back-color: #1ea5db;
-  --button-text-color: #bbb;
-  --button-back-color: #eee;
+  --step-heading-text-color: #ffffff;
+  --step-heading-back-color: #1ea5db;
+  --step-border-color: #d0d1d6;
+  --step-text-color: #5b6170;
+
+  --button-text-color: #434A5B;
+  --button-back-color: #B8BBC1;
+  --button-font-size: 15px;
   --comment-color: #777;
 
   --global-font: lato;
+  --global-font-size: 15px;
   --heading-font: var(--font-family);
 
+  --dropdown-text-color: #141D33;
+  --dropdown-font-size: 14px;
+
+  --selected-tab-back-color: #434A5B;
+  --selected-tab-text-color: #FFFFFF;
 
 }

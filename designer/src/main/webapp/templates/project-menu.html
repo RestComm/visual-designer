@@ -1,5 +1,5 @@
 <div class="dropdown project-menu pull-right">
-    <button class="btn btn-link dropdown-toggle" title="{{applicationSid}}">{{applicationFriendlyName}} <b class="caret"></b></button>
+    <button class="btn btn-link dropdown-toggle project-menu-button" title="{{applicationSid}}">{{applicationFriendlyName}} <b class="caret"></b></button>
     <ul class="dropdown-menu project-dropdown-menu">
         <li ng-show="showParametersButton">
             <a href ng-click="showParameters()" class="muted">Parameters</a>
@@ -16,7 +16,7 @@
         -->
 
         <li class="divider"></li>
-        <li class="dropdown-header">{{authInfo.username}}</li>
+        <li class="dropdown-header project-menu-username">{{authInfo.username}}</li>
         <li ng-show="!!authInfo.username"><a class="rvd-clickable-text" ng-click="showSettingsModal()" >{{'Account Settings' | translate}}</a></li>
         <li class="dropdown-header">Languages</li>
         <li><a class="rvd-clickable-text" ng-click="changeLanguage('en-US')"><i ng-show="getCurrentLanguage()=='en-US'" class="fa fa-check"></i> en-US</a></li>

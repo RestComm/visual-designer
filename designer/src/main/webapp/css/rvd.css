@@ -1,5 +1,6 @@
 body {
     font-family: var(--global-font);
+    font-size: 15px;
 }
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: var(--heading-font);
@@ -340,24 +341,6 @@ label.rvd-label {
 	border-color: rgba(255, 0, 0, 0.6);
 	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 0, 0, 0.6)
 }
-
-.validation-error, .error-message {
-	font-size: 85%;
-	color: rgba(255, 0, 0, 0.6);
-	font-style: italic;
-}
-
-.error-message {
-	font-size: 85%;
-	color: #FBA01B;
-	font-style: italic;
-}
-
-.validation-warning {
-	font-size: 85%;
-	color: #EDB859;
-}
-
 
 .navbar-rvd-centered {
 	float: none;
@@ -738,17 +721,6 @@ li.verb {
 	background-color: #f0f0f0;
 }
 
-/* jquery-ui customizations */
-
-.ui-sortable .ui-state-highlight {
-	border: 1px solid #f69c55;
-    background: #f69c55;
-    border-radius: 5px;
-	color: #f69c55;
-    height: 10px;
-    margin-bottom: 5px;
-}
-
 
 /*
  *
@@ -795,61 +767,14 @@ li.verb {
 	right: 26px;
 	top: 9px;
 }
+/*
 label {
 	color: #737373;
 }
+*/
 
 
 
-/* Bootstrap extension for having a lot of stuff on nav-tabs */
-
-.nav-tabs > li > span.navtab {
-    border: 1px solid transparent;
-    border-radius: 4px 4px 0 0;
-    line-height: 1.42857;
-    margin-right: 2px;
-    cursor: pointer;
-}
-.nav > li > span.navtab {
-    display: block;
-    padding: 10px 15px;
-    position: relative;
-}
-
-.nav-tabs > li > span.navtab:hover {
-  border-color: #eeeeee #eeeeee #dddddd;
-}
-
-.nav-tabs > li.active > span.navtab,
-.nav-tabs > li.active > span.navtab:hover,
-.nav-tabs > li.active > span.navtab:focus {
-  color: #555555;
-  cursor: default;
-  background-color: #ffffff;
-  border: 1px solid #dddddd;
-  border-bottom-color: transparent;
-}
-
-.nav > li > span.navtab:hover,
-.nav > li > span.navtab:focus {
-  text-decoration: none;
-  background-color: #eeeeee;
-}
-
-
-.navtab input {
-	background-color: #FFFFFF;
-    border: 1px solid #CCCCCC;
-    border-radius: 4px 4px 4px 4px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    color: #555555;
-    font-size: 12px;
-    line-height: 1.42857;
-    padding: 2px 7px;
-    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
-    vertical-align: middle;
-
-}
 
 /* /Bootstrap extension for having a lot of stuff on nav-tabs */
 
@@ -1020,50 +945,66 @@ step: the panel that contains the verb details
 .btn.btn-link:focus {
   text-decoration:none
 }
-
-
-/***** Verbs *****/
-
-.verb-button {
-  color: var(--verb-text-color);
-  background-color: var(--verb-back-color);
-	z-index: 1;
-	margin-bottom: 4px;
-  font-size: 100%;
-  font-weight: normal;
-  display: block;
-  padding: 8px;
-  text-align: left;
-  opacity: 0.9;
+.btn {
+  font-size: 15px;
 }
-.verb-button:hover {
-  background-color: var(--verb-back-color);
-  color: var(--verb-text-color);
-  opacity: 1.0;
+.btn-xs {
+    font-size: 12px;
+}
+.btn-primary, .btn-primary:hover, .btn-primary:focus:active, .btn-primary:active:hover, .btn-primary:focus,
+.btn-default, .btn-default:hover, .btn-default:focus:active, .btn-default:active:hover, .btn-default:focus{
+  color: var(--button-text-color);
+  background-color: var(--button-back-color);
+  border-color: var(--button-back-color);
+}
+.btn-primary:hover,
+.btn-default:hover {
+  opacity: 0.8;
 }
 
-
-.step .panel-heading {
-  color: var(--verb-text-color);
-  background-color: var(--verb-back-color);
+.validation-error, .error-message, .validation-warning {
+	font-size: 85%;
+	color: #E63828;
+	font-style: italic;
 }
+
+.input-group-addon {
+  background-color: #F1F1F1;
+}
+
+
 
 
 
 /***** Menus & Top menu *****/
 
 .dropdown>button {
-  font-size: 1em;
+  font-size: 16px;
 }
 
 .dropdown .dropdown-menu li a {
-  margin-left: 12px;
+  color: var(--dropdown-text-color);
+  font-size: var(--dropdown-font-size);
+}
+.dropdown-menu {
+  border: 1px solid #D0D1D6;
 }
 
 .project-menu {
   margin-top: 26px;
-  font-size: 1.1em;
   margin-right: 50px;
+}
+.project-menu li a {
+  margin-left: 12px;
+}
+.project-menu>.project-menu-button {
+  color: #E63828;
+  font-size: 16px;
+}
+.project-menu-username {
+  color: #141D33;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 /***** Verb toolbox *****/
@@ -1071,13 +1012,48 @@ step: the panel that contains the verb details
   background-color: var(--background-color);
   padding-left: 23px;
   padding-right: 23px;
+  padding-top: 20px;
 }
+
+.verb-button {
+  color: var(--verb-text-color);
+  background-color: var(--verb-back-color);
+	z-index: 1;
+	margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+  padding: 8px;
+  text-align: left;
+  opacity: 0.9;
+}
+
+.verb-button:hover {
+  background-color: var(--verb-back-color);
+  color: var(--verb-text-color);
+  opacity: 1.0;
+}
+
 
 
 /***** Step listing view *****/
 .steplisting {
 	min-height: 580px;
 }
+.module-tab .navtab {
+  color: var(--label-color);
+
+}
+.module-tab .module-tab-label {
+  color: var(--label-color);
+  font-size: 14px;
+}
+.module-tab.active .module-tab-label {
+  color: #ffffff;
+
+}
+
+
 .module-menu-area.row {
   background-color: var(--background-color);
   margin-bottom: 16px;
@@ -1095,4 +1071,75 @@ step: the panel that contains the verb details
 }
 .save-button.btn {
   color: var(--verb-back-color);
+}
+
+.step .panel-heading {
+  color: var(--step-heading-text-color);
+  background-color: var(--step-heading-back-color);
+}
+.step.panel {
+  border-color: var(--step-border-color);
+}
+.step .panel-body {
+  color: var(--step-text-color);
+  font-size: 15px;
+}
+
+
+/* jquery-ui customizations */
+
+.ui-sortable .ui-state-highlight {
+	border: 1px solid #1084AC;
+  background: #1084AC;
+  border-radius: 5px;
+	color: #1084AC;
+  height: 10px;
+  margin-bottom: 5px;
+}
+
+/* Module tabs */
+.module-tabs.nav-tabs {
+    border-bottom: 1px solid #cccdcd;
+}
+.nav-tabs > li > span.navtab {
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+    line-height: 1.42857;
+    margin-right: 2px;
+    cursor: pointer;
+}
+.nav > li > span.navtab {
+    display: block;
+    padding: 4px 12px;
+    position: relative;
+}
+.nav-tabs > li > span.navtab:hover {
+  border-color: #eeeeee #eeeeee #dddddd;
+}
+.nav-tabs > li.active > span.navtab,
+.nav-tabs > li.active > span.navtab:hover,
+.nav-tabs > li.active > span.navtab:focus {
+  color: var(--selected-tab-text-color);
+  cursor: default;
+  background-color: var(--selected-tab-back-color);
+  border: 1px solid var(--selected-tab-back-color);;
+  border-bottom-color: transparent;
+  font-weight: bold;
+}
+.nav > li > span.navtab:hover,
+.nav > li > span.navtab:focus {
+  text-decoration: none;
+  background-color: #eeeeee;
+}
+.navtab input {
+	background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    color: #555555;
+    font-size: 12px;
+    line-height: 1.42857;
+    padding: 2px 7px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    vertical-align: middle;
 }
