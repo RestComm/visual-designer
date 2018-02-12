@@ -33,7 +33,7 @@ import org.restcomm.connect.rvd.configuration.RestcommConfigBuilder;
 import org.restcomm.connect.rvd.identity.AccountProvider;
 import org.restcomm.connect.rvd.identity.DefaultAccountProvider;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 
 import javax.servlet.ServletContext;
@@ -56,7 +56,7 @@ public class RestServiceMockedTest {
     RvdConfiguration configuration;
     AccountProvider accountProvider;
     File workspaceDir;
-    ModelMarshaler marshaler;
+    StepMarshaler marshaler;
     ApplicationContext appContext;
 
     public void setupMocks() throws URISyntaxException {

@@ -25,12 +25,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.restcomm.connect.rvd.BuildService;
 import org.restcomm.connect.rvd.RvdConfiguration;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.storage.FsProjectDao;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
-import org.restcomm.connect.rvd.storage.WorkspaceStorage;
+import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.upgrade.exceptions.UpgradeException;
 
@@ -50,11 +50,11 @@ public class ProjectUpgraderTest {
      */
     @Test
     public void testVariousProjectUpgrades() throws StorageException, UpgradeException {
-        ModelMarshaler marshaler = new ModelMarshaler();
+        StepMarshaler marshaler = new StepMarshaler();
         String workspaceDirName = getClass().getResource("./workspace").getFile();
-        WorkspaceStorage workspaceStorage = new WorkspaceStorage(workspaceDirName, marshaler);
-        ProjectDao projectDao = new FsProjectDao(workspaceStorage);
-        UpgradeService upgradeService = new UpgradeService(workspaceStorage);
+        OldWorkspaceStorage oldWorkspaceStorage = new OldWorkspaceStorage(workspaceDirName, marshaler);
+        ProjectDao projectDao = new FsProjectDao(oldWorkspaceStorage);
+        UpgradeService upgradeService = new UpgradeService(oldWorkspaceStorage);
         BuildService buildService = new BuildService(projectDao);
 
         // check the version changes
@@ -62,13 +62,13 @@ public class ProjectUpgraderTest {
         String upgradedVersion = ProjectUpgrader10to11.getVersion(rootElement);
         Assert.assertEquals("Actual upgraded project version is wrong", RvdConfiguration.RVD_PROJECT_VERSION, upgradedVersion);
         // make sure the project builds also
-        ProjectState project = FsProjectStorage.loadProject("collectMenuProject", workspaceStorage);
+        ProjectState project = FsProjectStorage.loadProject("collectMenuProject", oldWorkspaceStorage);
         buildService.buildProject("project3", project);
 
         // check the collect/menu digits propert has been converted integer -> string
         rootElement = upgradeService.upgradeProject("collectMenuProject");
         Assert.assertNotNull(rootElement);
-        project = FsProjectStorage.loadProject("collectMenuProject", workspaceStorage);
+        project = FsProjectStorage.loadProject("collectMenuProject", oldWorkspaceStorage);
         buildService.buildProject("collectMenuProject",project);
     }
 }

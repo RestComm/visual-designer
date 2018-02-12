@@ -25,7 +25,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.junit.Test;
 import org.junit.Assert;
 import org.restcomm.connect.rvd.TestUtils;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 import org.restcomm.connect.rvd.model.UserProfile;
 
 import java.io.File;
@@ -40,8 +40,8 @@ public class FsProfileDaoTest {
     public void userProfileFileIsSavedAndValid() throws IOException {
         File workspaceDir = TestUtils.createTempWorkspace();
         try {
-            ModelMarshaler marshaler = new ModelMarshaler();
-            WorkspaceStorage storage = new WorkspaceStorage(workspaceDir.getPath(), marshaler);
+            StepMarshaler marshaler = new StepMarshaler();
+            OldWorkspaceStorage storage = new OldWorkspaceStorage(workspaceDir.getPath(), marshaler);
 
             ProfileDao profileDao = new FsProfileDao(storage);
 
@@ -68,8 +68,8 @@ public class FsProfileDaoTest {
         File workspaceDir = TestUtils.createTempWorkspace();
         File usersDir = TestUtils.createUsersDirectory(workspaceDir.getPath());
         try {
-            ModelMarshaler marshaler = new ModelMarshaler();
-            WorkspaceStorage storage = new WorkspaceStorage(workspaceDir.getPath(), marshaler);
+            StepMarshaler marshaler = new StepMarshaler();
+            OldWorkspaceStorage storage = new OldWorkspaceStorage(workspaceDir.getPath(), marshaler);
 
             File profileFile = new File(workspaceDir.getPath() + "/@users/orestis.tsakiridis@telestax.com");
             profileFile.createNewFile();
@@ -91,8 +91,8 @@ public class FsProfileDaoTest {
         File workspaceDir = TestUtils.createTempWorkspace();
         File usersDir = TestUtils.createUsersDirectory(workspaceDir.getPath());
         try {
-            ModelMarshaler marshaler = new ModelMarshaler();
-            WorkspaceStorage storage = new WorkspaceStorage(workspaceDir.getPath(), marshaler);
+            StepMarshaler marshaler = new StepMarshaler();
+            OldWorkspaceStorage storage = new OldWorkspaceStorage(workspaceDir.getPath(), marshaler);
 
             ProfileDao profileDao = new FsProfileDao(storage);
             UserProfile profile = profileDao.loadUserProfile("non-existing-profile");

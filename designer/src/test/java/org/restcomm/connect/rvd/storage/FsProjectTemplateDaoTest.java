@@ -10,8 +10,6 @@ import org.restcomm.connect.rvd.utils.CustomizableRvdConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -31,7 +29,7 @@ public class FsProjectTemplateDaoTest extends FsDaoTestBase {
     @Test
     public void testLoadTemplate() throws IOException, StorageException {
         // create dao
-        FsProjectTemplateDao dao = new FsProjectTemplateDao(workspaceStorage, configuration);
+        FsProjectTemplateDao dao = new FsProjectTemplateDao(oldWorkspaceStorage, configuration);
 
         ProjectTemplate projectTemplate = dao.loadProjectTemplate("TL1234");
         Assert.assertNotNull(projectTemplate);
@@ -42,7 +40,7 @@ public class FsProjectTemplateDaoTest extends FsDaoTestBase {
 
     @Test
     public void testLoadTemplateList() throws StorageException {
-        FsProjectTemplateDao dao = new FsProjectTemplateDao(workspaceStorage, configuration);
+        FsProjectTemplateDao dao = new FsProjectTemplateDao(oldWorkspaceStorage, configuration);
         PaginatedResults<ProjectTemplate> results = new PaginatedResults<ProjectTemplate>();
         dao.loadProjectTemplates(0, 10, null, results);
         Assert.assertNotNull(results.getResults());

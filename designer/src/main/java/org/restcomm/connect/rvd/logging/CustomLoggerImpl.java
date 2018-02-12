@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 
 /**
  * A logger service for an RVD project. It is supposed to help the designer of an application for easy testing debugging without the need
@@ -49,7 +49,7 @@ public class CustomLoggerImpl implements CustomLogger {
     File mainLogFile;
 
     LogRotationSemaphore semaphore;
-    ModelMarshaler marshaler;
+    StepMarshaler marshaler;
 
     protected CustomLoggerImpl(String logFilenameBase, LogRotationSemaphore semaphore ) {
         this.logFilenameBase = logFilenameBase;

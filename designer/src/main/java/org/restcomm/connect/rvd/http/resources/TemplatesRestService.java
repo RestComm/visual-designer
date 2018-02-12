@@ -4,11 +4,11 @@ import com.google.gson.Gson;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.http.PaginatedResults;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 import org.restcomm.connect.rvd.model.ProjectTemplate;
 import org.restcomm.connect.rvd.storage.FsProjectTemplateDao;
+import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
 import org.restcomm.connect.rvd.storage.ProjectTemplateDao;
-import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.utils.ValidationUtils;
 
@@ -76,8 +76,8 @@ public class TemplatesRestService extends SecuredRestService {
      * @return a ProjectTemplateDao
      */
     private ProjectTemplateDao buildProjectTemplateDao() {
-        WorkspaceStorage workspaceStorage = new WorkspaceStorage(configuration.getWorkspaceBasePath(), new ModelMarshaler());
-        FsProjectTemplateDao dao = new FsProjectTemplateDao(workspaceStorage, configuration);
+        OldWorkspaceStorage oldWorkspaceStorage = new OldWorkspaceStorage(configuration.getWorkspaceBasePath(), new StepMarshaler());
+        FsProjectTemplateDao dao = new FsProjectTemplateDao(oldWorkspaceStorage, configuration);
         return dao;
     }
 

@@ -60,7 +60,7 @@ public class BuildService {
      */
     public void buildProject(String projectName, ProjectState projectState) throws StorageException {
         // TODO enable deletion after all cloud projects have been upgraded to 1.13
-        //FsProjectStorage.deleteBuiltProjectResources(projectName, workspaceStorage);
+        //FsProjectStorage.deleteBuiltProjectResources(projectName, oldWorkspaceStorage);
         ProjectIndex projectOptions = new ProjectIndex();
 
         // Save general purpose project information

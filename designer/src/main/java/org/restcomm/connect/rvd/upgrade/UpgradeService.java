@@ -34,7 +34,7 @@ import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.storage.FsProjectDao;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
-import org.restcomm.connect.rvd.storage.WorkspaceStorage;
+import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.upgrade.exceptions.NoUpgradePathException;
@@ -58,10 +58,10 @@ public class UpgradeService {
     // project versions where the project state .json file should be upgraded OR a build triggered
     static final List<String> upgradesPath = Arrays.asList(new String [] {"1.0","1.6","1.13"});
 
-    private WorkspaceStorage workspaceStorage;
+    private OldWorkspaceStorage oldWorkspaceStorage;
 
-    public UpgradeService(WorkspaceStorage workspaceStorage) {
-        this.workspaceStorage = workspaceStorage;
+    public UpgradeService(OldWorkspaceStorage oldWorkspaceStorage) {
+        this.oldWorkspaceStorage = oldWorkspaceStorage;
     }
 
     /**
@@ -201,7 +201,7 @@ public class UpgradeService {
         StateHeader header = null;
         String startVersion = null;
         try {
-            header = FsProjectStorage.loadStateHeader(projectName,workspaceStorage);
+            header = FsProjectStorage.loadStateHeader(projectName, oldWorkspaceStorage);
             startVersion = header.getVersion();
         } catch (BadProjectHeader e) {
             // it looks like this is an old project.
@@ -220,7 +220,7 @@ public class UpgradeService {
         }
 
         String version = startVersion;
-        String source = FsProjectStorage.loadProjectString(projectName, workspaceStorage);
+        String source = FsProjectStorage.loadProjectString(projectName, oldWorkspaceStorage);
         JsonParser parser = new JsonParser();
         JsonElement root = parser.parse(source);
 
@@ -242,8 +242,8 @@ public class UpgradeService {
             throw new NoUpgradePathException("No upgrade path for project " + projectName + ". Best effort from version: " + startVersion + " - to version: " + versionPath[versionPath.length-1]);
         }
 
-        FsProjectStorage.backupProjectState(projectName,workspaceStorage);
-        FsProjectStorage.updateProjectState(projectName, root.toString(), workspaceStorage);
+        FsProjectStorage.backupProjectState(projectName, oldWorkspaceStorage);
+        FsProjectStorage.updateProjectState(projectName, root.toString(), oldWorkspaceStorage);
         return root;
     }
     /**
@@ -251,13 +251,13 @@ public class UpgradeService {
      * @throws StorageException
      */
     public void upgradeWorkspace() throws StorageException {
-        ProjectDao projectDao = new FsProjectDao(workspaceStorage);
+        ProjectDao projectDao = new FsProjectDao(oldWorkspaceStorage);
         BuildService buildService = new BuildService(projectDao);
         int upgradedCount = 0;
         int uptodateCount = 0;
         int failedCount = 0;
 
-        List<String> projectNames = workspaceStorage.listContents(".", "[^@].+", true); //FsProjectStorage.listProjectNames(workspaceStorage);
+        List<String> projectNames = oldWorkspaceStorage.listContents(".", "[^@].+", true); //FsProjectStorage.listProjectNames(oldWorkspaceStorage);
         for ( String projectName : projectNames ) {
             try {
                 if ( upgradeProject(projectName) != null ) {
@@ -266,7 +266,7 @@ public class UpgradeService {
                         RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace", "project '" + projectName + "' upgraded to version " + RvdConfiguration.RVD_PROJECT_VERSION ));
                     }
                     try {
-                        ProjectState projectState = FsProjectStorage.loadProject(projectName, workspaceStorage);
+                        ProjectState projectState = FsProjectStorage.loadProject(projectName, oldWorkspaceStorage);
                         buildService.buildProject(projectName, projectState);
                         if(RvdLoggers.local.isEnabledFor(Level.INFO)) {
                             RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace","project '" + projectName + "' built" ));

@@ -2,16 +2,16 @@ package org.restcomm.connect.rvd.storage;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class WorkspaceStorageTest {
+public class OldWorkspaceStorageTest {
     @Test
     public void testPathResolving() {
-        ModelMarshaler marshaler = new ModelMarshaler();
-        WorkspaceStorage storage = new WorkspaceStorage("/tmp/rootpath", marshaler );
+        StepMarshaler marshaler = new StepMarshaler();
+        OldWorkspaceStorage storage = new OldWorkspaceStorage("/tmp/rootpath", marshaler );
 
         Assert.assertNull(storage.resolveWorkspacePath(null));
         Assert.assertEquals("/an/absolute/path", storage.resolveWorkspacePath("/an/absolute/path"));

@@ -24,7 +24,7 @@ import java.io.File;
 
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.concurrency.LogRotationSemaphore;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 
 /**
  * A logger service for an RVD project. It is supposed to help the designer of an application for easy testing debugging without the need
@@ -34,11 +34,11 @@ import org.restcomm.connect.rvd.model.ModelMarshaler;
  */
 public class ProjectLogger extends CustomLoggerImpl {
 
-    public ProjectLogger(String projectName, RvdConfiguration settings, ModelMarshaler marshaler, LogRotationSemaphore semaphore) {
+    public ProjectLogger(String projectName, RvdConfiguration settings, StepMarshaler marshaler, LogRotationSemaphore semaphore) {
         this(settings.getProjectBasePath(projectName) + File.separator + RvdConfiguration.PROJECT_LOG_FILENAME, marshaler, semaphore);
     }
 
-    public ProjectLogger(String logFilenameBase, ModelMarshaler marshaler, LogRotationSemaphore semaphore) {
+    public ProjectLogger(String logFilenameBase, StepMarshaler marshaler, LogRotationSemaphore semaphore) {
         super(logFilenameBase, semaphore);
         this.marshaler = marshaler;
     }

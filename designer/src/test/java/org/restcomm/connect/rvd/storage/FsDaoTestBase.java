@@ -1,14 +1,10 @@
 package org.restcomm.connect.rvd.storage;
 
 import org.junit.After;
-import org.junit.Before;
-import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.TestUtils;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
-import org.restcomm.connect.rvd.utils.CustomizableRvdConfiguration;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -16,13 +12,13 @@ import java.io.IOException;
 public class FsDaoTestBase {
 
     File workspaceDir;
-    WorkspaceStorage workspaceStorage;
-    ModelMarshaler marshaler;
+    OldWorkspaceStorage oldWorkspaceStorage;
+    StepMarshaler marshaler;
 
     FsDaoTestBase() {
         workspaceDir = TestUtils.createTempWorkspace();
-        marshaler = new ModelMarshaler();
-        workspaceStorage = new WorkspaceStorage(workspaceDir.getPath(), marshaler);
+        marshaler = new StepMarshaler();
+        oldWorkspaceStorage = new OldWorkspaceStorage(workspaceDir.getPath(), marshaler);
     }
 
 

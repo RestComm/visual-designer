@@ -51,7 +51,7 @@ import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.CallControlInfo;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 import org.restcomm.connect.rvd.model.ProjectSettings;
 import org.restcomm.connect.rvd.model.UserProfile;
 import org.restcomm.connect.rvd.model.callcontrol.CallControlAction;
@@ -65,9 +65,9 @@ import org.restcomm.connect.rvd.stats.AggregateStats;
 import org.restcomm.connect.rvd.stats.StatsHelper;
 import org.restcomm.connect.rvd.storage.FsProfileDao;
 import org.restcomm.connect.rvd.storage.FsProjectDao;
+import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
 import org.restcomm.connect.rvd.storage.ProfileDao;
 import org.restcomm.connect.rvd.storage.ProjectDao;
-import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.storage.exceptions.WavItemDoesNotExist;
 import org.restcomm.connect.rvd.utils.RvdUtils;
@@ -80,8 +80,8 @@ public class RvdController extends SecuredRestService {
 
     private ProjectAwareRvdContext rvdContext;
 
-    private WorkspaceStorage workspaceStorage;
-    private ModelMarshaler marshaler;
+    private OldWorkspaceStorage oldWorkspaceStorage;
+    private StepMarshaler marshaler;
     private ProjectDao projectDao;
     @Context
     UriInfo uriInfo;
@@ -97,16 +97,16 @@ public class RvdController extends SecuredRestService {
         try {
             logging = new LoggingContext(); // TODO put call ID information here
             logging.appendApplicationSid(applicationId);
-            marshaler = new ModelMarshaler();
-            WorkspaceStorage workspaceStorage = new WorkspaceStorage(applicationContext.getConfiguration().getWorkspaceBasePath(), marshaler);
-            this.projectDao = new FsProjectDao(workspaceStorage );
+            marshaler = new StepMarshaler();
+            OldWorkspaceStorage oldWorkspaceStorage = new OldWorkspaceStorage(applicationContext.getConfiguration().getWorkspaceBasePath(), marshaler);
+            this.projectDao = new FsProjectDao(oldWorkspaceStorage);
 
             rvdContext = new ProjectAwareRvdContext(applicationId, applicationContext.getProjectRegistry().getResidentProjectInfo(applicationId),request, servletContext, applicationContext.getConfiguration(), logging, projectDao );
         } catch (ProjectDoesNotExist projectDoesNotExist) {
             throw new ResponseWrapperException( Response.status(Status.NOT_FOUND).build() );
         }
         marshaler = rvdContext.getMarshaler();
-        workspaceStorage = rvdContext.getWorkspaceStorage();
+        oldWorkspaceStorage = rvdContext.getWorkspaceStorage();
     }
 
     public RvdController() {}
@@ -121,7 +121,7 @@ public class RvdController extends SecuredRestService {
         RcmlSerializer serializer = new RcmlSerializer();
         String rcmlResponse;
         try {
-            ProjectDao projectDao = new FsProjectDao(workspaceStorage);
+            ProjectDao projectDao = new FsProjectDao(oldWorkspaceStorage);
             Interpreter interpreter = new Interpreter(appname, httpRequest, requestParams, applicationContext, logging, rvdContext.getProjectLogger(), rvdContext.getProjectSettings(), rvdContext.getProjectOptions(), projectDao, rvdContext.getProjectParameters() );
             RcmlResponse steplist = interpreter.interpret();
             rcmlResponse = serializer.serialize(steplist);
@@ -247,7 +247,7 @@ public class RvdController extends SecuredRestService {
                 if ( !info.accessToken.equals(accessToken) )
                     throw new UnauthorizedCallControlAccess("WebTrigger authorization error. Application tokens differ.");
                 // load user profile
-                ProfileDao profileDao = new FsProfileDao(workspaceStorage);
+                ProfileDao profileDao = new FsProfileDao(oldWorkspaceStorage);
                 UserProfile profile = profileDao.loadUserProfile(owner);
                 // if there is no profile at all or if the credentials are missing from it throw an error
                 if (profile == null || (RvdUtils.isEmpty(profile.getUsername()) || RvdUtils.isEmpty(profile.getToken())) )

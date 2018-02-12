@@ -13,8 +13,8 @@ import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.stats.AppStatsDto;
 import org.restcomm.connect.rvd.stats.AggregateStats;
 import org.restcomm.connect.rvd.storage.FsProjectStorage;
+import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
-import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 import javax.annotation.PostConstruct;
@@ -34,13 +34,13 @@ import javax.ws.rs.core.Response;
 public class StatsRestService extends SecuredRestService {
 
     RvdConfiguration config;
-    WorkspaceStorage workspace; // CAUTION: does not support operation that need marshaller
+    OldWorkspaceStorage workspace; // CAUTION: does not support operation that need marshaller
 
     @PostConstruct
     public void init() {
         super.init();
         config = applicationContext.getConfiguration();
-        workspace = new WorkspaceStorage(config.getWorkspaceBasePath(), null); //  no need for marshaller for checking project existence
+        workspace = new OldWorkspaceStorage(config.getWorkspaceBasePath(), null); //  no need for marshaller for checking project existence
     }
 
     /**
@@ -133,7 +133,7 @@ public class StatsRestService extends SecuredRestService {
     void checkApplicationAccess(String appId) throws ProjectDoesNotExist, StorageException {
         secure();
         // make sure the project exists
-        WorkspaceStorage workspace = new WorkspaceStorage(config.getWorkspaceBasePath(), null); //  no need for marshaller for checking project existence
+        OldWorkspaceStorage workspace = new OldWorkspaceStorage(config.getWorkspaceBasePath(), null); //  no need for marshaller for checking project existence
         ProjectDao projectDao = buildProjectDao(workspace);
         if (projectDao.projectExists(appId))
             throw new ProjectDoesNotExist(appId);

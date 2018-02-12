@@ -26,22 +26,22 @@ import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 /**
  * A data access object that reads user profile information from the FS workspace.
- * It relies on WorkspaceStorage utility
+ * It relies on OldWorkspaceStorage utility
  *
  * @author Orestis Tsakiridis
  */
 public class FsProfileDao implements ProfileDao {
 
-    private WorkspaceStorage workspaceStorage;
+    private OldWorkspaceStorage oldWorkspaceStorage;
 
-    public FsProfileDao(WorkspaceStorage workspaceStorage) {
-        this.workspaceStorage = workspaceStorage;
+    public FsProfileDao(OldWorkspaceStorage oldWorkspaceStorage) {
+        this.oldWorkspaceStorage = oldWorkspaceStorage;
     }
 
     @Override
     public void saveUserProfile(String username, UserProfile userProfile) {
         try {
-            workspaceStorage.storeEntity(userProfile, UserProfile.class, username, "@users");
+            oldWorkspaceStorage.storeEntity(userProfile, UserProfile.class, username, "@users");
         } catch (StorageException e) {
             throw new RuntimeException("Error storing profile for user '" + username + "'", e);
         }
@@ -55,7 +55,7 @@ public class FsProfileDao implements ProfileDao {
     @Override
     public UserProfile loadUserProfile(String username) {
         try {
-            UserProfile profile = workspaceStorage.loadEntity(username, "@users", UserProfile.class);
+            UserProfile profile = oldWorkspaceStorage.loadEntity(username, "@users", UserProfile.class);
             return profile;
         } catch (StorageEntityNotFound e) {
             return null;

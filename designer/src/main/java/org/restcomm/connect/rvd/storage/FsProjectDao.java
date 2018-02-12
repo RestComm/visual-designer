@@ -37,25 +37,25 @@ public class FsProjectDao implements ProjectDao {
 
     static Logger logger = RvdLoggers.local;
 
-    WorkspaceStorage workspaceStorage;
+    OldWorkspaceStorage oldWorkspaceStorage;
 
-    public FsProjectDao(WorkspaceStorage workspaceStorage) {
+    public FsProjectDao(OldWorkspaceStorage oldWorkspaceStorage) {
 //        if (RvdUtils.isEmpty(applicationName)) {
 //            throw new IllegalStateException("Application name is null. Cannot create FsProjectDao");
 //        }
 //        this.applicationName = applicationName;
-        this.workspaceStorage = workspaceStorage;
+        this.oldWorkspaceStorage = oldWorkspaceStorage;
     }
 
     @Override
     public boolean projectExists(String applicationId) {
-        return workspaceStorage.entityExists(applicationId, "state");
+        return oldWorkspaceStorage.entityExists(applicationId, "state");
     }
 
     @Override
     public ProjectState loadProject(String applicationId) throws StorageException {
         try {
-            return FsProjectStorage.loadProject(applicationId, workspaceStorage);
+            return FsProjectStorage.loadProject(applicationId, oldWorkspaceStorage);
         } catch (StorageEntityNotFound e) {
             return null;
         }
@@ -64,7 +64,7 @@ public class FsProjectDao implements ProjectDao {
     @Override
     public ProjectIndex loadProjectOptions(String applicationId) throws StorageException {
         try {
-            return workspaceStorage.loadEntity("project", applicationId+"/data", ProjectIndex.class);
+            return oldWorkspaceStorage.loadEntity("project", applicationId+"/data", ProjectIndex.class);
         } catch (StorageEntityNotFound e) {
             return null;
         }
@@ -72,25 +72,25 @@ public class FsProjectDao implements ProjectDao {
 
     @Override
     public void storeProjectOptions(String applicationId, ProjectIndex projectOptions) throws StorageException {
-        workspaceStorage.storeEntity(projectOptions, ProjectIndex.class, "project", applicationId+"/data");
+        oldWorkspaceStorage.storeEntity(projectOptions, ProjectIndex.class, "project", applicationId+"/data");
     }
 
 
 
     @Override
     public Node loadNode(String moduleName, String applicationId) throws StorageException {
-        return workspaceStorage.loadEntity(moduleName+".mod", applicationId + "/data", Node.class);
+        return oldWorkspaceStorage.loadEntity(moduleName+".mod", applicationId + "/data", Node.class);
     }
 
     @Override
     public void storeNode(String applicationId, Node node) throws StorageException {
-        workspaceStorage.storeEntity(node, node.getName()+".mod", applicationId+"/data");
+        oldWorkspaceStorage.storeEntity(node, node.getName()+".mod", applicationId+"/data");
     }
 
     @Override
     public String loadBootstrapInfo(String applicationId) throws StorageException {
         try {
-            return FsProjectStorage.loadBootstrapInfo(applicationId, workspaceStorage);
+            return FsProjectStorage.loadBootstrapInfo(applicationId, oldWorkspaceStorage);
         } catch (StorageEntityNotFound e) {
             return null;
         }
@@ -99,7 +99,7 @@ public class FsProjectDao implements ProjectDao {
     @Override
     public ProjectSettings loadSettings(String applicationId) throws StorageException {
         try {
-            return FsProjectStorage.loadProjectSettings(applicationId, workspaceStorage);
+            return FsProjectStorage.loadProjectSettings(applicationId, oldWorkspaceStorage);
         }   catch (StorageEntityNotFound e) {
             return null;
         }
@@ -108,7 +108,7 @@ public class FsProjectDao implements ProjectDao {
     @Override
     public CallControlInfo loadWebTriggerInfo(String applicationId) throws StorageException {
         try {
-            CallControlInfo webTriggerInfo = workspaceStorage.loadEntity("cc", applicationId, CallControlInfo.class);
+            CallControlInfo webTriggerInfo = oldWorkspaceStorage.loadEntity("cc", applicationId, CallControlInfo.class);
             return webTriggerInfo;
         } catch (StorageEntityNotFound e) {
             return null;
@@ -117,28 +117,28 @@ public class FsProjectDao implements ProjectDao {
 
     @Override
     public void storeWebTriggerInfo(CallControlInfo webTriggerInfo, String applicationId) throws StorageException {
-        workspaceStorage.storeEntity(webTriggerInfo, CallControlInfo.class, "cc", applicationId);
+        oldWorkspaceStorage.storeEntity(webTriggerInfo, CallControlInfo.class, "cc", applicationId);
     }
 
     @Override
     public void removeWebTriggerInfo(String applicationId) {
-        workspaceStorage.removeEntity("cc", applicationId);
+        oldWorkspaceStorage.removeEntity("cc", applicationId);
     }
 
     @Override
     public void storeSettings(ProjectSettings projectSettings, String applicationId) throws StorageException {
-        FsProjectStorage.storeProjectSettings(projectSettings, applicationId, workspaceStorage);
+        FsProjectStorage.storeProjectSettings(projectSettings, applicationId, oldWorkspaceStorage);
     }
 
     @Override
     public String loadProjectStateRaw(String applicationId) throws StorageException {
-        return FsProjectStorage.loadProjectString(applicationId, workspaceStorage);
+        return FsProjectStorage.loadProjectString(applicationId, oldWorkspaceStorage);
     }
 
     @Override
     public void createProject(String applicationId, ProjectState projectState) throws StorageException {
-        FsProjectStorage.createProjectSlot(applicationId, workspaceStorage);
-        FsProjectStorage.storeProject(true, projectState, applicationId, workspaceStorage);
+        FsProjectStorage.createProjectSlot(applicationId, oldWorkspaceStorage);
+        FsProjectStorage.storeProject(true, projectState, applicationId, oldWorkspaceStorage);
     }
 
     /**
@@ -153,31 +153,31 @@ public class FsProjectDao implements ProjectDao {
     @Override
     public void createProjectFromLocation(String applicationId, String sourcePath, String owner) throws StorageException {
         // create a directory in the filesystem to host the new project
-        FsProjectStorage.createProjectSlot(applicationId, workspaceStorage);
+        FsProjectStorage.createProjectSlot(applicationId, oldWorkspaceStorage);
         // create state and project structure
-        ProjectState projectState = workspaceStorage.loadEntity("state", sourcePath, ProjectState.class);
+        ProjectState projectState = oldWorkspaceStorage.loadEntity("state", sourcePath, ProjectState.class);
         if (owner != null) {
             projectState.getHeader().setOwner(owner);
         }
 
-        FsProjectStorage.storeProject(true, projectState, applicationId, workspaceStorage);
+        FsProjectStorage.storeProject(true, projectState, applicationId, oldWorkspaceStorage);
         // copy project settings
         try {
-            ProjectSettings settings = workspaceStorage.loadEntity("settings", sourcePath, ProjectSettings.class);
+            ProjectSettings settings = oldWorkspaceStorage.loadEntity("settings", sourcePath, ProjectSettings.class);
             storeSettings(settings, applicationId);
         } catch (StorageEntityNotFound e) {
             // do nothing if the settings are not found
         }
         // copy web-trigger information
         try {
-            CallControlInfo webTriggerInfo = workspaceStorage.loadEntity("cc", sourcePath, CallControlInfo.class);
-            workspaceStorage.storeEntity(webTriggerInfo, CallControlInfo.class, "cc", applicationId);
+            CallControlInfo webTriggerInfo = oldWorkspaceStorage.loadEntity("cc", sourcePath, CallControlInfo.class);
+            oldWorkspaceStorage.storeEntity(webTriggerInfo, CallControlInfo.class, "cc", applicationId);
         } catch (StorageEntityNotFound e) {
             // do nothing if webTrigger info is not there
         }
         // copy parameters
         try {
-            ProjectParameters parameters = workspaceStorage.loadEntity("parameters", sourcePath, ProjectParameters.class);
+            ProjectParameters parameters = oldWorkspaceStorage.loadEntity("parameters", sourcePath, ProjectParameters.class);
             storeProjectParameters(applicationId, parameters);
         } catch (StorageEntityNotFound e) {
             // do nothing
@@ -207,7 +207,7 @@ public class FsProjectDao implements ProjectDao {
      * @throws StorageException
      */
     void addRawResource(String applicationId, String relativePath, String resourcePath, String resourceName) throws StorageException {
-        String destinationFilePath = workspaceStorage.rootPath + File.separator + applicationId + File.separator + relativePath +  File.separator + resourceName;
+        String destinationFilePath = oldWorkspaceStorage.rootPath + File.separator + applicationId + File.separator + relativePath +  File.separator + resourceName;
         String sourceFilePath = resourcePath + File.separator + resourceName;
         try {
             FileUtils.copyFile(new File(sourceFilePath), new File(destinationFilePath));
@@ -219,7 +219,7 @@ public class FsProjectDao implements ProjectDao {
     @Override
     public InputStream getMediaAsStream(String projectName, String filename) throws StorageException {
         try {
-            return workspaceStorage.loadStream(RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + filename, projectName);
+            return oldWorkspaceStorage.loadStream(RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + filename, projectName);
         } catch (StorageEntityNotFound e) {
             throw new WavItemDoesNotExist("Wav file does not exist - " + filename, e);
         }
@@ -235,7 +235,7 @@ public class FsProjectDao implements ProjectDao {
      */
     @Override
     public List<WavItem> listMedia(String applicationId) throws StorageException {
-        File projectPath = new File(workspaceStorage.rootPath + File.separator + applicationId);
+        File projectPath = new File(oldWorkspaceStorage.rootPath + File.separator + applicationId);
         List<WavItem> items = new ArrayList<>();
 
         File wavsDir = new File(projectPath.getPath() + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME);
@@ -245,7 +245,7 @@ public class FsProjectDao implements ProjectDao {
     public List<WavItem> listMedia(File wavsDir) throws StorageException {
         List<WavItem> items = new ArrayList<>();
         if (wavsDir.exists()) {
-            List<String> filenames = workspaceStorage.listContents(wavsDir.getPath(), ".*", false);
+            List<String> filenames = oldWorkspaceStorage.listContents(wavsDir.getPath(), ".*", false);
             for (String filename: filenames) {
                 WavItem item = new WavItem();
                 item.setFilename(filename);
@@ -257,7 +257,7 @@ public class FsProjectDao implements ProjectDao {
 
     @Override
     public void storeMediaFromStream(String projectName, String wavname, InputStream wavStream, Integer maxSize) throws StorageException, StreamDoesNotFitInFile {
-        String wavPathname = workspaceStorage.resolveWorkspacePath(projectName + File.separator +  RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + wavname);
+        String wavPathname = oldWorkspaceStorage.resolveWorkspacePath(projectName + File.separator +  RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + wavname);
         if(logger.isDebugEnabled())
             logger.log(Level.DEBUG, LoggingHelper.buildMessage(FsProjectStorage.class,"storeWav", "writing wav file to {0}", wavPathname));
         try {
@@ -269,7 +269,7 @@ public class FsProjectDao implements ProjectDao {
 
     @Override
     public void removeMedia(String applicationId, String mediaName) throws WavItemDoesNotExist {
-        String filepath = workspaceStorage.resolveWorkspacePath(applicationId + File.separator +  RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + mediaName);
+        String filepath = oldWorkspaceStorage.resolveWorkspacePath(applicationId + File.separator +  RvdConfiguration.WAVS_DIRECTORY_NAME + File.separator + mediaName);
         File wavfile = new File(filepath);
         if ( wavfile.delete() ) {
             if(logger.isDebugEnabled())
@@ -284,7 +284,7 @@ public class FsProjectDao implements ProjectDao {
     @Override
     public ProjectParameters loadProjectParameters(String applicationId) throws StorageException {
         try {
-            ProjectParameters parameters = workspaceStorage.loadEntity("parameters", applicationId, ProjectParameters.class);
+            ProjectParameters parameters = oldWorkspaceStorage.loadEntity("parameters", applicationId, ProjectParameters.class);
             return parameters;
         } catch (StorageEntityNotFound e) {
             return  null;
@@ -293,23 +293,23 @@ public class FsProjectDao implements ProjectDao {
 
     @Override
     public void storeProjectParameters(String applicationId, ProjectParameters parameters) throws StorageException {
-        workspaceStorage.storeEntity(parameters, ProjectParameters.class, "parameters", applicationId);
+        oldWorkspaceStorage.storeEntity(parameters, ProjectParameters.class, "parameters", applicationId);
     }
 
     @Override
     public void removeProject(String applicationId) throws ProjectDoesNotExist, StorageException {
-        FsProjectStorage.deleteProject(applicationId,workspaceStorage);
+        FsProjectStorage.deleteProject(applicationId, oldWorkspaceStorage);
     }
 
     @Override
     public void updateProjectState(String applicationId, ProjectState state) throws StorageException {
-        workspaceStorage.storeEntity(state, "state", applicationId);
+        oldWorkspaceStorage.storeEntity(state, "state", applicationId);
     }
 
 
     @Override
     public InputStream archiveProject(String projectName) throws StorageException {
-        String path = workspaceStorage.resolveWorkspacePath(projectName);
+        String path = oldWorkspaceStorage.resolveWorkspacePath(projectName);
         File tempFile;
         try {
             tempFile = File.createTempFile("RVDprojectArchive",".zip");

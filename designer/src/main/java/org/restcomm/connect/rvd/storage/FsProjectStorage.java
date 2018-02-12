@@ -55,40 +55,40 @@ import org.restcomm.connect.rvd.model.ProjectSettings;
  */
 public class FsProjectStorage {
 
-    public static String loadBootstrapInfo(String projectName, WorkspaceStorage workspaceStorage) throws StorageException {
-        return workspaceStorage.loadEntityString("bootstrap", projectName);
+    public static String loadBootstrapInfo(String projectName, OldWorkspaceStorage oldWorkspaceStorage) throws StorageException {
+        return oldWorkspaceStorage.loadEntityString("bootstrap", projectName);
     }
 
-    public static ProjectSettings loadProjectSettings(String projectName, WorkspaceStorage storage) throws StorageException {
+    public static ProjectSettings loadProjectSettings(String projectName, OldWorkspaceStorage storage) throws StorageException {
         return storage.loadEntity("settings", projectName, ProjectSettings.class);
     }
 
-    public static void storeProjectSettings(ProjectSettings projectSettings, String projectName, WorkspaceStorage storage) throws StorageException {
+    public static void storeProjectSettings(ProjectSettings projectSettings, String projectName, OldWorkspaceStorage storage) throws StorageException {
         storage.storeEntity(projectSettings, "settings", projectName);
     }
 
-    public static ProjectState loadProject(String projectName, WorkspaceStorage storage) throws StorageException {
+    public static ProjectState loadProject(String projectName, OldWorkspaceStorage storage) throws StorageException {
         return storage.loadEntity("state", projectName, ProjectState.class);
     }
 
-    public static String loadProjectString(String projectName, WorkspaceStorage storage) throws StorageException {
+    public static String loadProjectString(String projectName, OldWorkspaceStorage storage) throws StorageException {
         return storage.loadEntityString("state", projectName);
     }
 
-    private static void buildDirStructure(ProjectState state, String name, WorkspaceStorage storage) {
+    private static void buildDirStructure(ProjectState state, String name, OldWorkspaceStorage storage) {
         if ("voice".equals(state.getHeader().getProjectKind()) ) {
             File wavsDir = new File(  storage.rootPath + "/" + name + "/" + "wavs" );
             wavsDir.mkdir();
         }
     }
 
-    public static void storeProject(boolean firstTime, ProjectState state, String projectName, WorkspaceStorage storage) throws StorageException {
+    public static void storeProject(boolean firstTime, ProjectState state, String projectName, OldWorkspaceStorage storage) throws StorageException {
         storage.storeEntity(state, "state", projectName);
         if (firstTime)
             buildDirStructure(state, projectName, storage);
     }
 
-    public static StateHeader loadStateHeader(String projectName, WorkspaceStorage storage) throws StorageException {
+    public static StateHeader loadStateHeader(String projectName, OldWorkspaceStorage storage) throws StorageException {
         String stateData = storage.loadEntityString("state", projectName);
         JsonParser parser = new JsonParser();
         JsonElement header_element = null;
@@ -106,11 +106,11 @@ public class FsProjectStorage {
         return header;
     }
 
-    public static boolean projectExists(String projectName, WorkspaceStorage workspaceStorage) {
-        return workspaceStorage.entityExists(projectName, "");
+    public static boolean projectExists(String projectName, OldWorkspaceStorage oldWorkspaceStorage) {
+        return oldWorkspaceStorage.entityExists(projectName, "");
     }
 
-    public static void createProjectSlot(String projectName, WorkspaceStorage storage) throws StorageException {
+    public static void createProjectSlot(String projectName, OldWorkspaceStorage storage) throws StorageException {
         if ( projectExists(projectName, storage) )
             throw new ProjectAlreadyExists("Project '" + projectName + "' already exists");
 
@@ -122,7 +122,7 @@ public class FsProjectStorage {
 
     }
 
-    public static void deleteProject(String projectName, WorkspaceStorage storage) throws StorageException {
+    public static void deleteProject(String projectName, OldWorkspaceStorage storage) throws StorageException {
         try {
             File projectDir = new File(storage.rootPath  + File.separator + projectName);
             FileUtils.deleteDirectory(projectDir);
@@ -156,7 +156,7 @@ public class FsProjectStorage {
         return items;
     }
 
-    public static void backupProjectState(String projectName, WorkspaceStorage storage) throws StorageException {
+    public static void backupProjectState(String projectName, OldWorkspaceStorage storage) throws StorageException {
         File sourceStateFile = new File(storage.rootPath + File.separator + projectName + File.separator + "state");
         File backupStateFile = new File(storage.rootPath + File.separator + projectName + File.separator + "state" + ".old");
 
@@ -167,7 +167,7 @@ public class FsProjectStorage {
         }
     }
 
-    public static void updateProjectState(String projectName, String newState, WorkspaceStorage storage) throws StorageException {
+    public static void updateProjectState(String projectName, String newState, OldWorkspaceStorage storage) throws StorageException {
         FileOutputStream stateFile_os;
         try {
             stateFile_os = new FileOutputStream(storage.rootPath + File.separator + projectName + File.separator + "state");

@@ -16,13 +16,18 @@ import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.configuration.RestcommLocationResolver;
 import org.restcomm.connect.rvd.exceptions.BootstrappingException;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
-import org.restcomm.connect.rvd.storage.WorkspaceStorage;
+import org.restcomm.connect.rvd.model.StepMarshaler;
+import org.restcomm.connect.rvd.storage.FsWorkspaceDao;
+import org.restcomm.connect.rvd.storage.FsWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.JsonModelStorage;
+import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.WorkspaceDao;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.upgrade.UpgradeService;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.restcomm.connect.rvd.upgrade.WorkspaceMaintainer;
 
 
 public class RvdInitializationServlet extends HttpServlet {
@@ -58,6 +63,10 @@ public class RvdInitializationServlet extends HttpServlet {
                 .setRestcommResolver(restcommResolver).build();
         servletContext.setAttribute(ApplicationContext.class.getName(), appContext);
 
+        JsonModelStorage storage = new JsonModelStorage(new FsWorkspaceStorage(rvdConfiguration.getWorkspaceBasePath()), new StepMarshaler());
+        WorkspaceDao workspaceDao = new FsWorkspaceDao(storage, rvdConfiguration);
+        WorkspaceMaintainer workspaceMaintainer = new WorkspaceMaintainer(workspaceDao);
+
 
         WorkspaceBootstrapper workspaceBootstrapper = new WorkspaceBootstrapper(rvdConfiguration.getWorkspaceBasePath(), rvdConfiguration.getProjectTemplatesWorkspacePath());
         try {
@@ -66,9 +75,9 @@ public class RvdInitializationServlet extends HttpServlet {
             logger.log(Level.ERROR,"Error bootstrapping workspace at " + rvdConfiguration.getWorkspaceBasePath(), e);
         }
 
-        ModelMarshaler marshaler = new ModelMarshaler();
-        WorkspaceStorage workspaceStorage = new WorkspaceStorage(rvdConfiguration.getWorkspaceBasePath(), marshaler);
-        UpgradeService upgradeService = new UpgradeService(workspaceStorage);
+        StepMarshaler marshaler = new StepMarshaler();
+        OldWorkspaceStorage oldWorkspaceStorage = new OldWorkspaceStorage(rvdConfiguration.getWorkspaceBasePath(), marshaler);
+        UpgradeService upgradeService = new UpgradeService(oldWorkspaceStorage);
         try {
             upgradeService.upgradeWorkspace();
         } catch (StorageException e) {

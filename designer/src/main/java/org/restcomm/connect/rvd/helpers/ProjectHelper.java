@@ -42,14 +42,14 @@ import org.restcomm.connect.rvd.jsonvalidation.ValidationErrorItem;
 import org.restcomm.connect.rvd.jsonvalidation.ValidationResult;
 import org.restcomm.connect.rvd.jsonvalidation.exceptions.ValidationException;
 import org.restcomm.connect.rvd.jsonvalidation.exceptions.ValidationFrameworkException;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 import org.restcomm.connect.rvd.model.project.Node;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.project.RvdProject;
+import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
-import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
 import org.restcomm.connect.rvd.storage.exceptions.ProjectAlreadyExists;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
@@ -74,22 +74,22 @@ public class ProjectHelper {
     }
 
     RvdConfiguration configuration;
-    WorkspaceStorage workspaceStorage;
-    ModelMarshaler marshaler;
+    OldWorkspaceStorage oldWorkspaceStorage;
+    StepMarshaler marshaler;
     String servletContextPath;
     ProjectDao projectDao;
 
-    public ProjectHelper(RvdContext rvdContext, WorkspaceStorage workspaceStorage, ProjectDao projectDao) {
+    public ProjectHelper(RvdContext rvdContext, OldWorkspaceStorage oldWorkspaceStorage, ProjectDao projectDao) {
         this.servletContextPath = rvdContext.getServletContext().getContextPath();
         this.configuration = rvdContext.getConfiguration();
-        this.workspaceStorage = workspaceStorage;
+        this.oldWorkspaceStorage = oldWorkspaceStorage;
         this.marshaler = rvdContext.getMarshaler();
         this.projectDao = projectDao;
     }
 
-    public ProjectHelper(RvdConfiguration configuration, WorkspaceStorage workspaceStorage, ModelMarshaler marshaler, String servletContextPath, ProjectDao projectDao) {
+    public ProjectHelper(RvdConfiguration configuration, OldWorkspaceStorage oldWorkspaceStorage, StepMarshaler marshaler, String servletContextPath, ProjectDao projectDao) {
         this.configuration = configuration;
-        this.workspaceStorage = workspaceStorage;
+        this.oldWorkspaceStorage = oldWorkspaceStorage;
         this.marshaler = marshaler;
         this.servletContextPath = servletContextPath;
         this.projectDao = projectDao;
@@ -235,7 +235,7 @@ public class ProjectHelper {
             JsonElement rootElement = parser.parse(reader);
             String version = rootElement.getAsJsonObject().get("header").getAsJsonObject().get("version").getAsString();
             // Create a temporary workspace storage.
-            WorkspaceStorage tempStorage = new WorkspaceStorage(tempProjectDir.getParent(), marshaler);
+            OldWorkspaceStorage tempStorage = new OldWorkspaceStorage(tempProjectDir.getParent(), marshaler);
             // is this project compatible (current RVD can open and run without upgrading) ?
             if ( ! UpgradeService.checkBackwardCompatible(version, RvdConfiguration.RVD_PROJECT_VERSION) ) {
                 if ( UpgradeService.checkUpgradability(version, RvdConfiguration.RVD_PROJECT_VERSION) == UpgradeService.UpgradabilityStatus.UPGRADABLE ) {

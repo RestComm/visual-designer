@@ -29,7 +29,7 @@ import org.mockito.Mockito;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.TestUtils;
 import org.restcomm.connect.rvd.concurrency.LogRotationSemaphore;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class ProjectLoggerTest {
     @Before
     public void before() throws IOException {
         workspaceDir = TestUtils.createTempWorkspace();
-        ModelMarshaler marshaller = new ModelMarshaler();
+        StepMarshaler marshaller = new StepMarshaler();
         RvdConfiguration configuration = Mockito.mock(RvdConfiguration.class);
         Mockito.when(configuration.getWelcomeMessage()).thenReturn(RvdConfiguration.DEFAULT_WELCOME_MESSAGE); // used when creating a new project
         projectDir = TestUtils.createDefaultProject("AP123", "owner@telestax.com", workspaceDir, marshaller, configuration);

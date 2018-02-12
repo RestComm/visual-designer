@@ -22,13 +22,11 @@ package org.restcomm.connect.rvd;
 
 import org.apache.commons.io.FileUtils;
 import org.mockito.Mockito;
-import org.restcomm.connect.rvd.configuration.RvdConfig;
-import org.restcomm.connect.rvd.model.ModelMarshaler;
+import org.restcomm.connect.rvd.model.StepMarshaler;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Random;
 
 import static org.mockito.Mockito.when;
@@ -77,7 +75,7 @@ public class TestUtils {
      * @return
      * @throws IOException
      */
-    public static File createDefaultProject(String projectName, String owner, File workspaceDir, ModelMarshaler marshaler, RvdConfiguration configuration) throws IOException {
+    public static File createDefaultProject(String projectName, String owner, File workspaceDir, StepMarshaler marshaler, RvdConfiguration configuration) throws IOException {
         File projectFile = new File(workspaceDir.getPath() + "/" + projectName);
         projectFile.mkdir();
         String state = marshaler.toData(ProjectState.createEmptyVoice(owner, configuration ));
@@ -85,7 +83,7 @@ public class TestUtils {
         return projectFile;
     }
 
-    public static File createProjectWithMedia(String projectName, String owner, File workspaceDir, ModelMarshaler marshaler, RvdConfiguration configuration) throws IOException {
+    public static File createProjectWithMedia(String projectName, String owner, File workspaceDir, StepMarshaler marshaler, RvdConfiguration configuration) throws IOException {
         File projectFile = createDefaultProject(projectName, owner, workspaceDir, marshaler, configuration);
         File mediaDir = new File(projectFile.getPath() + File.separator + RvdConfiguration.WAVS_DIRECTORY_NAME);
         mediaDir.mkdir();
