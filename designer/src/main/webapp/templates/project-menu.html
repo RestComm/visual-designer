@@ -8,7 +8,7 @@
             <a href id="designer-diagram-toggle" ng-click="toggleShowGraph()" class="muted" ng-class="{'active':!!showGraph}">Diagram</a>
         </li>
         <li ng-show="projectKind=='voice'"><a id='wt-show-button' ng-click="signalShowWebTrigger()" class="rvd-clickable-text muted">{{'designerWebTriggerLink' | translate}}</a></li>
-        <li><a vd-report="click" class="muted" target="_blank" href='{{appStartUrl}}'>{{'designerAppUrlLink' | translate}}</a></li>
+        <li><a vd-report="click" class="muted" target="_blank" href='/restcomm-rvd/services/apps/{{applicationSid}}/controller'>{{'designerAppUrlLink' | translate}}</a></li>
         <li><a ng-click="signalShowProjectSettings()" class="rvd-clickable-text">{{'Settings' | translate}}</a></li>
         <li><a id="log-open-button" href="#/designer/{{applicationSid}}/log" target="_blank" class="rvd-clickable-text disabled">{{'Log' | translate}}</a></li>
         <!--

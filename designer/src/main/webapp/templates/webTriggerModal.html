@@ -3,9 +3,9 @@
 		<h3 class="modal-title"><i class="fa fa-cog"></i> {{'webTriggerModalHeaderLabel' | translate}}</h3>
 	</div>
 	<div class="modal-body">
-		<div class="help-block">{{'webTriggerModalDescriptorLabel' | translate}}</div>
+		<p>{{'webTriggerModalDescriptorLabel' | translate}}</p>
 		<div class="form-group">
-				{{'webTriggerModalCheckbox' | translate}} &nbsp;<input ng-change="setWebTriggerStatus(webTriggerEnabled);" ng-model="webTriggerEnabled" type="checkbox">
+				<strong>{{'Enable' | translate}}</strong> &nbsp;<input ng-change="setWebTriggerStatus(webTriggerEnabled);" ng-model="webTriggerEnabled" type="checkbox">
 		</div>
 	
 		<div ng-if="ccInfo!=null">
@@ -20,13 +20,13 @@
 			<div class="form-group">
 				<h5><strong>{{'authentication'|translate}}</strong></h5>
 
-				<div class="help-block">
+				<p>
 					{{'authenticationHelp'|translate}}
-				</div>
+				</p>
 				<div class="help-block">
-					<span class='rvd-clickable' ng-init="showAdvancedAuth=!!ccInfo.accessToken" ng-click="showAdvancedAuth=!showAdvancedAuth">
+					<button class='rvd-clickable btn-link' ng-init="showAdvancedAuth=!!ccInfo.accessToken" ng-click="showAdvancedAuth=!showAdvancedAuth">
 						<i class="fa fa-gear"> </i> {{'Application-specific token'|translate}}
-					</span>
+					</button>
 				</div>
 				<div ng-show="showAdvancedAuth" class="help-block advanced-form">
 					<div class="input-group input-group-sm">
@@ -48,9 +48,9 @@
 			
 			<div class="form-group">
 				<h5><strong>{{'overrideFromTo' | translate}}</strong></h5>
-				<div class="help-block">
+				<p>
 					{{'overrideFromTo-help' | translate}}
-				</div>
+				</p>
 				<div class="row">
 					<div class="col-md-6">
 						<div class="input-group">
@@ -75,10 +75,10 @@
 			</div>
 
 			<div class="form-group">
-				<a ng-init="showAdvanced=!!ccInfo.userParamScope" ng-click="showAdvanced=!showAdvanced" class="btn-link">{{'Advanced configuration'|translate}}</a>
-				<i class="fa fa-gear link-coloured" style="margin-left:5px;"></i>
+				<button ng-init="showAdvanced=!!ccInfo.userParamScope" ng-click="showAdvanced=!showAdvanced" class="btn-link rvd-clickable"><i class="fa fa-gear"></i> {{'Advanced configuration'|translate}}</button>
+
 			</div>
-			<div ng-show="showAdvanced" class="advanced-area">
+			<div ng-show="showAdvanced">
 				<div class="input-group input-group-sm">
 					<span class="input-group-addon">{{'User parameter scope'|translate}}</span>
 					<select auto-clear ng-model="ccInfo.userParamScope" class="form-control mask-invalid">

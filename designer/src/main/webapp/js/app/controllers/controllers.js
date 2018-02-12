@@ -121,9 +121,10 @@ App.controller('projectMenuCtrl', function ($rootScope, $scope, authentication, 
   }
 
   // event handling
+  /*
   $scope.$on("startup-module-changed", function (event,data) {
     $scope.appStartUrl = data.name;
-  });
+  });*/
 
 
 

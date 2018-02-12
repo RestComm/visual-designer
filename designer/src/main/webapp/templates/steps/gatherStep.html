@@ -38,7 +38,7 @@
 					</div>
 					<div ng-if="step.gatherType=='menu'">
 						<div ng-show="!step.inputType || step.inputType == 'dtmf' || step.inputType == 'dtmf speech'">
-							<h5>{{'Digits mapping' | translate}}</h5>
+							<label>{{'Digits mapping' | translate}}</label>
 							<div ng-repeat="mapping in step.menu.mappings" class='form-group row'>
 								<form name="form" novalidate>
 									<div class='col-md-4'>
@@ -70,7 +70,7 @@
 							</div>
 						</div>
 						<div ng-show="step.inputType=='speech' || step.inputType=='dtmf speech'">
-							<h5>{{'Speech mapping' | translate}}</h5>
+							<label>{{'Speech mapping' | translate}}</label>
 							<div ng-repeat="mapping in step.menu.speechMappings" class='form-group row'>
 								<form name="form" novalidate>
 									<div class="container-fluid">
@@ -104,7 +104,7 @@
 						</div>
 					</div>
 					<div ng-if="step.gatherType=='collectdigits' && step.inputType!='speech'">
-						<h5>{{'Digits variable' | translate}}</h5>
+						<label>{{'Digits variable' | translate}}</label>
 						<form name="form" novalidate>
 							<div class='form-group row'>
 								<div class='col-md-12'>
@@ -136,7 +136,7 @@
 					</div>
 
 					<div ng-if="step.gatherType=='collectdigits' && (step.inputType=='speech' || step.inputType=='dtmf speech') ">
-						<h5>{{'Speech variable' | translate}}</h5>
+						<label>{{'Speech variable' | translate}}</label>
 						<form name="form" novalidate>
 							<div class='form-group row'>
 								<div class='col-md-12'>

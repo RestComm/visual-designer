@@ -204,14 +204,13 @@
 
 	"emailStepEmailLabel": "Contenido del email",
 	"emailSubjectEmailLabel": "Asunto del email",
-	"enailStepEmailLabelPopover": "Escriba el contenido del email como texto.",
+	"emailStepEmailLabelPopover": "Escriba el contenido del email como texto.",
 	"sayEmailSubjectValidationError": "Por favor inserte un asunto para el email",
 	"sayEmailValidationError": "Por favor inserte una dirección de correo válida",
 	"emailStepToLabel": "Para",
 	"emailStepFromLabel": "De",
 	"emailStepCcLabel": "Cc",
 	"emailStepBccLabel": "Bcc",
-	"emailStepEmailLabelPopover":"Asunto del email",
 	"emailStepBccLabelPopover":"Añada las direcciones de correo electrónico separadas por una coma (,)",
 	"emailStepCcLabelPopover":"Añada las direcciones de correo electrónico separadas por una coma (,)",
 	"emailStepContinueTooltip": "Elija el módulo para continuar luego de que el email ha sido agregado a la cola. Déjelo en blanco para continuar al siguiente paso.",
@@ -579,5 +578,6 @@
 	"Method" : "Method",
 
 	"Account Settings": "Account Settings",
-	"Log": "Log"
+	"Log": "Log",
+	"Enable": "Enable"
 }

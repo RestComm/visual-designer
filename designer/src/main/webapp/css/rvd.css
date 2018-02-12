@@ -786,10 +786,6 @@ textarea.medium {
 
 /* ----------------- #/login view -------------------------- */
 
-/* ----------------- #/designer/_/log view ----------------- */
-#rvd-log-textarea {
-	height: 300px;
-}
 
 /* ----------------- index.html ---------------------------- */
 .notifications-wrapper {
@@ -869,10 +865,6 @@ textarea.medium {
     padding-bottom: 1px;
 }
 
-.web-trigger .advanced-area {
-    margin-left: 10px;
-}
-
 /* ------------------ directives -------------------- */
 /*.variable-lookup button {
 	border-radius: 0 4px 4px 0;
@@ -918,12 +910,17 @@ step: the panel that contains the verb details
 /***** Common styles *****/
 
 /* links */
-.btn.btn-link {
+.btn-link {
   text-decoration:none;
   color: var(--label-color);
 }
-.btn.btn-link:focus {
-  text-decoration:none
+.btn-link:focus,.btn-link:hover {
+  text-decoration:none;
+  color: var(--label-color);
+  opacity: 0.9;
+}
+.btn-link:first-child {
+  padding-left: 0;
 }
 .btn {
   font-size: 15px;
@@ -940,6 +937,9 @@ step: the panel that contains the verb details
 .btn-primary:hover,
 .btn-default:hover {
   opacity: 0.8;
+}
+label {
+  font-weight: normal;
 }
 
 .validation-error, .error-message, .validation-warning {
@@ -1146,4 +1146,13 @@ img.logo {
 .graph .graph-controls {
 	position:absolute;
 	right:20px;
+}
+
+/***** Log *****/
+#rvd-log-textarea {
+	height: 300px;
+}
+
+.log-view {
+  margin-bottom: 20px;
 }
