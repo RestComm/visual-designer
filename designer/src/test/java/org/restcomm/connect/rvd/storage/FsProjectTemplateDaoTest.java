@@ -29,7 +29,7 @@ public class FsProjectTemplateDaoTest extends FsDaoTestBase {
     @Test
     public void testLoadTemplate() throws IOException, StorageException {
         // create dao
-        FsProjectTemplateDao dao = new FsProjectTemplateDao(oldWorkspaceStorage, configuration);
+        FsProjectTemplateDao dao = new FsProjectTemplateDao(storage, configuration);
 
         ProjectTemplate projectTemplate = dao.loadProjectTemplate("TL1234");
         Assert.assertNotNull(projectTemplate);
@@ -40,7 +40,7 @@ public class FsProjectTemplateDaoTest extends FsDaoTestBase {
 
     @Test
     public void testLoadTemplateList() throws StorageException {
-        FsProjectTemplateDao dao = new FsProjectTemplateDao(oldWorkspaceStorage, configuration);
+        FsProjectTemplateDao dao = new FsProjectTemplateDao(storage, configuration);
         PaginatedResults<ProjectTemplate> results = new PaginatedResults<ProjectTemplate>();
         dao.loadProjectTemplates(0, 10, null, results);
         Assert.assertNotNull(results.getResults());

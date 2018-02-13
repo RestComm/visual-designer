@@ -16,11 +16,11 @@ import java.util.ListIterator;
  */
 public class FsProjectTemplateDao implements ProjectTemplateDao {
 
-    OldWorkspaceStorage oldWorkspaceStorage;
+    JsonModelStorage storage;
     RvdConfiguration configuration;
 
-    public FsProjectTemplateDao(OldWorkspaceStorage oldWorkspaceStorage, RvdConfiguration configuration) {
-        this.oldWorkspaceStorage = oldWorkspaceStorage;
+    public FsProjectTemplateDao(JsonModelStorage storage, RvdConfiguration configuration) {
+        this.storage = storage;
         this.configuration = configuration;
     }
 
@@ -29,7 +29,7 @@ public class FsProjectTemplateDao implements ProjectTemplateDao {
         if (! RvdConfiguration.DEFAULT_TEMPLATES_SUPPORT ) {
             throw new NotSupportedFeature();
         }
-        ProjectTemplate projectTemplate = oldWorkspaceStorage.loadEntity("project.template", configuration.getProjectTemplatesWorkspacePath() + File.separator + id, ProjectTemplate.class );
+        ProjectTemplate projectTemplate = storage.loadEntity("project.template", configuration.getProjectTemplatesWorkspacePath() + File.separator + id, ProjectTemplate.class );
         return projectTemplate;
     }
 
@@ -61,7 +61,7 @@ public class FsProjectTemplateDao implements ProjectTemplateDao {
 
         List<ProjectTemplate> templates = new ArrayList<ProjectTemplate>();
         // get all templates
-        List<String> templateIds = oldWorkspaceStorage.listContents(configuration.getProjectTemplatesWorkspacePath(), "TL.*", true );
+        List<String> templateIds = storage.listContents(configuration.getProjectTemplatesWorkspacePath(), "TL.*", true );
         // calculate page information - start, count
         int start, count;
         if (pageIndex == null) {
@@ -85,7 +85,7 @@ public class FsProjectTemplateDao implements ProjectTemplateDao {
     }
 
     String resolveTemplatePath(String templateId) {
-        // return oldWorkspaceStorage.resolveWorkspacePath("") + File.separator + templateId;
+        // return storage.resolveWorkspacePath("") + File.separator + templateId;
         return configuration.getProjectTemplatesWorkspacePath() + File.separator + templateId;
     }
 
@@ -98,7 +98,7 @@ public class FsProjectTemplateDao implements ProjectTemplateDao {
 //            throw new NotSupportedFeature();
 //        }
 //
-//        ProjectTemplate projectTemplate = oldWorkspaceStorage.loadEntity("project.template", configuration.getProjectTemplatesWorkspacePath() + File.separator + id, ProjectTemplate.class );
+//        ProjectTemplate projectTemplate = storage.loadEntity("project.template", configuration.getProjectTemplatesWorkspacePath() + File.separator + id, ProjectTemplate.class );
 //        return projectTemplate;
 //    }
 }

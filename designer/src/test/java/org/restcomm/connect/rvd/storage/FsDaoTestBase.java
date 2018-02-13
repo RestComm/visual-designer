@@ -12,13 +12,13 @@ import java.io.File;
 public class FsDaoTestBase {
 
     File workspaceDir;
-    OldWorkspaceStorage oldWorkspaceStorage;
+    JsonModelStorage storage;
     StepMarshaler marshaler;
 
     FsDaoTestBase() {
         workspaceDir = TestUtils.createTempWorkspace();
         marshaler = new StepMarshaler();
-        oldWorkspaceStorage = new OldWorkspaceStorage(workspaceDir.getPath(), marshaler);
+        storage = new JsonModelStorage(new FsWorkspaceStorage(workspaceDir.getPath()), marshaler);
     }
 
 

@@ -1,7 +1,7 @@
 package org.restcomm.connect.rvd.http.resources;
 
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
-import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.JsonModelStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +30,7 @@ public class ProjectRestServiceMocked extends ProjectRestService {
     }
 
     @Override
-    protected ProjectDao buildProjectDao(OldWorkspaceStorage storage) {
+    protected ProjectDao buildProjectDao(JsonModelStorage storage) {
         return projectDao;
     }
 }

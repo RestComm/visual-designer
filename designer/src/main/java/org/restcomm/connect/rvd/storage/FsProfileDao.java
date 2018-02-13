@@ -32,16 +32,16 @@ import org.restcomm.connect.rvd.storage.exceptions.StorageException;
  */
 public class FsProfileDao implements ProfileDao {
 
-    private OldWorkspaceStorage oldWorkspaceStorage;
+    private JsonModelStorage storage;
 
-    public FsProfileDao(OldWorkspaceStorage oldWorkspaceStorage) {
-        this.oldWorkspaceStorage = oldWorkspaceStorage;
+    public FsProfileDao(JsonModelStorage storage) {
+        this.storage = storage;
     }
 
     @Override
     public void saveUserProfile(String username, UserProfile userProfile) {
         try {
-            oldWorkspaceStorage.storeEntity(userProfile, UserProfile.class, username, "@users");
+            storage.storeEntity(userProfile, UserProfile.class, username, "@users");
         } catch (StorageException e) {
             throw new RuntimeException("Error storing profile for user '" + username + "'", e);
         }
@@ -55,7 +55,7 @@ public class FsProfileDao implements ProfileDao {
     @Override
     public UserProfile loadUserProfile(String username) {
         try {
-            UserProfile profile = oldWorkspaceStorage.loadEntity(username, "@users", UserProfile.class);
+            UserProfile profile = storage.loadEntity(username, "@users", UserProfile.class);
             return profile;
         } catch (StorageEntityNotFound e) {
             return null;

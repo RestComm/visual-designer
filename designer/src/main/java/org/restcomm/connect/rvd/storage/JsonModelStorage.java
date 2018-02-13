@@ -1,7 +1,12 @@
 package org.restcomm.connect.rvd.storage;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import org.restcomm.connect.rvd.model.ModelMarshaller;
+import org.restcomm.connect.rvd.model.project.StateHeader;
+import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
 import java.io.File;
@@ -11,7 +16,7 @@ import java.util.List;
 
 
 /**
- * Wraps OldWorkspaceStorage and handles converting models to/from json strings
+ * Provides all types of access to the storage backend. In addition, it handles conversion to/from json.
  *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
@@ -34,6 +39,24 @@ public class JsonModelStorage implements WorkspaceStorage {
         } catch (JsonSyntaxException e) {
             throw new StorageException("Error loading json from " + entityName, e);
         }
+    }
+
+    public StateHeader loadStateHeader(String projectName) throws StorageException {
+        String stateData = workspaceStorage.loadEntityString("state", projectName);
+        JsonParser parser = new JsonParser();
+        JsonElement header_element = null;
+        try {
+            header_element = parser.parse(stateData).getAsJsonObject().get("header");
+        } catch (JsonSyntaxException e) {
+            throw new StorageException("Error loading header for project '" + projectName +"'",e);
+        }
+        if ( header_element == null )
+            throw new BadProjectHeader("No header found. This is probably an old project");
+
+        Gson gson = new Gson();
+        StateHeader header = gson.fromJson(header_element, StateHeader.class);
+
+        return header;
     }
 
     public void storeEntity(Object entity, Class<?> entityClass, String entityName, String entityPath ) throws StorageException {
@@ -68,12 +91,12 @@ public class JsonModelStorage implements WorkspaceStorage {
 
     @Override
     public void storeEntityString(String entityString, String entityName, String entityPath) throws StorageException {
-        storeEntityString(entityString, entityName, entityPath);
+        workspaceStorage.storeEntityString(entityString, entityName, entityPath);
     }
 
     @Override
     public void storeBinaryFile(File sourceFile, String entityName, String entityPath) throws StorageException {
-        storeBinaryFile(sourceFile, entityName, entityPath);
+        workspaceStorage.storeBinaryFile(sourceFile, entityName, entityPath);
     }
 
     @Override
@@ -88,6 +111,6 @@ public class JsonModelStorage implements WorkspaceStorage {
 
     @Override
     public String resolveWorkspacePath(String path) {
-        return resolveWorkspacePath(path);
+        return workspaceStorage.resolveWorkspacePath(path);
     }
 }

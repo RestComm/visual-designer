@@ -6,6 +6,10 @@ import org.restcomm.connect.rvd.model.packaging.RappInfo;
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
 
+/**
+ * Converts strings to/from models but can also handle rcml steps.
+ *
+ */
 public class StepMarshaler extends SimpleMarshaller {
 
     private XStream xstream;

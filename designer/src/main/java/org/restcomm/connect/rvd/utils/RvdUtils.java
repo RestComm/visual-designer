@@ -7,14 +7,21 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.restcomm.connect.rvd.RvdContext;
 import org.restcomm.connect.rvd.exceptions.RvdException;
 import org.restcomm.connect.rvd.exceptions.StreamDoesNotFitInFile;
+import org.restcomm.connect.rvd.model.client.WavItem;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -164,5 +171,30 @@ public class RvdUtils {
             return origin;
         }
         return null;
+    }
+
+    /**
+     * Returns a WavItem list for all .wav files insude the /audio RVD directory. No project is involved here.
+     * @param rvdContext
+     * @return
+     */
+    public static List<WavItem> listBundledWavs(RvdContext rvdContext ) {
+        List<WavItem> items = new ArrayList<WavItem>();
+
+        String contextRealPath = RvdUtils.addTrailingSlashIfMissing(rvdContext.getServletContext().getRealPath("/"));
+        String audioRealPath = contextRealPath + "audio";
+        String contextPath = rvdContext.getServletContext().getContextPath();
+
+        File dir = new File(audioRealPath);
+        Collection<File> audioFiles = FileUtils.listFiles(dir, new SuffixFileFilter(".wav"), TrueFileFilter.INSTANCE );
+        for (File anyFile: audioFiles) {
+            WavItem item = new WavItem();
+            String itemRelativePath = anyFile.getPath().substring(contextRealPath.length());
+            String presentationName = anyFile.getPath().substring(contextRealPath.length() + "audio".length() );
+            item.setUrl( contextPath + "/" + itemRelativePath );
+            item.setFilename(presentationName);
+            items.add(item);
+        }
+        return items;
     }
 }

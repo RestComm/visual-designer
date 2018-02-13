@@ -40,8 +40,9 @@ import org.restcomm.connect.rvd.model.project.RvdProject;
 import org.restcomm.connect.rvd.restcomm.RestcommApplicationResponse;
 import org.restcomm.connect.rvd.restcomm.RestcommApplicationsResponse;
 import org.restcomm.connect.rvd.restcomm.RestcommClient;
+import org.restcomm.connect.rvd.storage.FsWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.JsonModelStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
-import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +72,7 @@ public class NotificationsRestService extends SecuredRestService {
     }
 
     private ProjectHelper projectService;
-    OldWorkspaceStorage oldWorkspaceStorage;
+    JsonModelStorage storage;
 
     public NotificationsRestService() {
     }
@@ -81,8 +82,8 @@ public class NotificationsRestService extends SecuredRestService {
         super.init();  // setup userIdentityContext
         logging.appendAccountSid(getUserIdentityContext().getAccountSid());
         RvdContext rvdContext = new RvdContext(request, servletContext,applicationContext.getConfiguration(), logging);
-        oldWorkspaceStorage = new OldWorkspaceStorage(applicationContext.getConfiguration().getWorkspaceBasePath(), rvdContext.getMarshaler());
-        projectService = new ProjectHelper(rvdContext, oldWorkspaceStorage, buildProjectDao(oldWorkspaceStorage) );
+        storage = new JsonModelStorage(new FsWorkspaceStorage(applicationContext.getConfiguration().getWorkspaceBasePath()), rvdContext.getMarshaler());
+        projectService = new ProjectHelper(rvdContext, storage, buildProjectDao(storage) );
     }
 
     // used for testing
@@ -162,7 +163,7 @@ public class NotificationsRestService extends SecuredRestService {
         RvdProject project = projectService.load(applicationSid);
         if (! getLoggedUsername().equalsIgnoreCase(project.getState().getHeader().getOwner()))
             throw new AuthorizationException();
-        ProjectDao projectDao = buildProjectDao(oldWorkspaceStorage);
+        ProjectDao projectDao = buildProjectDao(storage);
         projectDao.removeProject(applicationSid);
     }
 
@@ -185,7 +186,7 @@ public class NotificationsRestService extends SecuredRestService {
         if (applications != null) {
             for (RestcommApplicationResponse app: applications) {
                 try {
-                    ProjectDao projectDao = buildProjectDao(oldWorkspaceStorage);
+                    ProjectDao projectDao = buildProjectDao(storage);
                     projectDao.removeProject(app.getSid());
                 } catch (ProjectDoesNotExist e) {
                     RvdLoggers.global.log(Level.WARN, LoggingHelper.buildMessage(getClass(),"processAccountRemovalNotification","{0} project {1} wasn't removed because it wasn't found", new Object[] {logging.getPrefix(), app.getSid()}));

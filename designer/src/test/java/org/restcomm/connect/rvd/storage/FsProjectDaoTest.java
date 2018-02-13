@@ -35,7 +35,7 @@ public class FsProjectDaoTest extends FsDaoTestBase {
 
     @Test
     public void checkProjectResources() throws IOException, StorageException {
-        ProjectDao dao = new FsProjectDao(oldWorkspaceStorage);
+        ProjectDao dao = new FsProjectDao(storage);
 
         String rawState = dao.loadProjectStateRaw(PROJECT_NAME);
         File stateFile = new File(defaultProjectDir.getPath() + "/state");
@@ -69,7 +69,7 @@ public class FsProjectDaoTest extends FsDaoTestBase {
 
     @Test
     public void checkBuiltResources() throws IOException, StorageException {
-        ProjectDao dao = new FsProjectDao(oldWorkspaceStorage);
+        ProjectDao dao = new FsProjectDao(storage);
 
         // create build directory and put a node inside it
         File buildDir = new File(defaultProjectDir.getPath() + "/data");
@@ -84,7 +84,7 @@ public class FsProjectDaoTest extends FsDaoTestBase {
 
     @Test
     public void checkMediaResources() throws StorageException, IOException {
-        ProjectDao dao = new FsProjectDao(oldWorkspaceStorage);
+        ProjectDao dao = new FsProjectDao(storage);
         // no wavs by default
         List<WavItem> wavs = dao.listMedia(PROJECT_NAME);
         Assert.assertEquals(0, wavs.size());
@@ -107,7 +107,7 @@ public class FsProjectDaoTest extends FsDaoTestBase {
 
     @Test
     public void checkCreateFromLocation() throws IOException, StorageException {
-        ProjectDao dao = new FsProjectDao(oldWorkspaceStorage);
+        ProjectDao dao = new FsProjectDao(storage);
         // create the "remote" project
         String projectName = "APproject2";
         File project2 = TestUtils.createProjectWithMedia(projectName, "orestis", workspaceDir, marshaler, configuration);

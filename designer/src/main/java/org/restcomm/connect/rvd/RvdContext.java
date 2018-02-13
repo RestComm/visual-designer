@@ -6,7 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.restcomm.connect.rvd.logging.ProjectLogger;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.StepMarshaler;
-import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.FsWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.JsonModelStorage;
 
 
 public class RvdContext {
@@ -14,7 +15,7 @@ public class RvdContext {
     private StepMarshaler marshaler;
     private RvdConfiguration configuration;
     private ServletContext servletContext;
-    protected OldWorkspaceStorage oldWorkspaceStorage;
+    protected JsonModelStorage storage;
     public LoggingContext logging;
 
     public RvdContext(HttpServletRequest request, ServletContext servletContext, RvdConfiguration config, LoggingContext logging) {
@@ -22,7 +23,7 @@ public class RvdContext {
             throw new IllegalArgumentException();
         this.configuration = config;
         this.marshaler = new StepMarshaler();
-        this.oldWorkspaceStorage = new OldWorkspaceStorage(configuration.getWorkspaceBasePath(), marshaler);
+        this.storage = new JsonModelStorage(new FsWorkspaceStorage(configuration.getWorkspaceBasePath()), marshaler);
         this.servletContext = servletContext;
         this.logging = logging;
     }
@@ -43,8 +44,8 @@ public class RvdContext {
         return servletContext;
     }
 
-    public OldWorkspaceStorage getWorkspaceStorage() {
-        return oldWorkspaceStorage;
+    public JsonModelStorage getWorkspaceStorage() {
+        return storage;
     }
 
 }

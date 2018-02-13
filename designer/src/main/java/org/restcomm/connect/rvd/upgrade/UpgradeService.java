@@ -21,6 +21,7 @@ package org.restcomm.connect.rvd.upgrade;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -32,9 +33,9 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.storage.FsProjectDao;
-import org.restcomm.connect.rvd.storage.FsProjectStorage;
+import org.restcomm.connect.rvd.storage.JsonModelStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
-import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.WorkspaceStorage;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.upgrade.exceptions.NoUpgradePathException;
@@ -58,10 +59,10 @@ public class UpgradeService {
     // project versions where the project state .json file should be upgraded OR a build triggered
     static final List<String> upgradesPath = Arrays.asList(new String [] {"1.0","1.6","1.13"});
 
-    private OldWorkspaceStorage oldWorkspaceStorage;
+    private JsonModelStorage storage;
 
-    public UpgradeService(OldWorkspaceStorage oldWorkspaceStorage) {
-        this.oldWorkspaceStorage = oldWorkspaceStorage;
+    public UpgradeService(JsonModelStorage storage) {
+        this.storage = storage;
     }
 
     /**
@@ -201,7 +202,7 @@ public class UpgradeService {
         StateHeader header = null;
         String startVersion = null;
         try {
-            header = FsProjectStorage.loadStateHeader(projectName, oldWorkspaceStorage);
+            header = storage.loadStateHeader(projectName);
             startVersion = header.getVersion();
         } catch (BadProjectHeader e) {
             // it looks like this is an old project.
@@ -220,7 +221,7 @@ public class UpgradeService {
         }
 
         String version = startVersion;
-        String source = FsProjectStorage.loadProjectString(projectName, oldWorkspaceStorage);
+        String source = storage.loadEntityString("state", projectName);
         JsonParser parser = new JsonParser();
         JsonElement root = parser.parse(source);
 
@@ -242,8 +243,9 @@ public class UpgradeService {
             throw new NoUpgradePathException("No upgrade path for project " + projectName + ". Best effort from version: " + startVersion + " - to version: " + versionPath[versionPath.length-1]);
         }
 
-        FsProjectStorage.backupProjectState(projectName, oldWorkspaceStorage);
-        FsProjectStorage.updateProjectState(projectName, root.toString(), oldWorkspaceStorage);
+        backupProjectState(projectName, storage);
+        storage.storeEntityString(root.toString(), "state", projectName);
+        //FsProjectStorage.updateProjectState(projectName, root.toString(), storage);
         return root;
     }
     /**
@@ -251,13 +253,13 @@ public class UpgradeService {
      * @throws StorageException
      */
     public void upgradeWorkspace() throws StorageException {
-        ProjectDao projectDao = new FsProjectDao(oldWorkspaceStorage);
+        ProjectDao projectDao = new FsProjectDao(storage);
         BuildService buildService = new BuildService(projectDao);
         int upgradedCount = 0;
         int uptodateCount = 0;
         int failedCount = 0;
 
-        List<String> projectNames = oldWorkspaceStorage.listContents(".", "[^@].+", true); //FsProjectStorage.listProjectNames(oldWorkspaceStorage);
+        List<String> projectNames = storage.listContents(".", "[^@].+", true); //FsProjectStorage.listProjectNames(storage);
         for ( String projectName : projectNames ) {
             try {
                 if ( upgradeProject(projectName) != null ) {
@@ -266,10 +268,14 @@ public class UpgradeService {
                         RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace", "project '" + projectName + "' upgraded to version " + RvdConfiguration.RVD_PROJECT_VERSION ));
                     }
                     try {
-                        ProjectState projectState = FsProjectStorage.loadProject(projectName, oldWorkspaceStorage);
-                        buildService.buildProject(projectName, projectState);
-                        if(RvdLoggers.local.isEnabledFor(Level.INFO)) {
-                            RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(),"upgradeWorkspace","project '" + projectName + "' built" ));
+                        ProjectState projectState = projectDao.loadProject(projectName); //FsProjectStorage.loadProject(projectName, storage);
+                        if (projectState == null) {
+                            RvdLoggers.local.log(Level.WARN, "error building upgraded project '" + projectName + "' : state file not found");
+                        } else {
+                            buildService.buildProject(projectName, projectState);
+                            if (RvdLoggers.local.isEnabledFor(Level.INFO)) {
+                                RvdLoggers.local.log(Level.INFO, LoggingHelper.buildMessage(getClass(), "upgradeWorkspace", "project '" + projectName + "' built"));
+                            }
                         }
                     } catch (StorageException e) {
                         RvdLoggers.local.log(Level.WARN, "error building upgraded project '" + projectName + "'", e);
@@ -296,6 +302,25 @@ public class UpgradeService {
         //if ( upgradedCount  0 && projectNames.size() > 0 )
           //  logger.info("All RVD projects are up-to-date" );
     }
+
+    public void backupProjectState(String projectName, WorkspaceStorage storage) throws StorageException {
+        try {
+            String stateData = storage.loadEntityString("state", projectName);
+            storage.storeEntityString(stateData, "state.old", projectName);
+        } catch (StorageException e) {
+            throw new StorageException("Error creating state file backup", e);
+        }
+
+//        File sourceStateFile = new File(storage.rootPath + File.separator + projectName + File.separator + "state");
+//        File backupStateFile = new File(storage.rootPath + File.separator + projectName + File.separator + "state" + ".old");
+//
+//        try {
+//            FileUtils.copyFile(sourceStateFile, backupStateFile);
+//        } catch (IOException e) {
+//            throw new StorageException("Error creating state file backup: " + backupStateFile);
+//        }
+    }
+
 
 
 }

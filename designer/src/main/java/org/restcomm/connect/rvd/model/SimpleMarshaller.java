@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 import java.lang.reflect.Type;
 
 /**
+ * Converts json strings to/from models
+ *
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class SimpleMarshaller implements ModelMarshaller {

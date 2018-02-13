@@ -12,8 +12,8 @@ import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.stats.AppStatsDto;
 import org.restcomm.connect.rvd.stats.AggregateStats;
-import org.restcomm.connect.rvd.storage.FsProjectStorage;
-import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.FsWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.JsonModelStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 
@@ -34,13 +34,11 @@ import javax.ws.rs.core.Response;
 public class StatsRestService extends SecuredRestService {
 
     RvdConfiguration config;
-    OldWorkspaceStorage workspace; // CAUTION: does not support operation that need marshaller
 
     @PostConstruct
     public void init() {
         super.init();
         config = applicationContext.getConfiguration();
-        workspace = new OldWorkspaceStorage(config.getWorkspaceBasePath(), null); //  no need for marshaller for checking project existence
     }
 
     /**
@@ -133,12 +131,12 @@ public class StatsRestService extends SecuredRestService {
     void checkApplicationAccess(String appId) throws ProjectDoesNotExist, StorageException {
         secure();
         // make sure the project exists
-        OldWorkspaceStorage workspace = new OldWorkspaceStorage(config.getWorkspaceBasePath(), null); //  no need for marshaller for checking project existence
-        ProjectDao projectDao = buildProjectDao(workspace);
+        JsonModelStorage storage = new JsonModelStorage(new FsWorkspaceStorage(config.getWorkspaceBasePath()), null); //  no need for marshaller for checking project existence
+        ProjectDao projectDao = buildProjectDao(storage);
         if (projectDao.projectExists(appId))
             throw new ProjectDoesNotExist(appId);
         // get project owner
-        StateHeader projectHeader = FsProjectStorage.loadStateHeader(appId, workspace);
+        StateHeader projectHeader = storage.loadStateHeader(appId);
         String owner = projectHeader.getOwner();
         // get role and email from incoming request
         String clientEmail = getUserIdentityContext().getAccountInfo().getEmail_address();

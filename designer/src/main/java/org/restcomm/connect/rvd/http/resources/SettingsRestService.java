@@ -41,18 +41,19 @@ import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.logging.system.LoggingHelper;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
-import org.restcomm.connect.rvd.model.StepMarshaler;
+import org.restcomm.connect.rvd.model.SimpleMarshaller;
 import org.restcomm.connect.rvd.model.UserProfile;
 import org.restcomm.connect.rvd.model.client.SettingsModel;
 import org.restcomm.connect.rvd.storage.FsProfileDao;
+import org.restcomm.connect.rvd.storage.FsWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.JsonModelStorage;
 import org.restcomm.connect.rvd.storage.ProfileDao;
-import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 /**
- * HTTP endpoint for storage/retrieval of workspace settings.
+ * HTTP endpoint for storage/retrieval of storage settings.
  *
  * @author Orestis Tsakiridis
  */
@@ -61,8 +62,8 @@ import com.google.gson.JsonSyntaxException;
 public class SettingsRestService extends SecuredRestService {
 
     RvdConfiguration settings;
-    StepMarshaler marshaler;
-    OldWorkspaceStorage oldWorkspaceStorage;
+    SimpleMarshaller marshaler;
+    JsonModelStorage storage;
     LoggingContext logging;
 
     @PostConstruct
@@ -71,8 +72,8 @@ public class SettingsRestService extends SecuredRestService {
         logging = new LoggingContext("[designer]");
         logging.appendAccountSid(getUserIdentityContext().getAccountSid());
         settings = applicationContext.getConfiguration();
-        marshaler = new StepMarshaler();
-        oldWorkspaceStorage = new OldWorkspaceStorage(settings.getWorkspaceBasePath(), marshaler);
+        marshaler = new SimpleMarshaller();
+        storage = new JsonModelStorage(new FsWorkspaceStorage(settings.getWorkspaceBasePath()), marshaler);
     }
 
     public SettingsRestService() {
@@ -91,7 +92,7 @@ public class SettingsRestService extends SecuredRestService {
             data = IOUtils.toString(request.getInputStream(), Charset.forName("UTF-8"));
             SettingsModel settingsForm = marshaler.toModel(data, SettingsModel.class);
             // update user profile
-            ProfileDao profileDao = new FsProfileDao(oldWorkspaceStorage);
+            ProfileDao profileDao = new FsProfileDao(storage);
             String loggedUsername = getLoggedUsername();
             UserProfile profile = profileDao.loadUserProfile(loggedUsername);
             if (profile == null)
@@ -113,7 +114,7 @@ public class SettingsRestService extends SecuredRestService {
     public Response getProfile() {
         secure();
         // load user profile
-        ProfileDao profileDao = new FsProfileDao(oldWorkspaceStorage);
+        ProfileDao profileDao = new FsProfileDao(storage);
         String loggedUsername = getLoggedUsername();
         UserProfile profile = profileDao.loadUserProfile(loggedUsername);
 

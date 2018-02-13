@@ -7,7 +7,8 @@ import org.restcomm.connect.rvd.logging.system.LoggingContext;
 import org.restcomm.connect.rvd.model.StepMarshaler;
 import org.restcomm.connect.rvd.model.ProjectTemplate;
 import org.restcomm.connect.rvd.storage.FsProjectTemplateDao;
-import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.FsWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.JsonModelStorage;
 import org.restcomm.connect.rvd.storage.ProjectTemplateDao;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.utils.ValidationUtils;
@@ -76,8 +77,8 @@ public class TemplatesRestService extends SecuredRestService {
      * @return a ProjectTemplateDao
      */
     private ProjectTemplateDao buildProjectTemplateDao() {
-        OldWorkspaceStorage oldWorkspaceStorage = new OldWorkspaceStorage(configuration.getWorkspaceBasePath(), new StepMarshaler());
-        FsProjectTemplateDao dao = new FsProjectTemplateDao(oldWorkspaceStorage, configuration);
+        JsonModelStorage storage = new JsonModelStorage(new FsWorkspaceStorage(configuration.getWorkspaceBasePath()), new StepMarshaler());
+        FsProjectTemplateDao dao = new FsProjectTemplateDao(storage, configuration);
         return dao;
     }
 

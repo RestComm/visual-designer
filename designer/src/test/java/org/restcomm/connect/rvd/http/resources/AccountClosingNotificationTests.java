@@ -30,7 +30,8 @@ import org.restcomm.connect.rvd.TestUtils;
 import org.restcomm.connect.rvd.identity.UserIdentityContext;
 import org.restcomm.connect.rvd.model.StepMarshaler;
 import org.restcomm.connect.rvd.storage.FsProjectDao;
-import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.FsWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.JsonModelStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 
 import javax.servlet.ServletInputStream;
@@ -47,7 +48,7 @@ import static org.mockito.Mockito.when;
  */
 public class AccountClosingNotificationTests extends RestServiceMockedTest {
     ProjectHelper projectService;
-    OldWorkspaceStorage storage;
+    JsonModelStorage storage;
 
     @Before
     public void before() throws IOException, URISyntaxException {
@@ -55,8 +56,8 @@ public class AccountClosingNotificationTests extends RestServiceMockedTest {
         setupMocks();
         workspaceDir = TestUtils.createTempWorkspace();
         marshaler = new StepMarshaler();
-        storage = new OldWorkspaceStorage(workspaceDir.getPath(), marshaler);
-        // create projects in the workspace
+        storage = new JsonModelStorage(new FsWorkspaceStorage(workspaceDir.getPath()), marshaler);
+        // create projects in the storage
         createProject("APA0000","administrator@company.com");
         createProject("APB0001","sub1@company.com");
         createProject("APB0002","sub2@company.com");

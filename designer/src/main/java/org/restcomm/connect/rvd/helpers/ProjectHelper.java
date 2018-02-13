@@ -48,7 +48,8 @@ import org.restcomm.connect.rvd.model.project.ProjectState;
 import org.restcomm.connect.rvd.model.project.StateHeader;
 import org.restcomm.connect.rvd.model.project.Step;
 import org.restcomm.connect.rvd.model.project.RvdProject;
-import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.FsWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.JsonModelStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.storage.exceptions.BadProjectHeader;
 import org.restcomm.connect.rvd.storage.exceptions.ProjectAlreadyExists;
@@ -74,22 +75,22 @@ public class ProjectHelper {
     }
 
     RvdConfiguration configuration;
-    OldWorkspaceStorage oldWorkspaceStorage;
+    JsonModelStorage storage;
     StepMarshaler marshaler;
     String servletContextPath;
     ProjectDao projectDao;
 
-    public ProjectHelper(RvdContext rvdContext, OldWorkspaceStorage oldWorkspaceStorage, ProjectDao projectDao) {
+    public ProjectHelper(RvdContext rvdContext, JsonModelStorage storage, ProjectDao projectDao) {
         this.servletContextPath = rvdContext.getServletContext().getContextPath();
         this.configuration = rvdContext.getConfiguration();
-        this.oldWorkspaceStorage = oldWorkspaceStorage;
+        this.storage = storage;
         this.marshaler = rvdContext.getMarshaler();
         this.projectDao = projectDao;
     }
 
-    public ProjectHelper(RvdConfiguration configuration, OldWorkspaceStorage oldWorkspaceStorage, StepMarshaler marshaler, String servletContextPath, ProjectDao projectDao) {
+    public ProjectHelper(RvdConfiguration configuration, JsonModelStorage storage, StepMarshaler marshaler, String servletContextPath, ProjectDao projectDao) {
         this.configuration = configuration;
-        this.oldWorkspaceStorage = oldWorkspaceStorage;
+        this.storage = storage;
         this.marshaler = marshaler;
         this.servletContextPath = servletContextPath;
         this.projectDao = projectDao;
@@ -235,7 +236,7 @@ public class ProjectHelper {
             JsonElement rootElement = parser.parse(reader);
             String version = rootElement.getAsJsonObject().get("header").getAsJsonObject().get("version").getAsString();
             // Create a temporary workspace storage.
-            OldWorkspaceStorage tempStorage = new OldWorkspaceStorage(tempProjectDir.getParent(), marshaler);
+            JsonModelStorage tempStorage = new JsonModelStorage(new FsWorkspaceStorage(tempProjectDir.getParent()), marshaler);
             // is this project compatible (current RVD can open and run without upgrading) ?
             if ( ! UpgradeService.checkBackwardCompatible(version, RvdConfiguration.RVD_PROJECT_VERSION) ) {
                 if ( UpgradeService.checkUpgradability(version, RvdConfiguration.RVD_PROJECT_VERSION) == UpgradeService.UpgradabilityStatus.UPGRADABLE ) {

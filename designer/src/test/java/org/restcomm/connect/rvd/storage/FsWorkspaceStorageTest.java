@@ -7,11 +7,11 @@ import org.restcomm.connect.rvd.model.StepMarshaler;
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
-public class OldWorkspaceStorageTest {
+public class FsWorkspaceStorageTest {
     @Test
     public void testPathResolving() {
         StepMarshaler marshaler = new StepMarshaler();
-        OldWorkspaceStorage storage = new OldWorkspaceStorage("/tmp/rootpath", marshaler );
+        JsonModelStorage storage = new JsonModelStorage(new FsWorkspaceStorage("/tmp/rootpath"), marshaler );
 
         Assert.assertNull(storage.resolveWorkspacePath(null));
         Assert.assertEquals("/an/absolute/path", storage.resolveWorkspacePath("/an/absolute/path"));

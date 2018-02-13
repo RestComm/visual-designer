@@ -20,7 +20,6 @@ import org.restcomm.connect.rvd.model.StepMarshaler;
 import org.restcomm.connect.rvd.storage.FsWorkspaceDao;
 import org.restcomm.connect.rvd.storage.FsWorkspaceStorage;
 import org.restcomm.connect.rvd.storage.JsonModelStorage;
-import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
 import org.restcomm.connect.rvd.storage.WorkspaceDao;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.upgrade.UpgradeService;
@@ -67,7 +66,6 @@ public class RvdInitializationServlet extends HttpServlet {
         WorkspaceDao workspaceDao = new FsWorkspaceDao(storage, rvdConfiguration);
         WorkspaceMaintainer workspaceMaintainer = new WorkspaceMaintainer(workspaceDao);
 
-
         WorkspaceBootstrapper workspaceBootstrapper = new WorkspaceBootstrapper(rvdConfiguration.getWorkspaceBasePath(), rvdConfiguration.getProjectTemplatesWorkspacePath());
         try {
             workspaceBootstrapper.run();
@@ -75,9 +73,7 @@ public class RvdInitializationServlet extends HttpServlet {
             logger.log(Level.ERROR,"Error bootstrapping workspace at " + rvdConfiguration.getWorkspaceBasePath(), e);
         }
 
-        StepMarshaler marshaler = new StepMarshaler();
-        OldWorkspaceStorage oldWorkspaceStorage = new OldWorkspaceStorage(rvdConfiguration.getWorkspaceBasePath(), marshaler);
-        UpgradeService upgradeService = new UpgradeService(oldWorkspaceStorage);
+        UpgradeService upgradeService = new UpgradeService(storage);
         try {
             upgradeService.upgradeWorkspace();
         } catch (StorageException e) {

@@ -18,7 +18,7 @@ import org.restcomm.connect.rvd.model.callcontrol.CallControlAction;
 import org.restcomm.connect.rvd.model.callcontrol.CallControlStatus;
 import org.restcomm.connect.rvd.model.callcontrol.CreateCallResponse;
 import org.restcomm.connect.rvd.storage.FsProjectDao;
-import org.restcomm.connect.rvd.storage.OldWorkspaceStorage;
+import org.restcomm.connect.rvd.storage.JsonModelStorage;
 import org.restcomm.connect.rvd.storage.ProjectDao;
 import org.restcomm.connect.rvd.validation.ValidationReport;
 
@@ -129,7 +129,7 @@ public class RestService {
         return Response.status(httpStatus).entity( gson.toJson(response)).type(MediaType.APPLICATION_JSON).build();
     }
 
-    protected ProjectDao buildProjectDao(OldWorkspaceStorage storage) {
+    protected ProjectDao buildProjectDao(JsonModelStorage storage) {
         ProjectDao dao = new FsProjectDao(storage);
         return dao;
     }

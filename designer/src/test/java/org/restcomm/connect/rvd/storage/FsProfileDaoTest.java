@@ -41,7 +41,7 @@ public class FsProfileDaoTest {
         File workspaceDir = TestUtils.createTempWorkspace();
         try {
             StepMarshaler marshaler = new StepMarshaler();
-            OldWorkspaceStorage storage = new OldWorkspaceStorage(workspaceDir.getPath(), marshaler);
+            JsonModelStorage storage = new JsonModelStorage(new FsWorkspaceStorage(workspaceDir.getPath()), marshaler);
 
             ProfileDao profileDao = new FsProfileDao(storage);
 
@@ -69,7 +69,7 @@ public class FsProfileDaoTest {
         File usersDir = TestUtils.createUsersDirectory(workspaceDir.getPath());
         try {
             StepMarshaler marshaler = new StepMarshaler();
-            OldWorkspaceStorage storage = new OldWorkspaceStorage(workspaceDir.getPath(), marshaler);
+            JsonModelStorage storage = new JsonModelStorage(new FsWorkspaceStorage(workspaceDir.getPath()), marshaler);
 
             File profileFile = new File(workspaceDir.getPath() + "/@users/orestis.tsakiridis@telestax.com");
             profileFile.createNewFile();
@@ -92,7 +92,7 @@ public class FsProfileDaoTest {
         File usersDir = TestUtils.createUsersDirectory(workspaceDir.getPath());
         try {
             StepMarshaler marshaler = new StepMarshaler();
-            OldWorkspaceStorage storage = new OldWorkspaceStorage(workspaceDir.getPath(), marshaler);
+            JsonModelStorage storage = new JsonModelStorage(new FsWorkspaceStorage(workspaceDir.getPath()), marshaler);
 
             ProfileDao profileDao = new FsProfileDao(storage);
             UserProfile profile = profileDao.loadUserProfile("non-existing-profile");
