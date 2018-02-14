@@ -30,4 +30,9 @@ public class FsWorkspaceDao implements WorkspaceDao {
             return null;
         }
     }
+
+    @Override
+    public void storeWorkspaceStatus(WorkspaceStatus workspaceStatus) throws StorageException {
+        workspaceStorage.storeEntity(workspaceStatus, WorkspaceStatus.class, "status", "");
+    }
 }

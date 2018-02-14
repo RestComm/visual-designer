@@ -3,6 +3,7 @@ package org.restcomm.connect.rvd.storage;
 import org.apache.commons.io.FileUtils;
 import org.restcomm.connect.rvd.storage.exceptions.StorageEntityNotFound;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
+import org.restcomm.connect.rvd.utils.RvdUtils;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -169,6 +170,23 @@ public class FsWorkspaceStorage implements WorkspaceStorage {
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {
             throw new StorageEntityNotFound("File " + file.getPath() + " does not exist");
+        }
+    }
+
+    /**
+     * Copies the fs directory sourcePath to the workspace, under workspaceParentPath.
+     *
+     * TODO maybe we'll  need a better implementation at some point that won't just copy everything but will copy project templates (see createProjectFromLocation())
+     * @param sourcePath
+     * @param workspaceParentPath
+     */
+    public void copyDirToWorkspace(String sourcePath, String workspaceParentPath) throws StorageException {
+        File sourceDir = new File(sourcePath);
+        File destDir = new File(RvdUtils.addTrailingSlashIfMissing(resolveWorkspacePath(workspaceParentPath)) + sourceDir.getName());
+        try {
+            FileUtils.copyDirectory(sourceDir, destDir);
+        } catch (IOException e) {
+            throw new StorageException("Error copying directory '" + sourcePath + "' under workspace path: " + workspaceParentPath, e);
         }
     }
 

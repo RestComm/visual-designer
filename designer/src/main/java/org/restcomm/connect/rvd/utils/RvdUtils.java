@@ -156,6 +156,20 @@ public class RvdUtils {
     }
 
     /**
+     * Removes the tailing "/" character. In case the path is reduced solely to "/" it does nothing.
+     *
+     * null or empty paths are returned intact
+     *
+     * @param urlOrPath
+     * @return
+     */
+    public static String removeTrailingSlashIfPresent(String urlOrPath) {
+        if (urlOrPath != null && urlOrPath.length() > 1 && urlOrPath.endsWith("/"))
+            urlOrPath = urlOrPath.substring(0,urlOrPath.length()-1);
+        return urlOrPath;
+    }
+
+    /**
      * Extracts the origin i.e. scheme://host:port section, from an http request object.
      * Note, there is no trailing slash in the resulting string.
      *

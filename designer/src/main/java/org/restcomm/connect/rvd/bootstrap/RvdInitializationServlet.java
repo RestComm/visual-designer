@@ -17,10 +17,8 @@ import org.restcomm.connect.rvd.configuration.RestcommLocationResolver;
 import org.restcomm.connect.rvd.exceptions.BootstrappingException;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.StepMarshaler;
-import org.restcomm.connect.rvd.storage.FsWorkspaceDao;
 import org.restcomm.connect.rvd.storage.FsWorkspaceStorage;
 import org.restcomm.connect.rvd.storage.JsonModelStorage;
-import org.restcomm.connect.rvd.storage.WorkspaceDao;
 import org.restcomm.connect.rvd.storage.exceptions.StorageException;
 import org.restcomm.connect.rvd.upgrade.UpgradeService;
 
@@ -63,8 +61,12 @@ public class RvdInitializationServlet extends HttpServlet {
         servletContext.setAttribute(ApplicationContext.class.getName(), appContext);
 
         JsonModelStorage storage = new JsonModelStorage(new FsWorkspaceStorage(rvdConfiguration.getWorkspaceBasePath()), new StepMarshaler());
-        WorkspaceDao workspaceDao = new FsWorkspaceDao(storage, rvdConfiguration);
-        WorkspaceMaintainer workspaceMaintainer = new WorkspaceMaintainer(workspaceDao);
+        WorkspaceMaintainer workspaceMaintainer = new WorkspaceMaintainer(storage, servletContext.getRealPath("/"));
+        try {
+            workspaceMaintainer.checkWorkspace();
+        } catch (StorageException e) {
+            logger.log(Level.ERROR,"Errors in workspace maintainance!", e);
+        }
 
         WorkspaceBootstrapper workspaceBootstrapper = new WorkspaceBootstrapper(rvdConfiguration.getWorkspaceBasePath(), rvdConfiguration.getProjectTemplatesWorkspacePath());
         try {

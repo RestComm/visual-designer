@@ -310,6 +310,7 @@ public class FileRvdConfiguration extends BaseRvdConfiguration {
         Gson gson = new Gson();
         buffer.append("--- Effective RVD Configuration ---");
         buffer.append("\n instanceId:\t").append(getRvdInstanceId());
+        buffer.append("\n workspace version:\t").append(RvdConfiguration.WORKSPACE_VERSION);
         buffer.append("\n maxMediaFileSize:\t").append(getMaxMediaFileSize());
         buffer.append("\n workspaceBasePath (evaluated from rvd.xml/workspaceLocation):\t").append(getWorkspaceBasePath());
         buffer.append("\n projectTemplatesWorkspacePath:\t").append(getProjectTemplatesWorkspacePath());

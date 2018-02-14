@@ -27,5 +27,7 @@ public interface WorkspaceStorage {
 
     InputStream loadStream(String entityName, String entityPath) throws StorageException;
 
+    void copyDirToWorkspace(String sourcePath, String workspaceParentPath) throws StorageException;
+
     String resolveWorkspacePath(String path);
 }

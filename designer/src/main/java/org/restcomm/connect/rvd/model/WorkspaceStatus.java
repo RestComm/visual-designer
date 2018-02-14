@@ -6,16 +6,16 @@ package org.restcomm.connect.rvd.model;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public class WorkspaceStatus {
-    String version;
+    Integer version;
 
-    public WorkspaceStatus(String version) {
+    public WorkspaceStatus(Integer version) {
         this.version = version;
     }
 
     public WorkspaceStatus() {
     }
 
-    public String getVersion() {
+    public Integer getVersion() {
         return version;
     }
 }

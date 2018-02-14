@@ -29,7 +29,7 @@ public interface RvdConfiguration {
 
     String WAVS_DIRECTORY_NAME = "wavs";
     String RVD_PROJECT_VERSION = "1.14"; // version for rvd project syntax
-    String WORKSPACE_VERSION = "1"; // global version identifier for any change that affects workspace persisted data
+    Integer WORKSPACE_VERSION = 1; // global version identifier for any change that affects workspace persisted data
     String STICKY_PREFIX = "sticky_"; // a  prefix for rvd sticky variable names
     String MODULE_PREFIX = "module_"; // a  prefix for rvd module-scoped variable names
     String CORE_VARIABLE_PREFIX = "core_"; // a prefix for rvd variables that come from Restcomm parameters

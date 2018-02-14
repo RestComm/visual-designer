@@ -110,6 +110,11 @@ public class JsonModelStorage implements WorkspaceStorage {
     }
 
     @Override
+    public void copyDirToWorkspace(String sourcePath, String workspaceParentPath) throws StorageException {
+        workspaceStorage.copyDirToWorkspace(sourcePath, workspaceParentPath);
+    }
+
+    @Override
     public String resolveWorkspacePath(String path) {
         return workspaceStorage.resolveWorkspacePath(path);
     }
