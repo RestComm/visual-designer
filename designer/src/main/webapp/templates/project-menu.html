@@ -1,7 +1,7 @@
 <div class="dropdown project-menu pull-right">
-    <button class="btn btn-link dropdown-toggle project-menu-button" title="{{applicationSid}}">{{applicationFriendlyName}} <b class="caret"></b></button>
+    <button class="btn btn-link dropdown-toggle project-menu-button" title="{{applicationSid}}">{{application.friendly_name}} <b class="caret"></b></button>
     <ul class="dropdown-menu project-dropdown-menu">
-        <li ng-show="showParametersButton">
+        <li ng-show="parametersResponse.parameters.length > 0">
             <a href ng-click="showParameters()" class="muted">Parameters</a>
         </li>
         <li>

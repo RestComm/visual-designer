@@ -84,20 +84,19 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
     });
 });
 
-App.controller('projectMenuCtrl', function ($rootScope, $scope, authentication, $location, $modal, $q, $http, $state, application, projectParameters, parametersService,project, designerService, $translate) {
+App.controller('projectMenuCtrl', function ($rootScope, $stateParams, $scope, authentication, $location, $modal, $q, $http, $state, application, projectParameters, parametersService,project, designerService, $translate) {
 
-  $scope.applicationSid = application.sid;
-  $scope.applicationFriendlyName = application.friendly_name;
+  $scope.applicationSid = $stateParams.applicationSid;
+  $scope.application = application;
   $scope.projectKind = project.projectKind;
-  if (projectParameters.parameters.length > 0) {
-    $scope.showParametersButton = true;
-  }
+  $scope.parametersResponse = projectParameters;
+
   $scope.showGraph = false;
-  $scope.appStartUrl = designerService.getStartUrl(application.sid);
+  $scope.appStartUrl = designerService.getStartUrl($stateParams.applicationSid);
   $scope.authInfo = authentication.getAuthInfo();
 
 	$scope.showParameters = function () {
-	  parametersService.showModal(application.sid);
+	  parametersService.showModal($stateParams.applicationSid);
 	}
   $scope.startupNodeSet = function () {
       return designerService.startupNodeSet(project);
