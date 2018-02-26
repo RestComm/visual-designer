@@ -37,7 +37,7 @@
 body {
     font-family: var(--global-font);
     font-size: 15px;
-    background-color: #F1F1F1;
+    background-color: var(--background-color);
 }
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: var(--heading-font);
@@ -988,6 +988,16 @@ label {
   background-color: #F1F1F1;
 }
 
+/* column height equality */
+.row.is-flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+.row.is-flex > [class*='col-'] {
+    display: flex;
+    flex-direction: column;
+}
+
 
 /***** Header *****/
 img.logo {
@@ -1024,6 +1034,7 @@ img.logo {
   font-weight: bold;
   font-size: 14px;
 }
+
 
 /***** Verb toolbox *****/
 .verb-toolbox {
