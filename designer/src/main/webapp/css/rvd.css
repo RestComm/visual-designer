@@ -1,4 +1,5 @@
 :root {
+  --logo-url: url("../images/restcomm-v-d-logo.svg");
 
   --background-color: #f1f1f1; /* for various types of backgrounds like header, verb etc.*/
   --header-color: var(--background-color);
@@ -1000,8 +1001,13 @@ label {
 
 
 /***** Header *****/
-img.logo {
+.logo {
     margin: 20px 10px 10px 0px;
+    background: no-repeat left var(--logo-url);
+    background-size: contain;
+    height: 50px;
+    width: 176px;
+    display: block;
 }
 
 /***** Menus & Top menu *****/
