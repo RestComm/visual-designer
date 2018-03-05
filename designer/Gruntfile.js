@@ -18,7 +18,7 @@ module.exports = function(grunt) {
                     baseDir: 'target/dist/',
                     outputDir: 'assets/',
                     clearOutputDir: true,
-                    deleteOriginals: true,
+                    deleteOriginals: false,
                     queryString: false
                 },
                 files: [{
