@@ -32,8 +32,6 @@ public class ConferenceNounConverter implements Converter {
             writer.addAttribute("waitUrl", step.getWaitUrl());
         if (step.getWaitMethod() != null)
             writer.addAttribute("waitMethod", step.getWaitMethod());
-        if (step.getStatusCallback() != null)
-            writer.addAttribute("statusCallback", step.getStatusCallback());
         if (step.video != null) {
             // if video attributes exist, we need to use 'name' conference name as the 'name' attribute and not as the body/text of the noun element
             if (!RvdUtils.isEmpty(step.getDestination()))

@@ -25,9 +25,6 @@ public class ConferenceDialNoun extends DialNoun {
     private String waitMethod;
     private String waitModule;
     private Integer maxParticipants;
-    private String nextModule;
-    private String statusCallback;
-    private String statusCallbackModule;
     private Boolean enableVideo;
     private VideoMode videoMode;
     private String videoResolution; // can't use an enum here since some constants start with a number
@@ -45,12 +42,6 @@ public class ConferenceDialNoun extends DialNoun {
     }
     public void setDestination(String destination) {
         this.destination = destination;
-    }
-    public String getNextModule() {
-        return nextModule;
-    }
-    public void setNextModule(String nextModule) {
-        this.nextModule = nextModule;
     }
     public Boolean getMuted() {
         return muted;
@@ -137,14 +128,14 @@ public class ConferenceDialNoun extends DialNoun {
         rcmlNoun.setMaxParticipants(getMaxParticipants());
         rcmlNoun.setWaitMethod(getWaitMethod());
         rcmlNoun.setDestination( interpreter.populateVariables(getDestination() ));
-        if (!RvdUtils.isEmpty(statusCallback))
-            rcmlNoun.statusCallback = statusCallback;
-        else
-        if (!RvdUtils.isEmpty(statusCallbackModule)) {
-            Map<String, String> pairs = new HashMap<String, String>();
-            pairs.put("target", statusCallbackModule);
-            rcmlNoun.statusCallback = interpreter.buildAction(pairs);
-        }
+//        if (!RvdUtils.isEmpty(statusCallback))
+//            rcmlNoun.statusCallback = statusCallback;
+//        else
+//        if (!RvdUtils.isEmpty(statusCallbackModule)) {
+//            Map<String, String> pairs = new HashMap<String, String>();
+//            pairs.put("target", statusCallbackModule);
+//            rcmlNoun.statusCallback = interpreter.buildAction(pairs);
+//        }
         // populate video attributes (only if video is supported by configuration)
         if (interpreter.getConfiguration().getVideoSupport() && (this.enableVideo != null && this.enableVideo)) {
             rcmlNoun.video = new RcmlConferenceNoun.Video();

@@ -109,7 +109,7 @@ public class ProjectHelper {
             if (upgradable == UpgradabilityStatus.NOT_NEEDED)
                 return Status.OK;
             else
-            if (upgradable == UpgradabilityStatus.UPGRADABLE)
+            if (upgradable == UpgradabilityStatus.SHOULD_UPGRADE)
                 return Status.SHOULD_UPGRADE;
             else
             if (upgradable == UpgradabilityStatus.NOT_SUPPORTED)
@@ -238,14 +238,14 @@ public class ProjectHelper {
             // Create a temporary workspace storage.
             JsonModelStorage tempStorage = new JsonModelStorage(new FsWorkspaceStorage(tempProjectDir.getParent()), marshaler);
             // is this project compatible (current RVD can open and run without upgrading) ?
-            if ( ! UpgradeService.checkBackwardCompatible(version, RvdConfiguration.RVD_PROJECT_VERSION) ) {
-                if ( UpgradeService.checkUpgradability(version, RvdConfiguration.RVD_PROJECT_VERSION) == UpgradeService.UpgradabilityStatus.UPGRADABLE ) {
-                    UpgradeService upgradeService = new UpgradeService(tempStorage);
-                    upgradeService.upgradeProject(tempProjectDir.getName());
-                } else {
-                    // project cannot be upgraded
-                    throw new UnsupportedProjectVersion("Imported project version (" + version + ") not supported");
-                }
+            UpgradabilityStatus status = UpgradeService.checkUpgradability(version, RvdConfiguration.RVD_PROJECT_VERSION);
+            if ( status == UpgradabilityStatus.SHOULD_UPGRADE) {
+                UpgradeService upgradeService = new UpgradeService(tempStorage);
+                upgradeService.upgradeProject(tempProjectDir.getName());
+            } else
+            if (status == UpgradabilityStatus.NOT_SUPPORTED) {
+                // project cannot be upgraded
+                throw new UnsupportedProjectVersion("Imported project version (" + version + ") not supported");
             }
             // project is either compatible or was upgraded
 

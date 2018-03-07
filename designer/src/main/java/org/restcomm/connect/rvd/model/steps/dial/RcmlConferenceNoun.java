@@ -19,7 +19,6 @@ public class RcmlConferenceNoun extends RcmlNoun {
     String waitMethod;
     Integer maxParticipants;
     String destination;
-    String statusCallback;
     Video video;
 
     public String getDestination() {
@@ -48,10 +47,6 @@ public class RcmlConferenceNoun extends RcmlNoun {
     }
     public Boolean getEndConferenceOnExit() {
         return endConferenceOnExit;
-    }
-
-    public String getStatusCallback() {
-        return statusCallback;
     }
 
     public void setEndConferenceOnExit(Boolean endConferenceOnExit) {

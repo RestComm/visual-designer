@@ -23,7 +23,6 @@ package org.restcomm.connect.rvd.upgrade;
 import org.junit.Assert;
 import org.junit.Test;
 import org.restcomm.connect.rvd.exceptions.InvalidProjectVersion;
-import org.restcomm.connect.rvd.upgrade.UpgradeService;
 import org.restcomm.connect.rvd.upgrade.UpgradeService.UpgradabilityStatus;
 
 /**
@@ -32,12 +31,12 @@ import org.restcomm.connect.rvd.upgrade.UpgradeService.UpgradabilityStatus;
 public class UpgradeServiceTest {
     @Test
     public void testVariousUpgradabilityCases() throws InvalidProjectVersion {
-        Assert.assertEquals(UpgradabilityStatus.UPGRADABLE, UpgradeService.checkUpgradability("rvd714","1.6"));
+        Assert.assertEquals(UpgradabilityStatus.SHOULD_UPGRADE, UpgradeService.checkUpgradability("rvd714","1.6"));
         Assert.assertEquals(UpgradabilityStatus.NOT_NEEDED, UpgradeService.checkUpgradability("1.0","1.1"));
         Assert.assertEquals(UpgradabilityStatus.NOT_NEEDED, UpgradeService.checkUpgradability("1.1","1.5") );
-        Assert.assertEquals(UpgradabilityStatus.UPGRADABLE, UpgradeService.checkUpgradability("1.5","1.6"));
+        Assert.assertEquals(UpgradabilityStatus.SHOULD_UPGRADE, UpgradeService.checkUpgradability("1.5","1.6"));
         Assert.assertEquals(UpgradabilityStatus.NOT_NEEDED, UpgradeService.checkUpgradability("1.1","1.5"));
-        Assert.assertEquals(UpgradabilityStatus.UPGRADABLE, UpgradeService.checkUpgradability("1.1","1.6"));
+        Assert.assertEquals(UpgradabilityStatus.SHOULD_UPGRADE, UpgradeService.checkUpgradability("1.1","1.6"));
         Assert.assertEquals(UpgradabilityStatus.NOT_SUPPORTED, UpgradeService.checkUpgradability("INVALID_VERSION", "1.6"));
     }
 }

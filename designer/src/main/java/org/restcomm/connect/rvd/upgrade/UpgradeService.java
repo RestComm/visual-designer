@@ -51,11 +51,11 @@ public class UpgradeService {
     static Logger logger = RvdLoggers.local;
 
     public enum UpgradabilityStatus {
-        UPGRADABLE, NOT_NEEDED, NOT_SUPPORTED
+        SHOULD_UPGRADE, NOT_NEEDED, NOT_SUPPORTED
     }
 
     // valid project versions. If a version is not here it can either considered 'future' version or garbage.
-    static final String[] versionPath = new String[] {"rvd714","1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8","1.9", "1.10", "1.11","1.12", "1.13", "1.14"};
+    public static final String[] versionPath = new String[] {"rvd714","1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8","1.9", "1.10", "1.11","1.12", "1.13", "1.14", "1.15"};
     // project versions where the project state .json file should be upgraded OR a build triggered
     static final List<String> upgradesPath = Arrays.asList(new String [] {"1.0","1.6","1.13"});
 
@@ -66,103 +66,20 @@ public class UpgradeService {
     }
 
     /**
-     * Checks whether a runtime able to handle (open without upgrading) referenceProjectVersion can also handle checkedProjectVersion
-     * @param referenceProjectVersion
-     * @param checkedProjectVesion
+     * Checks whether a project should/can be upgraded according to Designer's project version and this project's version.
+     * Depending on the result, it returns the following:
+     *
+     * NOT_SUPPORTED    :   project's version is not known at all
+     * SHOULD_UPGRADE       :   the needs to be upgraded
+     * NOT_NEEDED       :   the project doesn't need to be upgraded. Binary is compatible with it
+     *
+     * Note, we don't have a case for known projects that can't be upgraded because they are too old (yet)
+     * .
+     * @param projectVersion
+     * @param rvdProjectVersion
      * @return
      * @throws InvalidProjectVersion
      */
-    public static boolean checkBackwardCompatible(String checkedProjectVesion, String referenceProjectVersion) throws InvalidProjectVersion {
-        if ( "1.14".equals(referenceProjectVersion)) {
-            if ( "1.14".equals(checkedProjectVesion) || "1.13".equals(checkedProjectVesion) )
-                return true;
-            return false;
-        } else
-        if ( "1.13".equals(referenceProjectVersion)) {
-            if ( "1.13".equals(checkedProjectVesion) )
-                return true;
-            return false;
-        } else
-        if ( "1.12".equals(referenceProjectVersion)) {
-            if ( "1.12".equals(checkedProjectVesion) || "1.11".equals(checkedProjectVesion) || "1.10".equals(checkedProjectVesion) || "1.9".equals(checkedProjectVesion) || "1.8".equals(checkedProjectVesion) || "1.7".equals(checkedProjectVesion) || "1.6".equals(checkedProjectVesion) )
-                return true;
-            return false;
-        } else
-        if ( "1.11".equals(referenceProjectVersion)) {
-            if ( "1.11".equals(checkedProjectVesion) || "1.10".equals(checkedProjectVesion) || "1.9".equals(checkedProjectVesion) || "1.8".equals(checkedProjectVesion) || "1.7".equals(checkedProjectVesion) || "1.6".equals(checkedProjectVesion) )
-                return true;
-            return false;
-        } else
-        if ( "1.10".equals(referenceProjectVersion)) {
-            if ( "1.10".equals(checkedProjectVesion) || "1.9".equals(checkedProjectVesion) || "1.8".equals(checkedProjectVesion) || "1.7".equals(checkedProjectVesion) || "1.6".equals(checkedProjectVesion) )
-                return true;
-            return false;
-        } else
-        if ( "1.9".equals(referenceProjectVersion)) {
-            if ( "1.9".equals(checkedProjectVesion) || "1.8".equals(checkedProjectVesion) || "1.7".equals(checkedProjectVesion) || "1.6".equals(checkedProjectVesion) )
-                return true;
-            return false;
-        } else
-        if ( "1.8".equals(referenceProjectVersion)) {
-            if ( "1.8".equals(checkedProjectVesion) || "1.7".equals(checkedProjectVesion) || "1.6".equals(checkedProjectVesion) )
-                return true;
-            return false;
-        } else
-        if ( "1.7".equals(referenceProjectVersion)) {
-            if ( "1.7".equals(checkedProjectVesion) || "1.6".equals(checkedProjectVesion) )
-                return true;
-            return false;
-        } else
-        if ( "1.6".equals(referenceProjectVersion)) {
-            if ( "1.6".equals(checkedProjectVesion) )
-                return true;
-            return false;
-        } else
-        if ( "1.5".equals(referenceProjectVersion) ) {
-            if ( "1.5".equals(checkedProjectVesion) || "1.4".equals(checkedProjectVesion) || "1.3".equals(checkedProjectVesion) || "1.2".equals(checkedProjectVesion) || "1.1".equals(checkedProjectVesion) || "1.0".equals(checkedProjectVesion) )
-                return true;
-            else
-                return false;
-        } else
-        if ( "1.4".equals(referenceProjectVersion) ) {
-            if ( "1.4".equals(checkedProjectVesion) || "1.3".equals(checkedProjectVesion) || "1.2".equals(checkedProjectVesion) || "1.1".equals(checkedProjectVesion) || "1.0".equals(checkedProjectVesion) )
-                return true;
-            else
-                return false;
-        } else
-        if ( "1.3".equals(referenceProjectVersion) ) {
-            if ( "1.3".equals(checkedProjectVesion) || "1.2".equals(checkedProjectVesion) || "1.1".equals(checkedProjectVesion) || "1.0".equals(checkedProjectVesion) )
-                return true;
-            else
-                return false;
-        } else
-        if ( "1.2".equals(referenceProjectVersion) ) {
-            if ( "1.2".equals(checkedProjectVesion) || "1.1".equals(checkedProjectVesion) || "1.0".equals(checkedProjectVesion) )
-                return true;
-            else
-                return false;
-        } else
-        if ( "1.1.1".equals(referenceProjectVersion) ) {
-            if ( "1.1.1".equals(checkedProjectVesion) || "1.1".equals(checkedProjectVesion) || "1.0".equals(checkedProjectVesion) )
-                return true;
-            else
-                return false;
-        } else
-        if ( "1.1".equals(referenceProjectVersion) ) {
-            if ( "1.1".equals(checkedProjectVesion) || "1.0".equals(checkedProjectVesion) )
-                return true;
-            else
-                return false;
-        } else
-        if ( "1.0".equals(referenceProjectVersion) ) {
-            if ("1.0".equals(checkedProjectVesion))
-                return true;
-            else
-                return false;
-        } else
-            throw new InvalidProjectVersion("Invalid version identifier: " + referenceProjectVersion);
-    }
-
     public static UpgradabilityStatus checkUpgradability(String projectVersion, String rvdProjectVersion) throws InvalidProjectVersion {
         int projectIndex = -1;
         int rvdIndex = -1;
@@ -186,7 +103,7 @@ public class UpgradeService {
             i ++;
         }
         if (upgradesInvolved)
-            return UpgradabilityStatus.UPGRADABLE;
+            return UpgradabilityStatus.SHOULD_UPGRADE;
         else
             return UpgradabilityStatus.NOT_NEEDED;
     }
@@ -211,7 +128,7 @@ public class UpgradeService {
 
         if ( startVersion.equals(RvdConfiguration.RVD_PROJECT_VERSION) )
             return null;
-        if ( checkBackwardCompatible(startVersion, RvdConfiguration.RVD_PROJECT_VERSION) ) {
+        if ( checkUpgradability(startVersion, RvdConfiguration.RVD_PROJECT_VERSION) == UpgradabilityStatus.NOT_NEEDED ) {
             // if current binary is compatible with old project no need to batch upgrade
             return null;
         }

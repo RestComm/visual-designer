@@ -60,7 +60,6 @@
 			"properties": {
 				"dialType": {"enum":["conference"]},
 				"destination": {"type":"string"},
-				"nextModule": {"type": "string", "minLength":1},
 				"muted": {"type": "boolean"},
 				"beep": {"type": "boolean"},
 				"startConferenceOnEnter": {"type": "boolean"},
@@ -69,8 +68,6 @@
 				"waitModule": {"type": "string", "minLength":1},
 				"waitMethod": {"enum":["GET","POST"]},
 				"maxParticipants": {"type":"integer"},
-				"statusCallback": {"type": "string"},
-				"statusCallbackModule": {"type":"string","minLength": 1},
 				"enableVideo": {"type": "boolean"},
 				"videoMode": {"type": "string"},
 				"videoResolution": {"type": "string"},

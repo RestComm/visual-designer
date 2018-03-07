@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import org.restcomm.connect.rvd.configuration.RvdMaxPerHost;
+import org.restcomm.connect.rvd.upgrade.UpgradeService;
 
 /**
  * Implement this interface to provide custom configuration for testing.
@@ -28,7 +29,7 @@ public interface RvdConfiguration {
     String USERS_DIRECTORY_NAME = "@users";
 
     String WAVS_DIRECTORY_NAME = "wavs";
-    String RVD_PROJECT_VERSION = "1.14"; // version for rvd project syntax
+    String RVD_PROJECT_VERSION = UpgradeService.versionPath[UpgradeService.versionPath.length-1]; // 1.15 - version for rvd project syntax
     Integer WORKSPACE_VERSION = 1; // global version identifier for any change that affects workspace persisted data
     String STICKY_PREFIX = "sticky_"; // a  prefix for rvd sticky variable names
     String MODULE_PREFIX = "module_"; // a  prefix for rvd module-scoped variable names
