@@ -1,7 +1,7 @@
 <div class="module-url-picker">
-    <input readonly style='background-color: white;' ng-show="type=='module'" type="text" class="form-control" title="choose a module form the list">
-    <input ng-show="type=='url'" ng-model="callbackUrl" type="text" class="form-control" title="type a url" placeholder="http://...">
-    <div ng-show="type=='module'" class="dropdown module-list">
+    <input readonly style='background-color: white;' ng-show="activeType=='module'" type="text" class="form-control" title="choose a module form the list">
+    <input ng-show="activeType=='url'" ng-model="callbackUrl" type="text" class="form-control" title="type a url" placeholder="http://...">
+    <div ng-show="activeType=='module'" class="dropdown module-list">
         <span ng-show='!callbackModule' class="btn-link dropdown-toggle text-muted">-- {{'noModuleSelected' | translate}} --</span>
         <span ng-show="callbackModule" class="btn-link dropdown-toggle">{{getNode(callbackModule).label}}</span>
         <ul class="dropdown-menu" >
@@ -10,13 +10,13 @@
         </ul>
     </div>
 
-    <div class="dropdown picker-type">
-        <small ng-show="type=='module'"  class="btn-link dropdown-toggle var-scope" ng-class="{'switcher-inactive':fixedType}" title="{{'pickAModule' | translate}}">module</small>
-        <small ng-show="type=='url'" class="btn-link dropdown-toggle var-scope" ng-class="{'switcher-inactive':fixedType}" title="{{'typeAUrl' | translate}}">URL</small>
+    <div ng-if='type=="any"'  class="dropdown picker-type">
+        <small ng-show="activeType=='module'"  class="btn-link dropdown-toggle var-scope" ng-class="{'switcher-inactive':false}" title="{{'pickAModule' | translate}}">module</small>
+        <small ng-show="activeType=='url'" class="btn-link dropdown-toggle var-scope" ng-class="{'switcher-inactive':false}" title="{{'typeAUrl' | translate}}">URL</small>
         <!--<small class="text-muted">{{varScope ? varScope : ""}}</small>-->
-        <ul ng-if='!fixedType' class="dropdown-menu">
-            <li><a ng-click="setType('module')" class="rvd-clickable-text" title="{{'pickAModule' | translate}}">{{'module' | translate}}</a></li>
-            <li><a ng-click="setType('url')" class="rvd-clickable-text" title="{{'typeAUrl' | translate}}">URL</a></li>
+        <ul class="dropdown-menu dropdown-menu-right">
+            <li><a ng-click="setActiveType('module')" class="rvd-clickable-text" title="{{'pickAModule' | translate}}">{{'module' | translate}}</a></li>
+            <li><a ng-click="setActiveType('url')" class="rvd-clickable-text" title="{{'typeAUrl' | translate}}">URL</a></li>
         </ul>
     </div>
 </div>

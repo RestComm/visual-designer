@@ -51,7 +51,7 @@ angular.module('Rvd').directive('modulePicker', [function () {
 		}
 	};
 }])
-// A new vesion of modulePicker directive that will work both for modules and raw URLs
+// A new vesion of modulePicker directive that works both for modules and raw URLs
 .directive('moduleUrlPicker', function (nodeRegistry) {
    	return {
    		restrict: 'E',
@@ -61,27 +61,34 @@ angular.module('Rvd').directive('modulePicker', [function () {
             callbackModule: '=module'
    		},
    		link: function (scope, element, attrs) {
-   		    scope.type = "module";
-   		    scope.modules = nodeRegistry.getNodes();
+   		    if (attrs.module && attrs.url) {
+   		      scope.type = 'any';
+   		    } else
    		    if (attrs.module) {
-                scope.type = 'module';
-                scope.fillModule = true;
-            }
+   		      scope.type = 'module';
+   		    } else
    		    if (attrs.url) {
-   		        scope.type = 'url';
-   		        scope.fillUrl = true;
-   		    }
-            if (!scope.fillUrl && !scope.fillModule)
-   		        throw "'url' or 'module' attributes should be defined";
-   		    // if url & module are not both provided (enabled) disable switching
-   		    if (!scope.fillUrl || !scope.fillModule)
-   		        scope.fixedType = true;
+   		      scope.type= 'url';
+   		    } else {
+ 		        throw "'url' or 'module' attributes should be defined";
+ 		      }
+          // set activeType
+          if (scope.type == 'any') {// both url/module are supported. We need to see which property is full in the model to initialize
+            if (scope.callbackModule)
+              setActiveType('module');
+            else
+              setActiveType('url');
+          } else {
+            setActiveType(scope.type);
+          }
 
-   		    function setType(type) {
-   		        scope.type = type;
-   		        if (scope.type == 'url')
+   		    scope.modules = nodeRegistry.getNodes();
+
+   		    function setActiveType(type) {
+   		        scope.activeType = type;
+   		        if (scope.activeType == 'url')
    		            delete scope.callbackModule;
-   		        if (scope.type == 'module')
+   		        if (scope.activeType == 'module')
    		            delete scope.callbackUrl;
    		    }
 
@@ -108,7 +115,7 @@ angular.module('Rvd').directive('modulePicker', [function () {
 //   		    });
 
             // public interface
-   		    scope.setType = setType;
+   		    scope.setActiveType = setActiveType;
    		    scope.getNode = nodeRegistry.getNode;
 
    		}

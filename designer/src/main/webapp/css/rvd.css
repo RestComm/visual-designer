@@ -507,11 +507,15 @@ vardef .assign-arrow {
     position: absolute;
     top: 7px;
     right: 10px;
+    z-index: 3;
+    cursor: pointer;
 }
 .module-url-picker .module-list {
     position: absolute;
     top: 7px;
     left: 10px;
+    z-index: 3;
+    cursor: pointer;
 }
 .input-group.input-group-sm .module-url-picker .picker-type, .input-group.input-group-sm .module-url-picker .module-list {
     top:5px;

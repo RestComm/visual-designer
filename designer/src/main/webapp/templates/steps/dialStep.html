@@ -46,7 +46,7 @@
 							</div>
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
 								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
-								<module-url-picker url="dialnoun.statusCallback" module="dialnoun.statusCallbackModule"></module-url-picker>
+								<module-url-picker type="module" url="dialnoun.statusCallback" module="dialnoun.statusCallbackModule"></module-url-picker>
 							</div>
 						</div>
 
@@ -88,7 +88,7 @@
 								<span ng-show="dialnoun.enableVideo" class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'videoOverlayHint' | translate}}">{{'Overlay' | translate}}</span>
 								<input ng-model="dialnoun.videoOverlay" ng-show="dialnoun.enableVideo" auto-clear class="mask-invalid form-control">
 							</div>
-
+							
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
 								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
 								<module-url-picker url="dialnoun.statusCallback" module="dialnoun.statusCallbackModule"></module-url-picker>
