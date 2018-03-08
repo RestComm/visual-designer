@@ -8,12 +8,8 @@
 		"label": {"type": "string"},
 		"title": {"type": "string"},
 		"url": {"type": "string", "minLength": 1},
-		"method": {
-			"oneOf": [
-				{"type":"null"},
-				{"enum":["GET","POST"]}
-			]
-		}
+		"next": {"type": "string", "minLength": 1},
+		"method": {"enum":["GET","POST"]}
 	},
-	"required": ["name","kind","label","title","url","method"]
+	"required": ["name","kind","label","title"]
 }

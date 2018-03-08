@@ -2,22 +2,20 @@
 	<div class="panel-heading">
 			<step-heading></step-heading>
 	</div>
-
 	<div class="panel-body" ng-hide='step.iface.isCollapsed'>
 		<div class="row">
 			<div class="col-md-12">				
 				<form name="form" novalidate>
 					<div class="input-group">
 						<span class="input-group-addon">{{'redirectStepContinueToLabel' | translate}}</span>
-						<input type='text' name='url' ng-model='step.url' class="form-control" required ></input>
+						<module-url-picker url="step.url" module="step.next"></module-url-picker>
 						<span class='input-group-addon'>{{'redirectStepMethodLabel' | translate}}</span>
-						<select name="method" ng-model='step.method' ng-options='method for method in methods' class="form-control">
+						<select name="method" ng-model='step.method' auto-clear ng-options='method for method in methods' class="form-control">
 							<option value=""></option>
 						</select>
 					</div>
 					<div class="validation-error" ng-show="form.url.$invalid">{{'redirectStepUrlMissingLabel' | translate}}</div>
 				</form>
-				
 			</div>
 		</div>
 	</div>

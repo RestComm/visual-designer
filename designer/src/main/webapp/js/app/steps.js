@@ -312,8 +312,6 @@ angular.module('Rvd')
 		this.kind = 'redirect';
 		this.label = 'redirect';
 		this.title = 'redirect';
-		this.url  = null;
-		this.method = null;
 		this.iface = {};
 	}
 	RedirectModel.prototype = new rvdModel();
