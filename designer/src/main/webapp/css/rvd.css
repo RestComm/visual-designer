@@ -993,6 +993,22 @@ label {
   background-color: #F1F1F1;
 }
 
+.fac-warning-wrap {
+  position: relative;
+}
+.fac-warning {
+  position:absolute;
+  top: 6px;
+  right: 10px;
+  z-index:5;
+}
+.fac-warning-serious {
+  color: #E63828;
+}
+fac-warning .tooltip {
+  width: 150px; /* for some reason the tooltips of a fac appear as thin as possible */
+}
+
 /* column height equality */
 .row.is-flex {
     display: flex;

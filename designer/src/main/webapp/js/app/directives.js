@@ -445,6 +445,26 @@ angular.module('Rvd').directive('validateHints', [function() {
 	}]
 );
 
+angular.module('Rvd').directive('facWarning', function (featureAccessControl, accountProfilesCache) {
+  return {
+    restrict: 'E',
+    templateUrl: "templates/directive/facWarning.html",
+    link: function (scope, element, attrs) {
+      var profile = accountProfilesCache.get();
+      profile.$promise.then(function () {
+        scope.$watch(attrs.monitor, function (newValue) {
+          var validationStatus = featureAccessControl.validate(newValue, profile, attrs.validator);
+          if (validationStatus && validationStatus.status == 'blocked' && attrs.blockedMessage) {
+            validationStatus.message = attrs.blockedMessage;
+          }
+          scope.facWarning = validationStatus; // keep an eye for scope conflicts since we don't have an isolate scope
+        });
+      });
+
+    }
+  }
+});
+
 
 
 

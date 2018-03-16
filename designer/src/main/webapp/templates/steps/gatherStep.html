@@ -277,7 +277,10 @@
 		<div ng-show="step.iface.optionsVisible">
 			<div class="panel-group">
 				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="dtmf">{{'DTMF' | translate}}</label>
-				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="speech">{{'Speech' | translate}}</label>
+				<label  class="radio-inline">
+					<input type="radio"  ng-disabled='!facAsr'  ng-model="step.inputType" value="speech">{{'Speech' | translate}}
+					&nbsp;<i ng-show="!facAsr" class="fa fa-warning" ng-class="{'fac-warning-serious': (step.inputType == 'speech' && !facAsr) }" tooltip="Speech capabilities not available" tooltip-trigger="mouseenter"></i>
+				</label>
 				<!-- hybrid input not supported  yet
 				<label class="radio-inline"><input type="radio" ng-model="step.inputType" value="dtmf speech">{{'DTMF and Speech' | translate}}</label>
 				-->

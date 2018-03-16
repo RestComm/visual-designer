@@ -1,4 +1,4 @@
-<div class="step dial-step panel panel-default">
+<div dial-step class="step dial-step panel panel-default">
 	<div class="panel-heading">
 		<step-heading></step-heading>
 	</div>
@@ -25,10 +25,15 @@
 					-->
 
 					<div ng-repeat='dialnoun in step.dialNouns'>
+
+						<!-- Number noun -->
 						<div ng-if="dialnoun.dialType=='number'" class="number-noun form-group">
 							<div lookup-context class="input-group input-group-sm">
 								<span class="input-group-addon rvd-handle"><i class='fa fa-phone'></i></span>
-								<input ng-model='dialnoun.destination' lookup-target type='text' class='form-control' placeholder="{{'dialStepNumberDestinationInputPlaceholder' | translate}}" tooltip="{{'dialStepNumberDestinationInputTooltip' | translate}}">
+								<div class="fac-warning-wrap input-group-sm">
+									<input ng-model='dialnoun.destination' lookup-target type='text' class='form-control' ng-class="{'ng-invalid':facWarning.status=='blocked'}" placeholder="{{'dialStepNumberDestinationInputPlaceholder' | translate}}" tooltip="{{'dialStepNumberDestinationInputTooltip' | translate}}">
+									<fac-warning monitor="dialnoun.destination" validator="outboundPSTN" blocked-message="Your current plan doesn't allow calling the selected destination"></fac-warning>
+								</div>
 								<variable-lookup variable="dialnoun.destination" view="input-group"></variable-lookup>
 
 								<span ng-show='dialnoun.iface.advancedShown' class="input-group-addon" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'dialStepNumberSendDigitsTooltip' | translate}}">{{'dialStepNumberSendDigitsLabel' | translate}}</span>

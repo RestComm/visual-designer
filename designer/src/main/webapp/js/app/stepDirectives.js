@@ -1,5 +1,5 @@
 angular.module('Rvd')
-.directive('gatherStep', function (gatherModel) {
+.directive('gatherStep', function (gatherModel, accountProfilesCache) {
 	return {
 			restrict: 'A',
 			link: function (scope, element, attrs) {
@@ -33,6 +33,12 @@ angular.module('Rvd')
 					}
 				}		
 				scope.setValidationTypeRegex = 	setValidationTypeRegex;
+
+				accountProfilesCache.get().$promise.then(function (profile) {
+				  if (profile && profile.featureEnablement) {
+				    scope.facAsr = profile.featureEnablement.asr;
+				  }
+				});
 				
 		}
 	}
@@ -386,3 +392,4 @@ angular.module('Rvd').directive('conferenceDialNoun', function (RvdConfiguration
         }
     }
 });
+

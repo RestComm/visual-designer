@@ -1,4 +1,4 @@
-App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAliveResource, authentication, notifications, $state, urlStateTracker) {
+App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAliveResource, authentication, notifications, $state, urlStateTracker, accountProfilesCache) {
 	$rootScope.$on("$routeChangeError", function(event, current, previous, rejection) {
         //console.log('on $routeChangeError');
         if ( rejection == "AUTHENTICATION_ERROR" ) {
@@ -16,6 +16,7 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
 
 	$rootScope.$on('$stateChangeError',  function(event, toState, toParams, fromState, fromParams, error){
 	    console.log("Error switching state: " + fromState.name + " -> " + toState.name);
+	    if (error && error.message) console.log(error.message);
 	    // see AuthService.checkAccess() for error definitions
 	    if (error == "NEED_LOGIN") {
     	    event.preventDefault();
@@ -82,6 +83,16 @@ App.controller('AppCtrl', function ($rootScope, $location, $scope, Idle, keepAli
             }
         });
     });
+
+  $rootScope.$on('logged-in', function(event, data){
+    accountProfilesCache.setProfileLink(data.profileLink);
+    accountProfilesCache.refresh();
+  });
+
+  $rootScope.$on('logged-out', function(event, data){
+    accountProfilesCache.clear();
+  });
+
 });
 
 App.controller('projectMenuCtrl', function ($rootScope, $stateParams, $scope, authentication, $location, $modal, $q, $http, $state, application, projectParameters, parametersService,project, designerService, $translate) {

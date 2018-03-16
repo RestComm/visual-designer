@@ -74,11 +74,11 @@ angular.module('Rvd').service('initializer',function (authentication, storage,  
     };
 });
 
-angular.module('Rvd').service('authentication', function ($http, $q, storage, $state, md5, $rootScope, RvdConfiguration) {
-    var authInfo = {};
+angular.module('Rvd').service('authentication', function ($http, $q, storage, $state, md5, $rootScope, RvdConfiguration, accountProfilesCache) {
+  var authInfo = {};
 	var account = null; // if this is set it means that user logged in: authentication succeeded and account was retrieved
 
-    $rootScope.authInfo = authInfo;
+  $rootScope.authInfo = authInfo;
 
 	function getAccount() {
 	    return account;
@@ -110,6 +110,16 @@ angular.module('Rvd').service('authentication', function ($http, $q, storage, $s
 	     return null;
 	}
 
+	// parses the link header from 'GET Account' and returns a url to the profile or 'undefined'
+	function parseProfileLink(linkHeader) {
+	  if (linkHeader) {
+	    var m = linkHeader.match("<(.*)>");
+	    if (m) {
+	      return m[1];
+	    }
+	  }
+	}
+
     /*
 	  Returns a promise
 	    resolved: nothing is really returned. The following assumptions stand:
@@ -125,15 +135,18 @@ angular.module('Rvd').service('authentication', function ($http, $q, storage, $s
 	    var authHeader = basicAuthHeader(usernameOrSid, secret);
         $http({method:'GET', url: RvdConfiguration.restcommBaseUrl + '/restcomm/2012-04-24/Accounts.json/' + encodeURIComponent(usernameOrSid), headers: {Authorization: authHeader}}).then(function (response) {
             var acc = response.data; // store temporarily the account returned
+            var link = parseProfileLink( response.headers('link') ); // store temporarily until we do login
             $http({method:'GET', url:'services/auth/keepalive', headers: {Authorization: "Basic " + btoa(acc.sid + ":" +acc.auth_token)}}).then(function (response) {
                 // ok, access to both restcomm and RVD is verified
                 setAccount(acc);
                 authInfo.username = acc.email_address; // TODO will probably add other fields here too that are not necessarily tied with the Restcomm account notion
                 storage.setCredentials(null,acc.auth_token,acc.sid);
+                $rootScope.$broadcast('logged-in', {accountId: acc.sid, profileLink: link});
                 deferredLogin.resolve();
             }, function (response) {
                 setAccount(null);
                 storage.clearCredentials();
+                $rootScope.$broadcast('logged-out');
                 deferredLogin.reject('RVD_ACCESS_OUT_OF_SYNC');
             });
         }, function (response) {
@@ -181,6 +194,7 @@ angular.module('Rvd').service('authentication', function ($http, $q, storage, $s
     function doLogout() {
         storage.clearCredentials();
         setAccount(null);
+        $rootScope.$broadcast('logged-out');
     }
 
     // public interface
@@ -834,6 +848,8 @@ angular.module('Rvd').factory('keepAliveResource', function($resource) {
     return $resource('services/auth/keepalive');
 });
 
+
+
 angular.module('Rvd').factory('fileRetriever', function (Blob, FileSaver, $http) {
     // Returns a promise.
     // resolved: nothing is returned - the file has been saved normally
@@ -928,4 +944,90 @@ angular.module('Rvd').factory('versionChecker', function () {
 
 angular.module('Rvd').factory('applicationsResource', function ($resource) {
   return $resource('/restcomm/2012-04-24/Accounts/:accountId/Applications/:applicationId.json');
+});
+
+
+// initialize with link to profile before using. It will also convert absolute links to relative
+angular.module('Rvd').factory('accountProfilesCache', function ($resource) {
+  var profileLink;
+  var profilesResource;
+  var cache;
+
+  return {
+    setProfileLink: function (link) {
+      if (link) {
+        if (link.startsWith('http:') || link.startsWith('https:')) {
+          // this is an absolute link
+          var l = new URL(link);
+          profileLink = l.pathname;
+        } else {
+          profileLink = link;
+        }
+      }
+    },
+    refresh: function () {
+      cache = undefined;
+      profilesResource = undefined;
+      if (!profileLink) {
+        console.error("No profileLink available. I can't fetch profile.");
+      } else {
+        profilesResource = $resource(profileLink);
+        cache = profilesResource.get();
+        return cache;
+      }
+    },
+    get: function() {
+      return cache;
+    },
+    clear: function () {
+      profileLink = undefined;
+      profilesResource = undefined;
+      cache = undefined;
+    }
+  }
+});
+
+angular.module('Rvd').factory('featureAccessControl', function () {
+  return {
+    validate: function (number, profile, validator) {
+      if (number) {
+        if (validator == 'outboundPSTN') {
+          var allowedPrefixes = profile.featureEnablement.outboundPSTN.allowedPrefixes;
+          var blockedPrefixes = profile.featureEnablement.outboundPSTN.blockedPrefixes;
+          if (allowedPrefixes) {
+            for ( var i=0; i< allowedPrefixes.length; i++) {
+              if ( number.startsWith(allowedPrefixes[i]) )
+                return;
+            }
+          }
+          if (blockedPrefixes) {
+            for (var  i =0; i<blockedPrefixes.length; i++) {
+              if ( number.startsWith(blockedPrefixes[i]) )
+                return { status: 'blocked', message: "numbers starting with '" + blockedPrefixes[i] + "' are blocked" };
+            }
+          }
+          // if it hasn't been blocked so far, assume allowed
+          return;
+        } else
+        if (validator == 'outboundSMS') {
+          var allowedPrefixes = profile.featureEnablement.outboundSMS.allowedPrefixes;
+          var blockedPrefixes = profile.featureEnablement.outboundSMS.blockedPrefixes;
+          if (allowedPrefixes) {
+            for ( var i=0; i< allowedPrefixes.length; i++) {
+              if ( number.startsWith(allowedPrefixes[i]) )
+                return;
+            }
+          }
+          if (blockedPrefixes) {
+            for (var  i =0; i<blockedPrefixes.length; i++) {
+              if ( number.startsWith(blockedPrefixes[i]) )
+                return { status: 'blocked', message: "numbers starting with '" + blockedPrefixes[i] + "' are blocked" };
+            }
+          }
+          // if it hasn't been blocked so far, assume allowed
+          return;
+        }
+      }
+    }
+  }
 });
