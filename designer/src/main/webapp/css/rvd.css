@@ -55,6 +55,14 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .logo-area {
     float:left;
 }
+.logo {
+    margin: 20px 10px 10px 0px;
+    background: no-repeat left var(--logo-url);
+    background-size: contain;
+    height: 50px;
+    width: 176px;
+    display: block;
+}
 
 /*** footer ***/
 .footer {
@@ -67,7 +75,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     background: #eeeeee;
     margin-top: 30px;
 }
-
 #telestax-footer {
     margin-top: 20px;
     margin-left: 90px;
@@ -107,551 +114,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     float: right;
 }
 
-/*** login view ***/
-#login-form .slick-input {
-    margin-bottom: 30px;
-}
-#login-form .btn+.btn {
-    margin-left: 5px;
-}
+/*** Common styles ***/
 
-/*** old packaging view ***/
-
-.packaging-menu {
-	margin-right: 15px;
-}
-
-/*** drop area ***/
-
-.drop-area-image {
-	min-height: 36px;
-	background-image:url('../images/plus-small.png');
-	opacity: 0.6;
-	background-repeat:no-repeat;
-	background-position:center;
-	border: 1px dashed rgb(221, 221, 221);
-}
-
-.drop-area .drop-prompt {
-	padding: 7px;
-	opacity: 0.6;
-}
-.drop-area.dropping {
-	background-color:beige;
-	cursor:copy;
-}
-
-.drop-area {
-	background: none repeat scroll 0% 0% rgb(248, 248, 248);
-	border: 5px dashed rgb(221, 221, 221);
-	text-align: center;
-}
-
-/* designer view */
-.rvd-designer .drop-area {
-    border-radius: 10px;
-}
-.rvd-designer .drop-area .drop-prompt {
-    margin: 20px 0;
-}
-.rvd-subheader-message {
-	margin-left: 10px;
-}
-
-.rvd-designer .no-modules-warning {
-	text-align: center;
-	padding-top: 100px;
-}
-
-
-/*** various ***/
-h3.section-title {
-    font-size: 30px;
-    font-weight: 300;
-    /* font-family: lato; */
-    color: #6d6e70;
-}
-input.slick-input {
-    color: #6d6e70;
-    background: #fafafa;
-    border: none;
-    border-bottom: 2px solid #45a5ab;
-    padding-bottom: 0px;
-    border-radius: 0px;
-    box-shadow: none;
-    /* font-family: lato; */
-    font-weight: 300;
-}
-
-a.muted {
-    color: #727272;
-}
-a.muted:hover {
-    color: #ff692f;
-}
-a.muted.active {
-    color: #ff692f;
-}
-.nav>li>a.muted:hover {
-    background-color: #e5e5e5;
-}
-
-label.rvd-label {
-    /* font-family: lato; */
-    color: #45a5ab;
-    font-weight: 300;
-}
-
-
-.dropdown-menu.scrollable-menu {
-    height: auto;
-    max-height: 200px;
-    overflow-x: hidden;
-    right: 0;
-    left: inherit;
-}
-
-
-.separator {
-	min-height: 60px;
-	margin-bottom: 5px;
-	margin-top: 5px;
-	color: #BBBBBB;
-}
-
-.separator-active {
-	background-color: #D9EDF7;
-	/*height: 20px;*/
-}
-
-
-.ng-invalid.form-control:focus {
-	border-color: rgba(255, 0, 0, 0.6);
-	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 0, 0, 0.6)
-}
-
-.ng-invalid.form-control.warn-unfocused {
-	border-color: rgba(255, 0, 0, 0.6);
-	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 0, 0, 0.6)
-}
-
-.navbar-rvd-centered {
-	float: none;
-	text-align: center;
-}
-
-.rvd-clickable {
-	cursor: pointer;
-	opacity: 0.6
-}
-
-.rvd-clickable-text {
-	cursor: pointer;
-}
-.rvd-clickable-text:hover {
-	opacity: 1.0;
-}
-
-.rvd-pickable {
-	cursor: move;
-}
-
-.rvd-clickable:hover {
-	opacity: 1.0;
-}
-
-.rvd-handle {
-	cursor: move;
-}
-
-.rvd-active {
-	color: rgb(66, 139, 202);
-	opacity: 1.0;
-}
-
-
-
-/* dial step*/
-.dial-step .drop-area {
-    padding:10px;
-}
-.dial-step .noun-toolbox {
-    margin-left: 10px;
-}
-
-/* say step */
-.say-language-dropdown {
-	max-width: 250px;
-}
-
-.say-step .language {
-	width: 250px;
-	margin-right: 20px;
-}
-
-.say-step .voice {
-	margin-right: 20px;
-}
-
-.say-step .loop, .play-step .loop {
-	width: 250px;
-}
-
-.say-step .step-options {
-	width: 304px;
-}
-
-
-/*** control-step  ***/
-.step.control-step .conditions {
-    border-right-width: 1px;
-    border-right-style: inset;
-}
-.control-step .condition, .control-step .action{
-    margin-bottom: 10px;
-}
-.control-step .action .reorder-buttons {
-    margin-right: 5px;
-}
-.control-step .trailing-buttons-wrap {
-    text-align: right;
-}
-.control-step .action-capture .form-group.regex-field, .control-step .action-capture .form-group.data-field {
-    width: 49%;
-}
-.control-step .action-capture .form-group.regex-field input {
-    width:100%;
-}
-.control-step .condition .type-chooser {
-    margin-left: 5px;
-}
-
-/*** record-step ***/
-
-/* 'fok stands for finish-on-key */
-.fok .form-group {
-    margin-bottom: 15px;
-}
-.fok .fok-mode.form-group {
-    width: 50%;
-}
-
-
-/* variable definition directive */
-vardef .vardef {
-    position: relative;
-}
-vardef .dropdown {
-    position: absolute;
-    top: 7px;
-    right: 10px;
-}
-
-vardef .vardef-input {
-    padding-right: 50px;
-    padding-left: 25px;
-}
-
-vardef .assign-arrow {
-    position: absolute;
-    top: 11px;
-    left: 8px;
-}
-.vardef .var-scope {
-    display: inline;
-    padding: 0;
-    font-size: smaller;
-}
-
-/*** module-url-picker directive ***/
-
-.module-url-picker {
-    position: relative;
-}
-.module-url-picker .picker-type {
-    position: absolute;
-    top: 7px;
-    right: 10px;
-    z-index: 3;
-    cursor: pointer;
-}
-.module-url-picker .module-list {
-    position: absolute;
-    top: 7px;
-    left: 10px;
-    z-index: 3;
-    cursor: pointer;
-}
-.input-group.input-group-sm .module-url-picker .picker-type, .input-group.input-group-sm .module-url-picker .module-list {
-    top:5px;
-}
-.input-group.input-group-sm .module-url-picker .module-list .dropdown-toggle {
-    font-size: 12px;
-}
-.module-url-picker .picker-type .dropdown-toggle.switcher-inactive {
-    color: #999;
-}
-.input-group module-url-picker:not(:first-child) input.form-control {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-.input-group module-url-picker:last-child input.form-control {
-    border-top-right-radius: 3px !important;
-    border-bottom-right-radius: 3px !important;
-}
-.input-group.input-group-sm .module-url-picker input.form-control {
-    height: 30px;
-    font-size: 12px;
-}
-
-/*** type-chooser directive ***/
-.type-chooser .chosen-label {
-    color: #999;
-}
-
-/*** step (generic stuff) ***/
-.step .help-block {
-	margin-bottom: 5px;
-}
-/* disable red border for 'masked-invalid' inputs. It's handy for some cases */
-.mask-invalid.ng-invalid.form-control:focus {
-    border-color: #66afe9;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(102,175,233,0.6);
-}
-
-.step-list {
-	min-height: 500px;
-}
-
-.step.panel {
-	margin-bottom: 5px;
-}
-.step-warning-icon {
-	margin-left: 10px;
-	color: orange;
-}
-
-
-.rvd-node {
-	padding-top: 10px;
-}
-
-/*** external service step ***/
-
-value-extractor .btn.pull-right {
-	margin-left: 5px;
-}
-.assignment .remove-button, .route-mapping .remove-button {
-	margin-top: 7px;
-
-}
-.service-url-wrap {
-	margin-bottom: 25px;
-	margin-top: 10px;
-}
-.rvd-disabled {
-	opacity: 0.5;
-}
-/* a fix for displaying small <select>s inside input groups */
-.routing-decision-controls.input-group-sm .height-fix {
-    height: 32px;
-}
-.wellinfo-rollup {
-    text-align: right;
-}
-
-
-.help-tooltip {
-    cursor:help;
-}
-
-/*** gather step ***/
-.nested-steps {
-	min-height: 50px;
-}
-
-
-/* make draggable .label's occupy some space when dragged onto to sortables */
-.label.ui-sortable-placeholder:empty {
-	display: inline;
-}
-
-.ellipsis {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-}
-
-.sortable-placeholder {
-	height: 20px;
-	width: 100px;
-}
-
-.more-audio-resources {
-	margin-top: 10px;
-}
-
-/* all rvd-alerts will be drawn relatively to this element (???)*/
-.alert-container {
-	position: relative
-}
-
-
-/*** dial step ***/
-.conference-noun .noun-advanced, .client-noun .noun-advanced, .number-noun .noun-advanced, .sipuri-noun .noun-advanced {
-	margin-top: 5px;
-	margin-left: 10px;
-}
-
-/*** ussd collect step ***/
-.target-mapping .close {
-	margin-right: 12px;
-}
-
-.rvd-panel {
-	border: 1px solid #d0d0d0;
-}
-
-.rvd-panel .panel-heading {
-	background-color: #f0f0f0;
-}
-
-
-/*
- *
- * BOOTSTRAP CUSTOMIZATIONS
- *
- */
-
-.form-control.form-control-inline {
-    min-width: 0;
-    width: auto;
-    display: inline;
-}
-
-.col-centered{
-    float: none;
-    margin: 0 auto;
-}
-
-/* used in rvdDropdown control (at least) */
-.input-group-btn:not(:first-child) > .btn {
-	border-top-right-radius: 0px;
-	border-bottom-right-radius: 0px;
-}
-.input-group-btn:not(:last-child) > .btn {
-	border-top-left-radius: 0px;
-	border-bottom-left-radius: 0px;
-}
-
-.ussd-letter-counter {
-	margin-bottom: 13px;
-	margin-left: 8px;
-}
-
-
-
-/* /Bootstrap extension for having a lot of stuff on nav-tabs */
-
-textarea.medium {
-	height: 150px;
-}
-
-
-
-
-/* ------------------ #/packaging/ view -------------------- */
-.rvd-packaging .col-md-4 .rvd-appversion {
-	width: 200px;
-}
-
-.rvd-grey {
-	color: #888;
-}
-
-
-
-
-
-/* ----------------- index.html ---------------------------- */
-.notifications-wrapper {
-    position: fixed;
-    text-align: center;
-    width: 100%;
-    z-index: 2000;
-    top: 0;
-}
-
-/* ------------------ global formatting -------------------- */
-.rvd-spacer5 {
-	height: 5px;
-}
-.rvd-spacer10 {
-	height: 10px;
-}
-.rvd-spacer20 {
-	height: 20px;
-}
-.rvd-spacer30 {
-	height: 30px;
-}
-.rvd-spacer40 {
-	height: 40px;
-}
-.rvd-spacer50 {
-	height: 50px;
-}
-
-
-/*** Parameters modal ***/
-
-.parameters .no-parameters {
-  color: #737373;
-  padding: 25px;
-  text-align: center;
-}
-.no-parameters .no-parameters-icon {
-  font-size: 85px;
-  margin-bottom: 20px;
-}
-
-/*** Web Trigger modal ***/
-
-.web-trigger .modal-body {
-    padding-bottom: 1px;
-}
-
-/* ------------------ directives -------------------- */
-
-.input-group-btn.variable-lookup:not(:first-child):not(:last-child) button {
-	border-radius: 0;
-}
-
-.input-group-btn.variable-lookup:not(:first-child):last-child button {
-	border-radius: 0 4px 4px;
-}
-
-.connection-wrap, .link-tool , .link-tools { display: none; }
-.marker-arrowhead { display: none }
-.marker-vertices { display: none }
-
-
-
-/*
-
-CSS terms
-----------
-
-verb: the draggable button of the toolbox on the left
-step: the panel that contains the verb details
-
-*/
-
-
-/***** Common styles *****/
-
-/* links */
 .btn-link {
   text-decoration:none;
   color: var(--label-color);
@@ -683,33 +147,139 @@ step: the panel that contains the verb details
 label {
   font-weight: normal;
 }
-
 .validation-error, .error-message, .validation-warning {
 	font-size: 85%;
 	color: #E63828;
 	font-style: italic;
 }
-
 .input-group-addon {
   background-color: #F1F1F1;
 }
+a.muted {
+    color: #727272;
+}
+a.muted:hover {
+    color: #ff692f;
+}
+a.muted.active {
+    color: #ff692f;
+}
+.nav>li>a.muted:hover {
+    background-color: #e5e5e5;
+}
+label.rvd-label {
+    /* font-family: lato; */
+    color: #45a5ab;
+    font-weight: 300;
+}
+.dropdown-menu.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+    right: 0;
+    left: inherit;
+}
+.separator {
+	min-height: 60px;
+	margin-bottom: 5px;
+	margin-top: 5px;
+	color: #BBBBBB;
+}
+.separator-active {
+	background-color: #D9EDF7;
+	/*height: 20px;*/
+}
 
-.fac-warning-wrap {
-  position: relative;
+/* rvdDropdown control (at least) */
+.input-group-btn:not(:first-child) > .btn {
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
 }
-.fac-warning {
-  position:absolute;
-  top: 6px;
-  right: 10px;
-  z-index:5;
-}
-.fac-warning-serious {
-  color: #E63828;
-}
-fac-warning .tooltip {
-  width: 150px; /* for some reason the tooltips of a fac appear as thin as possible */
+.input-group-btn:not(:last-child) > .btn {
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
 }
 
+/* global formatting */
+.rvd-spacer5 {
+	height: 5px;
+}
+.rvd-spacer10 {
+	height: 10px;
+}
+.rvd-spacer20 {
+	height: 20px;
+}
+.rvd-spacer30 {
+	height: 30px;
+}
+.rvd-spacer40 {
+	height: 40px;
+}
+.rvd-spacer50 {
+	height: 50px;
+}
+
+/************************
+  V I E W S
+************************/
+
+/*** login view ***/
+#login-form .slick-input {
+    margin-bottom: 30px;
+}
+#login-form .btn+.btn {
+    margin-left: 5px;
+}
+h3.section-title {
+    font-size: 30px;
+    font-weight: 300;
+    /* font-family: lato; */
+    color: #6d6e70;
+}
+input.slick-input {
+    color: #6d6e70;
+    background: #fafafa;
+    border: none;
+    border-bottom: 2px solid #45a5ab;
+    padding-bottom: 0px;
+    border-radius: 0px;
+    box-shadow: none;
+    /* font-family: lato; */
+    font-weight: 300;
+}
+
+/*** Log view ***/
+#rvd-log-textarea {
+	height: 300px;
+}
+.log-view {
+  margin-bottom: 20px;
+}
+
+/******************
+ D E S I G N E R
+******************/
+
+.rvd-designer .drop-area {
+    border-radius: 10px;
+}
+.rvd-designer .drop-area .drop-prompt {
+    margin: 20px 0;
+}
+.rvd-subheader-message {
+	margin-left: 10px;
+}
+.rvd-designer .no-modules-warning {
+	text-align: center;
+	padding-top: 100px;
+}
+.rvd-node {
+	padding-top: 10px;
+}
+.more-audio-resources {
+	margin-top: 10px;
+}
 /* column height equality */
 .row.is-flex {
     display: flex;
@@ -719,143 +289,6 @@ fac-warning .tooltip {
     display: flex;
     flex-direction: column;
 }
-
-
-/***** Header *****/
-.logo {
-    margin: 20px 10px 10px 0px;
-    background: no-repeat left var(--logo-url);
-    background-size: contain;
-    height: 50px;
-    width: 176px;
-    display: block;
-}
-
-/***** Menus & Top menu *****/
-
-.dropdown>button {
-  font-size: 16px;
-}
-
-.dropdown .dropdown-menu li a {
-  color: var(--dropdown-text-color);
-  font-size: var(--dropdown-font-size);
-}
-.dropdown-menu {
-  border: 1px solid #D0D1D6;
-}
-
-.project-menu {
-  margin-top: 26px;
-  margin-right: 30px;
-}
-.project-menu li a {
-  margin-left: 12px;
-}
-.project-menu>.project-menu-button {
-  color: #E63828;
-  font-size: 16px;
-}
-.project-menu-username {
-  color: #141D33;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-
-/***** Verb toolbox *****/
-.verb-toolbox {
-  background-color: var(--background-color);
-  /*padding-left: 23px;
-  padding-right: 23px;
-  padding-top: 20px;
-  padding-bottom: 20px;*/
-  padding: 20px 20px 23px 23px;
-}
-
-.verb-button {
-  color: var(--verb-text-color);
-  background-color: var(--verb-back-color);
-	z-index: 1;
-	margin-bottom: 4px;
-  font-size: 16px;
-  font-weight: bold;
-  display: block;
-  padding: 8px;
-  text-align: left;
-  opacity: 0.9;
-}
-
-.verb-button:hover {
-  background-color: var(--verb-back-color);
-  color: var(--verb-text-color);
-  opacity: 1.0;
-}
-
-
-
-/***** Step listing view *****/
-.steplisting {
-	min-height: 580px;
-	background-color: var(--steplisting-back-color);
-}
-.module-tab .navtab {
-  color: var(--label-color);
-
-}
-.module-tab .module-tab-label {
-  color: var(--label-color);
-  font-size: 14px;
-}
-.module-tab.active .module-tab-label {
-  color: #ffffff;
-
-}
-
-
-.module-menu-area.row {
-  background-color: var(--background-color);
-  margin-bottom: 16px;
-  padding-bottom:15px;
-}
-.steplisting .panel-heading {
-	padding: 5px 10px;
-}
-.steplisting  .nav > li > a {
-	padding: 7px 15px;
-	margin-right:5px;
-}
-.steplisting .nav .caret {
-	border-top-color: white;
-}
-.save-button.btn {
-  color: var(--verb-back-color);
-}
-
-.step .panel-heading {
-  color: var(--step-heading-text-color);
-  background-color: var(--step-heading-back-color);
-}
-.step.panel {
-  border-color: var(--step-border-color);
-}
-.step .panel-body {
-  color: var(--step-text-color);
-  font-size: 15px;
-}
-
-
-/* jquery-ui customizations */
-
-.ui-sortable .ui-state-highlight {
-	border: 1px solid #1084AC;
-  background: #1084AC;
-  border-radius: 5px;
-	color: #1084AC;
-  height: 10px;
-  margin-bottom: 5px;
-}
-
 /* Module tabs */
 .module-tabs.nav-tabs {
     border-bottom: 1px solid #cccdcd;
@@ -903,7 +336,124 @@ fac-warning .tooltip {
     vertical-align: middle;
 }
 
-/***** Graph *****/
+/*** Verb toolbox ***/
+.verb-toolbox {
+  background-color: var(--background-color);
+  /*padding-left: 23px;
+  padding-right: 23px;
+  padding-top: 20px;
+  padding-bottom: 20px;*/
+  padding: 20px 20px 23px 23px;
+}
+.verb-button {
+  color: var(--verb-text-color);
+  background-color: var(--verb-back-color);
+	z-index: 1;
+	margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+  padding: 8px;
+  text-align: left;
+  opacity: 0.9;
+}
+.verb-button:hover {
+  background-color: var(--verb-back-color);
+  color: var(--verb-text-color);
+  opacity: 1.0;
+}
+
+/*** Step listing ***/
+.steplisting {
+	min-height: 580px;
+	background-color: var(--steplisting-back-color);
+}
+.module-tab .navtab {
+  color: var(--label-color);
+}
+.module-tab .module-tab-label {
+  color: var(--label-color);
+  font-size: 14px;
+}
+.module-tab.active .module-tab-label {
+  color: #ffffff;
+}
+.module-menu-area.row {
+  background-color: var(--background-color);
+  margin-bottom: 16px;
+  padding-bottom:15px;
+}
+.steplisting .panel-heading {
+	padding: 5px 10px;
+}
+.steplisting  .nav > li > a {
+	padding: 7px 15px;
+	margin-right:5px;
+}
+.steplisting .nav .caret {
+	border-top-color: white;
+}
+.save-button.btn {
+  color: var(--verb-back-color);
+}
+
+
+/*********************
+ C O M P O N E N T S
+*********************/
+
+/*** drop area ***/
+.drop-area-image {
+	min-height: 36px;
+	background-image:url('../images/plus-small.png');
+	opacity: 0.6;
+	background-repeat:no-repeat;
+	background-position:center;
+	border: 1px dashed rgb(221, 221, 221);
+}
+.drop-area .drop-prompt {
+	padding: 7px;
+	opacity: 0.6;
+}
+.drop-area.dropping {
+	background-color:beige;
+	cursor:copy;
+}
+.drop-area {
+	background: none repeat scroll 0% 0% rgb(248, 248, 248);
+	border: 5px dashed rgb(221, 221, 221);
+	text-align: center;
+}
+
+/*** Menus & Top menu ***/
+.dropdown>button {
+  font-size: 16px;
+}
+.dropdown .dropdown-menu li a {
+  color: var(--dropdown-text-color);
+  font-size: var(--dropdown-font-size);
+}
+.dropdown-menu {
+  border: 1px solid #D0D1D6;
+}
+.project-menu {
+  margin-top: 26px;
+  margin-right: 30px;
+}
+.project-menu li a {
+  margin-left: 12px;
+}
+.project-menu>.project-menu-button {
+  color: #E63828;
+  font-size: 16px;
+}
+.project-menu-username {
+  color: #141D33;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/*** Graph ***/
 .graph {
   background-color: var(--secondary-back-color);
 	border: 1px solid #D3D3D3;
@@ -921,12 +471,405 @@ fac-warning .tooltip {
 	position:absolute;
 	right:20px;
 }
+.connection-wrap, .link-tool , .link-tools { display: none; }
+.marker-arrowhead { display: none }
+.marker-vertices { display: none }
 
-/***** Log *****/
-#rvd-log-textarea {
-	height: 300px;
+
+.ng-invalid.form-control:focus {
+	border-color: rgba(255, 0, 0, 0.6);
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 0, 0, 0.6)
 }
 
-.log-view {
+.ng-invalid.form-control.warn-unfocused {
+	border-color: rgba(255, 0, 0, 0.6);
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 0, 0, 0.6)
+}
+
+.navbar-rvd-centered {
+	float: none;
+	text-align: center;
+}
+
+.rvd-clickable {
+	cursor: pointer;
+	opacity: 0.6
+}
+
+.rvd-clickable-text {
+	cursor: pointer;
+}
+.rvd-clickable-text:hover {
+	opacity: 1.0;
+}
+
+.rvd-pickable {
+	cursor: move;
+}
+
+.rvd-clickable:hover {
+	opacity: 1.0;
+}
+
+.rvd-handle {
+	cursor: move;
+}
+
+.rvd-active {
+	color: rgb(66, 139, 202);
+	opacity: 1.0;
+}
+
+
+/*************
+ S T E P S
+*************/
+
+/*** step generic stuff ***/
+.step .help-block {
+	margin-bottom: 5px;
+}
+/* disable red border for 'masked-invalid' inputs. It's handy for some cases */
+.mask-invalid.ng-invalid.form-control:focus {
+    border-color: #66afe9;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(102,175,233,0.6);
+}
+.step-list {
+	min-height: 500px;
+}
+.step.panel {
+	margin-bottom: 5px;
+}
+.step-warning-icon {
+	margin-left: 10px;
+	color: orange;
+}
+.step .panel-heading {
+  color: var(--step-heading-text-color);
+  background-color: var(--step-heading-back-color);
+}
+.step.panel {
+  border-color: var(--step-border-color);
+}
+.step .panel-body {
+  color: var(--step-text-color);
+  font-size: 15px;
+}
+
+/* dial step*/
+.dial-step .drop-area {
+    padding:10px;
+}
+.dial-step .noun-toolbox {
+    margin-left: 10px;
+}
+
+/* say step */
+.say-language-dropdown {
+	max-width: 250px;
+}
+.say-step .language {
+	width: 250px;
+	margin-right: 20px;
+}
+.say-step .voice {
+	margin-right: 20px;
+}
+.say-step .loop, .play-step .loop {
+	width: 250px;
+}
+.say-step .step-options {
+	width: 304px;
+}
+
+/*** control-step  ***/
+.step.control-step .conditions {
+    border-right-width: 1px;
+    border-right-style: inset;
+}
+.control-step .condition, .control-step .action{
+    margin-bottom: 10px;
+}
+.control-step .action .reorder-buttons {
+    margin-right: 5px;
+}
+.control-step .trailing-buttons-wrap {
+    text-align: right;
+}
+.control-step .action-capture .form-group.regex-field, .control-step .action-capture .form-group.data-field {
+    width: 49%;
+}
+.control-step .action-capture .form-group.regex-field input {
+    width:100%;
+}
+.control-step .condition .type-chooser {
+    margin-left: 5px;
+}
+
+/*** record-step ***/
+/* 'fok stands for finish-on-key */
+.fok .form-group {
+    margin-bottom: 15px;
+}
+.fok .fok-mode.form-group {
+    width: 50%;
+}
+
+/*** external service step ***/
+value-extractor .btn.pull-right {
+	margin-left: 5px;
+}
+.assignment .remove-button, .route-mapping .remove-button {
+	margin-top: 7px;
+
+}
+.service-url-wrap {
+	margin-bottom: 25px;
+	margin-top: 10px;
+}
+.rvd-disabled {
+	opacity: 0.5;
+}
+/* a fix for displaying small <select>s inside input groups */
+.routing-decision-controls.input-group-sm .height-fix {
+    height: 32px;
+}
+.wellinfo-rollup {
+    text-align: right;
+}
+
+/*** gather step ***/
+.nested-steps {
+	min-height: 50px;
+}
+
+/*** dial step ***/
+.conference-noun .noun-advanced, .client-noun .noun-advanced, .number-noun .noun-advanced, .sipuri-noun .noun-advanced {
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+/*** ussd collect step ***/
+.target-mapping .close {
+	margin-right: 12px;
+}
+
+
+/*********************
+ D I R E C T I V E S
+*********************/
+
+/* variable definition directive */
+vardef .vardef {
+    position: relative;
+}
+vardef .dropdown {
+    position: absolute;
+    top: 7px;
+    right: 10px;
+}
+vardef .vardef-input {
+    padding-right: 50px;
+    padding-left: 25px;
+}
+vardef .assign-arrow {
+    position: absolute;
+    top: 11px;
+    left: 8px;
+}
+.vardef .var-scope {
+    display: inline;
+    padding: 0;
+    font-size: smaller;
+}
+
+/*** module-url-picker directive ***/
+.module-url-picker {
+    position: relative;
+}
+.module-url-picker .picker-type {
+    position: absolute;
+    top: 7px;
+    right: 10px;
+    z-index: 3;
+    cursor: pointer;
+}
+.module-url-picker .module-list {
+    position: absolute;
+    top: 7px;
+    left: 10px;
+    z-index: 3;
+    cursor: pointer;
+}
+.input-group.input-group-sm .module-url-picker .picker-type, .input-group.input-group-sm .module-url-picker .module-list {
+    top:5px;
+}
+.input-group.input-group-sm .module-url-picker .module-list .dropdown-toggle {
+    font-size: 12px;
+}
+.module-url-picker .picker-type .dropdown-toggle.switcher-inactive {
+    color: #999;
+}
+.input-group module-url-picker:not(:first-child) input.form-control {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.input-group module-url-picker:last-child input.form-control {
+    border-top-right-radius: 3px !important;
+    border-bottom-right-radius: 3px !important;
+}
+.input-group.input-group-sm .module-url-picker input.form-control {
+    height: 30px;
+    font-size: 12px;
+}
+
+/*** type-chooser directive ***/
+.type-chooser .chosen-label {
+    color: #999;
+}
+
+/*** fac directive ***/
+.fac-warning-wrap {
+  position: relative;
+}
+.fac-warning {
+  position:absolute;
+  top: 6px;
+  right: 10px;
+  z-index:5;
+}
+.fac-warning-serious {
+  color: #E63828;
+}
+fac-warning .tooltip {
+  width: 150px; /* for some reason the tooltips of a fac appear as thin as possible */
+}
+
+/*** variable-lookup directive ***/
+.input-group-btn.variable-lookup:not(:first-child):not(:last-child) button {
+	border-radius: 0;
+}
+.input-group-btn.variable-lookup:not(:first-child):last-child button {
+	border-radius: 0 4px 4px;
+}
+
+
+/*************
+ M O D A L S
+*************/
+
+/*** Parameters modal ***/
+.parameters .no-parameters {
+  color: #737373;
+  padding: 25px;
+  text-align: center;
+}
+.no-parameters .no-parameters-icon {
+  font-size: 85px;
   margin-bottom: 20px;
+}
+
+/*** Web Trigger modal ***/
+.web-trigger .modal-body {
+    padding-bottom: 1px;
+}
+
+
+/*******************
+ U N S O R T E D
+*******************/
+
+.help-tooltip {
+    cursor:help;
+}
+
+
+
+/* make draggable .label's occupy some space when dragged onto to sortables */
+.label.ui-sortable-placeholder:empty {
+	display: inline;
+}
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+}
+
+.sortable-placeholder {
+	height: 20px;
+	width: 100px;
+}
+
+
+
+/* all rvd-alerts will be drawn relatively to this element (???)*/
+.alert-container {
+	position: relative
+}
+
+
+.rvd-panel {
+	border: 1px solid #d0d0d0;
+}
+
+.rvd-panel .panel-heading {
+	background-color: #f0f0f0;
+}
+
+.ussd-letter-counter {
+	margin-bottom: 13px;
+	margin-left: 8px;
+}
+
+
+/* ----------------- index.html ---------------------------- */
+.notifications-wrapper {
+    position: fixed;
+    text-align: center;
+    width: 100%;
+    z-index: 2000;
+    top: 0;
+}
+
+
+/*
+
+CSS terms
+----------
+
+verb: the draggable button of the toolbox on the left
+step: the panel that contains the verb details
+
+*/
+
+
+/*********
+ M I S C
+*********/
+
+/*** bootstrap customizations ***/
+/* Bootstrap extension for having a lot of stuff on nav-tabs */
+textarea.medium {
+	height: 150px;
+}
+.form-control.form-control-inline {
+    min-width: 0;
+    width: auto;
+    display: inline;
+}
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+/*** jquery-ui customizations ***/
+.ui-sortable .ui-state-highlight {
+	border: 1px solid #1084AC;
+  background: #1084AC;
+  border-radius: 5px;
+	color: #1084AC;
+  height: 10px;
+  margin-bottom: 5px;
 }
