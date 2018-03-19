@@ -52,34 +52,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     background-color: var(--header-color);
     position: relative;
 }
-.header-menu {
-    float: right;
-}
 .logo-area {
     float:left;
-}
-
-.state-login img.logo {
-    margin: 30px 0 30px 50px;
-}
-
-.start-new-project-title {
-    color: #44a5ab;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 500;
-    margin-top: 50px;
-    margin-bottom: 10px;
-}
-.mainmenu .navbar {
-    margin: 0 auto;
-    width: 680px;
-    float:right;
-}
-@media (min-width:1200px) {
-    .mainmenu .navbar {
-        float:none;
-    }
 }
 
 /*** footer ***/
@@ -93,9 +67,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     background: #eeeeee;
     margin-top: 30px;
 }
-.state-login .footer {
-    display: block;
-}
+
 #telestax-footer {
     margin-top: 20px;
     margin-left: 90px;
@@ -135,16 +107,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     float: right;
 }
 
-/*** home view ***/
-img.project-icon {
-    min-width: 80px;
-    min-height: 80px;
-    width: 100px;
-}
-img.project-icon:hover {
-    opacity: 0.6;
-}
-
 /*** login view ***/
 #login-form .slick-input {
     margin-bottom: 30px;
@@ -152,35 +114,15 @@ img.project-icon:hover {
 #login-form .btn+.btn {
     margin-left: 5px;
 }
-.state-login .section-title {
-    margin-bottom: 35px;
-    margin-top: 60px;
-}
 
-/*** project-manager view ***/
-.project-manager .project-item i {
-	color: #333;
-}
+/*** old packaging view ***/
+
 .packaging-menu {
 	margin-right: 15px;
 }
-.project-manager .project-list-area {
-    margin-top: 40px;
-}
-.project-list-area .item-area {
-    padding-left: 80px;
-    padding-right: 80px;
-}
-.project-manager .create-new-area {
-    margin-top:40px;
-}
-.project-manager #create-button {
-    width:250px;
-}
-.project-manager .drop-area {
-    margin-left: 20px;
-    margin-right: 20px;
-}
+
+/*** drop area ***/
+
 .drop-area-image {
 	min-height: 36px;
 	background-image:url('../images/plus-small.png');
@@ -189,9 +131,7 @@ img.project-icon:hover {
 	background-position:center;
 	border: 1px dashed rgb(221, 221, 221);
 }
-.drop-area.drop-area-nouns {
-	border: 1px dashed rgb(221, 221, 221);
-}
+
 .drop-area .drop-prompt {
 	padding: 7px;
 	opacity: 0.6;
@@ -200,13 +140,11 @@ img.project-icon:hover {
 	background-color:beige;
 	cursor:copy;
 }
-.drop-area-nouns {
-	position:absolute;
-	top:0;
-	width:96%;
-}
-.project-manager .drop-area .drop-prompt {
-    margin: 33px 60px 33px 60px;
+
+.drop-area {
+	background: none repeat scroll 0% 0% rgb(248, 248, 248);
+	border: 5px dashed rgb(221, 221, 221);
+	text-align: center;
 }
 
 /* designer view */
@@ -216,53 +154,10 @@ img.project-icon:hover {
 .rvd-designer .drop-area .drop-prompt {
     margin: 20px 0;
 }
-.rvd-designer .project-name {
-    margin-right: 10px;
-    font-size: 110%;
-}
-.rvd-designer .rvd-menu {
-	margin-bottom: 9px;
-}
-.rvd-designer .rvd-submenu {
-	margin-bottom: 9px;
-}
-.rvd-view-selector .nav li > a {
-	padding: 5px 20px;
-}
 .rvd-subheader-message {
 	margin-left: 10px;
 }
-.rvd-ccview {
-	width: 500px;
-	margin-left: auto;
-	margin-right: auto;
-}
 
-.header .cogs {
-	font-size: 41px;
-}
-.toggle_step:hover {
-	opacity:0.6;
-}
-.step.panel {
-	margin-bottom: 5px;
-}
-.node-bootstrap {
-	margin-bottom: 15px;
-	text-align: right;
-}
-
-.node-bootstrap textarea {
-	margin-top: 10px;
-	height: 170px;
-}
-.collapse-button {
-	font-size: 21px;
-	font-weight: bold;
-}
-.rvd-designer .module-filter {
-	width: 200px;
-}
 .rvd-designer .no-modules-warning {
 	text-align: center;
 	padding-top: 100px;
@@ -287,23 +182,7 @@ input.slick-input {
     /* font-family: lato; */
     font-weight: 300;
 }
-.drop-area {
-	background: none repeat scroll 0% 0% rgb(248, 248, 248);
-	border: 5px dashed rgb(221, 221, 221);
-	text-align: center;
-}
 
-button.rvd-button {
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    cursor: pointer;
-    -webkit-user-select: none;
-    padding: 6px 16px;
-    border-radius: 6px;
-    border: none;
-    font-weight: 500;
-}
 a.muted {
     color: #727272;
 }
@@ -332,9 +211,6 @@ label.rvd-label {
     left: inherit;
 }
 
-.ng-invalid {
-	/*background-color: #0ff;*/
-}
 
 .separator {
 	min-height: 60px;
@@ -388,21 +264,12 @@ label.rvd-label {
 	cursor: move;
 }
 
-.project-list {
-	list-style-type: none;
-}
-
 .rvd-active {
 	color: rgb(66, 139, 202);
 	opacity: 1.0;
 }
 
 
-.link-coloured {
-    color: #428bca;
-}
-
-/*** step styling ***/
 
 /* dial step*/
 .dial-step .drop-area {
@@ -412,7 +279,7 @@ label.rvd-label {
     margin-left: 10px;
 }
 
-
+/* say step */
 .say-language-dropdown {
 	max-width: 250px;
 }
@@ -430,13 +297,12 @@ label.rvd-label {
 	width: 250px;
 }
 
-.step-warning-icon {
-	margin-left: 10px;
-	color: orange;
+.say-step .step-options {
+	width: 304px;
 }
 
-/* control-step styling */
 
+/*** control-step  ***/
 .step.control-step .conditions {
     border-right-width: 1px;
     border-right-style: inset;
@@ -460,7 +326,7 @@ label.rvd-label {
     margin-left: 5px;
 }
 
-/* record-step styling */
+/*** record-step ***/
 
 /* 'fok stands for finish-on-key */
 .fok .form-group {
@@ -471,8 +337,7 @@ label.rvd-label {
 }
 
 
-/* variable definition */
-
+/* variable definition directive */
 vardef .vardef {
     position: relative;
 }
@@ -498,7 +363,7 @@ vardef .assign-arrow {
     font-size: smaller;
 }
 
-/* module-url-picker */
+/*** module-url-picker directive ***/
 
 .module-url-picker {
     position: relative;
@@ -538,136 +403,71 @@ vardef .assign-arrow {
     height: 30px;
     font-size: 12px;
 }
-/*
-.module-url-picker input {
-    background-color: white !important;
-}
-*/
 
-
-
-/* type-chooser */
+/*** type-chooser directive ***/
 .type-chooser .chosen-label {
     color: #999;
 }
 
-
-
-/* override jquery-ui colors since theme-roller never responded */
-/*
-.ui-widget-header {
-	background: none;
-	background-color: #428BCA;
-
-	border: 1px solid #428BCA;
-	color: #fff;
-}
-*/
-
-
-.node-header { /* refers the the band that contains the expand/collapse buttons */
-	margin-top: 10px;
-	min-height: 34px;
-}
-
-.node-header input {
-	width: 100px;
-	display: inline;
-}
-
-.node-header a {
-		padding: 6px 12px;
-		cursor: pointer;
-}
-
-.advancedView.bs-callout {
-		margin-top: 5px;
-		margin-bottom: 0px;
-		border-left: 5px solid #CCC;
-		background-color: #eee;
-}
-
+/*** step (generic stuff) ***/
 .step .help-block {
 	margin-bottom: 5px;
 }
-
-.say-step .step-options {
-	width: 304px;
-}
-
-.nav-tabs > li.controlnodes {
-	float: right;
-}
-
-.leftmenu > li {
-	width: 100%;
-	margin-bottom: 5px;
+/* disable red border for 'masked-invalid' inputs. It's handy for some cases */
+.mask-invalid.ng-invalid.form-control:focus {
+    border-color: #66afe9;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(102,175,233,0.6);
 }
 
 .step-list {
 	min-height: 500px;
 }
 
-.project-item {
-	margin-bottom:4px;
+.step.panel {
+	margin-bottom: 5px;
+}
+.step-warning-icon {
+	margin-left: 10px;
+	color: orange;
 }
 
-.project-item .buttonarea i {
-	margin: 10px 5px 5px 0px;
-}
-
-.project-item .delete-confirmation {
-	margin-top:5px;
-	margin-bottom:15px;
-}
 
 .rvd-node {
 	padding-top: 10px;
 }
 
+/*** external service step ***/
+
 value-extractor .btn.pull-right {
 	margin-left: 5px;
 }
-
 .assignment .remove-button, .route-mapping .remove-button {
 	margin-top: 7px;
 
 }
-
 .service-url-wrap {
 	margin-bottom: 25px;
 	margin-top: 10px;
 }
-
-
-li.verb {
-	margin-bottom:10px;
+.rvd-disabled {
+	opacity: 0.5;
 }
-
-
 /* a fix for displaying small <select>s inside input groups */
 .routing-decision-controls.input-group-sm .height-fix {
     height: 32px;
 }
-
-.field-info-link {
-    padding-left:5px;
-    padding-right:5px;
+.wellinfo-rollup {
+    text-align: right;
 }
+
 
 .help-tooltip {
     cursor:help;
 }
 
-.wellinfo-rollup {
-    text-align: right;
-}
-
+/*** gather step ***/
 .nested-steps {
 	min-height: 50px;
-}
-
-.button-say {
 }
 
 
@@ -675,7 +475,6 @@ li.verb {
 .label.ui-sortable-placeholder:empty {
 	display: inline;
 }
-
 
 .ellipsis {
     white-space: nowrap;
@@ -693,43 +492,19 @@ li.verb {
 	margin-top: 10px;
 }
 
-.rvd-disabled {
-	opacity: 0.5;
-}
-
-/* all rvd-alerts will be drawn relatively to this element */
+/* all rvd-alerts will be drawn relatively to this element (???)*/
 .alert-container {
 	position: relative
 }
 
-.rvd-alerts {
-	position: absolute;
-	z-index: 2;
-	right: 0;
-	width: 200px;
-}
 
-.spinner-save {
-	margin-left: 18px;
-}
-
-/* --- Dial step customizations */
+/*** dial step ***/
 .conference-noun .noun-advanced, .client-noun .noun-advanced, .number-noun .noun-advanced, .sipuri-noun .noun-advanced {
 	margin-top: 5px;
 	margin-left: 10px;
 }
-/* --- /Dial step customizations */
 
-.project-kind-thumb {
-	font-size: 84px;
-	opacity: 0.6
-}
-
-.sms-project .project-kind-thumb {
-	font-size: 70px;
-	padding: 7px;
-}
-
+/*** ussd collect step ***/
 .target-mapping .close {
 	margin-right: 12px;
 }
@@ -775,26 +550,6 @@ li.verb {
 	margin-left: 8px;
 }
 
-.packaging-config-option {
-	box-shadow: rgb(136, 136, 136) 0px 0px 3px;
-	padding-left: 12px;
-	padding-top: 1px;
-	border-radius: 2px;
-	background-color: white;
-}
-
-.packaging-config-option .close-button {
-	position: absolute;
-	right: 26px;
-	top: 9px;
-}
-/*
-label {
-	color: #737373;
-}
-*/
-
-
 
 
 /* /Bootstrap extension for having a lot of stuff on nav-tabs */
@@ -811,21 +566,12 @@ textarea.medium {
 	width: 200px;
 }
 
-.packaging-config-option {
-	box-shadow: rgb(136, 136, 136) 0px 0px 3px;
-	padding-left: 12px;
-	padding-top: 1px;
-	border-radius: 2px;
-	background-color: white;
+.rvd-grey {
+	color: #888;
 }
 
-.packaging-config-option .close-button {
-	position: absolute;
-	right: 26px;
-	top: 9px;
-}
 
-/* ----------------- #/login view -------------------------- */
+
 
 
 /* ----------------- index.html ---------------------------- */
@@ -835,24 +581,6 @@ textarea.medium {
     width: 100%;
     z-index: 2000;
     top: 0;
-}
-
-.navbar-brand .rvd-head {
-	color: #999;
-}
-.navbar-brand .rvd-head:hover {
-	text-decoration: none;
-	color: #CCC;
-}
-
-/* ------------------ index.html - top menu ---------------- */
-.rvd-phone-image {
-	margin-top: -6px;
-	height: 25px;
-}
-
-.rvd-telestax-image {
-	margin-top: -9px;
 }
 
 /* ------------------ global formatting -------------------- */
@@ -876,45 +604,25 @@ textarea.medium {
 }
 
 
-
-.rvd-grey {
-	color: #888;
-}
-
-/* ----------------- Parameters modal --------------------- */
+/*** Parameters modal ***/
 
 .parameters .no-parameters {
   color: #737373;
   padding: 25px;
   text-align: center;
 }
-
 .no-parameters .no-parameters-icon {
   font-size: 85px;
   margin-bottom: 20px;
 }
 
-/* ----------------- Web Trigger modal -------------------- */
-
-/* disable red border for 'masked-invalid' inputs. It's handy for some cases */
-.mask-invalid.ng-invalid.form-control:focus {
-    border-color: #66afe9;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(102,175,233,0.6);
-}
+/*** Web Trigger modal ***/
 
 .web-trigger .modal-body {
     padding-bottom: 1px;
 }
 
 /* ------------------ directives -------------------- */
-/*.variable-lookup button {
-	border-radius: 0 4px 4px 0;
-}
-
-.input-group-sm>.variable-lookup.input-group-btn>.btn {
-	border-radius: 0;
-}
-*/
 
 .input-group-btn.variable-lookup:not(:first-child):not(:last-child) button {
 	border-radius: 0;
@@ -937,13 +645,6 @@ CSS terms
 
 verb: the draggable button of the toolbox on the left
 step: the panel that contains the verb details
-
-
-
-
-
-
-
 
 */
 

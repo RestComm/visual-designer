@@ -16,14 +16,6 @@
 			<div class='col-md-12'>
 				<div basic-sortable list-model='step.dialNouns' class='dial-nouns form-group' ng-class="{'drop-area':step.dialNouns.length==0}" item-added='addDialNoun'>
 
-					<!--
-					<div class="drop-area drop-area-nouns" ng-if="step.dialNouns.length == 0">
-						<div class="drop-prompt">
-							<em>{{'dialStepDropAreaLabel' | translate}}</em>
-						</div>
-					</div>
-					-->
-
 					<div ng-repeat='dialnoun in step.dialNouns'>
 
 						<!-- Number noun -->
