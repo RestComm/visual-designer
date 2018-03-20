@@ -21,8 +21,8 @@
 					<div lookup-context class="input-group input-group-sm">
 						<span class="input-group-addon">{{'smsStepToLabel' | translate}}<!-- &nbsp;<i class="fa fa-info-circle rvd-clickable" popover='Takes a valid E.164 phone number as a value. RestComm will send an SMS message to this number. When sending an SMS during an incoming call, it defaults to the caller. When sending an SMS during an outgoing call, it defaults to the called party.' popover-placement='top'></i>--></span>
 						<div class="fac-warning-wrap input-group-sm">
-							<input type='text' name='to' ng-model='step.to'  ng-class="{'ng-invalid':facWarning.status=='blocked'}" lookup-target auto-clear class="form-control" required></input>
-							<fac-warning monitor="step.to" validator="outboundSMS" blocked-message="Your current plan doesn't allow sendind SMS to the selected destination"></fac-warning>
+							<input type='text' name='to' ng-model='step.to' lookup-target auto-clear class="form-control" required></input>
+							<fac-warning monitor="step.to" validator="outboundSMS" blocked-message="{{facWarning.message}}"></fac-warning>
 						</div>
 						<variable-lookup variable="step.to" view="input-group"></variable-lookup>
 					</div>

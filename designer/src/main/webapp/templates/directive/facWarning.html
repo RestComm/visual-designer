@@ -1,3 +1,3 @@
 <div ng-show="facWarning" class="fac-warning">
-    <i ng-show="facWarning.status=='blocked'" class="fa fa-warning fac-warning-serious" tooltip="{{facWarning.message}}" tooltip-trigger="mouseenter"></i>
+    <i ng-show="facWarning.status=='blocked' || facWarning.status=='maybe-blocked' " class="fa fa-warning" ng-class="{'fac-warning-serious':facWarning.status=='blocked', 'fac-warning-mild':facWarning.status=='maybe-blocked'}" tooltip="{{facWarning.message}}" tooltip-trigger="mouseenter"></i>
 </div>
