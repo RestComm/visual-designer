@@ -757,7 +757,10 @@ vardef .assign-arrow {
 .fac-warning-serious {
   color: #E63828;
 }
-fac-warning .tooltip {
+.fac-warning-mild {
+  color: orange;
+}
+.fac-warning .tooltip, .fac-warning-icon .tooltip {
   width: 150px; /* for some reason the tooltips of a fac appear as thin as possible */
 }
 

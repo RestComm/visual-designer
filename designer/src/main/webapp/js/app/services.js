@@ -992,6 +992,8 @@ angular.module('Rvd').factory('featureAccessControl', function () {
     validate: function (number, profile, validator) {
       if (number) {
         if (validator == 'outboundPSTN') {
+          if (!profile.featureEnablement.outboundPSTN)
+            return { status: 'blocked', message: "calls to PSTN numbers are disabled" };
           var allowedPrefixes = profile.featureEnablement.outboundPSTN.allowedPrefixes;
           var blockedPrefixes = profile.featureEnablement.outboundPSTN.blockedPrefixes;
           if (allowedPrefixes) {
@@ -1003,13 +1005,15 @@ angular.module('Rvd').factory('featureAccessControl', function () {
           if (blockedPrefixes) {
             for (var  i =0; i<blockedPrefixes.length; i++) {
               if ( number.startsWith(blockedPrefixes[i]) )
-                return { status: 'blocked', message: "numbers starting with '" + blockedPrefixes[i] + "' are blocked" };
+                return { status: 'blocked', message: "calling this number is not allowed" };
             }
           }
           // if it hasn't been blocked so far, assume allowed
           return;
         } else
         if (validator == 'outboundSMS') {
+          if (!profile.featureEnablement.outboundSMS)
+            return { status: 'maybe-blocked', message: "sending SMS to PSTN numbers is not available" };
           var allowedPrefixes = profile.featureEnablement.outboundSMS.allowedPrefixes;
           var blockedPrefixes = profile.featureEnablement.outboundSMS.blockedPrefixes;
           if (allowedPrefixes) {
@@ -1021,7 +1025,7 @@ angular.module('Rvd').factory('featureAccessControl', function () {
           if (blockedPrefixes) {
             for (var  i =0; i<blockedPrefixes.length; i++) {
               if ( number.startsWith(blockedPrefixes[i]) )
-                return { status: 'blocked', message: "numbers starting with '" + blockedPrefixes[i] + "' are blocked" };
+                return { status: 'blocked', message: "sending SMS to this number is not allowed" };
             }
           }
           // if it hasn't been blocked so far, assume allowed
