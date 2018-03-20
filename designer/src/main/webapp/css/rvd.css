@@ -1,33 +1,33 @@
 :root {
   --logo-url: url("../images/restcomm-v-d-logo.svg");
 
-  --background-color: #f1f1f1; /* for various types of backgrounds like header, verb etc.*/
+  --background-color: #ffffff;  /* for various types of backgrounds like header, verb etc.*/
   --text-color: #5b6170;
-  --secondary-back-color: #ffffff;
+  --secondary-back-color: #f1f1f1;
   --primary-color: #1ea5db; /* for toolbox verbs and step headings. That's blue by default */
   --global-font: lato;
 
-  --graph-back-color: var(--secondary-back-color);
-  --steplisting-back-color: var(--secondary-back-color);
+  --graph-back-color: var(--background-color);
+  --steplisting-back-color: var(--background-color);
 
   /* controls i.e input, textarea etc. */
-  --control-back-color: var(--secondary-back-color);
+  --control-back-color: var(--background-color);
   --control-text-color: var(--text-color);
 
   /* input-groups */
   --input-group-text-color: var(--text-color);
-  --input-group-back-color: var(--background-color);
+  --input-group-back-color: var(--secondary-back-color);
 
 
   /* step properties */
   --step-background-color: var(--background-color);
-  --step-heading-text-color: var(--secondary-back-color);
+  --step-heading-text-color: var(--background-color);
   --step-text-color: var(--text-color); /* free text and titles inside steps except for controls */
   --step-heading-back-color: var(--primary-color);
   --step-border-color: #d0d1d6;
 
   /* verb toolbox */
-  --verb-text-color: var(--secondary-back-color);
+  --verb-text-color: var(--background-color);
   --verb-back-color: var(--primary-color);
 
   /* buttons (and nouns dragables) */
@@ -39,20 +39,21 @@
 
   /* dropdowns */
   --dropdown-text-color: #141D33;
-  --dropdown-back-color: var(--secondary-back-color);
-  --dropdown-hover-back-color: var(--background-color);
+  --dropdown-back-color: var(--background-color);
+  --dropdown-hover-back-color: var(--secondary-back-color);
   --dropdown-font-size: 14px;
 
-  --label-color: #434A5B; /* color for labels */
-  --texts-color: #bbb; /* color for text like descriptions etc. */
+  /* modals */
+  --modal-back-color: var(--background-color);
+  --modal-text-color: vat(--text-color);
 
+  /* links */
+  --link-text-color: #434A5B;
 
+  /* misc */
   --selected-tab-back-color: #434A5B;
   --selected-tab-text-color: #FFFFFF;
-
-  /*  not to be editid ??? */
-  --header-color: var(--background-color);
-
+  --sortable-band-placeholder-color: #1084AC; /* color of the band that appears when dropping a verb on the module */
 
 }
 
@@ -71,7 +72,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 /*** header ***/
 .rvd-header {
-    background-color: var(--header-color);
+    background-color: var(--secondary-back-color);
     position: relative;
 }
 .logo-area {
@@ -140,11 +141,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .btn-link {
   text-decoration:none;
-  color: var(--label-color);
+  color: var(--link-text-color);
 }
 .btn-link:focus,.btn-link:hover {
   text-decoration:none;
-  color: var(--label-color);
+  color: var(--link-text-color);
   opacity: 0.9;
 }
 .btn-link:first-child {
@@ -357,7 +358,7 @@ input.slick-input {
 
 /*** Verb toolbox ***/
 .verb-toolbox {
-  background-color: var(--background-color);
+  background-color: var(--secondary-back-color);
   /*padding-left: 23px;
   padding-right: 23px;
   padding-top: 20px;
@@ -391,17 +392,17 @@ input.slick-input {
 	background-color: var(--steplisting-back-color);
 }
 .module-tab .navtab {
-  color: var(--label-color);
+  color: var(--link-text-color);
 }
 .module-tab .module-tab-label {
-  color: var(--label-color);
+  color: var(--link-text-color);
   font-size: 14px;
 }
 .module-tab.active .module-tab-label {
   color: #ffffff;
 }
 .module-menu-area.row {
-  background-color: var(--background-color);
+  background-color: var(--secondary-back-color);
   margin-bottom: 16px;
   padding-bottom:15px;
 }
@@ -887,6 +888,11 @@ step: the panel that contains the verb details
   color: var(--input-group-text-color);
   background-color: var(--input-group-back-color);
 }
+.modal-content {
+  color: var(--modal-text-color);
+  background-color: var(--modal-back-color);
+}
+
 /* Bootstrap extension for having a lot of stuff on nav-tabs */
 textarea.medium {
 	height: 150px;
@@ -913,11 +919,12 @@ ul.dropdown-menu li a {
 }
 
 /*** jquery-ui customizations ***/
+/* sortable blue band placeholder styling */
 .ui-sortable .ui-state-highlight {
-	border: 1px solid #1084AC;
-  background: #1084AC;
+	border: 1px solid var(--sortable-band-placeholder-color);
+  background: var(--sortable-band-placeholder-color);
   border-radius: 5px;
-	color: #1084AC;
+	color: var(--sortable-band-placeholder-color);
   height: 10px;
   margin-bottom: 5px;
 }
