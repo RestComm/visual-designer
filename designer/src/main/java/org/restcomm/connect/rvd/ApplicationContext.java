@@ -24,6 +24,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.configuration.RestcommLocationResolver;
+import org.restcomm.connect.rvd.interpreter.serialization.RcmlSerializer;
 import org.restcomm.connect.rvd.stats.AggregateStats;
 
 /**
@@ -41,6 +42,7 @@ public class ApplicationContext {
     ProjectRegistry projectRegistry;
     AggregateStats globalStats;
     RestcommLocationResolver restcommResolver;
+    RcmlSerializer rcmlSerializer;
 
     public ApplicationContext() {
         globalStats = new AggregateStats();
@@ -76,5 +78,9 @@ public class ApplicationContext {
 
     public RestcommLocationResolver getRestcommResolver() {
         return restcommResolver;
+    }
+
+    public RcmlSerializer getRcmlSerializer() {
+        return rcmlSerializer;
     }
 }

@@ -24,6 +24,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.configuration.RestcommLocationResolver;
+import org.restcomm.connect.rvd.interpreter.serialization.RcmlSerializer;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -35,6 +36,7 @@ public class ApplicationContextBuilder {
     CloseableHttpClient externaltHttpClient;
     ProjectRegistry projectRegistry;
     RestcommLocationResolver restcommResolver;
+    RcmlSerializer rcmlSerializer;
 
     public ApplicationContextBuilder setConfiguration(RvdConfiguration configuration) {
         this.configuration = configuration;
@@ -65,6 +67,11 @@ public class ApplicationContextBuilder {
         return this;
     }
 
+    public ApplicationContextBuilder setRcmlSerializer(RcmlSerializer rcmlSerializer) {
+        this.rcmlSerializer = rcmlSerializer;
+        return this;
+    }
+
     public ApplicationContext build() {
         ApplicationContext instance = new ApplicationContext();
         instance.configuration = this.configuration;
@@ -73,6 +80,10 @@ public class ApplicationContextBuilder {
         instance.defaultHttpClient = this.defaultHttpClient;
         instance.externaltHttpClient = this.externaltHttpClient;
         instance.restcommResolver = this.restcommResolver;
+        if (this.rcmlSerializer != null)
+            instance.rcmlSerializer = this.rcmlSerializer;
+        else
+            instance.rcmlSerializer = new RcmlSerializer(); // default value if not explicitly set
         return instance;
     }
 }

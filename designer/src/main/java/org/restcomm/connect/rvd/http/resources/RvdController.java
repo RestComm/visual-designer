@@ -118,7 +118,7 @@ public class RvdController extends SecuredRestService {
     // handle both GET and POST request in a single place
     private Response runInterpreter(String appname, HttpServletRequest httpRequest,
                                     MultivaluedMap<String, String> requestParams) {
-        RcmlSerializer serializer = new RcmlSerializer();
+        RcmlSerializer serializer = applicationContext.getRcmlSerializer();
         String rcmlResponse;
         try {
             //ProjectDao projectDao = new FsProjectDao(storage);

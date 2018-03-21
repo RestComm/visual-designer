@@ -15,6 +15,7 @@ import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
 import org.restcomm.connect.rvd.configuration.RestcommLocationResolver;
 import org.restcomm.connect.rvd.exceptions.BootstrappingException;
+import org.restcomm.connect.rvd.interpreter.serialization.RcmlSerializer;
 import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.StepMarshaler;
 import org.restcomm.connect.rvd.storage.FsWorkspaceStorage;
@@ -57,7 +58,8 @@ public class RvdInitializationServlet extends HttpServlet {
                 .setDefaultHttpClient(buildHttpClient)
                 .setExternalHttpClient(httpClientBuilder.buildExternalHttpClient())
                 .setProjectRegistry(new ProjectRegistry())
-                .setRestcommResolver(restcommResolver).build();
+                .setRestcommResolver(restcommResolver)
+                .setRcmlSerializer(new RcmlSerializer()).build();
         servletContext.setAttribute(ApplicationContext.class.getName(), appContext);
 
         JsonModelStorage storage = new JsonModelStorage(new FsWorkspaceStorage(rvdConfiguration.getWorkspaceBasePath()), new StepMarshaler());
