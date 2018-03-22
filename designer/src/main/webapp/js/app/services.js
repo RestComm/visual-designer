@@ -528,7 +528,7 @@ angular.module('Rvd').service('rvdSettings', ['$http', '$q', function ($http, $q
 			updateEffectiveSettings(settings);
 			deferred.resolve();
 		}).error(function () {
-			dererred.reject();
+			deferred.reject();
 		});
 		return deferred.promise;
 	}
