@@ -23,7 +23,7 @@
 				<p>
 					{{'authenticationHelp'|translate}}
 				</p>
-				<div class="help-block">
+				<div>
 					<button class='rvd-clickable btn-link' ng-init="showAdvancedAuth=!!ccInfo.accessToken" ng-click="showAdvancedAuth=!showAdvancedAuth">
 						<i class="fa fa-gear"> </i> {{'Application-specific token'|translate}}
 					</button>
@@ -78,7 +78,7 @@
 				<button ng-init="showAdvanced=!!ccInfo.userParamScope" ng-click="showAdvanced=!showAdvanced" class="btn-link rvd-clickable"><i class="fa fa-gear"></i> {{'Advanced configuration'|translate}}</button>
 
 			</div>
-			<div ng-show="showAdvanced">
+			<div ng-show="showAdvanced" class="form-group">
 				<div class="input-group input-group-sm">
 					<span class="input-group-addon">{{'User parameter scope'|translate}}</span>
 					<select auto-clear ng-model="ccInfo.userParamScope" class="form-control mask-invalid">

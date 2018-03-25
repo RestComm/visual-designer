@@ -56,19 +56,21 @@
 							<button ng-click="addUrlParam(step)" type="button" class="btn btn-xs" title="{{'externalServiceStepAddParamButtonPopover' | translate}}"><span>{{'externalServiceStepAddParamButton' | translate}}</span></button>
 							<button ng-click="step.addHttpHeader({name:'', value:''})" type="button" class="btn btn-xs" title="Add name and value for an http header"><span>Add http header</span></button>
 						</div>
-			            
-			            <div class="row">
+
+						<i ng-click="step.iface.advancedShown = !step.iface.advancedShown" class='fa fa-cog rvd-clickable' ng-class="{'rvd-active': step.iface.advancedShown }"></i>
+						<div ng-show="step.iface.advancedShown" class="row">
+							<div class="rvd-spacer10"></div>
 							<div class="col-md-12">
 								<div class="input-group form-group">
 									<span ng-show="step.iface.advancedShown" class="input-group-addon">{{'externalServiceStepMethodLabel' | translate}}</span>
-									<select ng-show="step.iface.advancedShown" ng-model='step.method' class="form-control form-control-inline">
+									<select ng-show="step.iface.advancedShown" ng-model='step.method' class="form-control">
 										<option value='GET'>GET</option>
 										<option value='POST'>POST</option>
 										<option value='PUT'>PUT</option>
 										<option value='DELETE'>DELETE</option>
 									</select>
 									<span ng-show="step.iface.advancedShown" class="input-group-addon" title="Use this content type when POSTing or PUTing">Content Type</span>
-									<select ng-disabled="step.method != 'POST' && step.method != 'PUT' " ng-show="step.iface.advancedShown" ng-model='step.contentType' class="form-control form-control-inline">
+									<select ng-disabled="step.method != 'POST' && step.method != 'PUT' " ng-show="step.iface.advancedShown" ng-model='step.contentType' class="form-control">
 										<option value='application/x-www-form-urlencoded' title='Send request data using application/x-www-form-urlencoded content type'>www form</option>
 										<option value='application/json' title='Send request data using application/json content type'>json</option>
 									</select>
@@ -77,8 +79,6 @@
 									<span ng-show="step.iface.advancedShown" class="input-group-addon" title="{{'externalServiceStepPasswordTooltip' | translate}}">{{'externalServiceStepPasswordLabel' | translate}}</span>
 									<input ng-show="step.iface.advancedShown" name="password" ng-model='step.password' class="form-control" type="text"></input>
 									
-									<span class="input-group-addon fa fa-cog rvd-clickable" ng-click="step.iface.advancedShown = !step.iface.advancedShown"></span>
-									<span> </span>
 								</div>
 								
 								<div ng-show="step.iface.advancedShown && (step.method=='POST' || step.method=='PUT')">
@@ -86,7 +86,9 @@
 										<textarea ng-disabled="step.populatePostBodyFromParams" ng-model="step.requestBody" class="form-control" placeholder="type POST/PUT content here"></textarea>
 									</div>
 									<div ng-show="step.contentType=='application/x-www-form-urlencoded'" class="form-group checkbox" title="Build request body by url-encoding the service parameters defined above.">
-										<small><input ng-model="step.populatePostBodyFromParams" type="checkbox">Automatically populate from service parameters</small>
+										<label>
+											<input ng-model="step.populatePostBodyFromParams" type="checkbox"><small>Automatically populate from service parameters</small>
+										</label>
 									</div>
 								</div>
 							</div>

@@ -6,6 +6,9 @@
   --secondary-back-color: #f1f1f1;
   --primary-color: #1ea5db; /* for toolbox verbs and step headings. That's blue by default */
   --global-font: lato;
+  --border-color: #ccc;
+  --lines-color: #eee;
+  --labels-back-color: #ddd; /* labels with solid background */
 
   --graph-back-color: var(--background-color);
   --steplisting-back-color: var(--background-color);
@@ -16,7 +19,8 @@
 
   /* input-groups */
   --input-group-text-color: var(--text-color);
-  --input-group-back-color: var(--secondary-back-color);
+  --input-group-back-color: var(--labels-back-color);
+    --input-group-border-color: var(--border-color);
 
 
   /* step properties */
@@ -24,7 +28,6 @@
   --step-heading-text-color: var(--background-color);
   --step-text-color: var(--text-color); /* free text and titles inside steps except for controls */
   --step-heading-back-color: var(--primary-color);
-  --step-border-color: #d0d1d6;
 
   /* verb toolbox */
   --verb-text-color: var(--background-color);
@@ -54,6 +57,8 @@
   --selected-tab-back-color: #434A5B;
   --selected-tab-text-color: #FFFFFF;
   --sortable-band-placeholder-color: #1084AC; /* color of the band that appears when dropping a verb on the module */
+  --default-shadow-color: rgba(0,0,0,0.175); /* dropdowns, modals */
+  --comment-color: #999; /* help-blocks color */
 
 }
 
@@ -158,7 +163,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-size: 12px;
 }
 .btn-primary, .btn-primary:hover, .btn-primary:focus:active, .btn-primary:active:hover, .btn-primary:focus,
-.btn-default, .btn-default:hover, .btn-default:focus:active, .btn-default:active:hover, .btn-default:focus{
+.btn-default, .btn-default:hover, .btn-default:focus:active, .btn-default:active:hover, .btn-default:focus,
+span.input-group-addon.rvd-clickable {
   color: var(--button-text-color);
   background-color: var(--button-back-color);
   border-color: var(--button-back-color);
@@ -311,7 +317,7 @@ input.slick-input {
 }
 /* Module tabs */
 .module-tabs.nav-tabs {
-    border-bottom: 1px solid #cccdcd;
+    border-bottom: 1px solid var(--lines-color);
 }
 .nav-tabs > li > span.navtab {
     border: 1px solid transparent;
@@ -516,7 +522,7 @@ input.slick-input {
 
 .rvd-clickable {
 	cursor: pointer;
-	opacity: 0.6
+	/* opacity: 0.6 */
 }
 
 .rvd-clickable-text {
@@ -531,7 +537,7 @@ input.slick-input {
 }
 
 .rvd-clickable:hover {
-	opacity: 1.0;
+	opacity: 0.6;
 }
 
 .rvd-handle {
@@ -570,9 +576,6 @@ input.slick-input {
 .step .panel-heading {
   color: var(--step-heading-text-color);
   background-color: var(--step-heading-back-color);
-}
-.step.panel {
-  border-color: var(--step-border-color);
 }
 .step .panel-body {
   color: var(--step-text-color);
@@ -883,14 +886,54 @@ step: the panel that contains the verb details
 .form-control {
   color: var(--control-text-color);
   background-color: var(--control-back-color);
+  border: 1px solid var(--border-color);
+}
+.form-control, .panel {
+  box-shadow: none;
 }
 .input-group-addon {
   color: var(--input-group-text-color);
   background-color: var(--input-group-back-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0;
 }
 .modal-content {
   color: var(--modal-text-color);
   background-color: var(--modal-back-color);
+  box-shadow: 0 5px 15px var(--default-shadow-color);
+}
+.panel-default {
+  border-color: var(--border-color);
+}
+.input-group-addon, .input-group select, .input-group input {
+  border: none;
+}
+.input-group {
+  border: 1px solid var(--input-group-border-color);
+  border-radius: 3px;
+}
+hr {
+  border-top: 1px solid var(--lines-color);
+  opacity: 0.4;
+}
+.modal-header {
+  border-bottom: 1px solid var(--lines-color);
+}
+.modal-footer {
+  border-top: 1px solid var(--lines-color);
+}
+.help-block {
+  color: var(--comment-color);
+}
+code {
+  color: inherit;
+  background-color: var(--secondary-back-color);
+}
+.text-muted {
+  color: var(--comment-color);
+}
+h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
+  color: var(--comment-color);
 }
 
 /* Bootstrap extension for having a lot of stuff on nav-tabs */
@@ -910,6 +953,9 @@ textarea.medium {
 ul.dropdown-menu {
   color: var(--dropdown-text-color);
   background-color: var(--dropdown-back-color);
+}
+.dropdown-menu {
+  box-shadow: 0 6px 12px var(--default-shadow-color);
 }
 ul.dropdown-menu li a {
   color: var(--dropdown-text-color);
