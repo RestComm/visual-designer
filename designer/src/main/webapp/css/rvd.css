@@ -10,6 +10,14 @@
   --border-color: #ccc;
   --lines-color: #eee;
   --labels-back-color: #ddd; /* labels with solid background */
+  --primary-title-color: var(--background-color); /* text that sticks out like step title */
+
+  --default-button-back-color: #B8BBC1;
+  --default-button-text-color: #434A5B;
+  --primary-button-back-color: #B8BBC1;
+  --primary-button-text-color: #434A5B;
+  --danger-button-back-color: #B8BBC1;
+  --danger-button-text-color: #434A5B;
 
   --graph-back-color: var(--background-color);
   --steplisting-back-color: var(--background-color);
@@ -17,6 +25,7 @@
   /* controls i.e input, textarea etc. */
   --control-back-color: var(--background-color);
   --control-text-color: var(--text-color);
+  --control-back-color-disabled: var(--secondary-back-color);
 
   /* input-groups */
   --input-group-text-color: var(--text-color);
@@ -26,17 +35,13 @@
 
   /* step properties */
   --step-background-color: var(--background-color);
-  --step-heading-text-color: var(--background-color);
+  --step-heading-text-color: var(--primary-title-color);
   --step-text-color: var(--text-color); /* free text and titles inside steps except for controls */
   --step-heading-back-color: var(--primary-color);
 
   /* verb toolbox */
   --verb-text-color: var(--background-color);
   --verb-back-color: var(--primary-color);
-
-  /* buttons (and nouns dragables) */
-  --button-text-color: #434A5B;
-  --button-back-color: #B8BBC1;
 
   /* headings */
   --heading-font: var(--global-font);
@@ -60,6 +65,7 @@
   --sortable-band-placeholder-color: #1084AC; /* color of the band that appears when dropping a verb on the module */
   --default-shadow-color: rgba(0,0,0,0.175); /* dropdowns, modals */
   --comment-color: #999; /* help-blocks color */
+  --drop-area-color: var(--default-button-color);
 
 }
 
@@ -144,7 +150,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 /*** Common styles ***/
-
 .btn-link {
   text-decoration:none;
   color: var(--link-text-color);
@@ -163,15 +168,22 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .btn-xs {
     font-size: 12px;
 }
-.btn-primary, .btn-primary:hover, .btn-primary:focus:active, .btn-primary:active:hover, .btn-primary:focus,
-.btn-default, .btn-default:hover, .btn-default:focus:active, .btn-default:active:hover, .btn-default:focus,
-span.input-group-addon.rvd-clickable {
-  color: var(--button-text-color);
-  background-color: var(--button-back-color);
-  border-color: var(--button-back-color);
+.btn-primary, .btn-primary:hover, .btn-primary:focus:active, .btn-primary:active:hover, .btn-primary:focus, .rvd-clickable.btn-primary {
+  color: var(--primary-button-text-color);
+  background-color: var(--primary-button-back-color);
+  border-color: var(--primary-button-back-color);
 }
-.btn-primary:hover,
-.btn-default:hover {
+.btn-default, .btn-default:hover, .btn-default:focus:active, .btn-default:active:hover, .btn-default:focus, .rvd-clickable.btn-default {
+  color: var(--default-button-text-color);
+  background-color: var(--default-button-back-color);
+  border-color: var(--default-button-back-color);
+}
+.btn-danger, .btn-danger:hover, .btn-danger:focus:active, .btn-danger:active:hover, .btn-danger:focus, .rvd-clickable.btn-danger {
+  color: var(--danger-button-text-color);
+  background-color: var(--danger-button-back-color);
+  border-color: var(--danger-button-back-color);
+}
+.btn-primary:hover, .btn-default:hover, .btn-danger:hover {
   opacity: 0.8;
 }
 label {
@@ -406,7 +418,7 @@ input.slick-input {
   font-size: 14px;
 }
 .module-tab.active .module-tab-label {
-  color: #ffffff;
+  color: var(--primary-title-color);
 }
 .module-menu-area.row {
   background-color: var(--secondary-back-color);
@@ -439,7 +451,7 @@ input.slick-input {
 	opacity: 0.6;
 	background-repeat:no-repeat;
 	background-position:center;
-	border: 1px dashed rgb(221, 221, 221);
+	border: 1px dashed var(--default-button-color);
 }
 .drop-area .drop-prompt {
 	padding: 7px;
@@ -450,8 +462,8 @@ input.slick-input {
 	cursor:copy;
 }
 .drop-area {
-	background: none repeat scroll 0% 0% rgb(248, 248, 248);
-	border: 5px dashed rgb(221, 221, 221);
+	background: none repeat scroll 0% 0% var(--drop-area-color);
+	border: 5px dashed var(--default-button-color);
 	text-align: center;
 }
 
@@ -590,8 +602,8 @@ input.slick-input {
     margin-left: 10px;
 }
 .dial-noun {
-  background-color: var(--button-back-color);
-  color: var(--button-text-color);
+  background-color: var(--verb-back-color);
+  color: var(--verb-text-color);
 }
 
 /* say step */
@@ -888,6 +900,9 @@ step: the panel that contains the verb details
   background-color: var(--control-back-color);
   border: 1px solid var(--border-color);
 }
+.form-control[disabled] {
+  background-color: var(--control-back-color-disabled);
+}
 .form-control, .panel {
   box-shadow: none;
 }
@@ -937,6 +952,15 @@ h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
 }
 .dropdown-header {
   color: var(--comment-color);
+}
+.panel-default>.panel-heading {
+  border-color: inherit;
+}
+.dropdown-menu .divider {
+  background-color: var(--lines-color);
+}
+.dropdown .btn-link {
+  color: var(--text-color);
 }
 
 /* Bootstrap extension for having a lot of stuff on nav-tabs */

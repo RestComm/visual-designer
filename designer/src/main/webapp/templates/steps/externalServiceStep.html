@@ -30,7 +30,7 @@
                                     <span class="input-group-addon">{{'externalServiceStepUrlParamValueLabel' | translate}}</span>
                                     <input ng-model='urlParam.value' lookup-target class="form-control ng-pristine ng-valid ng-valid-pattern" type="text" required></input>
                                     <variable-lookup variable="urlParam.value" view="input-group" replace="true"></variable-lookup>
-                                    <span ng-click='removeUrlParam(step,urlParam)' class="input-group-addon fa fa-times rvd-clickable"></span>
+                                    <span ng-click='removeUrlParam(step,urlParam)' class="input-group-addon fa fa-times btn-danger rvd-clickable"></span>
                                 </div>
                             </div>
                         </div>
@@ -46,15 +46,15 @@
 									<span class="input-group-addon">Value</span>
 									<input ng-model='httpHeader.value' lookup-target class="form-control ng-pristine ng-valid ng-valid-pattern" type="text" required></input>
 									<variable-lookup variable="httpHeader.value" view="input-group" replace="true"></variable-lookup>
-									<span ng-click='step.removeHttpHeader(httpHeader)' class="input-group-addon fa fa-times rvd-clickable"></span>
+									<span ng-click='step.removeHttpHeader(httpHeader)' class="input-group-addon fa fa-times btn-danger rvd-clickable"></span>
 								</div>
 							</div>
 						</div>
                         <div class="validation-warning row col-md-12 form-group" ng-show="step.urlParams.length>0 && (step.method=='POST' || step.method=='PUT') && step.contentType=='application/x-www-form-urlencoded' && !step.populatePostBodyFromParams">{{"externalServiceStepIgnoredParamsWarning" | translate}}</div>
 
                         <div class="form-group">
-							<button ng-click="addUrlParam(step)" type="button" class="btn btn-xs" title="{{'externalServiceStepAddParamButtonPopover' | translate}}"><span>{{'externalServiceStepAddParamButton' | translate}}</span></button>
-							<button ng-click="step.addHttpHeader({name:'', value:''})" type="button" class="btn btn-xs" title="Add name and value for an http header"><span>Add http header</span></button>
+							<button ng-click="addUrlParam(step)" type="button" class="btn btn-primary btn-xs" title="{{'externalServiceStepAddParamButtonPopover' | translate}}"><span>{{'externalServiceStepAddParamButton' | translate}}</span></button>
+							<button ng-click="step.addHttpHeader({name:'', value:''})" type="button" class="btn btn-primary btn-xs" title="Add name and value for an http header"><span>Add http header</span></button>
 						</div>
 
 						<i ng-click="step.iface.advancedShown = !step.iface.advancedShown" class='fa fa-cog rvd-clickable' ng-class="{'rvd-active': step.iface.advancedShown }"></i>

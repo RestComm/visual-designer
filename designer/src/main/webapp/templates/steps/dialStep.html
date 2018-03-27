@@ -38,8 +38,8 @@
 
 								<div class="validation-error" ng-show="form.next.$invalid">{{'dialStepNumberChooseTargetLabel' | translate}}</div>
 
-								<span  class="input-group-addon fa fa-cog rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
-								<span class="input-group-addon fa fa-times rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
+								<span  class="input-group-addon fa fa-cog btn-default rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
+								<span class="input-group-addon fa fa-times btn-danger rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
 							</div>
 							<div ng-show='dialnoun.iface.advancedShown' class="input-group input-group-sm noun-advanced">
 								<span class="input-group-addon help-tooltip" tooltip-popup-delay="1000" tooltip-trigger="mouseenter" tooltip="{{'statusCallbackInfo' | translate}}">{{'statusCallback' | translate}}</span>
@@ -61,8 +61,8 @@
 
 								<div class="validation-error" ng-show="form.next.$invalid">{{'dialStepClientChooseTargetLabel' | translate}}</div>
 
-								<span  class="input-group-addon fa fa-cog rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
-								<span class="input-group-addon fa fa-times rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
+								<span  class="input-group-addon fa fa-cog btn-default rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
+								<span class="input-group-addon fa fa-times  btn-danger rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
 							</div>
 
 							<div ng-show="videoSupport" class="input-group input-group-sm noun-advanced">
@@ -99,8 +99,8 @@
 								<span class="input-group-addon rvd-handle"><i class='fa fa-group'></i></span>
 								<input ng-model='dialnoun.destination' lookup-target type='text' class='form-control' placeholder="{{'dialStepConferenceInputPlaceholder' | translate}}" tooltip="{{'dialStepConferenceInputTooltip' | translate}}">
 								<variable-lookup variable="dialnoun.destination" view="input-group"></variable-lookup>
-								<span  class="input-group-addon fa fa-cog rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
-								<span class="input-group-addon fa fa-times rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
+								<span  class="input-group-addon fa fa-cog btn-default rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
+								<span class="input-group-addon fa fa-times btn-danger rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
 							</div>
 
 							<div ng-show="videoSupport" class="input-group input-group-sm noun-advanced">
@@ -188,8 +188,8 @@
 								<span class="input-group-addon rvd-handle">{{'dialStepSipUriInputLabel' | translate}}</span>
 								<input ng-model='dialnoun.destination' lookup-target type='text' class='form-control' placeholder="{{'dialStepSipUriInputPlaceholder' | translate}}" tooltip="{{'dialStepSipUriInputTooltip' | translate}}">
 								<variable-lookup variable="dialnoun.destination" view="input-group"></variable-lookup>
-								<span  class="input-group-addon fa fa-cog rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
-								<span class="input-group-addon fa fa-times rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
+								<span  class="input-group-addon fa fa-cog btn-default rvd-clickable" ng-click="dialnoun.iface.advancedShown = !dialnoun.iface.advancedShown"></span>
+								<span class="input-group-addon fa fa-times btn-danger rvd-clickable" ng-click="removeDialNoun(step,dialnoun)"></span>
 							</div>
 
 							<div ng-show="videoSupport" class="input-group input-group-sm noun-advanced">
@@ -243,7 +243,7 @@
 					<input ng-show='step.iface.advancedShown' ng-model='step.callerId' lookup-target auto-clear type='text' class='form-control'>
 					<variable-lookup ng-show='step.iface.advancedShown' variable="step.callerId" view="input-group"></variable-lookup>
 
-					<span  class="input-group-addon fa fa-cog rvd-clickable" ng-click="step.iface.advancedShown = !step.iface.advancedShown"></span>
+					<span  class="input-group-addon fa fa-cog btn-default rvd-clickable" ng-click="step.iface.advancedShown = !step.iface.advancedShown"></span>
 				</div>
 			</div>
 		</div>
