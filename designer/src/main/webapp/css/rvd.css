@@ -65,7 +65,7 @@
   --sortable-band-placeholder-color: #1084AC; /* color of the band that appears when dropping a verb on the module */
   --default-shadow-color: rgba(0,0,0,0.175); /* dropdowns, modals */
   --comment-color: #999; /* help-blocks color */
-  --drop-area-color: var(--default-button-color);
+  --drop-area-color: var(--secondary-back-color);
 
 }
 
@@ -463,7 +463,7 @@ input.slick-input {
 }
 .drop-area {
 	background: none repeat scroll 0% 0% var(--drop-area-color);
-	border: 5px dashed var(--default-button-color);
+	border: 5px dashed var(--default-button-back-color);
 	text-align: center;
 }
 
