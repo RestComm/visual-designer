@@ -1,16 +1,21 @@
 :root {
-  --logo-url: url("../images/restcomm-v-d-logo.svg");
+  --logo-url: url("../images/visual-designer-logo.svg");
 
   --background-color: #ffffff;  /* for various types of backgrounds like header, verb etc.*/
   --text-color: #5b6170;
-  --secondary-back-color: #f1f1f1;
+  --aux-back-color: #f1f1f1;
   --primary-color: #1ea5db; /* for toolbox verbs and step headings. That's blue by default */
   --secondary-color: #E63828;
   --global-font: lato;
+
+  --primary-text-color: #ffffff;
+  --primary-back-color: var(--primary-color);
+
   --border-color: #ccc;
   --lines-color: #eee;
-  --labels-back-color: #ddd; /* labels with solid background */
-  --primary-title-color: var(--background-color); /* text that sticks out like step title */
+
+  --verb-text-color: var(--background-color); /* verb toolbox */
+  --verb-back-color: var(--primary-back-color);
 
   --default-button-back-color: #B8BBC1;
   --default-button-text-color: #434A5B;
@@ -19,37 +24,31 @@
   --danger-button-back-color: #B8BBC1;
   --danger-button-text-color: #434A5B;
 
-  --graph-back-color: var(--background-color);
   --steplisting-back-color: var(--background-color);
 
   /* controls i.e input, textarea etc. */
   --control-back-color: var(--background-color);
   --control-text-color: var(--text-color);
-  --control-back-color-disabled: var(--secondary-back-color);
+  --control-back-color-disabled: var(--aux-back-color);
 
   /* input-groups */
   --input-group-text-color: var(--text-color);
-  --input-group-back-color: var(--labels-back-color);
-    --input-group-border-color: var(--border-color);
-
+  --input-group-back-color: var(--aux-back-color);
+  --input-group-border-color: var(--border-color);
 
   /* step properties */
   --step-background-color: var(--background-color);
-  --step-heading-text-color: var(--primary-title-color);
+  --step-heading-text-color: var(--verb-text-color);
   --step-text-color: var(--text-color); /* free text and titles inside steps except for controls */
-  --step-heading-back-color: var(--primary-color);
-
-  /* verb toolbox */
-  --verb-text-color: var(--background-color);
-  --verb-back-color: var(--primary-color);
+  --step-heading-back-color: var(--verb-back-color);
 
   /* headings */
   --heading-font: var(--global-font);
 
   /* dropdowns */
-  --dropdown-text-color: #141D33;
+  --dropdown-text-color: var(--text-color);
   --dropdown-back-color: var(--background-color);
-  --dropdown-hover-back-color: var(--secondary-back-color);
+  --dropdown-hover-back-color: var(--aux-back-color);
   --dropdown-font-size: 14px;
 
   /* modals */
@@ -60,12 +59,15 @@
   --link-text-color: #434A5B;
 
   /* misc */
-  --selected-tab-back-color: #434A5B;
-  --selected-tab-text-color: #FFFFFF;
+  --selected-tab-back-color: var(--primary-back-color);
+  --selected-tab-text-color: var(--primary-text-color);
   --sortable-band-placeholder-color: #1084AC; /* color of the band that appears when dropping a verb on the module */
   --default-shadow-color: rgba(0,0,0,0.175); /* dropdowns, modals */
   --comment-color: #999; /* help-blocks color */
-  --drop-area-color: var(--secondary-back-color);
+  --drop-area-color: var(--background-color);
+  --danger-hint-color: #E63828;
+  --graph-back-color: var(--background-color);
+
 
 }
 
@@ -84,19 +86,16 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 /*** header ***/
 .rvd-header {
-    background-color: var(--secondary-back-color);
+    background-color: var(--aux-back-color);
     position: relative;
 }
-.logo-area {
-    float:left;
-}
 .logo {
-    margin: 20px 10px 10px 0px;
     background: no-repeat left var(--logo-url);
     background-size: contain;
-    height: 50px;
-    width: 176px;
+    height: 48px;
     display: block;
+    margin-top: 20px;
+    margin-left: 10px;
 }
 
 /*** footer ***/
@@ -191,7 +190,7 @@ label {
 }
 .validation-error, .error-message, .validation-warning {
 	font-size: 85%;
-	color: #E63828;
+	color: var(--danger-hint-color);
 	font-style: italic;
 }
 a.muted {
@@ -377,7 +376,7 @@ input.slick-input {
 
 /*** Verb toolbox ***/
 .verb-toolbox {
-  background-color: var(--secondary-back-color);
+  background-color: var(--aux-back-color);
   /*padding-left: 23px;
   padding-right: 23px;
   padding-top: 20px;
@@ -418,10 +417,10 @@ input.slick-input {
   font-size: 14px;
 }
 .module-tab.active .module-tab-label {
-  color: var(--primary-title-color);
+  color: var(--primary-text-color);
 }
 .module-menu-area.row {
-  background-color: var(--secondary-back-color);
+  background-color: var(--aux-back-color);
   margin-bottom: 16px;
   padding-bottom:15px;
 }
@@ -486,7 +485,6 @@ input.slick-input {
   margin-left: 12px;
 }
 .project-menu>.project-menu-button {
-  color: var(--secondary-color);
   font-size: 16px;
 }
 .project-menu-username {
@@ -942,7 +940,7 @@ hr {
 }
 code {
   color: inherit;
-  background-color: var(--secondary-back-color);
+  background-color: var(--aux-back-color);
 }
 .text-muted {
   color: var(--comment-color);
