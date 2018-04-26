@@ -15,7 +15,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.archive.ShrinkWrapMaven;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.restcomm.connect.commons.Version;
 
 /**
  * @author otsakir@gmail.com - Orestis Tsakiridis
@@ -24,7 +23,6 @@ import org.restcomm.connect.commons.Version;
 public class TemplatesRestServiceTest extends RestServiceTest {
 
     private final static Logger logger = Logger.getLogger(TemplatesRestServiceTest.class);
-    private static final String version = Version.getVersion();
 
     static final String username = "administrator@company.com";
     static final String password = "adminpass";

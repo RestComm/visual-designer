@@ -43,7 +43,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 @RunWith(Arquillian.class)
 public class NotificationRestServiceTest extends RestServiceTest {
     private final static Logger logger = Logger.getLogger(NotificationRestServiceTest.class);
-    //private static final String version = Version.getVersion();
 
     @Test
     public void notifyApplicationRemovalWorks() {
