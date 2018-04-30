@@ -403,9 +403,11 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
   if ($scope.firstTime) {
     $scope.editAllNodes(nodeRegistry.getNodes());
     $scope.setActiveNode(project.startNodeName);
-    if (projectParameters.parameters.length > 0) { // if there are also parameters available, show popup
-      parametersService.showModal($scope.applicationSid);
-    }
+    projectParameters.$promise.then(function () {
+      if (projectParameters.parameters.length > 0) { // if there are also parameters available, show popup
+        parametersService.showModal($scope.applicationSid);
+      }
+    });
   }
 
 
