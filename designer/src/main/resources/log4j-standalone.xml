@@ -34,13 +34,11 @@
     </logger>
     -->
 
-    <!--
     <logger name="org.restcomm.connect.rvd.GLOBAL">
         <level value="INFO" />
         <appender-ref ref="RVD" />
     </logger>
-    -->
-    
+
     <root>
         <level value="INFO" />
         <appender-ref ref="RVD" />
