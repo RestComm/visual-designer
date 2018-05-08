@@ -21,7 +21,7 @@
 package org.restcomm.connect.rvd.storage;
 
 import com.google.gson.Gson;
-import org.codehaus.plexus.util.FileUtils;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.Assert;
 import org.restcomm.connect.rvd.TestUtils;
@@ -53,7 +53,7 @@ public class FsProfileDaoTest {
             File profileFile = new File(workspaceDir.getPath() + "/@users/orestis.tsakiridis@telestax.com");
             Assert.assertTrue("User profile file was not created", profileFile.exists());
 
-            String data = FileUtils.fileRead(profileFile, "UTF-8");
+            String data = FileUtils.readFileToString(profileFile, "UTF-8");
             Gson gson = new Gson();
             UserProfile profile2 = gson.fromJson(data, UserProfile.class);
             Assert.assertEquals("Username was not stored properly in the profile", "orestis.tsakiridis@telestax.com", profile2.getUsername());
@@ -74,7 +74,7 @@ public class FsProfileDaoTest {
             File profileFile = new File(workspaceDir.getPath() + "/@users/orestis.tsakiridis@telestax.com");
             profileFile.createNewFile();
             String userProfileData = "{\"username\":\"orestis.tsakiridis@telestax.com\",\"token\":\"a very secret token\"}";
-            FileUtils.fileWrite(profileFile, "UTF-8", userProfileData);
+            FileUtils.writeStringToFile(profileFile,userProfileData, "UTF-8");
 
             ProfileDao profileDao = new FsProfileDao(storage);
             UserProfile profile = profileDao.loadUserProfile("orestis.tsakiridis@telestax.com");
