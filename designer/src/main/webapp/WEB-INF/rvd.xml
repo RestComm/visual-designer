@@ -96,6 +96,8 @@
         </rvdMaxPerHost>
 	</defaultHttpMaxPerRoute>
  	-->
+	<defaultHttpTimeout>4000</defaultHttpTimeout>
+
 
 	<!-- Enable Video support in RCML produced and UI. Defaults to 'false'. Requires XMS. -->
 	<videoSupport>false</videoSupport>
