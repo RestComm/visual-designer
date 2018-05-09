@@ -327,7 +327,7 @@ public class FileRvdConfiguration extends BaseRvdConfiguration {
         buffer.append("\n ussdSupport:\t").append(isUssdSupport());
         buffer.append("\n welcomeMessage:\t").append(getWelcomeMessage());
         buffer.append("\n restcommBaseUri:\t").append(getRestcommBaseUri());
-        buffer.append("\n dynamicRestcommResoloving:\t").append(getDynamicRestcommResolving());
+        buffer.append("\n dynamicRestcommResolving:\t").append(getDynamicRestcommResolving());
         buffer.append("\n\nNote, restcommBaseUri is the configured value in rvd.xml. Actual value may vary. ");
 
         return buffer.toString();
