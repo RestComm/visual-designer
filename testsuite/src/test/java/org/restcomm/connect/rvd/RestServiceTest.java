@@ -86,4 +86,23 @@ public class RestServiceTest {
             return urlString;
 
     }
+
+    /**
+     * Returnes the maven id for the Designer binary to loaded on tomcat and tested.
+     *
+     * For example
+     *      org.restcomm:visual-designer:war:1.0-SNAPSHOT
+     *
+     * This is normally populated in the testsuite .pom file. Search for mavenDepId.
+     * It can also be overriden using command line -DmavenDepId parameters when launching the testsuite.
+     * Thus, one can use different binaries in community and commercial versions.
+     *
+     * @return String
+     */
+    protected static String getMavenDepId() {
+        String mavenDepId = System.getProperty("mavenDepId"); // the maven groupId:artifactId:war:version of the .war file to be tested. Sth like org.restcomm:visual-designer:war:1.0-SNAPSHOT
+        System.out.println("Using '" + mavenDepId + "' binary for testing from maven repo. Override in the commandline by setting -DmavenDepId=groupId:artifactId:war:version parameter");
+        return mavenDepId;
+
+    }
 }

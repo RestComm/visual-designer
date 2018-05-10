@@ -191,6 +191,9 @@
                         <!-- <excludes> <exclude>**/SmsSessionTest.java</exclude> </excludes> -->
                         <forkCount>1</forkCount>
                         <reuseForks>false</reuseForks>
+                        <systemPropertyVariables>
+                            <mavenDepId>org.restcomm:visual-designer:war:1.0-SNAPSHOT</mavenDepId><!-- this will result in testing the community .war file from local repo -->
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
             </plugins>

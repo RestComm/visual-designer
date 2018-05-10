@@ -62,7 +62,7 @@ public class TemplatesRestServiceTest extends RestServiceTest {
         logger.info("version");
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "restcomm-rvd.war");
         final WebArchive restcommArchive = ShrinkWrapMaven.resolver()
-                .resolve("org.restcomm:restcomm-connect-rvd:war:" + "1.0-SNAPSHOT").withoutTransitivity()
+                .resolve(getMavenDepId()).withoutTransitivity()
                 .asSingle(WebArchive.class);
         archive = archive.merge(restcommArchive);
 
