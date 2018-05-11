@@ -389,7 +389,7 @@
 	"recordStepTranscribeTooltip": "If selected a text representation of the audio of the recording will be created",
 	"recordStepTranscribeLabel": "Transcribe",
 	"recordStepTranscribeCallbackTooltip": "Specify a URL to make an asynchronous POST request when the transcription is complete. 'TranscriptionStatus', 'TranscriptionText', 'TranscriptionUrl' and 'RecordingUrl' parameters will be passed.",
-	"recordStepTranscribeCallbackLabel": "Tanscribe callback",
+	"recordStepTranscribeCallbackLabel": "Transcribe callback",
 	"recordStepTranscribeCallbackInputPlaceholder": "http://...",
 
 	"redirectStepContinueToLabel": "Continue to",
