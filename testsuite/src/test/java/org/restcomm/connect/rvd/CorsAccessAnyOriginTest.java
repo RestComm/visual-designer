@@ -12,7 +12,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.ShrinkWrapMaven;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.restcomm.connect.commons.Version;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -89,7 +88,6 @@ import javax.ws.rs.core.MultivaluedMap;
 @RunWith(Arquillian.class)
 public class CorsAccessAnyOriginTest extends RestServiceTest {
     private final static Logger logger = Logger.getLogger(ProjectRestServiceTest.class);
-    //private static final String version = Version.getVersion();
 
     static final String username = "administrator@company.com";
     static final String password = "adminpass";
@@ -118,7 +116,7 @@ public class CorsAccessAnyOriginTest extends RestServiceTest {
         logger.info("version");
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "restcomm-rvd.war");
         final WebArchive restcommArchive = ShrinkWrapMaven.resolver()
-                .resolve("org.restcomm:restcomm-connect-rvd:war:" + "1.0-SNAPSHOT").withoutTransitivity()
+                .resolve(getMavenDepId()).withoutTransitivity()
                 .asSingle(WebArchive.class);
         archive = archive.merge(restcommArchive);
 

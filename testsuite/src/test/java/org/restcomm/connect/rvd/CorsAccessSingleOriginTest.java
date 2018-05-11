@@ -88,7 +88,6 @@ import javax.ws.rs.core.MultivaluedMap;
 @RunWith(Arquillian.class)
 public class CorsAccessSingleOriginTest extends RestServiceTest {
     private final static Logger logger = Logger.getLogger(ProjectRestServiceTest.class);
-    //private static final String version = Version.getVersion();
 
     static final String username = "administrator@company.com";
     static final String password = "adminpass";
@@ -120,7 +119,7 @@ public class CorsAccessSingleOriginTest extends RestServiceTest {
         logger.info("version");
         WebArchive archive = ShrinkWrap.create(WebArchive.class, "restcomm-rvd.war");
         final WebArchive restcommArchive = ShrinkWrapMaven.resolver()
-                .resolve("org.restcomm:restcomm-connect-rvd:war:" + "1.0-SNAPSHOT").withoutTransitivity()
+                .resolve(getMavenDepId()).withoutTransitivity()
                 .asSingle(WebArchive.class);
         archive = archive.merge(restcommArchive);
 

@@ -12,8 +12,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.log4j.Level;
 import org.restcomm.connect.rvd.ApplicationContext;
 import org.restcomm.connect.rvd.exceptions.RvdException;
+import org.restcomm.connect.rvd.logging.system.RvdLoggers;
 import org.restcomm.connect.rvd.model.callcontrol.CallControlAction;
 import org.restcomm.connect.rvd.model.callcontrol.CallControlStatus;
 import org.restcomm.connect.rvd.model.callcontrol.CreateCallResponse;
@@ -42,7 +44,10 @@ public class RestService {
 
     protected void init() {
         this.applicationContext = (ApplicationContext) servletContext.getAttribute(ApplicationContext.class.getName());
-         restcommBaseUrl = applicationContext.getRestcommResolver().resolveRestcommBaseUrl(request);
+        restcommBaseUrl = applicationContext.getRestcommResolver().resolveRestcommBaseUrl(request);
+        if (RvdLoggers.local.isDebugEnabled()) {
+            RvdLoggers.local.log(Level.DEBUG, "RestService:init(): resolved restcomm at '" + restcommBaseUrl + "'");
+        }
     }
 
     protected Response buildErrorResponse(Response.Status httpStatus, RvdResponse.Status rvdStatus, RvdException exception) {
