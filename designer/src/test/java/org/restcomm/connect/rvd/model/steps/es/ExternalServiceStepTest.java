@@ -35,7 +35,7 @@ public class ExternalServiceStepTest extends StepTestBase {
         // setup listening part
         stubFor(get(urlMatching(esPath)).willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody("")));
         // make request
-        String next = step.process(interpreter, mockHttpServletRequest("http://localhost/restcomm-rvd/"));
+        String next = step.process(interpreter, mockHttpServletRequest("http://localhost/visual-designer/"));
 
         Assert.assertNull(next); // no rerouting
         // make sure an http header is added and that variable expansion has occured
@@ -56,7 +56,7 @@ public class ExternalServiceStepTest extends StepTestBase {
         // test fixed routing
         stubFor(get(urlMatching(esPath)).willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody("")));
         // make request
-        String processedNext = step.process(interpreter, mockHttpServletRequest("http://localhost/restcomm-rvd/"));
+        String processedNext = step.process(interpreter, mockHttpServletRequest("http://localhost/visual-designer/"));
         Assert.assertEquals("module2", processedNext);
 
         // test mapped routing
@@ -76,7 +76,7 @@ public class ExternalServiceStepTest extends StepTestBase {
 
         stubFor(get(urlMatching("/mapped-routing.php")).willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody("\"success\"")));
         // make request
-        processedNext = step.process(interpreter, mockHttpServletRequest("http://localhost/restcomm-rvd/"));
+        processedNext = step.process(interpreter, mockHttpServletRequest("http://localhost/visual-designer/"));
 
         Assert.assertEquals("module2", processedNext);
     }

@@ -7,11 +7,11 @@
 
 	<!--
 		A path to the projects' workspace. Both absolute and relative paths are supported. Relative paths
-		are related RVD web application context. Namely $RESTCOMM_HOME/standalone/deployments/restcomm-rvd.war/.
+		are related RVD web application context. Namely $RESTCOMM_HOME/standalone/deployments/visual-designer.war/.
 
 		Example:
 			Absolute path example:
-				/home/otsakir/Restcomm/standalone/deployments/restcomm-rvd.war/workspace
+				/home/otsakir/Restcomm/standalone/deployments/visual-designer.war/workspace
 
 			Relative path example:
 				workspace
@@ -43,7 +43,7 @@
 	    Default value for useAbsoluteApplicationUrl is false.
 	-->
 	<useAbsoluteApplicationUrl>false</useAbsoluteApplicationUrl>
-	<baseUrl>/restcomm-rvd</baseUrl>
+	<baseUrl>/visual-designer</baseUrl>
 
 	<!-- Timeout for external service requests in milliseconds. Defaults to 5000 if not given. Note that custom
 		 overrides from the External Service element timeout setting (UI) will  get ignored if greater that

@@ -45,7 +45,7 @@ public class RvdConfig {
     private List<RvdMaxPerHost> defaultHttpMaxPerRoute;
     private Boolean videoSupport;
     private Integer maxMediaFileSize;
-    private String  baseUrl; //e.g. http://this:8080/restcomm-rvd
+    private String  baseUrl; //e.g. http://this:8080/visual-designer
     private Boolean useAbsoluteApplicationUrl;
     private String ussdSupport;
     private String instanceId;

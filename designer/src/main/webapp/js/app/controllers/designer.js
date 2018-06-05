@@ -7,13 +7,6 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
 	$scope.firstTime = $stateParams.firstTime && ($stateParams.firstTime.toLowerCase() == "true");
 
 
-	function download(applicationSid,projectName) {
-	    var downloadUrl =  '/restcomm-rvd/services/projects/' + applicationSid + '/archive?projectName=' + projectName;
-	    fileRetriever.download(downloadUrl, projectName + ".zip").catch(function () {
-	        notifications.put({type:"danger", message:"Error downloading project archive"});
-	    });
-	}
-
   $scope.startupNodeSet = function () {
       return designerService.startupNodeSet(project);
   }
@@ -386,9 +379,6 @@ var designerCtrl = App.controller('designerCtrl', function($scope, $rootScope, $
 	$scope.$on('save-project-clicked', function (event,data) {
 	    onSavePressed();
 	})
-	$scope.$on('download-project-clicked', function () {
-        download($scope.applicationSid, $scope.projectName);
-	});
 	$scope.$on('show-project-settings-clicked', function () {
         projectSettingsService.showModal($scope.applicationSid, $scope.projectName);
 	})

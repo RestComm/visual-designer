@@ -291,7 +291,7 @@ public class RvdController extends SecuredRestService {
         // use the existing application for RCML if none has been given
         if (RvdUtils.isEmpty(rcmlUrl)) {
             URIBuilder uriBuilder = new URIBuilder(restcommBaseUrl);
-            uriBuilder.setPath("/restcomm-rvd/services/apps/" + projectName + "/controller");
+            uriBuilder.setPath(applicationContext.getConfiguration().getContextPath() + "/services/apps/" + projectName + "/controller");
             try {
                 rcmlUrl = uriBuilder.build().toString();
             } catch (URISyntaxException e) {

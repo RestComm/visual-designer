@@ -55,7 +55,7 @@ public class FileRvdConfiguration extends BaseRvdConfiguration {
     private RestcommConfig restcommConfig;
 
     private String contextRootPath; // e.g. a/path/ending/in/slash/
-    private String contextPath; // e.g. /restcomm-rvd
+    private String contextPath; // e.g. /visual-designer
     private URI restcommBaseUri;
     private Integer externalServiceTimeout;
     private Boolean videoSupport;
@@ -335,13 +335,13 @@ public class FileRvdConfiguration extends BaseRvdConfiguration {
 
     /*
      * Returns a relative url to the base of the application service. Controllers are located under it.
-     * Currently hardcoded to /restcomm-rvd/services/apps/
+     * Currently hardcoded to /visual-designer/services/apps/
      *
      * @return relative url to the application service
      */
     @Override
     public String getApplicationsRelativeUrl() {
-        return "/restcomm-rvd/services/apps";
+        return getContextPath() + "services/apps";
     }
 
     @Override

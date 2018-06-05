@@ -14,6 +14,7 @@ import org.restcomm.connect.rvd.upgrade.UpgradeService;
  * @author otsakir@gmail.com - Orestis Tsakiridis
  */
 public interface RvdConfiguration {
+    String CONTEXT_PATH = "/visual-designer"; // The url context path and name of .war. This is used in all places where the value in pom.xml/finalName cannot. It should be the same with it.
     SslMode DEFAULT_SSL_MODE = SslMode.strict;
     boolean DEFAULT_USE_HOSTNAME_TO_RESOLVE_RELATIVE_URL = true;
     boolean DEFAULT_USE_ABSOLUTE_APPLICATION_URL = false;
@@ -25,7 +26,7 @@ public interface RvdConfiguration {
 
     String WORKSPACE_DIRECTORY_NAME = "workspace";
     String PROTO_DIRECTORY_PREFIX = "_proto";
-    String REST_SERVICES_PATH = "services"; // the "services" from the /restcomm-rvd/services/apps/... path
+    String REST_SERVICES_PATH = "services"; // the "services" from the /visual-designer/services/apps/... path
     String USERS_DIRECTORY_NAME = "@users";
 
     String WAVS_DIRECTORY_NAME = "wavs";

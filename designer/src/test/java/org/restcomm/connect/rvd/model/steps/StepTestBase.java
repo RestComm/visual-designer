@@ -7,6 +7,7 @@ import org.restcomm.connect.rvd.ApplicationContextBuilder;
 import org.restcomm.connect.rvd.RvdConfiguration;
 import org.restcomm.connect.rvd.commons.http.CustomHttpClientBuilder;
 import org.restcomm.connect.rvd.concurrency.ProjectRegistry;
+import org.restcomm.connect.rvd.configuration.RvdConfig;
 import org.restcomm.connect.rvd.interpreter.Interpreter;
 import org.restcomm.connect.rvd.logging.MockedCustomLogger;
 import org.restcomm.connect.rvd.logging.system.LoggingContext;
@@ -76,7 +77,7 @@ public class StepTestBase {
         // TODO init appContext ??
         Interpreter interpreter = new Interpreter(
                 "testapp",
-                mockHttpServletRequest("http://localhost/restcomm-rvd/"),
+                mockHttpServletRequest("http://localhost" + RvdConfiguration.CONTEXT_PATH + "/"),
                 params,
                 appContext,
                 new LoggingContext("log-prefix"),

@@ -64,7 +64,7 @@ public class AccountClosingNotificationTests extends RestServiceMockedTest {
         createProject("APB0003","orestis@company.com");
 
         ProjectDao projectDao = new FsProjectDao(storage);
-        projectService = new ProjectHelper(configuration,storage,marshaler,"/restcomm-rvd", projectDao);
+        projectService = new ProjectHelper(configuration,storage,marshaler,"/visual-designer", projectDao);
     }
 
     @After

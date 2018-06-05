@@ -355,7 +355,7 @@ angular.module('Rvd').service('webTriggerService', ['$http','$q','$modal', funct
 				$scope.ccInfo = createCcInfo();
 		}
 		$scope.getWebTriggerUrl = function () {
-			return $location.protocol() + "://" + $location.host() + ":" +  $location.port() + "/restcomm-rvd/services/apps/" +  applicationSid + '/start<span class="text-muted">?from=12345&amp;to=+1231231231&amp;token=mysecret</span>';
+			return $location.protocol() + "://" + $location.host() + ":" +  $location.port() + "/visual-designer/services/apps/" +  applicationSid + '/start<span class="text-muted">?from=12345&amp;to=+1231231231&amp;token=mysecret</span>';
 		};
 		$scope.getRvdHost = function() {
 			return $location.host();

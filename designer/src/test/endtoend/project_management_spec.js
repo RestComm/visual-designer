@@ -7,7 +7,7 @@ config.projectRenamed = "test_projectManagement2";
 
 frisby.create('Login RVD')
 	.post( 
-		config.baseURL + 'restcomm-rvd/services/auth/login', 
+		config.baseURL + 'visual-designer/services/auth/login',
 		{"username": config.username,"password": config.password},
 		{json:true}
 	)
@@ -27,21 +27,21 @@ frisby.create('Login RVD')
 		
 		// Basic project management
 		frisby.create('Create a voice project')
-			.put( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectName + '/?kind=voice')
+			.put( config.baseURL + 'visual-designer/services/projects/' + config.projectName + '/?kind=voice')
 			.expectStatus(200)
 			.after(function (err,res,body) {
 				
 				frisby.create('Retrieve voice project')
-					.get( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectName )
+					.get( config.baseURL + 'visual-designer/services/projects/' + config.projectName )
 					.expectStatus(200)
 					.expectJSON( "header", { projectKind: 'voice', startNodeName: 'start', version: config.rvdProjectVersion, owner: config.username })
 					.after(function () {
 						frisby.create('Rename project')
-							.put( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectName + '/rename?newName=' + config.projectRenamed )
+							.put( config.baseURL + 'visual-designer/services/projects/' + config.projectName + '/rename?newName=' + config.projectRenamed )
 							.expectStatus(200)
 							.after(function () {
 								frisby.create('Remove project')
-									.delete( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectRenamed )
+									.delete( config.baseURL + 'visual-designer/services/projects/' + config.projectRenamed )
 									.expectStatus(200)
 								.toss();								
 							})

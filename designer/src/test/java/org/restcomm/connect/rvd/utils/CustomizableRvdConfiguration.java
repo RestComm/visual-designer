@@ -126,7 +126,7 @@ public class CustomizableRvdConfiguration extends BaseRvdConfiguration {
 
     @Override
     public String getContextPath() {
-        return null;
+        return RvdConfiguration.CONTEXT_PATH;
     }
 
     @Override

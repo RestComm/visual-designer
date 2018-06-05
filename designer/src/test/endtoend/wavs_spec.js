@@ -6,7 +6,7 @@ config.projectName = "test_wavsProject";
 
 frisby.create('Login RVD')
 	.post( 
-		config.baseURL + 'restcomm-rvd/services/auth/login', 
+		config.baseURL + 'visual-designer/services/auth/login',
 		{"username": config.username,"password": config.password},
 		{json:true}
 	)
@@ -25,18 +25,18 @@ frisby.create('Login RVD')
 		
 		// Create a project for testing upon
 		frisby.create('Create a voice project')
-			.put( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectName + '/?kind=voice')
+			.put( config.baseURL + 'visual-designer/services/projects/' + config.projectName + '/?kind=voice')
 			.expectStatus(200)
 			.after(function (err,res,body) {
 				frisby.create('Retrieve project wav list')
-					.get( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectName + '/wavs')
+					.get( config.baseURL + 'visual-designer/services/projects/' + config.projectName + '/wavs')
 					.expectStatus(200)
 					.expectJSONTypes( String ) // this does not work!
 				.toss();
 			})
 			.after(function () {
 				frisby.create('Remove project')
-					.delete( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectName )
+					.delete( config.baseURL + 'visual-designer/services/projects/' + config.projectName )
 					.expectStatus(200)
 				.toss();								
 			})

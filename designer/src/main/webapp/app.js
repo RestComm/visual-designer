@@ -110,7 +110,7 @@ App.config(['$stateProvider','$urlRouterProvider', '$translateProvider', functio
     $urlRouterProvider.otherwise('/noapp');
 
     $translateProvider.useStaticFilesLoader({
-        prefix: '/restcomm-rvd/languages/',
+        prefix: 'languages/',
         suffix: '.json'
     });
     $translateProvider.useCookieStorage();
@@ -126,7 +126,7 @@ angular.element(document).ready(['$http',function ($http) {
   $http.get("services/config").success(function (clientConfig) {
     angular.module('Rvd').factory('RvdConfiguration', function () {
         return {
-            projectsRootPath: '/restcomm-rvd/services/projects',
+            projectsRootPath: '/visual-designer/services/projects',
             videoSupport: clientConfig.videoSupport,
             restcommBaseUrl: clientConfig.restcommBaseUrl || "",
             ussdSupport: clientConfig.ussdSupport,

@@ -7,7 +7,7 @@ config.toAddress = "client:bob";
 
 frisby.create('Login RVD')
 	.post( 
-		config.baseURL + 'restcomm-rvd/services/auth/login', 
+		config.baseURL + 'visual-designer/services/auth/login',
 		{"username": config.username,"password": config.password},
 		{json:true}
 	)
@@ -26,28 +26,28 @@ frisby.create('Login RVD')
 		
 		// Create a project for testing upon
 		frisby.create('Create WebTrigger test project')
-			.put( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectName + '/?kind=voice')
+			.put( config.baseURL + 'visual-designer/services/projects/' + config.projectName + '/?kind=voice')
 			.expectStatus(200)
 			.after(function () {
 				frisby.create('Retrieve WebTrigger info  for project with no WebTrigger yet')
-					.get( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectName + '/cc')
+					.get( config.baseURL + 'visual-designer/services/projects/' + config.projectName + '/cc')
 					.expectStatus(404)
 					.after( function () {
 						
 						frisby.create('Save WebTrigger info')
-							.post( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectName + '/cc',
+							.post( config.baseURL + 'visual-designer/services/projects/' + config.projectName + '/cc',
 								{"lanes":[{"startPoint":{"to":config.toAddress,"from":""}}]},
 								{"json":true})
 							.expectStatus(200)
 							.after( function () {
 								
 								frisby.create('Retrieve WebTrigger info')
-									.get( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectName + '/cc')
+									.get( config.baseURL + 'visual-designer/services/projects/' + config.projectName + '/cc')
 									.expectStatus(200)
 									.expectJSON( "lanes", [ {startPoint: { to: config.toAddress}} ] )
 									.after(function () {
 										frisby.create('Remove WebTrigger test project')
-											.delete( config.baseURL + 'restcomm-rvd/services/projects/' + config.projectName )
+											.delete( config.baseURL + 'visual-designer/services/projects/' + config.projectName )
 											.expectStatus(200)
 										.toss();	
 									})

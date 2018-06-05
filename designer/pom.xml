@@ -166,7 +166,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>restcomm-rvd</finalName>
+		<finalName>visual-designer</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -269,7 +269,7 @@
 						<configuration>
 							<tasks>
 								<copy file="${project.build.outputDirectory}/rvd.version"
-									  toFile="target/restcomm-rvd/WEB-INF/rvd.version" overwrite="true" />
+									  toFile="target/visual-designer/WEB-INF/rvd.version" overwrite="true" />
 							</tasks>
 						</configuration>
 						<goals>
