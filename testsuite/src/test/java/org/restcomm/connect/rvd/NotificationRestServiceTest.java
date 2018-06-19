@@ -52,7 +52,7 @@ public class NotificationRestServiceTest extends RestServiceTest {
             .willReturn(aResponse()
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
-                    .withBody("[{\"sid\": \"AP0a9168dbd9a7402cbb9c99ac434ed817\",\"date_created\": \"Mon, 21 Mar 2016 15:21:04 +0000\",\"date_updated\": \"Sat, 30 Apr 2016 13:43:43 +0000\",\"friendly_name\": \"sms1\",\"account_sid\": \"AC54b41ed43f543e9ca3c8da489b0c1631\",\"api_version\": \"2012-04-24\",\"voice_caller_id_lookup\": false,\"uri\": \"/restcomm/2012-04-24/Accounts/AC54b41ed43f543e9ca3c8da489b0c1631/Applications/AP0a9168dbd9a7402cbb9c99ac434ed817.json\",\"rcml_url\": \"/restcomm-rvd/services/apps/AP0a9168dbd9a7402cbb9c99ac434ed817/controller\",\"kind\": \"sms\"},{\"sid\": \"AP1745d5278c8543c28e29762ea982653d\",\"date_created\": \"Mon, 14 Nov 2016 08:06:53 +0000\",\"date_updated\": \"Mon, 14 Nov 2016 08:06:53 +0000\",\"friendly_name\": \"orestis_TEST\",\"account_sid\": \"AC54b41ed43f543e9ca3c8da489b0c1631\",\"api_version\": \"2012-04-24\",\"voice_caller_id_lookup\": false,\"uri\": \"/restcomm/2012-04-24/Accounts/AC54b41ed43f543e9ca3c8da489b0c1631/Applications/AP1745d5278c8543c28e29762ea982653d.json\",\"rcml_url\": \"/restcomm-rvd/services/apps/AP1745d5278c8543c28e29762ea982653d/controller\",\"kind\": \"voice\"}]")));
+                    .withBody("[{\"sid\": \"AP0a9168dbd9a7402cbb9c99ac434ed817\",\"date_created\": \"Mon, 21 Mar 2016 15:21:04 +0000\",\"date_updated\": \"Sat, 30 Apr 2016 13:43:43 +0000\",\"friendly_name\": \"sms1\",\"account_sid\": \"AC54b41ed43f543e9ca3c8da489b0c1631\",\"api_version\": \"2012-04-24\",\"voice_caller_id_lookup\": false,\"uri\": \"/restcomm/2012-04-24/Accounts/AC54b41ed43f543e9ca3c8da489b0c1631/Applications/AP0a9168dbd9a7402cbb9c99ac434ed817.json\",\"rcml_url\": \"/visual-designer/services/apps/AP0a9168dbd9a7402cbb9c99ac434ed817/controller\",\"kind\": \"sms\"},{\"sid\": \"AP1745d5278c8543c28e29762ea982653d\",\"date_created\": \"Mon, 14 Nov 2016 08:06:53 +0000\",\"date_updated\": \"Mon, 14 Nov 2016 08:06:53 +0000\",\"friendly_name\": \"orestis_TEST\",\"account_sid\": \"AC54b41ed43f543e9ca3c8da489b0c1631\",\"api_version\": \"2012-04-24\",\"voice_caller_id_lookup\": false,\"uri\": \"/restcomm/2012-04-24/Accounts/AC54b41ed43f543e9ca3c8da489b0c1631/Applications/AP1745d5278c8543c28e29762ea982653d.json\",\"rcml_url\": \"/visual-designer/services/apps/AP1745d5278c8543c28e29762ea982653d/controller\",\"kind\": \"voice\"}]")));
 
         Client jersey = getClient("administrator@company.com", "RestComm");
         WebResource resource = jersey.resource( getResourceUrl("/services/notifications") );
@@ -69,7 +69,7 @@ public class NotificationRestServiceTest extends RestServiceTest {
     public static WebArchive createWebArchiveNoGw() {
         logger.info("Packaging Test App");
         logger.info("version");
-        WebArchive archive = ShrinkWrap.create(WebArchive.class, "restcomm-rvd.war");
+        WebArchive archive = ShrinkWrap.create(WebArchive.class, "visual-designer.war");
         final WebArchive restcommArchive = ShrinkWrapMaven.resolver()
                 .resolve(getMavenDepId()).withoutTransitivity()
                 .asSingle(WebArchive.class);

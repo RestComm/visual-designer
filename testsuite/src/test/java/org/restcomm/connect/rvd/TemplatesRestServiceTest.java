@@ -60,7 +60,7 @@ public class TemplatesRestServiceTest extends RestServiceTest {
     public static WebArchive createWebArchiveNoGw() {
         logger.info("Packaging Test App");
         logger.info("version");
-        WebArchive archive = ShrinkWrap.create(WebArchive.class, "restcomm-rvd.war");
+        WebArchive archive = ShrinkWrap.create(WebArchive.class, "visual-designer.war");
         final WebArchive restcommArchive = ShrinkWrapMaven.resolver()
                 .resolve(getMavenDepId()).withoutTransitivity()
                 .asSingle(WebArchive.class);
